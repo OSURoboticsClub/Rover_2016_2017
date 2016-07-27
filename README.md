@@ -9,6 +9,7 @@ Repository for 2017 Oregon State Mars Rover Team
 
 ### I/O
 - [ ] Interface with radio system
+- [ ] Create packet structure
 - [ ] **Send commands to rover**
 - [ ] Receive information from rover
 

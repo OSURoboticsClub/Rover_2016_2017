@@ -4,21 +4,21 @@ Repository for 2017 Oregon State Mars Rover Team
 ## Tasks 
 ### User Interaction
 - [ ] Obtain input from game controllers
-- [ ] *Setup API for user input*
+- [ ] **Setup API for user input**
 - [ ] Decide on controller button interface
 
 ### I/O
 - [ ] Interface with radio system
-- [ ] *Send commands to rover*
+- [ ] **Send commands to rover**
 - [ ] Receive information from rover
 
 ### Mapping
 - [ ] Decide on mapping software
 - [ ] Implement caching mechanism
-- [ ] *Create mapping widget*
+- [ ] **Create mapping widget**
 
 ### User Interface
-- [ ] *Camera feed widget*
+- [ ] **Camera feed widget**
 - [ ] Other status widgets
 - [ ] Science team GUI
 - [ ] Optimize design

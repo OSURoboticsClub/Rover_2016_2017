@@ -17,6 +17,8 @@ Camera video data is transmitted through a separate interface. Camera commands, 
 | zebra stripes | are neat      |    $1 |
 
 | Name | RW | Command Code | Arguments | Default values | Notes | 
+
+
 | ---- | -- | ------------ | --------- | -------------- | ----- | 
 | Command not Recognized | - | 0x00 | None | None | Sent as a reply to unknown commands | 
 | Pause | RW | 0x05 | state | 1 | 0 = pause (no rover motion) 1 = unpause | 

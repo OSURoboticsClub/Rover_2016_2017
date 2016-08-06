@@ -10,12 +10,6 @@ Multi-byte values are transmitted little-endian. Two’s complement is used for 
 In the following table, argument specifications begin with a code (i8 = 8-bit int, u16 = 16-bit unsigned int, etc) indicating the size of each argument. The leftmost argument is the first to the sent down the pipe.
 Camera video data is transmitted through a separate interface. Camera commands, and camera selection is set through this command protocol.
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
-
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
 | Command not Recognized | - | 0x00 | None | None | Sent as a reply to unknown commands | 

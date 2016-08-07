@@ -17,9 +17,9 @@ Camera video data is transmitted through a separate interface. Camera commands, 
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
 | Command not Recognized | - | 0x00 | None | None | Sent as a reply to unknown commands | 
-| Pause | RW | 0x05 | state | 1 | 0 = pause (no rover motion) 1 = unpause | 
+| Pause | RW | 0x05 | u8 state | 1 | 0 = pause (no rover motion) 1 = unpause | 
 | Battery voltage | R | 0x06 | u16 voltage | None | Battery voltage in mV | 
 | Drive Motor Power | RW | 0x10 | i8 left_motor, i8 right_motor | 0,0 | -127 = full reverse 128 = full | 
 | Swerve Drive State | RW | 0x11 | u8 state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Select Camera | RW | 0x20 | u8 camera | 0 | 0-3; select camera feed to send to the base station and to send commands to. TODO: define which camera corresponds to which number | 
-| Camera Command | W | 0x30 | u8 length, * data | 0 | Custom camera commands defined in camera manual. Length defines the number of data bytes in the command (0-255). Data is the command to be sent to the camera. The command is sent once the specified number of bytes have been received. | 
+| Camera Command | W | 0x30 | u8 length, * data | 0 | Custom camera commands defined in camera manual. Length defines the number of data bytes in the command (0-255). Data is the command to be sent to the camera. The command is sent once the specified number of bytes have been received. |

@@ -7,3 +7,4 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${NANOPB_PATH})
 find_package(Nanopb REQUIRED)
 
 add_subdirectory(common)
+add_subdirectory(base)

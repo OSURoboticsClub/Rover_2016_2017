@@ -2,6 +2,7 @@
 #Parses a markdown file (first command line argument)
 #containing a table with the header whose header starts with:
 #| Name | RW | Command Code
+import textwrap
 
 def extract_table(file_str):
 	"""Extract the command table from the text of
@@ -84,6 +85,10 @@ def send_prototype(cmd_dict, write_mode):
 	                                         into the given buffer position in a little-endian format.
 	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
 	cmd = cmd_dict
+	
+	#Comment
+	comment = "/* Note: %s */\n"%textwrap.fill(cmd["notes"], 80).replace("\n", "\n * ")
+	
 	#Prototype
 	proto = "void "
 	proto += "send_" + cmd["name"].lower().replace(" ", "_") + "("
@@ -119,7 +124,7 @@ def send_prototype(cmd_dict, write_mode):
 	#Declarations
 	declarations = "\tuint16_t b = 1;\n\tuint8_t buf[%d];\n"%totalsize
 	
-	return proto + declarations + command + body + send
+	return comment + proto + declarations + command + body + send
 
 if __name__ == "__main__":
 	import sys

@@ -71,9 +71,12 @@ def format_code_size(fmt_name):
 	else:
 		return int(fmt_name[1:])/8
 	
-def send_prototype(cmd_dict):
+def send_prototype(cmd_dict, write_mode):
 	"""Given a command dictionary (from extract_table), return a function that constructs
-	   a packet of that type. The function relies on the following function:
+	   a packet of that type. If write_mode is true, the command is transmitted in the
+	   write form; otherwise, the read form is used.
+	   
+	   The function relies on the following function:
 	     send(uint8_t *data, uint16_t count) - send the given packet across the radio link.
 	                                           The send() function must add a start byte and 
 	                                           escape start and escape characters where necessary.
@@ -89,9 +92,12 @@ def send_prototype(cmd_dict):
 	proto = proto[0:-2] #Remove last commma 
 	proto += "){\n"
 	
+	#Command
+	command = "\tbuf[0] = 0x%X;\n"%(cmd["code"] | (int(write_mode) << 7))
+	
 	#Packet stuffing
 	body = ""
-	totalsize = 0 #current byte in packet buffer
+	totalsize = 1 #current byte in packet buffer
 	prev_a = None
 	for a in cmd["argument"]:
 		if a[0] == "*":
@@ -111,22 +117,13 @@ def send_prototype(cmd_dict):
 	send = "\tsend(buf, b);\n}\n"
 		
 	#Declarations
-	declarations = "\tuint16_t b = 0;\n\tuint8_t buf[%d];\n"%totalsize
+	declarations = "\tuint16_t b = 1;\n\tuint8_t buf[%d];\n"%totalsize
 	
-	return proto + declarations + body + send
+	return proto + declarations + command + body + send
 
 if __name__ == "__main__":
 	import sys
 	with open(sys.argv[1], "r") as f:
 		cmds = extract_table(f.read())
 		for c in cmds:
-			print send_prototype(c)
-		
-
-
-
-
-
-
-
-
+			print send_prototype(c, False)

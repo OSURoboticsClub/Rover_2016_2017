@@ -25,6 +25,7 @@ def extract_table(file_str):
 		table_str = file_str[s:s + e]
 	commands = []
 	for l in table_str.split("\n"):
+		if len(l) == 0: continue
 		if l[0] == "|":
 			l = l[1:]
 		col = [c.strip() for c in l.split("|")]
@@ -52,11 +53,30 @@ def extract_table(file_str):
 			"notes" : notes})
 	return commands
 
+def format_code_to_cstdint(fmt_name):
+	"""Convert a format code (i8, u16, *, etc) to a c standard int (int8_t, uint16_t, uint8_t *)."""
+	if fmt_name == "*":
+		return "uint8_t *"
+	elif fmt_name[0] == "i":
+		return "int%s_t"%fmt_name[1:]
+	elif fmt_name[0] == "u":
+		return "uint%s_t"%fmt_name[1:]
+	else:
+		raise ValueError("Unknown format code \"%s\""%fmt_name)
+
+def send_prototype(cmd_dict):
+	"""Given a command dictionary (from extract_table), return a function that constructs
+	   a packet of that type. The function relies on the following function:
+	     send(uint8_t *data, uint16_t count) - send the given packet across the radio link.
+	                                           The send() function must add a start byte and 
+	                                           escape start and escape characters where necessary."""
+	print cmd_dict
 	
 if __name__ == "__main__":
 	import sys
 	with open(sys.argv[1], "r") as f:
-		print extract_table(f.read())
+		cmds = extract_table(f.read())
+		send_prototype(cmds[3])
 		
 
 

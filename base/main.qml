@@ -9,8 +9,5 @@ Window {
 
     MainForm {
         anchors.fill: parent
-        mouseArea.onClicked: {
-            Qt.quit();
-        }
     }
 }

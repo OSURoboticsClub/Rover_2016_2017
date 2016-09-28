@@ -10,6 +10,9 @@ Escape - 0x02
   
 Commands are sent from the computer to the rover, and result in a reply from the rover to the computer. All commands read or write values in the rover firmware. The MSB (bit 7, 0x80) of the command indicates whether that command is reading or writing (0 = writing, 1 = reading). When reading, the command should contain no data. Commands are acted upon as soon as the required number of data bytes for the command have been received. 
 For each command, the rover sends a reply containing the command (in the same read/write form as it received it) and any additional data. For write commands, no data is sent in the reply. For read commands, the requested data is sent in the reply. If the rover receives a command it does not recognize, it sends a reply with a command byte of 0x00.
+
+In certain modes (such as autonomous operation), the rover may transmit packets to the computer without having received a command. These packets will have the same
+format as a reply to the corresponding command.
  
 Multi-byte values are transmitted little-endian. Two’s complement is used for signed values.
 In the following table, argument specifications begin with a code (i8 = 8-bit int, u16 = 16-bit unsigned int, etc) indicating the size of each argument. The leftmost argument is the first to the sent down the pipe.

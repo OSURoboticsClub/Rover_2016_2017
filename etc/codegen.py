@@ -45,14 +45,21 @@ def gen_send_proto(cmd_dict):
 	comment = "/* Note: %s */\n"%textwrap.fill(cmd["notes"], 80).replace("\n", "\n * ")
 	
 	#Prototype
+	need_trigger = False
 	proto = "void "
 	proto += "send_" + cmd["name"].lower().replace(" ", "_") + "("
 	for a in cmd["argument"]:
 		proto += format_code_to_cstdint(a[0]) + " " + a[1] + ", "
+		if a[0] == "*": need_trigger = True
 	proto = proto[0:-2] #Remove last commma 
 	proto += "){\n"
 	
-	return comment + proto
+	#Trigger
+	trigger = ""
+	if need_trigger:
+		trigger = "void " + cmd["name"].lower().replace(" ", "_") + "_trigger();\n"
+	
+	return comment + proto + trigger
 
 def get_all_args(cmd_list):
 	"""Return a list of tuples (format code, argument name, note comment)."""
@@ -80,7 +87,8 @@ def gen_header(cmd_list):
 	s = "#include <stdint.h>\n\n"
 	s += gen_struct_def(cmd_list)
 	s += "extern struct comm_data_t Data;\n\n"
-	#TODO: packet parse function header
+	s += "/* Parse a packet, update the struct, and send a reply. */\n"
+	s += "parse_packet(uint8_t *buf, uint16_t count);\n\n"
 	for c in cmd_list:
 		s += gen_send_proto(c) + "\n"
 	return s

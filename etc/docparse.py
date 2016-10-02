@@ -43,7 +43,7 @@ def extract_table(file_str):
 				argument.append((a[0], a[1]))
 		default = []
 		if len(argument) > 0:
-			for d in [c.strip() for c in col[5].split(",")]:
+			for d in [c.strip() for c in col[4].split(",")]:
 				default.append(d)
 		commands.append({
 			"name" : name,

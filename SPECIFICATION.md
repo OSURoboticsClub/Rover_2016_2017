@@ -23,9 +23,9 @@ don't change the name of existing command arguments.
 
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
-| Command not Recognized | - | 0x00 | u8 wrong_command | None | Sent as a reply to unknown commands. | 
+| Command not Recognized | - | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. | 
 | Pause | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause | 
-| Battery voltage | R | 0x06 | u16 battery_voltage | None | Battery voltage in mV | 
+| Battery voltage | R | 0x06 | u16 battery_voltage | - | Battery voltage in mV | 
 | Drive Motor Power | RW | 0x10 | i8 left_drive, i8 right_drive | 0,0 | -127 = full reverse 128 = full forward | 
 | Swerve Drive State | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Select Camera | RW | 0x20 | u8 selected_camera | 0 | 0-3; select camera feed to send to the base station and to send commands to. TODO: define which camera corresponds to which number | 

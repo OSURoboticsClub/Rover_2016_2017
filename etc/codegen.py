@@ -93,18 +93,28 @@ def gen_header(cmd_list):
 		s += gen_send_proto(c) + "\n"
 	return s
 	
-def gen_source():
-	gen_struct_dec()
-	gen_send_func();
-	gen_packing();
-	gen_parse();
+def gen_struct_dec(cmd_list):
+	s = "struct comm_data_t Data = {\n"
+	for c in cmd_list:
+		for i,d in zip(range(0, len(c["default"])), c["default"]):
+			s += "\t." + c["argument"][i][1] + " = " + d + ";\n"
+	s += "};\n"
+	return s
 	
+def gen_source(cmd_list):
+	s = "#include \"comm.h\"\n\n"
+	s += gen_struct_dec(cmd_list)
+	#gen_send_func();
+	#gen_packing();
+	#gen_parse();
+	return s
+
 def main():
 	if len(sys.argv) != 2:
 		sys.stderr.write("error: wrong number of arguments. Expected path to spec file as only command line argument.")
 	with open(sys.argv[1], "r") as f:
 		cmds = extract_table(f.read())
-		print gen_header(cmds)
+		print gen_source(cmds)
 
 if __name__ == "__main__":
 	main()

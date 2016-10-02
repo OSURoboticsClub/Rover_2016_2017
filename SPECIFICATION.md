@@ -29,4 +29,4 @@ don't change the name of existing command arguments.
 | Drive Motor Power | RW | 0x10 | i8 left_drive, i8 right_drive | 0,0 | -127 = full reverse 128 = full forward | 
 | Swerve Drive State | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Select Camera | RW | 0x20 | u8 selected_camera | 0 | 0-3; select camera feed to send to the base station and to send commands to. TODO: define which camera corresponds to which number | 
-| Camera Command | W | 0x30 | u8 camera_data_length, * camera_data | 0 | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
+| Camera Command | W | 0x30 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|

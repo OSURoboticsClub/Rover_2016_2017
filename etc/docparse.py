@@ -3,6 +3,7 @@
 #containing a table with the header whose header starts with:
 #| Name | RW | Command Code
 import textwrap
+import sys
 
 def extract_table(file_str):
 	"""Extract the command table from the text of
@@ -42,9 +43,11 @@ def extract_table(file_str):
 			if len(a) == 2:
 				argument.append((a[0], a[1]))
 		default = []
-		if len(argument) > 0:
+		if len(argument) > 0 and col[4].strip() != "-":
 			for d in [c.strip() for c in col[4].split(",")]:
 				default.append(d)
+		if len(default) != len(argument) and len(default) != 0:
+			sys.stderr.write("warning: default list length mismatch on command '%s'\n"%name)
 		commands.append({
 			"name" : name,
 			"rw"   : rw,

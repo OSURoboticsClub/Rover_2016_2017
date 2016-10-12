@@ -4,6 +4,7 @@
 #| Name | RW | Command Code
 import textwrap
 import sys
+import math
 
 def extract_table(file_str):
 	"""Extract the command table from the text of
@@ -114,7 +115,7 @@ def gen_send_func(cmd_dict, write_mode):
 	     send_packet(uint8_t *data, uint16_t count) - send the given packet across the radio link.
 	                                                  The send_packet() function must add a start and end byte and 
 	                                                  escape characters where necessary.
-	     pack*(void *data, uint16_t pos) - pack the given value (where * = 8, 16, 32, or 64 bits)
+	     pack*(uint8_t *data, uint16_t pos, uint*_t value) - pack the given value (where * = 8, 16, 32, or 64 bits)
 	                                       into the given buffer position in a little-endian format.
 	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
 	cmd = cmd_dict
@@ -166,7 +167,7 @@ def gen_parse_proto(cmd_dict):
 	   not contain the end byte.
 	   
 	   The generated function relies on the following functions:
-	     unpack*(void *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	     unpack*(uint8_t *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
 	                                                       unpack the little-endian value from the buffer and write it
 	                                                       to a variable.
 	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
@@ -196,7 +197,7 @@ def gen_parse_func(cmd_dict):
 	   not contain the end byte.
 	   
 	   The generated function relies on the following functions:
-	     unpack*(void *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	     unpack*(uint8_t *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
 	                                                       unpack the little-endian value from the buffer and write it
 	                                                       to a variable.
 	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
@@ -239,6 +240,46 @@ def gen_parse_func(cmd_dict):
 	declarations = "\tuint16_t b = 1;\n"
 	
 	return comment + proto + declarations + body + "}\n"
+
+def gen_packing_protos():
+	"""Return a string containing the prototypes of the functions:
+	      unpack*(uint8_t *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	                                                       unpack the little-endian value from the buffer and write it
+	                                                       to a variable.
+	      pack*(uint8_t *data, uint16_t pos, uint*_t value) - pack the given value (where * = 8, 16, 32, or 64 bits)
+	                                                          into the given buffer position in a little-endian format.
+	   where * = 8, 16, 32, and 64."""
+	s = ""
+	
+	for n in [8, 16, 32, 64]:
+		s += "void pack%d(uint8_t *data, uint16_t pos, uint%d_t value);\n"%(n,n)
+	
+		s += "void unpack%d(uint8_t *data, uint16_t pos, uint%d_t *result);\n"%(n,n)
+	return s
+
+def gen_packing_funcs():
+	"""Return a string containing the source code to the functions:
+	      unpack*(uint8_t *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	                                                       unpack the little-endian value from the buffer and write it
+	                                                       to a variable.
+	      pack*(uint8_t *data, uint16_t pos, uint*_t value) - pack the given value (where * = 8, 16, 32, or 64 bits)
+	                                                          into the given buffer position in a little-endian format.
+	   where * = 8, 16, 32, and 64."""
+	s = ""
+	
+	for n in [8, 16, 32, 64]:
+		s += "void pack%d(uint8_t *data, uint16_t pos, uint%d_t value){\n"%(n,n)
+		for i in range(0, n/8):
+			s += "\t*(data + pos + %d) = (value >> %d) & 0xFF;\n"%(i,i*8)
+		s += "}\n"
+		
+		s += "void unpack%d(uint8_t *data, uint16_t pos, uint%d_t *result){\n"%(n,n)
+		s += "\t*result = "
+		for i in range(0, n/8):
+			s += "(((uint%d_t) *(data + pos + %d) << %d) | "%(n,i, i * 8)
+		s = s[0:-3] #trim last " | "
+		s += ";\n}\n"
+	return s
 
 if __name__ == "__main__":
 	import sys

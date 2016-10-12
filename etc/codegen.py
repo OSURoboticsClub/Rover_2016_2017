@@ -68,7 +68,7 @@ def gen_header(cmd_list):
 	for c in cmd_list:
 		s += gen_send_proto(c) + "\n"
 		s + gen_parse_proto(c) + "\n"
-	#gen pack/unpack protos
+	s += gen_packing_protos()
 	#gen receive packet proto
 	return s
 	
@@ -87,8 +87,8 @@ def gen_source(cmd_list):
 	for c in cmd_list:
 		s += gen_parse_func(c) + "\n"
 		s += gen_send_func(c, False) + "\n"
+	s += gen_packing_funcs()
 	#gen_receive_packet
-	#gen pack/unpack protos
 	
 	return s
 
@@ -97,7 +97,7 @@ def main():
 		sys.stderr.write("error: wrong number of arguments. Expected path to spec file as only command line argument.")
 	with open(sys.argv[1], "r") as f:
 		cmds = extract_table(f.read())
-		print gen_header(cmds)
+		print gen_source(cmds)
 
 if __name__ == "__main__":
 	main()

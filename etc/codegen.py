@@ -125,6 +125,10 @@ def gen_parse_packet_source(cmd_list):
 		s += "\t\t\tbreak;\n"
 		
 		s += "\t\tcase 0x%02X: /* (Read form) */\n"%(c["code"] | 0x80)
+		s += "\t\t\tsend_%s("%cannon_name(c["name"])
+		for a in c["argument"]:
+			s += "Data.%s, "%(a[1])
+		s = s[0:-2] + ");\n"
 		s += "\t\t\tbreak;\n"
 	s += "\t\tcase default:\n"
 	s += "\t\t\tsbuf[0] = 0;\n"

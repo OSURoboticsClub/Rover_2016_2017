@@ -136,6 +136,7 @@ def gen_parse_packet_source(cmd_list):
 	s += "\t\t\tbreak;\n"
 	s += "\t}\n}\n"
 	return s
+	#TODO: writeable stuff 
 		
 
 def main():

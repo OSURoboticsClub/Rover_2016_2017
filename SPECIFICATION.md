@@ -8,7 +8,7 @@ Commands are delineated with start bytes and end bytes. If the rover encounters 
 Start - 0x01  
 Escape - 0x02
 End - 0x03
-  
+
 Commands are sent from the computer to the rover, and result in a reply from the rover to the computer. Command execution and the reply occur after an end byte is received. Conceptually, commands can be thought of as reading or writing values in the rover's memory. The MSB (bit 7, 0x80) of the command indicates whether that command is reading or writing (0 = writing, 1 = reading). When reading, the command should contain no data. Commands are acted upon as soon as the required number of data bytes for the command have been received. 
 For each command, the rover sends a reply containing the command (in the same read/write form as it received it) and any additional data. For write commands, no data is sent in the reply. For read commands, the requested data is sent in the reply. If the rover receives a command it does not recognize, it sends a reply with a command byte of 0x00. If the computer attempts to write a read-only register, the rover acts as if the write succeeded.
 
@@ -30,3 +30,5 @@ don't change the name of existing command arguments.
 | Swerve Drive State | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Select Camera | RW | 0x20 | u8 selected_camera | 0 | 0-3; select camera feed to send to the base station and to send commands to. TODO: define which camera corresponds to which number | 
 | Camera Command | W | 0x30 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
+| Autonomous Waypoints | RW | 0x40 | u8 aw_code_page, u8 aw_data_length, * aw_data | - | Write data to an autonomous waypoint codepage. TODO |
+| Debugging Info | R | 0x50 | - | u8 debug_str_length, * debug_str_data | Read out the latest debug message. |

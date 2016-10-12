@@ -69,7 +69,6 @@ def gen_header(cmd_list):
 		s += gen_send_proto(c) + "\n"
 		s + gen_parse_proto(c) + "\n"
 	s += gen_packing_protos()
-	#gen receive packet proto
 	return s
 	
 def gen_struct_dec(cmd_list):
@@ -88,9 +87,52 @@ def gen_source(cmd_list):
 		s += gen_parse_func(c) + "\n"
 		s += gen_send_func(c, False) + "\n"
 	s += gen_packing_funcs()
-	#gen_receive_packet
+	s += gen_parse_packet_source(cmd_list)
 	
 	return s
+
+def gen_parse_packet_source(cmd_list):
+	"""Return a string containing the source code to the 
+	     parse_packet(uint8_t *buf, uint16_t count)
+	   function, which parses a packet, updates values in the global Data structure,
+	   and dispatches a reply.
+	   The function relies on the following special functions:
+	     send_packet(uint8_t *data, uint16_t count) - send the given packet across the radio link.
+	                                                  The send_packet() function must add a start and end byte and 
+	                                                  escape characters where necessary.
+	   as well as the send_* and parse_* functions."""
+	s = ""
+	s += "void parse_packet(uint8_t *buf, uint16_t count){"
+	s += "\tuint8_t cmd = buf[0];\n"
+	s += "\tuint8_t sbuf[256]; /* Send buffer. */\n" #TODO: Regulate maximum command sizes
+	s += "\tswitch(cmd){\n"
+	for c in cmd_list:
+		s += "\t\t/* %s */\n"%(c["name"])
+		s += "\t\tcase 0x%02X: /* (Write form) */\n"%c["code"]
+		s += "\t\t\tparse_%s(buf, "%cannon_name(c["name"])
+		add_trigger = False
+		for a in c["argument"]:
+			if a[0] == "*":
+				s += "Data.%s, "%(a[1])
+				add_trigger = True;
+			else:
+				s += "&(Data.%s), "%(a[1])
+		s = s[0:-2] + ");\n"
+		s += "\t\t\tsbuf[0] = cmd;\n"
+		s += "\t\t\tsend_packet(sbuf, 1);\n"
+		if add_trigger:
+			s += "\t\t\ttrigger_%s();\n"%cannon_name(c["name"])
+		s += "\t\t\tbreak;\n"
+		
+		s += "\t\tcase 0x%02X: /* (Read form) */\n"%(c["code"] | 0x80)
+		s += "\t\t\tbreak;\n"
+	s += "\t\tcase default:\n"
+	s += "\t\t\tsbuf[0] = 0;\n"
+	s += "\t\t\tsend_packet(sbuf, 1);\n"
+	s += "\t\t\tbreak;\n"
+	s += "\t}\n}\n"
+	return s
+		
 
 def main():
 	if len(sys.argv) != 2:

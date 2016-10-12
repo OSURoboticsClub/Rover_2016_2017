@@ -75,15 +75,45 @@ def format_code_size(fmt_name):
 	else:
 		return int(fmt_name[1:])/8
 
+def cannon_name(command):
+	"""Given the name of a command, return the canonical function name
+	   (lowercase, with spaces converted to underscores)."""
+	return command.lower().replace(" ", "_")
+
+def gen_send_proto(cmd_dict):
+	"""Given a command dictionary (from extract_table), return the prototype
+	of a function that transmits the command."""
+	cmd = cmd_dict
+	
+	#Comment
+	comment = "/* Note: %s */\n"%textwrap.fill(cmd["notes"], 80).replace("\n", "\n * ")
+	
+	#Prototype
+	need_trigger = False
+	proto = "void "
+	proto += "send_" + cannon_name(cmd["name"]) + "("
+	for a in cmd["argument"]:
+		proto += format_code_to_cstdint(a[0]) + " " + a[1] + ", "
+		if a[0] == "*": need_trigger = True
+	proto = proto[0:-2] #Remove last commma 
+	proto += "){\n"
+	
+	#Trigger
+	trigger = ""
+	if need_trigger:
+		trigger = "void " + cannon_name(cmd["name"]) + "_trigger();\n"
+	
+	return comment + proto + trigger
+
 def gen_send_func(cmd_dict, write_mode):
-	"""Given a command dictionary (from extract_table), return a function that constructs
+	"""Given a command dictionary (from extract_table()), return a function that constructs
 	   a packet of that type. If write_mode is true, the command is transmitted in the
 	   write form; otherwise, the read form is used.
 	   
 	   The function relies on the following functions:
 	     send_packet(uint8_t *data, uint16_t count) - send the given packet across the radio link.
 	                                                  The send_packet() function must add a start and end byte and 
-	                                                   escape characters where necessary.
+	                                                  escape characters where necessary.
 	     pack*(void *data, uint16_t pos) - pack the given value (where * = 8, 16, 32, or 64 bits)
 	                                       into the given buffer position in a little-endian format.
 	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
@@ -94,7 +124,7 @@ def gen_send_func(cmd_dict, write_mode):
 	
 	#Prototype
 	proto = "void "
-	proto += "send_" + cmd["name"].lower().replace(" ", "_") + "("
+	proto += "send_" + cannon_name(cmd["name"]) + "("
 	for a in cmd["argument"]:
 		proto += format_code_to_cstdint(a[0]) + " " + a[1] + ", "
 	proto = proto[0:-2] #Remove last commma 
@@ -128,6 +158,87 @@ def gen_send_func(cmd_dict, write_mode):
 	declarations = "\tuint16_t b = 1;\n\tuint8_t buf[%d];\n"%totalsize
 	
 	return comment + proto + declarations + command + body + send
+
+def gen_parse_proto(cmd_dict):
+	"""Given a command dictionary (from extract_table()), return a function that
+	   Extracts a packet of that type from a buffer. The first byte in the buffer
+	   should be the command byte, escape characters must be removed, and it need
+	   not contain the end byte.
+	   
+	   The generated function relies on the following functions:
+	     unpack*(void *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	                                                       unpack the little-endian value from the buffer and write it
+	                                                       to a variable.
+	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
+	cmd = cmd_dict
+	
+	#Comment
+	comment = "/* Note: %s */\n"%textwrap.fill(cmd["notes"], 80).replace("\n", "\n * ")
+	
+	#Prototype
+	proto = "void "
+	proto += "parse_" + cannon_name(cmd["name"]) + "("
+	proto += "uint8_t *packet, "
+	for a in cmd["argument"]:
+		typename = format_code_to_cstdint(a[0]).strip()
+		if typename[-1] == "*":
+			typename = typename[0:-1]
+		proto += typename + " *" + a[1] + ", "
+	proto = proto[0:-2] #Remove last commma 
+	proto += ";\n"
+	
+	return comment + proto
+
+def gen_parse_func(cmd_dict):
+	"""Given a command dictionary (from extract_table()), return a function that
+	   Extracts a packet of that type from a buffer. The first byte in the buffer
+	   should be the command byte, escape characters must be removed, and it need
+	   not contain the end byte.
+	   
+	   The generated function relies on the following functions:
+	     unpack*(void *data, uint16_t pos, uint*_t *result) - (where * = 8, 16, 32, etc.) 
+	                                                       unpack the little-endian value from the buffer and write it
+	                                                       to a variable.
+	     memcpy(void *dest, void *src, uint16_t count) - copy bytes"""
+	cmd = cmd_dict
+	
+	#Comment
+	comment = "/* Note: %s */\n"%textwrap.fill(cmd["notes"], 80).replace("\n", "\n * ")
+	
+	#Prototype
+	proto = "void "
+	proto += "parse_" + cannon_name(cmd["name"]) + "("
+	proto += "uint8_t *packet, "
+	for a in cmd["argument"]:
+		typename = format_code_to_cstdint(a[0]).strip()
+		if typename[-1] == "*":
+			typename = typename[0:-1]
+		proto += typename + " *" + a[1] + ", "
+	proto = proto[0:-2] #Remove last commma 
+	proto += "){\n"
+	
+	#Packet stuffing
+	body = ""
+	totalsize = 1 #current byte in packet buffer
+	prev_a = None
+	for a in cmd["argument"]:
+		if a[0] == "*":
+			if prev_a == None:
+				raise ValueError("In command %s, variable-length argument used before length controlling argument.")
+			body += "\tmemcpy(%s, packet + b, *%s);\n"%(a[1], prev_a[1])
+			body += "\tb += %s;\n"%prev_a[1]
+			totalsize += 255
+		else:
+			s = format_code_size(a[0])
+			body += "\tunpack%d(packet, buf + b, %s);\n"%(s*8, a[1])
+			body += "\tb += %d;\n"%s
+			totalsize += s
+		prev_a = a
+		
+	#Declarations
+	declarations = "\tuint16_t b = 1;\n"
+	
+	return comment + proto + declarations + body + "}\n"
 
 if __name__ == "__main__":
 	import sys

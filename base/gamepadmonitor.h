@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-
 QT_BEGIN_NAMESPACE
 class QGamepad;
 QT_END_NAMESPACE

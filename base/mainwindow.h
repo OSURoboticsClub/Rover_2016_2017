@@ -4,10 +4,9 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include <QDebug>
+#include <QQuickWidget>
 
-#include <pb_encode.h>
-#include <pb_decode.h>
-#include "packets.pb.h"
+#include "serialhandler.h"
 
 
 namespace Ui {
@@ -23,17 +22,19 @@ public:
     ~MainWindow();
 
 
-    QSerialPort serial;
-
 private:
     Ui::MainWindow *ui;
+    QSerialPort output;
+    SerialHandler *m_serial;
 
 public slots:
-    void connectSerial();
+    void connectInputSerial();
+    void connectOutputSerial();
 
 private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
 };
 
 #endif // MAINWINDOW_H

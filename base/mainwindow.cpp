@@ -1,13 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "io.h"
+
+#include <QDebug>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    m_serial = new SerialHandler();
 }
 
 MainWindow::~MainWindow()
@@ -15,57 +18,52 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::connectSerial()
+void MainWindow::connectOutputSerial()
 {
 
-    serial.setPortName("pts/11");
+}
 
-    if(serial.open(QIODevice::ReadWrite)){
-        if(!serial.setBaudRate(QSerialPort::Baud57600))
-            qDebug()<<serial.errorString();
+void MainWindow::connectInputSerial()
+{
 
-        if(!serial.setDataBits(QSerialPort::Data8))
-            qDebug()<<serial.errorString();
+    output.setPortName("pts/9");
 
-        if(!serial.setParity(QSerialPort::NoParity))
-            qDebug()<<serial.errorString();
+    if(output.open(QIODevice::WriteOnly)){
+        if(!output.setBaudRate(QSerialPort::Baud57600))
+            qDebug()<<output.errorString();
 
-        if(!serial.setStopBits(QSerialPort::OneStop))
-            qDebug()<<serial.errorString();
+        if(!output.setDataBits(QSerialPort::Data8))
+            qDebug()<<output.errorString();
 
-        if(!serial.setFlowControl(QSerialPort::NoFlowControl))
-            qDebug()<<serial.errorString();
+        if(!output.setParity(QSerialPort::NoParity))
+            qDebug()<<output.errorString();
+
+        if(!output.setStopBits(QSerialPort::OneStop))
+            qDebug()<<output.errorString();
+
+        if(!output.setFlowControl(QSerialPort::NoFlowControl))
+            qDebug()<<output.errorString();
     }
 
     else {
-        qDebug() << serial.errorString();
+        qDebug() << output.errorString();
     }
 }
 
+
 void MainWindow::on_pushButton_clicked()
 {
-    this->connectSerial();
+    this->connectInputSerial();
+    this->connectOutputSerial();
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
 
-    packets_BatteryVoltage message = {22};
-    uint8_t *output = encodePacket(&message, BATTERYVOLTAGE_TYPE);
-    if(*output == BATTERYVOLTAGE_TYPE)
-    {
-        packets_BatteryVoltage p = decodeBatteryVoltage(output, *output);
-        qDebug() << p.battery_voltage;
-    }
-    free(output);
+}
 
-    packets_MotorPower message2 = {5, 6};
-    uint8_t *output2 = encodePacket(&message2, MOTORPOWER_TYPE);
-    if(*output2 == MOTORPOWER_TYPE)
-    {
-        packets_MotorPower p2 = decodeMotorPower(output2, *output2);
-        qDebug() << p2.left_motor;
-        qDebug() << p2.right_motor;
-    }
-    free(output2);
+void MainWindow::on_pushButton_3_clicked()
+{
+    this->m_serial->setupPort("/dev/pts/9");
+    this->m_serial->run();
 }

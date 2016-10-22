@@ -14,7 +14,7 @@ Repository for 2017 Oregon State Mars Rover Team
 - [ ] Receive information from rover
 
 ### Mapping
-- [X] Decide on mapping software
+- [ ] Decide on mapping software
 - [ ] Implement caching mechanism
 - [ ] **Create mapping widget**
 

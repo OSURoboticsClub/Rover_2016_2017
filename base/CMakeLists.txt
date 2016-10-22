@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.0)
 
 # Point CMake to the Qt 5.7 location
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} 
@@ -21,12 +21,20 @@ find_package(Qt5Qml 5.7 REQUIRED)
 find_package(Qt5Quick 5.7 REQUIRED)
 find_package(Qt5Gamepad 5.7 REQUIRED)
 find_package(Qt5SerialPort 5.7 REQUIRED)
+find_package(Qt5QuickWidgets 5.7 REQUIRED)
 
 # Set project sources
 set(SOURCES
    main.cpp
    mainwindow.cpp
    gamepadmonitor.cpp
+   serialhandler.cpp
+)
+
+set(HEADERS
+    mainwindow.h
+    gamepadmonitor.h
+    serialhandler.h
 )
 
 # Set forms
@@ -39,14 +47,10 @@ set(RESOURCES
     qml.qrc
 )
 
-include_directories(${NANOPB_INCLUDE_DIRS})
-include_directories(${PROJECT_BINARY_DIR}/common)
-
 
 # Tell CMake to create the main executable
-add_executable(main ${SOURCES} ${FORMS} ${RESOURCES})
+add_executable(main ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES})
 
-target_link_libraries(main packets)
 
 # Link libraries from Qt5
 target_link_libraries(main Qt5::Widgets)
@@ -54,3 +58,4 @@ target_link_libraries(main Qt5::Qml)
 target_link_libraries(main Qt5::Quick)
 target_link_libraries(main Qt5::Gamepad)
 target_link_libraries(main Qt5::SerialPort)
+target_link_libraries(main Qt5::QuickWidgets)

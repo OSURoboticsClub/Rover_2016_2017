@@ -10,7 +10,6 @@ GamepadMonitor::GamepadMonitor(QObject *parent)
         if (gamepads.isEmpty()) {
             return;
         }
-
         m_gamepad = new QGamepad(*gamepads.begin(), this);
 }
 

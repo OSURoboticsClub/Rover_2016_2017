@@ -10,10 +10,13 @@
 #include <util/delay.h>
 #include "uart.h"
 
-
 int main(void){
 	while(1){
-		/* Loop forever */
+		DDRB |= _BV(PB7);
+		PORTB |= _BV(PB7);
+		_delay_ms(200);
+		PORTB &= ~_BV(PB7);
+		_delay_ms(200);
 	}
 	return(0);
 }

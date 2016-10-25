@@ -1,5 +1,5 @@
 MCU:= atmega2560
-PROGRAMMER:= arduino
+PROGRAMMER:= wiring
 PROGRAMMER_PORT:= /dev/ttyACM0
 
 CC:=avr-gcc
@@ -9,13 +9,8 @@ CFLAGS:= -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -W
 LIBS:=
 
 
-#Fuse Settings
-LFUSE:=0x
-HFUSE:=0x
-EFUSE:=0x
-
 # Output filename, without extension
-OUTFILE:=../miniboard
+OUTFILE:=../build/miniboard
 # Object file names
 OBJFILES:=uart.o 
 # Main file
@@ -25,10 +20,6 @@ FILE:=miniboard.c
 
 # By default, compile and download.
 all: $(OUTFILE).bin download
-
-# Burn fuses
-fuses:
-	@$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m
 
 #Compile source files
 %.o: %.c %.h
@@ -41,7 +32,7 @@ $(OUTFILE).bin: $(OBJFILES)
 
 # Download firmware, without changing fuses or eeprom.
 download:
-	@$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -U flash:w:$(FILE).bin:r
+	@$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r
 
 #Delete generated files
 clean:

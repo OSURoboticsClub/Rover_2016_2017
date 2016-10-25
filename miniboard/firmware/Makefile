@@ -1,7 +1,5 @@
 MAKE:= make
 
-# UART Bootloader flashing port
-export FLASHTTY:=/dev/ttyUSB0
 
 # Used to suppress printing of command
 Q := @

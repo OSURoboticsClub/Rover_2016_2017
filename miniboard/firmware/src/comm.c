@@ -41,7 +41,7 @@ void comm_receive_byte(uint8_t byte){
 			badpack = false;
 		} else if(byte == ESC_BYTE){
 			escape = true;
-		} else if(byte == end_byte){
+		} else if(byte == END_BYTE){
 			if(!badpack){
 				parse_packet(pbuf, pcount);
 				pcount = 0;
@@ -49,7 +49,15 @@ void comm_receive_byte(uint8_t byte){
 				pcount = 0;
 			}
 		}
-			
+	} else {
+		escape = false;
+		if(pcount < PACKET_BUF_SIZE){
+			pbuf[pcount] = byte;
+			pcount++;
+		} else {
+			badpack = true;
+		}
+	}
 }
 
-UART_HANDLER(COMM_UART, comm_receive_byte);
+UART_HANDLER(0, comm_receive_byte);

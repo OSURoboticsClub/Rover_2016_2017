@@ -25,7 +25,7 @@ extern void __attribute__((weak)) (*UART3RXHandler)(uint8_t);
  *   #define MODULE_UART 1
  *   UART_HANDLER(MODULE_UART, module_byte_handler_func);
  */
-#define UART_HANDLER(uart, func) void __attribute__((weak)) (*UART##uart##RXHandler)(uint8_t) = func
+#define UART_HANDLER(uart, func) void (*UART##uart##RXHandler)(uint8_t) = func
 
 /* Enable and configure a uart.
  * Parity options:

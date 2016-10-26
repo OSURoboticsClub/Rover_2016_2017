@@ -8,8 +8,14 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 #include "uart.h"
+#include "comm.h"
+#include "commgen.h"
 
-void trigger_camera_command(void){
+void camera_command_trigger(void){
+	
+}
+
+void debugging_info_trigger(void){
 	
 }
 

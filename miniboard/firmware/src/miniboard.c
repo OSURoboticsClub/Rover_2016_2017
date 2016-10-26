@@ -10,12 +10,16 @@
 #include "uart.h"
 
 int main(void){
+	
+	uart_enable(0, 9600, 1, 0);
+	
 	while(1){
 		DDRB |= _BV(PB7);
 		PORTB |= _BV(PB7);
 		_delay_ms(200);
 		PORTB &= ~_BV(PB7);
 		_delay_ms(200);
+		uart_tx(0, "Hello\n\r", 7);
 	}
 	return(0);
 }

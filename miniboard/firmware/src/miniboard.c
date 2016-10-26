@@ -3,7 +3,6 @@
  * 
  * miniboard.c - Main control loop.
  * Author(s): Nick Ames
- * Checked by: 
  */
 #include <avr/interrupt.h>
 #define F_CPU 16000000UL

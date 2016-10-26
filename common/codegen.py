@@ -95,6 +95,7 @@ def gen_source(cmd_list):
 	return s
 
 def gen_parse_packet_source(cmd_list):
+	#TODO: check for count == 0
 	"""Return a string containing the source code to the 
 	     parse_packet(uint8_t *buf, uint16_t count)
 	   function, which parses a packet, updates values in the global Data structure,
@@ -139,7 +140,7 @@ def gen_parse_packet_source(cmd_list):
 	s += "\t\t\tsend_packet(sbuf, 1);\n"
 	s += "\t\t\tbreak;\n"
 	s += "\t}\n}\n"
-	s = "#pragma GCC diagnostic pop\n"
+	s += "#pragma GCC diagnostic pop\n"
 	return s
 	#TODO: writeable stuff 
 		

@@ -10,6 +10,7 @@
 #include <avr/interrupt.h>
 #include "uart.h"
 #include <stdlib.h>
+#include "comm.h"
 
 void __attribute__((weak)) (*UART0RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART1RXHandler)(uint8_t) = NULL;
@@ -73,7 +74,9 @@ void uart_disable(uint8_t uart){
  * If there is space in the uart buffer, the data will be copied into the
  * buffer and this function will return immediately. Otherwise,
  * it will block until enough space had been made.
- * This function may be used during interrupts.
+ * This function may used by an interrupt as long as the uart employed
+ * is only accessed in interrupts. To put it another way,
+ * this function is re-entrant amoung uarts but not for the same uart.
  * If the given uart is disabled, this function will do nothing
  * and return immediately. */
 void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
@@ -92,19 +95,23 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 /* Returns 1 if data is being sent through the uart, 0 if not. */
 uint8_t uart_tx_in_progress(uint8_t uart);
 
+/* Send a packet to the computer, automatically inserting
+ * start, end, and escape bytes.
+ * This function must only be used by the communications module
+ * (comm.c). */
 void send_packet(uint8_t *data, uint16_t count){
 	//TODO: make not bad
 	uint8_t c = 0x01;
-	uart_tx(1, &c, 1);
+	uart_tx(COMM_UART, &c, 1);
 	for(uint16_t i=0;i<count;i++){
 		if(data[i] == 0x01 || data[i] == 0x02 || data[i] == 0x03){
 			c = 0x02;
-			uart_tx(1, &c, 1);
+			uart_tx(COMM_UART, &c, 1);
 		}
-		uart_tx(1, &(data[i]), 1);
+		uart_tx(COMM_UART, &(data[i]), 1);
 	}
 	c = 0x03;
-	uart_tx(1, &c, 1);
+	uart_tx(COMM_UART, &c, 1);
 }
 
 /* Receive data from the uart. 

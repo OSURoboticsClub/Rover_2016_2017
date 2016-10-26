@@ -13,12 +13,13 @@ void trigger_camera_command(void){
 	
 }
 
-void trigger_autonomous_waypoints(void){
-	
+/* Setup all peripherals and subsystems. */
+void init(void){
+	comm_init();
 }
 
 int main(void){
-	
+	init();
 	uart_enable(0, 9600, 1, 0);
 	
 	while(1){

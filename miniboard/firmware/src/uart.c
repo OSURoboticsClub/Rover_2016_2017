@@ -96,7 +96,7 @@ void send_packet(uint8_t *data, uint16_t count){
 	//TODO: make not bad
 	uint8_t c = 0x01;
 	uart_tx(1, &c, 1);
-	for(int i=0;i<count;i++){
+	for(uint16_t i=0;i<count;i++){
 		if(data[i] == 0x01 || data[i] == 0x02 || data[i] == 0x03){
 			c = 0x02;
 			uart_tx(1, &c, 1);

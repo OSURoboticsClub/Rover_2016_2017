@@ -22,8 +22,9 @@ FILE:=miniboard.c
 all: $(OUTFILE).bin download
 
 # Generate communication files
-commgen.c: ../../../common/SPECIFICATION.md
+commgen.o: ../../../common/SPECIFICATION.md
 	@$(/usr/bin/env python) ../../../common/codegen.py ../../../common/SPECIFICATION.md commgen.c commgen.h
+	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. -c commgen.c -o commgen.o $(LIBS)
 
 # Compile source files
 %.o: %.c %.h

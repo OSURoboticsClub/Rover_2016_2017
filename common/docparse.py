@@ -94,7 +94,7 @@ def gen_send_proto(cmd_dict):
 	proto = "void "
 	proto += "send_" + cannon_name(cmd["name"]) + "("
 	for a in cmd["argument"]:
-		proto += "volatile " + format_code_to_cstdint(a[0]) + " " + a[1] + ", "
+		proto += "" + format_code_to_cstdint(a[0]) + " " + a[1] + ", "
 		if a[0] == "*": need_trigger = True
 	proto = proto[0:-2] #Remove last commma 
 	proto += ");\n"
@@ -127,7 +127,7 @@ def gen_send_func(cmd_dict, write_mode):
 	proto = "void "
 	proto += "send_" + cannon_name(cmd["name"]) + "("
 	for a in cmd["argument"]:
-		proto += "volatile " + format_code_to_cstdint(a[0]) + " " + a[1] + ", "
+		proto += "" + format_code_to_cstdint(a[0]) + " " + a[1] + ", "
 	proto = proto[0:-2] #Remove last commma 
 	proto += "){\n"
 	
@@ -181,7 +181,7 @@ def gen_parse_proto(cmd_dict):
 	proto += "parse_" + cannon_name(cmd["name"]) + "("
 	proto += "uint8_t *packet, "
 	for a in cmd["argument"]:
-		typename = "volatile " + format_code_to_cstdint(a[0]).strip()
+		typename = "" + format_code_to_cstdint(a[0]).strip()
 		if typename[-1] == "*":
 			typename = typename[0:-1]
 		proto += typename + " *" + a[1] + ", "
@@ -211,7 +211,7 @@ def gen_parse_func(cmd_dict):
 	proto += "parse_" + cannon_name(cmd["name"]) + "("
 	proto += "uint8_t *packet, "
 	for a in cmd["argument"]:
-		typename = "volatile " + format_code_to_cstdint(a[0]).strip()
+		typename = "" + format_code_to_cstdint(a[0]).strip()
 		if typename[-1] == "*":
 			typename = typename[0:-1]
 		proto += typename + " *" + a[1] + ", "
@@ -226,8 +226,8 @@ def gen_parse_func(cmd_dict):
 		if a[0] == "*":
 			if prev_a == None:
 				raise ValueError("In command %s, variable-length argument used before length controlling argument.")
-			body += "\tmemcpy((void *) %s, packet + b, *%s);\n"%(a[1], prev_a[1])
-			body += "\tb += %s;\n"%prev_a[1]
+			body += "\tmemcpy(%s, packet + b, *%s);\n"%(a[1], prev_a[1])
+			body += "\tb += *%s;\n"%prev_a[1]
 			totalsize += 255
 		else:
 			s = format_code_size(a[0])
@@ -252,9 +252,9 @@ def gen_packing_protos():
 	s = ""
 	
 	for n in [8, 16, 32, 64]:
-		s += "void pack%d(volatile uint8_t *data, uint16_t pos, uint%d_t value);\n"%(n,n)
+		s += "void pack%d(uint8_t *data, uint16_t pos, uint%d_t value);\n"%(n,n)
 	
-		s += "void unpack%d(volatile uint8_t *data, uint16_t pos, volatile uint%d_t *result);\n"%(n,n)
+		s += "void unpack%d(uint8_t *data, uint16_t pos, uint%d_t *result);\n"%(n,n)
 	return s
 
 def gen_packing_funcs():
@@ -268,12 +268,12 @@ def gen_packing_funcs():
 	s = ""
 	
 	for n in [8, 16, 32, 64]:
-		s += "void pack%d(volatile uint8_t *data, uint16_t pos, uint%d_t value){\n"%(n,n)
+		s += "void pack%d(uint8_t *data, uint16_t pos, uint%d_t value){\n"%(n,n)
 		for i in range(0, n/8):
 			s += "\t*(data + pos + %d) = (value >> %d) & 0xFF;\n"%(i,i*8)
 		s += "}\n"
 		
-		s += "void unpack%d(volatile uint8_t *data, uint16_t pos, volatile uint%d_t *result){\n"%(n,n)
+		s += "void unpack%d(uint8_t *data, uint16_t pos, uint%d_t *result){\n"%(n,n)
 		s += "\t*result = "
 		for i in range(0, n/8):
 			s += "(((uint%d_t) *(data + pos + %d) << %d)) | "%(n,i, i * 8)

@@ -9,6 +9,14 @@
 #include <util/delay.h>
 #include "uart.h"
 
+void trigger_camera_command(void){
+	
+}
+
+void trigger_autonomous_waypoints(void){
+	
+}
+
 int main(void){
 	
 	uart_enable(0, 9600, 1, 0);

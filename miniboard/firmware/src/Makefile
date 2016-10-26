@@ -12,7 +12,7 @@ LIBS:=
 # Output filename, without extension
 OUTFILE:=../build/miniboard
 # Object file names
-OBJFILES:=uart.o 
+OBJFILES:=uart.o commgen.o
 # Main file
 FILE:=miniboard.c
 
@@ -21,7 +21,11 @@ FILE:=miniboard.c
 # By default, compile and download.
 all: $(OUTFILE).bin download
 
-#Compile source files
+# Generate communication files
+commgen.c: ../../../common/SPECIFICATION.md
+	@$(/usr/bin/env python) ../../../common/codegen.py ../../../common/SPECIFICATION.md commgen.c commgen.h
+
+# Compile source files
 %.o: %.c %.h
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. -c $< -o $@ $(LIBS)
 	
@@ -36,4 +40,4 @@ download:
 
 #Delete generated files
 clean:
-	@rm -f *.hex *.elf *.bin *.o $(OUTFILE).elf $(OUTFILE).bin
+	@rm -f *.hex *.elf *.bin *.o $(OUTFILE).elf $(OUTFILE).bin commgen.c commgen.h

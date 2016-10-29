@@ -12,20 +12,12 @@
  * the following functions will be called from the UART receive interrupts
  * if the symbols are defined in the module. So, if your module needs to handle
  * bytes from UART 1 as they arrive, place the code
- *   UART1RXHandler = module_byte_handler_func;
- * in the top level of the module .c file
- * or use the macro below. */
+ *   void (*UART1RXHandler)(uint8_t) = module_byte_handler_func;
+ * in the top level of the module .c file. */
 extern void __attribute__((weak)) (*UART0RXHandler)(uint8_t);
 extern void __attribute__((weak)) (*UART1RXHandler)(uint8_t);
 extern void __attribute__((weak)) (*UART2RXHandler)(uint8_t);
 extern void __attribute__((weak)) (*UART3RXHandler)(uint8_t);
-
-/* This macro provides a parametric interface to the handler function pointers.
- * This way, the UART used by a module can be configured with a #define, like so:
- *   #define MODULE_UART 1
- *   UART_HANDLER(MODULE_UART, module_byte_handler_func);
- */
-#define UART_HANDLER(uart, func) void (*UART##uart##RXHandler)(uint8_t) = func
 
 /* Enable and configure a uart.
  * Parity options:

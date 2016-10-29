@@ -37,7 +37,13 @@ $(OUTFILE).bin: $(OBJFILES)
 
 # Download firmware, without changing fuses or eeprom.
 download:
-	@$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r
+	@if [ -c $(PROGRAMMER_PORT) ];\
+	then \
+		$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r;\
+	else \
+		echo "Port $(PROGRAMMER_PORT) not found; skipping programming.";\
+	fi;
+	
 
 #Delete generated files
 clean:

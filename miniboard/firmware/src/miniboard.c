@@ -10,6 +10,10 @@
 #include "uart.h"
 #include "comm.h"
 #include "commgen.h"
+#include "adc.h"
+
+#include <stdio.h>
+#include <string.h>
 
 void camera_command_trigger(void){
 	
@@ -21,7 +25,7 @@ void debugging_info_trigger(void){
 
 /* Setup all peripherals and subsystems. */
 void init(void){
-	comm_init();
+	//comm_init();
 }
 
 int main(void){
@@ -30,11 +34,16 @@ int main(void){
 	
 	while(1){
 		DDRB |= _BV(PB7);
+		
 		PORTB |= _BV(PB7);
-		_delay_ms(200);
-		PORTB &= ~_BV(PB7);
-		_delay_ms(200);
-		uart_tx(0, "Hello\n\r", 7);
+		uint16_t v = adc_voltage(0, ADC_REF_RATIOMETRIC);
+		PORTB &= ~_BV(PB7);	
+		
+		char str[128];
+		snprintf(str, 128, "ADC Reading: %d\r\n", v);
+													  
+		_delay_ms(500);
+		uart_tx(0, str, strlen(str));
 	}
 	return(0);
 }

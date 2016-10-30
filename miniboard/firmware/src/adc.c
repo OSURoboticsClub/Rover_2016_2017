@@ -1,4 +1,9 @@
-
+/* OSU Robotics Club Rover 2016
+ * Miniboard Firmware
+ *
+ * adc.c - ADC Module.
+ * Author(s): Aaron Schraner, Aaron Cohen
+ */
 #include "adc.h"
 #include <avr/io.h>
 
@@ -14,7 +19,7 @@ uint16_t adc_voltage(uint8_t channel, uint8_t reference)
 
 
 	//select the ADC channel and reference 
-	ADMUX = (0x3F & channel) | (reference << 8);
+	ADMUX = (0x3F & channel) | (reference << 6);
 	//select ADC clock prescaler
 	ADCSRA = _BV(ADEN) | (ADC_CLK_PRESCALE & 0x7);
 	

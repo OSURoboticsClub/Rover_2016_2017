@@ -4,7 +4,8 @@ This folder contains the code for the onboard Rover miniboard.
 # Notes on Microcontroller Programming
 Programming microcontrollers in C is very similar to regular C programming,
 with several important differences:
-1.  No Dynamically-allocated memory (malloc(), free(), ralloc())
+
+1.  No Dynamically-allocated memory (malloc(), free(), realloc())
 2.  Explicit variable sizes (uint8_t, int32_t, int16_t, etc. instead of int, etc)
 3.  No floating point math
 
@@ -26,10 +27,10 @@ In a microcontroller, peripherals are controlled through registers. Usually, a r
 will either contain a value (such as the current count of a counter) or a collection
 of individual bits. Each bit will have a specific name and function, such as turning on
 a peripheral. The registers and bits are described in the microcontroller's data sheet.
-**The datasheet the most important source of information when programming a microcontroller.**
+**The datasheet is the most important source of information when programming a microcontroller.**
 
 Although we might want to set or clear bits individually, they must be accessed as whole bytes.
-To do so, there are several idioms for setting and clearing bits in registers.
+To deal with this, there are several idioms for setting and clearing bits in registers.
 
 ## Setting and Clearing Bits
 There are a few underlying concepts that must be understood for the set/clear idioms to make sense.

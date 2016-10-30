@@ -12,7 +12,7 @@ LIBS:=
 # Output filename, without extension
 OUTFILE:=../build/miniboard
 # Object file names
-OBJFILES:=adc.o uart.o commgen.o comm.o
+OBJFILES:=sabertooth.o adc.o uart.o commgen.o comm.o
 # Main file
 FILE:=miniboard.c
 

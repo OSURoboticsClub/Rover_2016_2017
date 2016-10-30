@@ -93,7 +93,8 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 }
 
 /* Returns 1 if data is being sent through the uart, 0 if not. */
-uint8_t uart_tx_in_progress(uint8_t uart);
+uint8_t uart_tx_in_progress(uint8_t uart){
+}
 
 /* Send a packet to the computer, automatically inserting
  * start, end, and escape bytes.

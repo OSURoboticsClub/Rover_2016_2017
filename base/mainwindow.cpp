@@ -47,8 +47,7 @@ void MainWindow::connectSerial()
 
 void MainWindow::on_pushButton_clicked()
 {
-    this->connectInputSerial();
-    this->connectOutputSerial();
+    this->connectSerial();
 }
 
 void MainWindow::on_pushButton_2_clicked()

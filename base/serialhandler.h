@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QDebug>
 #include <QSerialPort>
+#include <QByteArray>
 
 // http://stackoverflow.com/questions/15103599/qt-serial-port-reading-data-consistently
 
@@ -22,6 +23,7 @@ protected:
 
 private:
     void readData();
+    void sendBuffer(QByteArray array);
     int state = 0;
     QSerialPort port;
     QString portName;

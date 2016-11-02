@@ -12,8 +12,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     MainWindow w;
-    w.connectInputSerial();
-    w.connectOutputSerial();
+    w.connectSerial();
     GamepadMonitor monitor;
     w.show();
     return app.exec();

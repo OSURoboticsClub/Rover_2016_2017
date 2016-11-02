@@ -28,8 +28,7 @@ private:
     SerialHandler *m_serial;
 
 public slots:
-    void connectInputSerial();
-    void connectOutputSerial();
+    void connectSerial();
 
 private slots:
     void on_pushButton_clicked();

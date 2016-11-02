@@ -1,6 +1,13 @@
+/**
+ * The GamepadMonitor class contains methods for interfacing with a gamepad.
+ * This class will be used to interface with external controllers, and will
+ * emit signals to send commands to rover.
+ **/
+
 #include <QtGamepad/QGamepad>
 
 #include "gamepadmonitor.h"
+
 
 GamepadMonitor::GamepadMonitor(QObject *parent)
     : QObject(parent),

@@ -3,6 +3,9 @@
 
 #include <QDebug>
 
+#include "commgen.h"
+#include "sendpacket.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -47,13 +50,12 @@ void MainWindow::connectSerial()
 
 void MainWindow::on_pushButton_clicked()
 {
-    this->connectInputSerial();
-    this->connectOutputSerial();
+    this->connectSerial();
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-
+    send_pause(10);
 }
 
 void MainWindow::on_pushButton_3_clicked()

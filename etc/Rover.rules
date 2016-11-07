@@ -1,0 +1,2 @@
+SUBSYSTEM=="usb", ATTRS{serial}=="06BDE157", NAME="gamepad", SYMLINK+="gamepad"
+

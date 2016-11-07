@@ -32,12 +32,16 @@ struct sabertooth_packet {
 void sabertooth_tx(struct sabertooth_packet *packet) {
 	packet->checksum = SABERTOOTH_CHECKSUM((*packet));
 
-	uart_tx(SABERTOOTH_UART, (uint8_t *) packet,
-			sizeof(struct sabertooth_packet));
+	uart_tx(SABERTOOTH_UART, (uint8_t *) packet, 4);
 }
 
 void sabertooth_init(void) {
 	uart_enable(SABERTOOTH_UART, 9600, 1, 0);
+
+	for (int s = 0; s < 8; s++) {
+		sabertooth_set_speed(s, 0, 0);
+		sabertooth_set_speed(s, 1, 0);
+	}
 }
 
 void sabertooth_set_speed(uint8_t addr, uint8_t motor, int8_t speed) {
@@ -45,10 +49,10 @@ void sabertooth_set_speed(uint8_t addr, uint8_t motor, int8_t speed) {
 
 	packet.addr = SABERTOOTH_ADDR(addr);
 	packet.cmd = 0  | (motor << 2)  /* Choose motor command */
-					| (speed >> 7); /* Choose direction command */
+					| (speed < 0); /* Choose direction command */
 	packet.data = ((packet.cmd & 1) == 0) ?
 					(uint8_t) speed       : /* Forward */
-					(uint8_t) (~speed + 1); /* Backwards */
+					(uint8_t) (-1 * speed); /* Backwards */
 
 	sabertooth_tx(&packet);
 }

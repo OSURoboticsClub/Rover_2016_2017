@@ -68,19 +68,6 @@ bool SerialHandler::isReady() const
     return false;
 }
 
-void SerialHandler::sendData()
-{
-
-}
-
-void SerialHandler::writeData(
-
-void SerialHandler::sendBatteryVoltage()
-{
-    sendBatteryVoltage();
-}
-
-
 void SerialHandler::readData()
 {
 /*

@@ -1,0 +1,2 @@
+BUS=="usb", ATTRS{serial}=="06BDE157", NAME="Hello", SYMLINK+="gamepad"
+

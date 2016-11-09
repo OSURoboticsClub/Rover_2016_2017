@@ -60,7 +60,7 @@
       </property>
       <property name="source">
        <url>
-        <string>qrc:/map.qml</string>
+        <string>file:///home/nikita/QtProjects/Rover2017/base/panel.qml</string>
        </url>
       </property>
      </widget>

@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtPositioning 5.5
 import QtLocation 5.5
+import QtQuick.Extras 1.4
 
 Map {
     id: map
@@ -21,7 +22,6 @@ Map {
         longitude: 37.6175
     }
 
-
     Component.onCompleted: {
             console.log(map.center);
     }
@@ -29,5 +29,4 @@ Map {
     zoomLevel: 16;
     gesture.enabled: true
 }
-
 

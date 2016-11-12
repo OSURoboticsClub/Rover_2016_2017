@@ -27,3 +27,4 @@ add_library(packets SHARED ${SOURCES} ${HEADERS})
 add_dependencies(packets generation)
 
 target_link_libraries(packets Qt5::Widgets)
+target_link_libraries(packets Qt5::SerialPort)

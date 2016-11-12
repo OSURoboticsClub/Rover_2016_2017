@@ -18,15 +18,19 @@ public:
     ~SerialHandler();
     void setupPort(QString portName);
     bool isReady() const;
+    void write(uint8_t *data, uint16_t count);
     void run();
+
 protected:
 
 private:
     void readData();
+    QSerialPort port;
     void sendBuffer(QByteArray array);
     int state = 0;
-    QSerialPort port;
     QString portName;
 };
+
+extern SerialHandler serial;
 
 #endif // SERIALHANDLER_H

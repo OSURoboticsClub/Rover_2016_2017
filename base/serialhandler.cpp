@@ -8,6 +8,8 @@
 
 #include "serialhandler.h"
 
+SerialHandler serial;
+
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
 }
@@ -66,6 +68,11 @@ bool SerialHandler::isReady() const
     if(this->state > 0)
         return true;
     return false;
+}
+
+void SerialHandler::write(uint8_t *data, uint16_t count)
+{
+    port.write(reinterpret_cast<const char*>(data), count);
 }
 
 void SerialHandler::readData()

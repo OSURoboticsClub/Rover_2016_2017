@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    m_serial = new SerialHandler();
+    m_serial = &serial;
 }
 
 MainWindow::~MainWindow()

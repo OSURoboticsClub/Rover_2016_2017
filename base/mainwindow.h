@@ -20,12 +20,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    SerialHandler *m_serial;
 
 private:
     Ui::MainWindow *ui;
     QSerialPort output;
-    SerialHandler *m_serial;
 
 public slots:
     void connectSerial();

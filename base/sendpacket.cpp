@@ -4,7 +4,9 @@
 #include "serialhandler.h"
 
 /**
- * The send_packet writes count bytes in data to the serial stream
+ * The send_packet writes count bytes in data to the serial stream. It calls a
+ * global instance of the SerialHandler class for writing data.
+ **/
 void send_packet(uint8_t *data, uint16_t count)
 {
     serial.write(data, count);

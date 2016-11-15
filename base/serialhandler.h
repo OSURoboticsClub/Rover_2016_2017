@@ -21,6 +21,10 @@ public:
     void write(uint8_t *data, uint16_t count);
     void run();
 
+signals:
+    // TODO: fill these in
+    void batteryVoltageChanged(uint16_t voltage);
+
 protected:
 
 private:

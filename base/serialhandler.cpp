@@ -8,6 +8,11 @@
 
 #include "serialhandler.h"
 
+/* This is a global instance of the SerialHandler class. The main intent of
+ * implementing this is for a serial singleton class to be accessible from
+ * anywhere within the program. At least for writing to a serial port, there
+ * should only be one instance of the SerialHandler class within the program.
+ */
 SerialHandler serial;
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
@@ -63,6 +68,9 @@ void SerialHandler::setupPort(QString name)
     this->state = 1;
 }
 
+/**
+ * Checks if the serial is ready for reading/writing.
+ **/
 bool SerialHandler::isReady() const
 {
     if(this->state > 0)
@@ -70,11 +78,20 @@ bool SerialHandler::isReady() const
     return false;
 }
 
+/**
+ * Writes to the QSerialPort instance within the class.
+ **/
 void SerialHandler::write(uint8_t *data, uint16_t count)
 {
     port.write(reinterpret_cast<const char*>(data), count);
 }
 
+/**
+ * Continuous loop for reading data from the serial. This function continuously
+ * reads bytes from the serial and stores them. When a complete packet is
+ * received, a signal is emitted with the data from the packet. This function
+ * runs in a separate thread.
+ **/
 void SerialHandler::readData()
 {
 /*

@@ -3,6 +3,8 @@
 #include "sendpacket.h"
 #include "serialhandler.h"
 
+/**
+ * The send_packet writes count bytes in data to the serial stream
 void send_packet(uint8_t *data, uint16_t count)
 {
     serial.write(data, count);

@@ -7,16 +7,16 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}/../common/")
 set(SOURCES
    main.cpp
    mainwindow.cpp
-   gamepadmonitor.cpp
    serialhandler.cpp
    abstractcontroller.cpp
+   xboxcontroller.cpp
 )
 
 set(HEADERS
     mainwindow.h
-    gamepadmonitor.h
     serialhandler.h
     abstractcontroller.h
+    xboxcontroller.h
 )
 
 # Set forms

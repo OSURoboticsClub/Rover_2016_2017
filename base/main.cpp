@@ -4,7 +4,6 @@
 #include <QApplication>
 #include <QtQuickWidgets/QQuickWidget>
 
-#include "gamepadmonitor.h"
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -13,7 +12,6 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.connectSerial();
-    GamepadMonitor monitor;
     w.show();
     return app.exec();
 }

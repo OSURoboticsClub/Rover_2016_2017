@@ -9,12 +9,14 @@ set(SOURCES
    mainwindow.cpp
    gamepadmonitor.cpp
    serialhandler.cpp
+   abstractcontroller.cpp
 )
 
 set(HEADERS
     mainwindow.h
     gamepadmonitor.h
     serialhandler.h
+    abstractcontroller.h
 )
 
 # Set forms

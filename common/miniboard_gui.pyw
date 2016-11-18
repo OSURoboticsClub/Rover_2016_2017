@@ -8,21 +8,31 @@ import sys
 import docparse #TODO: Add a try/catch and pop-up dialog.
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+import struct
 
 #TODO: Packet construction/parsing
 #TODO: Set limits of spinboxes based on var size
 #TODO: Parse options to create drop-down
 #TODO: Handle variable-length stuff
 
+SerialPort = "/dev/ttyACM0"
+
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
+	path = SerialPort
+	baud = 9600
 	def write(self, packet_contents):
 		"""Write a packet to the miniboard, inserting start, end, and escape bytes
 		   where necessary. """
 		print "Write: ",
+		packet_contents = "".join(packet_contents)
+		packet_contents = packet_contents.replace(chr(0x02), "".join([chr(0x02), chr(0x02)]))
+		packet_contents = packet_contents.replace(chr(0x01), "".join([chr(0x02), chr(0x01)]))
+		packet_contents = packet_contents.replace(chr(0x03), "".join([chr(0x02), chr(0x03)]))
+		packet_contents = chr(0x01) + packet_contents + chr(0x03)
 		for c in packet_contents:
 			print "0x%02X, "%ord(c),
-		print "\n"
+		print "\n",
 	
 	def read(self):
 		"""Read a packet from the miniboard and return the contents (with
@@ -30,7 +40,10 @@ class MiniboardIO():
 		   If the miniboard takes too long to reply, or if an error occurs,
 		   an exception will be raised. TODO: Exception type."""
 		return ""
-		   
+	
+	def port_info(self):
+		"""Return a tuple (serial_port_path, baud_rate)."""
+		return (self.path, self.baud)
 
 class RegisterController():
 	"""Handles reading/writing a single register and controlling that
@@ -43,17 +56,29 @@ class RegisterController():
 		self.reg = reg_dict
 		self.widgets = widgets
 		self.io = io
-	
+		self.fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i"}
 	def writefunc(self):
 		"""Return a function (due to pyqt weirdness) for writing this register to the miniboard."""
 		def func():
-			print "Writing reg 0x%02X: "%self.reg["code"]
+			print "Writing reg 0x%02X: "%self.reg["code"],
+			p = [chr(self.reg["code"] | 0x00)]
+			for a,w in zip(self.reg["argument"], self.widgets):
+				if a[0] != "*":
+					value = w.value()
+					p += list(struct.pack(self.fmtcodes[a[0]], value))
+				else:
+					pass
+					#TODO
+			self.io.write(p)
 		return func
 		
 	def readfunc(self):
 		"""Return a function (due to pyqt weirdness) for reading this register from the miniboard."""
 		def func():
 			print "Reading reg 0x%02X: "%self.reg["code"]
+			p = [chr(self.reg["code"] | 0x80)]
+			self.io.write(p)
+			#TODO: Read and parse
 		return func
 		
 	def update(self):
@@ -130,7 +155,7 @@ def setup(window, spec_table, io):
 		hl.addLayout(bvl)
 		flayout.addRow(label, hl)
 	gh = QHBoxLayout()
-	gh.addWidget(QLabel("Placeholder"))
+	gh.addWidget(QLabel("Port: %s    Baud: %d"%io.port_info()))
 	gh.addStretch(1)	
 	
 	def read_all():

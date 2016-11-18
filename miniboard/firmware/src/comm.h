@@ -9,3 +9,9 @@
 
 /* Configure the computer communications uart. */
 void comm_init(void);
+
+/* Send a packet to the computer, automatically inserting
+ * start, end, and escape bytes.
+ * This function must only be used by the communications module
+ * (comm.c). */
+void send_packet(uint8_t *data, uint16_t count);

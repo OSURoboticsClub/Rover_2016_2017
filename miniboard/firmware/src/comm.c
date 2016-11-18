@@ -22,6 +22,27 @@
 /* Configure the computer communications uart. */
 void comm_init(void){
 	//TODO: Configure uart
+	//TODO: Use 9600 baud
+}
+
+/* Send a packet to the computer, automatically inserting
+ * start, end, and escape bytes.
+ * This function must only be used by the communications module
+ * (comm.c). */
+void send_packet(uint8_t *data, uint16_t count){
+	//TODO: make less bad
+	uint8_t buf[count];
+	buf[0] = 0x01;
+	uint16_t c = 1;
+	for(uint16_t i=0; i<count; i++,c++){
+		if(data[i] == 0x01 || data[i] == 0x01 || data[i] == 0x01){
+			buf[c] = 0x02;
+			c++;
+		}
+		buf[c] = data[i];
+	}
+	buf[c] = 0x03;
+	uart_tx(COMM_UART, buf, c+1);
 }
 
 /* Receive a byte and place it in the packet buffer.

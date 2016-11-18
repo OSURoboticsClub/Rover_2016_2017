@@ -3,6 +3,8 @@
 #include <string.h>
 #include "commgen.h"
 
+#include "comm.h"
+
 struct comm_data_t DataReal = {
 	.pause_state = 1,
 	.left_drive = 0,

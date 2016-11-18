@@ -73,7 +73,7 @@ def gen_header(cmd_list):
 	s += " * accesses the DataReal struct through this pointer. */\n"
 	s += "extern volatile struct comm_data_t *Data;\n\n"
 	s += "/* Parse a packet, update the struct, and send a reply. */\n"
-	#s += "void parse_packet(uint8_t *buf, uint16_t count);\n\n"	
+	s += "void parse_packet(uint8_t *buf, uint16_t count);\n\n"	
 	for c in cmd_list:
 		s += gen_send_proto(c) + "\n"
 		s + gen_parse_proto(c) + "\n"
@@ -99,6 +99,7 @@ def gen_source(cmd_list):
 	s += "#include <stdint.h>\n"
 	s += "#include <string.h>\n"
 	s += "#include \"commgen.h\"\n\n"
+	s += "#include \"comm.h\"\n\n"
 	s += gen_struct_dec(cmd_list)
 	for c in cmd_list:
 		s += gen_parse_func(c) + "\n"

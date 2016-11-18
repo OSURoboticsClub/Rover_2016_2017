@@ -9,11 +9,13 @@ import docparse #TODO: Add a try/catch and pop-up dialog.
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import struct
+import serial
 
 #TODO: Packet construction/parsing
 #TODO: Set limits of spinboxes based on var size
 #TODO: Parse options to create drop-down
 #TODO: Handle variable-length stuff
+#TODO: Check lengths everywhere, for validation
 
 SerialPort = "/dev/ttyACM0"
 
@@ -33,7 +35,7 @@ class MiniboardIO():
 		for c in packet_contents:
 			print "0x%02X, "%ord(c),
 		print "\n",
-	
+		
 	def read(self):
 		"""Read a packet from the miniboard and return the contents (with
 		   start, end, and escape bytes removed.

@@ -27,6 +27,8 @@ struct comm_data_t {
 extern volatile struct comm_data_t *Data;
 
 /* Parse a packet, update the struct, and send a reply. */
+void parse_packet(uint8_t *buf, uint16_t count);
+
 /* Note: Sent as a reply to unknown commands. */
 void send_command_not_recognized(uint8_t wrong_command);
 

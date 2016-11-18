@@ -44,11 +44,14 @@ class RegisterController():
 		self.widgets = widgets
 		self.io = io
 	
-	def write(self):
-		print "Writing reg 0x%02X: "%self.reg["code"]
+	def writefunc(self):
+		"""Return a function (due to pyqt weirdness) for writing this register to the miniboard."""
+		def func():
+			print "Writing reg 0x%02X: "%self.reg["code"]
+		return func
 		
 	def readfunc(self):
-		"""Read this register from the miniboard, updating data in its widgets."""
+		"""Return a function (due to pyqt weirdness) for reading this register from the miniboard."""
 		def func():
 			print "Reading reg 0x%02X: "%self.reg["code"]
 		return func
@@ -71,7 +74,8 @@ def setup(window, spec_table, io):
 	ww = QWidget(window)
 	flayout = QFormLayout()
 	vlayout = QVBoxLayout()
-	reg_controllers = []
+	read_list = []
+	write_list = []
 	for r in spec_table:
 		label = QLabel(r["name"])
 		hl = QHBoxLayout()
@@ -101,15 +105,21 @@ def setup(window, spec_table, io):
 			hl.addLayout(vl)
 		rc.setup(r, control_widgets, io)
 		rbtn = QToolButton()
+		readfunc = rc.readfunc()
+		writefunc = rc.writefunc()
 		rbtn.setText("Read")
-		rbtn.pressed.connect(rc.readfunc())
+		rbtn.pressed.connect(readfunc)
 		wbtn = QToolButton()
 		wbtn.setText("Write")
-		wbtn.pressed.connect(rc.write)
+		wbtn.pressed.connect(writefunc)
 		if "r" not in r["rw"]:
 			rbtn.setEnabled(False)
+		else:
+			read_list.append(readfunc)
 		if "w" not in r["rw"]:
 			wbtn.setEnabled(False)
+		else:
+			write_list.append(writefunc)
 		bvl = QVBoxLayout()
 		hbvl = QHBoxLayout()
 		hbvl.addWidget(rbtn)
@@ -119,14 +129,23 @@ def setup(window, spec_table, io):
 		hl.addStretch(1)
 		hl.addLayout(bvl)
 		flayout.addRow(label, hl)
-		reg_controllers.append(rc)
 	gh = QHBoxLayout()
 	gh.addWidget(QLabel("Placeholder"))
-	gh.addStretch(1)
+	gh.addStretch(1)	
+	
+	def read_all():
+		for f in read_list:
+			f()
+			
+	def write_all():
+		for f in write_list:
+			f()
 	rbtn = QToolButton()
 	rbtn.setText("Read All")
+	rbtn.pressed.connect(read_all)
 	wbtn = QToolButton()
 	wbtn.setText("Write All")
+	wbtn.pressed.connect(write_all)
 	gh.addWidget(rbtn)
 	gh.addWidget(wbtn)
 	

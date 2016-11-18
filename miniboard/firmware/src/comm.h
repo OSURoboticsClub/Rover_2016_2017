@@ -6,6 +6,7 @@
  *          computer control interface.
  */
 #define COMM_UART 0
+#define COMM_BAUD 9600
 
 /* Configure the computer communications uart. */
 void comm_init(void);

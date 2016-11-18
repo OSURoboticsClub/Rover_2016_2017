@@ -99,7 +99,7 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	
 	UBRRn(uart) = (16000000l/(8*baud)) - 1;
 	UCSRnA(uart) = _BV(U2X0);
-	UCSRnB(uart) = 0; // TODO: Enable interrupts.
+	UCSRnB(uart) = _BV(RXCIE0) | _BV(UDRE0);
 	UCSRnC(uart) = _BV(UCSZ01) | _BV(UCSZ00)
 	               | ((stopbits == 2) ? _BV(USBS0) : 0)
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
@@ -112,11 +112,63 @@ void uart_disable(uint8_t uart){
 	UCSRnB(uart) = 0;
 }
 
-/* UART receive interrupt. */
-//TODO
+/* UART receive interrupts and handler. */
+static void uart_rx_isr(uint8_t uart){
+	if(uart == 0 && UART0RXHandler != NULL){
+		UART0RXHandler(UDRn(uart));
+	} else
+	if(uart == 1 && UART1RXHandler != NULL){
+		UART1RXHandler(UDRn(uart));
+	} else
+	if(uart == 2 && UART2RXHandler != NULL){
+		UART2RXHandler(UDRn(uart));
+	} else
+	if(uart == 3 && UART3RXHandler != NULL){
+		UART3RXHandler(UDRn(uart));
+	} else {
+		circ_add(UR + uart, UDRn(uart));
+	}
+}
 
-/* UART transmit (data register empty) interrupt. */
-//TODO
+ISR(USART0_RX_vect){
+	uart_rx_isr(0);
+}
+
+ISR(USART1_RX_vect){
+	uart_rx_isr(1);
+}
+
+ISR(USART2_RX_vect){
+	uart_rx_isr(2);
+}
+
+ISR(USART3_RX_vect){
+	uart_rx_isr(3);
+}
+
+/* UART transmit (data register empty) interrupts and handler. */
+static void uart_tx_isr(uint8_t uart){
+	uint16_t r = circ_remove(UT + uart);
+	if(r != CIRC_EOF){
+		UDRn(uart) = r;
+	}
+}
+
+ISR(USART0_UDRE_vect){
+	uart_tx_isr(0);
+}
+
+ISR(USART1_UDRE_vect){
+	uart_tx_isr(1);
+}
+
+ISR(USART2_UDRE_vect){
+	uart_tx_isr(2);
+}
+
+ISR(USART3_UDRE_vect){
+	uart_tx_isr(3);
+}
 
 /* Send a block of data through the given uart.
  * If there is space in the uart buffer, the data will be copied into the

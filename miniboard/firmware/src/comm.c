@@ -21,8 +21,7 @@
 
 /* Configure the computer communications uart. */
 void comm_init(void){
-	//TODO: Configure uart
-	//TODO: Use 9600 baud
+	uart_enable(COMM_UART, COMM_BAUD, 1, 0);
 }
 
 /* Send a packet to the computer, automatically inserting

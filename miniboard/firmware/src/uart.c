@@ -199,7 +199,7 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 		/* Thread Mode. */
 		uint16_t i = 0;
 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-			if(UT[uart].start == UT[uart].end){ /* If buffer empty, we'll need to set UDR for the first byte. */
+			if(!uart_tx_in_progress(uart)){ /* If buffer empty, we'll need to set UDR for the first byte. */
 				UDRn(uart) = data[i];
 				i++;
 			}
@@ -221,14 +221,36 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 		}
 	} else {
 		/* Interrupt Mode. */
-		UDR0 = 'I';
+		uint16_t i = 0;
+		if(!uart_tx_in_progress(uart)){ /* If buffer empty, we'll need to set UDR for the first byte. */
+			UDRn(uart) = data[i];
+			i++;
+		}
+		int r = 0;
+		/* Fill up the buffer. */
+		while(r == 0 && i < count){
+			r = circ_add(UT + uart, data[i]);
+			if(r == 0)i++;
+		}
+		/* At this point, the buffer has been filled and the interrupt should be running.
+		 * However, there may be more data to send. Shepard the existing bytes out of the
+		 * buffer, since the TXC interrupt can't run right now. */
+		while(i < count){
+			while(!(UCSRnA(uart) & _BV(UDRE0))){
+				/* Wait for byte to be sent */
+			}
+			uart_tx_isr(uart);
+			int r;
+			r = circ_add(UT + uart, data[i]);
+			if(r == 0)i++;
+		}
 		
 	}
 }
 
 /* Returns 1 if data is being sent through the uart, 0 if not. */
 uint8_t uart_tx_in_progress(uint8_t uart){
-	return !(UCSRnA(uart) & TXC0) || (UT[uart].start !=  UT[uart].end);
+	return !(UCSRnA(uart) & _BV(UDRE0)) || (UT[uart].start !=  UT[uart].end);
 }
 
 /* Receive data from the uart. 

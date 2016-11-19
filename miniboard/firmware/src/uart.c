@@ -114,20 +114,20 @@ void uart_disable(uint8_t uart){
 
 /* UART receive interrupts and handler. */
 static void uart_rx_isr(uint8_t uart){
-	if(uart == 0 && UART0RXHandler != NULL){
-		UART0RXHandler(UDRn(uart));
-	} else
-	if(uart == 1 && UART1RXHandler != NULL){
-		UART1RXHandler(UDRn(uart));
-	} else
-	if(uart == 2 && UART2RXHandler != NULL){
-		UART2RXHandler(UDRn(uart));
-	} else
-	if(uart == 3 && UART3RXHandler != NULL){
-		UART3RXHandler(UDRn(uart));
-	} else {
-		circ_add(UR + uart, UDRn(uart));
-	}
+// 	if(uart == 0 && UART0RXHandler != NULL){
+// 		UART0RXHandler(UDRn(uart));
+// 	} else
+// 	if(uart == 1 && UART1RXHandler != NULL){
+// 		UART1RXHandler(UDRn(uart));
+// 	} else
+// 	if(uart == 2 && UART2RXHandler != NULL){
+// 		UART2RXHandler(UDRn(uart));
+// 	} else
+// 	if(uart == 3 && UART3RXHandler != NULL){
+// 		UART3RXHandler(UDRn(uart));
+// 	} else {
+// 		circ_add(UR + uart, UDRn(uart));
+// 	}
 }
 
 ISR(USART0_RX_vect){
@@ -148,10 +148,10 @@ ISR(USART3_RX_vect){
 
 /* UART transmit (data register empty) interrupts and handler. */
 static void uart_tx_isr(uint8_t uart){
-	uint16_t r = circ_remove(UT + uart);
-	if(r != CIRC_EOF){
-		UDRn(uart) = r;
-	}
+// 	uint16_t r = circ_remove(UT + uart);
+// 	if(r != CIRC_EOF){
+// 		UDRn(uart) = r;
+// 	}
 }
 
 ISR(USART0_UDRE_vect){

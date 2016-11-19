@@ -32,7 +32,7 @@ void init(void){
 }
 
 int main(void){
-	init();
+	//init();
 	
 	while(1){
 		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C";

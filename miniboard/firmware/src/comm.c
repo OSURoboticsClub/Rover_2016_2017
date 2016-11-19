@@ -49,7 +49,6 @@ void send_packet(uint8_t *data, uint16_t count){
  * It calls the parse_packet() function when an end byte
  * is received. */
 void comm_receive_byte(uint8_t byte){
-	UDR0 = "R";
 	static uint8_t pbuf[PACKET_BUF_SIZE];
 	static uint16_t pcount; /* Number of bytes in packet buffer. */
 	static bool escape; /* The last byte received was an escape byte. */

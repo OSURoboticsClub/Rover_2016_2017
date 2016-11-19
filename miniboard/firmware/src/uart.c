@@ -113,12 +113,8 @@ void uart_disable(uint8_t uart){
 
 /* UART receive interrupts and handler. */
 static void uart_rx_isr(uint8_t uart){
-	
-	
 	if(uart == 0 && UART0RXHandler != NULL){
-		UDR0 = 'r';
-		int y = UDR0;
-		//UART0RXHandler(UDRn(uart));
+		UART0RXHandler(UDRn(uart));
 	} else
 	if(uart == 1 && UART1RXHandler != NULL){
 		UART1RXHandler(UDRn(uart));

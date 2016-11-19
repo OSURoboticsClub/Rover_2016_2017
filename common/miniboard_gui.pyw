@@ -11,10 +11,8 @@ from PyQt4.QtCore import *
 import struct
 import serial
 
-#TODO: Packet construction/parsing
 #TODO: Set limits of spinboxes based on var size
 #TODO: Parse options to create drop-down
-#TODO: Handle variable-length stuff
 #TODO: Check lengths everywhere, for validation
 
 SerialPort = "/dev/ttyACM0"

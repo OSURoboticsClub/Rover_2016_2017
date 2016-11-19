@@ -1,6 +1,24 @@
 # Miniboard
 This folder contains the code for the onboard Rover miniboard.
 
+# On-Chip Resource Allocations
+## UARTS
+- UART0: Data radio - comm.h (and USB serial port)
+- UART1: Saberteeth/AX12 - sabertooth.h/ax12.h (switch between using analog switch)
+- UART2: GPS (38400 baud) - gps.h
+- UART3: Camera Control/S-BUS - -/sbus.h (switch between using analog switch)
+
+## UART Switch control lines
+TBD
+
+## FPV Switch
+8-way analog switch. Channel 8 is ground, to disable video when callsign
+isn't set. TBD
+
+## FPV Callsign Sender
+A morse-code audio stream of the callsign, to comply with FCC regs.
+Pin TBD. 
+
 # Notes on Microcontroller Programming
 Programming microcontrollers in C is very similar to regular C programming,
 with several important differences:
@@ -80,4 +98,4 @@ OR 01000110
    --------
    11000110
 ```
-Notice how there's a 1 in all bit positions where a 1 was present in either
+TODO: Finish microcontroller programming notes

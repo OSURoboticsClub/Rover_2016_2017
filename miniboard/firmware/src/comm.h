@@ -16,3 +16,9 @@ void comm_init(void);
  * This function must only be used by the communications module
  * (comm.c). */
 void send_packet(uint8_t *data, uint16_t count);
+
+/* Receive a byte and place it in the packet buffer.
+ * This function handles start, escape, and end bytes.
+ * It calls the parse_packet() function when an end byte
+ * is received. */
+void comm_receive_byte(uint8_t byte);

@@ -46,28 +46,21 @@ void init(void){
 	sei();
 }
 
-int main(void){
+void miniboard_main(){
 	init();
-	while(1){
-		uint8_t buf[5];
-		uint16_t r = uart_rx(COMM_UART, buf, 5);
-		if(r){
-			uart_tx(COMM_UART, buf, r);
-		}
-	}
 	
 	while(1){
-		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C\n\r";
-		uart_tx(COMM_UART, str, strlen((char *) str));
- 		uart_tx(COMM_UART, str, strlen((char *) str));
- 		uart_tx(COMM_UART, str, strlen((char *) str));
- 		uart_tx(COMM_UART, str, strlen((char *) str));
- 		uart_tx(COMM_UART, str, strlen((char *) str));
- 		uart_tx(COMM_UART, str, strlen((char *) str));
-		_delay_ms(400);
- 		uart_tx(COMM_UART, str, strlen((char *) str));
- 		DDRB |= _BV(PB7);
+		/* Miniboard main loop. */
+		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
+		_delay_ms(300);
 	}
+}
+
+int main(void){
+	/* For testing, remove the following call and insert your code below.
+	 * You might need to copy stuff from init(). Don't commit your modified
+	 * miniboard.c to the main branch! */
+	miniboard_main();
 	return(0);
 }

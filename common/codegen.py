@@ -121,7 +121,7 @@ def gen_parse_packet_source(cmd_list):
 	                                                  escape characters where necessary.
 	   as well as the send_* and parse_* functions."""
 	s = ""
-	s += "void parse_packet(uint8_t *buf, uint16_t count){"
+	s += "void parse_packet(uint8_t *buf, uint16_t count){\n"
 	s += "\tuint8_t cmd = buf[0];\n"
 	s += "\tswitch(cmd){\n"
 	for c in cmd_list:

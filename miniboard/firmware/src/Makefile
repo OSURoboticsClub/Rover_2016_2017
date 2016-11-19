@@ -13,7 +13,9 @@ LIBS:=
 # Output filename, without extension
 OUTFILE:=../build/miniboard
 # Object file names
-OBJFILES:=sabertooth.o adc.o uart.o commgen.o comm.o
+# NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
+# uart.o must come last.
+OBJFILES:=commgen.o comm.o sabertooth.o adc.o  uart.o
 # Main file
 FILE:=miniboard.c
 

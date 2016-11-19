@@ -14,10 +14,10 @@
  * bytes from UART 1 as they arrive, place the code
  *   void (*UART1RXHandler)(uint8_t) = module_byte_handler_func;
  * in the top level of the module .c file. */
-extern void __attribute__((weak)) (*UART0RXHandler)(uint8_t);
-extern void __attribute__((weak)) (*UART1RXHandler)(uint8_t);
-extern void __attribute__((weak)) (*UART2RXHandler)(uint8_t);
-extern void __attribute__((weak)) (*UART3RXHandler)(uint8_t);
+extern void (*UART0RXHandler)(uint8_t);
+extern void (*UART1RXHandler)(uint8_t);
+extern void (*UART2RXHandler)(uint8_t);
+extern void (*UART3RXHandler)(uint8_t);
 
 /* Enable and configure a uart.
  * Parity options:

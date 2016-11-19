@@ -49,10 +49,11 @@ void send_packet(uint8_t *data, uint16_t count){
  * It calls the parse_packet() function when an end byte
  * is received. */
 void comm_receive_byte(uint8_t byte){
+	UDR0 = "R";
 	static uint8_t pbuf[PACKET_BUF_SIZE];
 	static uint16_t pcount; /* Number of bytes in packet buffer. */
 	static bool escape; /* The last byte received was an escape byte. */
-	static bool badpack; /* An overflow occured, so ignore the next end byte. */
+	static bool badpack; /* An overflow occurred, so ignore the next end byte. */
 	
 	if((byte == START_BYTE|| byte == ESC_BYTE || byte == END_BYTE) && !escape){
 		/* Handle special characters. */
@@ -80,4 +81,4 @@ void comm_receive_byte(uint8_t byte){
 	}
 }
 
-//void (*UART0RXHandler)(uint8_t) = comm_receive_byte;
+void (*UART0RXHandler)(uint8_t) = comm_receive_byte;

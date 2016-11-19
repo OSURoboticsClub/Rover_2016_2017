@@ -202,7 +202,8 @@ void pack64(uint8_t *data, uint16_t pos, uint64_t value){
 void unpack64(uint8_t *data, uint16_t pos, uint64_t *result){
 	*result = (((uint64_t) *(data + pos + 0) << 0)) | (((uint64_t) *(data + pos + 1) << 8)) | (((uint64_t) *(data + pos + 2) << 16)) | (((uint64_t) *(data + pos + 3) << 24)) | (((uint64_t) *(data + pos + 4) << 32)) | (((uint64_t) *(data + pos + 5) << 40)) | (((uint64_t) *(data + pos + 6) << 48)) | (((uint64_t) *(data + pos + 7) << 56));
 }
-void parse_packet(uint8_t *buf, uint16_t count){	uint8_t cmd = buf[0];
+void parse_packet(uint8_t *buf, uint16_t count){
+	uint8_t cmd = buf[0];
 	switch(cmd){
 		/* Command not Recognized */
 		case 0x00: /* (Write form) */

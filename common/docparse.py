@@ -132,7 +132,7 @@ def gen_send_func(cmd_dict, write_mode):
 	proto += "){\n"
 	
 	#Command
-	command = "\tbuf[0] = 0x%X;\n"%(cmd["code"] | (int(write_mode) << 7))
+	command = "\tbuf[0] = 0x%X;\n"%(cmd["code"] | (int(not write_mode) << 7))
 	
 	#Packet stuffing
 	body = ""

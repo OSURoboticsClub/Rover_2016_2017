@@ -23,10 +23,12 @@ class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
 	path = SerialPort
 	baud = 9600
+	
+	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def write(self, packet_contents):
 		"""Write a packet to the miniboard, inserting start, end, and escape bytes
 		   where necessary. """
-		print "Write: ",
+		print "  send: ",
 		packet_contents = "".join(packet_contents)
 		packet_contents = packet_contents.replace(chr(0x02), "".join([chr(0x02), chr(0x02)]))
 		packet_contents = packet_contents.replace(chr(0x01), "".join([chr(0x02), chr(0x01)]))
@@ -35,13 +37,33 @@ class MiniboardIO():
 		for c in packet_contents:
 			print "0x%02X, "%ord(c),
 		print "\n",
-		
+		self.__tty.write(packet_contents)
+	
+	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def read(self):
 		"""Read a packet from the miniboard and return the contents (with
 		   start, end, and escape bytes removed.
 		   If the miniboard takes too long to reply, or if an error occurs,
 		   an exception will be raised. TODO: Exception type."""
-		return ""
+		print "  recv: ",
+		reply = self.__tty.read(size=10000000)
+		for c in reply:
+			print "0x%02X, "%ord(c),
+		print "\n",
+		return reply
+	
+	def writeread(self, packet_contents):
+		"""Write a packet to the miniboard and return the reply."""
+		self.__tty = serial.Serial(port=self.path,
+		                           baudrate=self.baud,
+	                               parity=serial.PARITY_NONE,
+	                               stopbits=serial.STOPBITS_ONE,
+	                               bytesize=serial.EIGHTBITS,
+	                               timeout=0.1)
+		self.write(packet_contents)
+		reply = self.read()
+		self.__tty.close()
+		return reply
 	
 	def port_info(self):
 		"""Return a tuple (serial_port_path, baud_rate)."""
@@ -62,7 +84,7 @@ class RegisterController():
 	def writefunc(self):
 		"""Return a function (due to pyqt weirdness) for writing this register to the miniboard."""
 		def func():
-			print "Writing reg 0x%02X: "%self.reg["code"],
+			print "Write reg 0x%02X (%s): "%(self.reg["code"], self.reg["name"])
 			p = [chr(self.reg["code"] | 0x00)]
 			for a,w in zip(self.reg["argument"], self.widgets):
 				if a[0] != "*":
@@ -70,25 +92,21 @@ class RegisterController():
 					p += list(struct.pack(self.fmtcodes[a[0]], value))
 				else:
 					pass
-					#TODO
-			self.io.write(p)
+					#TODO: variable-length
+			reply = self.io.writeread(p)
 		return func
 		
 	def readfunc(self):
 		"""Return a function (due to pyqt weirdness) for reading this register from the miniboard."""
 		def func():
-			print "Reading reg 0x%02X: "%self.reg["code"]
+			print "Read reg 0x%02X (%s): "%(self.reg["code"], self.reg["name"])
 			p = [chr(self.reg["code"] | 0x80)]
-			self.io.write(p)
+			reply = self.io.writeread(p)
 			#TODO: Read and parse
 		return func
 		
 	def update(self):
 		"""Re-process widget data after editing."""
-		
-		
-def test():
-	print "Test"
 
 def horizontalLine():
 	#From http://stackoverflow.com/questions/5671354/how-to-programmatically-make-a-horizontal-line-in-qt

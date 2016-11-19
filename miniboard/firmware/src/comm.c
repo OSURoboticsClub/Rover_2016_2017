@@ -30,7 +30,7 @@ void comm_init(void){
  * (comm.c). */
 void send_packet(uint8_t *data, uint16_t count){
 	//TODO: make less bad
-	uint8_t buf[count];
+	uint8_t buf[count*2 + 1];
 	buf[0] = 0x01;
 	uint16_t c = 1;
 	for(uint16_t i=0; i<count; i++,c++){

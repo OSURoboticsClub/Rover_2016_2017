@@ -24,7 +24,7 @@ void parse_command_not_recognized(uint8_t *packet, uint8_t *wrong_command){
 void send_command_not_recognized(uint8_t wrong_command){
 	uint16_t b = 1;
 	uint8_t buf[2];
-	buf[0] = 0x0;
+	buf[0] = 0x80;
 	pack8(buf, b, wrong_command);
 	b += 1;
 	send_packet(buf, b);
@@ -41,7 +41,7 @@ void parse_pause(uint8_t *packet, uint8_t *pause_state){
 void send_pause(uint8_t pause_state){
 	uint16_t b = 1;
 	uint8_t buf[2];
-	buf[0] = 0x5;
+	buf[0] = 0x85;
 	pack8(buf, b, pause_state);
 	b += 1;
 	send_packet(buf, b);
@@ -58,7 +58,7 @@ void parse_battery_voltage(uint8_t *packet, uint16_t *battery_voltage){
 void send_battery_voltage(uint16_t battery_voltage){
 	uint16_t b = 1;
 	uint8_t buf[3];
-	buf[0] = 0x6;
+	buf[0] = 0x86;
 	pack16(buf, b, battery_voltage);
 	b += 2;
 	send_packet(buf, b);
@@ -77,7 +77,7 @@ void parse_drive_motor_power(uint8_t *packet, int8_t *left_drive, int8_t *right_
 void send_drive_motor_power(int8_t left_drive, int8_t right_drive){
 	uint16_t b = 1;
 	uint8_t buf[3];
-	buf[0] = 0x10;
+	buf[0] = 0x90;
 	pack8(buf, b, left_drive);
 	b += 1;
 	pack8(buf, b, right_drive);
@@ -96,7 +96,7 @@ void parse_swerve_drive_state(uint8_t *packet, uint8_t *swerve_state){
 void send_swerve_drive_state(uint8_t swerve_state){
 	uint16_t b = 1;
 	uint8_t buf[2];
-	buf[0] = 0x11;
+	buf[0] = 0x91;
 	pack8(buf, b, swerve_state);
 	b += 1;
 	send_packet(buf, b);
@@ -115,7 +115,7 @@ void parse_select_camera(uint8_t *packet, uint8_t *selected_camera){
 void send_select_camera(uint8_t selected_camera){
 	uint16_t b = 1;
 	uint8_t buf[2];
-	buf[0] = 0x20;
+	buf[0] = 0xA0;
 	pack8(buf, b, selected_camera);
 	b += 1;
 	send_packet(buf, b);
@@ -138,7 +138,7 @@ void parse_camera_command(uint8_t *packet, uint8_t *camera_data_length, uint8_t 
 void send_camera_command(uint8_t camera_data_length, uint8_t * camera_data){
 	uint16_t b = 1;
 	uint8_t buf[257];
-	buf[0] = 0x30;
+	buf[0] = 0xB0;
 	pack8(buf, b, camera_data_length);
 	b += 1;
 	memcpy(buf + b, camera_data, camera_data_length);
@@ -159,7 +159,7 @@ void parse_debugging_info(uint8_t *packet, uint8_t *debug_str_length, uint8_t  *
 void send_debugging_info(uint8_t debug_str_length, uint8_t * debug_str_data){
 	uint16_t b = 1;
 	uint8_t buf[257];
-	buf[0] = 0x50;
+	buf[0] = 0xD0;
 	pack8(buf, b, debug_str_length);
 	b += 1;
 	memcpy(buf + b, debug_str_data, debug_str_length);

@@ -19,7 +19,7 @@ void __attribute__((weak)) (*UART1RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART2RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART3RXHandler)(uint8_t) = NULL;
 
-#define UART_TX_BUFFER 150 /* Size of per-UART transmission buffer.
+#define UART_TX_BUFFER 100 /* Size of per-UART transmission buffer.
                             * When trying to send a chunk of data larger than this,
 	                        * the uart_tx() function will block until transmission is complete.
 	                        * Must not be greater than 255. */

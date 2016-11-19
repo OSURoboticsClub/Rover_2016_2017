@@ -5,7 +5,7 @@ MAKE:= make
 Q := @
 export Q
 
-.PHONY: all build clean
+.PHONY: all build clean simulate
 
 all: build
 
@@ -14,3 +14,6 @@ build:
 
 clean:
 	$(Q)$(MAKE) --quiet -C src/ clean
+	
+simulate:
+	$(Q)$(MAKE) --quiet -C src/ simulate

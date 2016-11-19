@@ -3,6 +3,8 @@ PROGRAMMER:= wiring
 PROGRAMMER_PORT:= /dev/ttyACM0
 PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
 
+SIMAVR:=simavr
+
 CC:=avr-gcc
 OBJCOPY:=avr-objcopy
 AVRDUDE:=avrdude
@@ -37,6 +39,7 @@ commgen.o: ../../../common/SPECIFICATION.md
 $(OUTFILE).bin: $(OBJFILES)
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. $(FILE) $(OBJFILES) -o $(OUTFILE).elf $(LIBS)
 	@$(OBJCOPY) -O binary -R .eeprom $(OUTFILE).elf $(OUTFILE).bin
+	@$(OBJCOPY) -O ihex -R .eeprom $(OUTFILE).elf $(OUTFILE).hex
 
 # Download firmware, without changing fuses or eeprom.
 download:
@@ -51,7 +54,6 @@ download:
 			echo "Port $(PROGRAMMER_PORT) or $(PROGRAMMER_PORT_ALT) not found; skipping programming."; \
 		fi; \
 	fi;
-	
 
 #Delete generated files
 clean:

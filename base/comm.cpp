@@ -1,6 +1,6 @@
 #include <QMainWindow>
 #include <QApplication>
-#include "sendpacket.h"
+#include "comm.h"
 #include "serialhandler.h"
 
 /**

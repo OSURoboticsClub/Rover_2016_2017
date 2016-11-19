@@ -4,7 +4,7 @@
 #include <QDebug>
 
 #include "commgen.h"
-#include "sendpacket.h"
+#include "comm.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,4 +62,10 @@ void MainWindow::on_pushButton_3_clicked()
 {
     this->m_serial->setupPort("/dev/pts/9");
     this->m_serial->run();
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    uint8_t buffer[10] = {};
+
 }

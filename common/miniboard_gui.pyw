@@ -15,7 +15,7 @@ import serial
 #TODO: Parse options to create drop-down
 #TODO: Check lengths everywhere, for validation
 
-SerialPort = "/dev/ttyACM0"
+SerialPort = "/dev/ttyUSB0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""

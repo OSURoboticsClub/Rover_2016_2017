@@ -99,7 +99,7 @@ def gen_source(cmd_list):
 	s += "#include <stdint.h>\n"
 	s += "#include <string.h>\n"
 	s += "#include \"commgen.h\"\n\n"
-	s += "#include \"comm.h\"\n\n"
+#	s += "#include \"comm.h\"\n\n"
 	s += gen_struct_dec(cmd_list)
 	for c in cmd_list:
 		s += gen_parse_func(c) + "\n"

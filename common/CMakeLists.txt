@@ -16,11 +16,11 @@ add_custom_target(generation
 
 set(SOURCES
     commgen.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/sendpacket.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.cpp)
 
 set(HEADERS
     commgen.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/sendpacket.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.h)
 
 
 add_library(packets SHARED ${SOURCES} ${HEADERS})

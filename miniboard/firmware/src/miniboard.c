@@ -50,16 +50,15 @@ int main(void){
 	init();
 	
 	while(1){
-		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C";
-//uart_tx(COMM_UART, str, strlen(str));
-// 		uart_tx(COMM_UART, str, strlen(str));
-// 		uart_tx(COMM_UART, str, strlen(str));
-// 		uart_tx(COMM_UART, str, strlen(str));
-// 		uart_tx(COMM_UART, str, strlen(str));
-// 		uart_tx(COMM_UART, str, strlen(str));
+		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C\n\r";
+		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen(str));
 		_delay_ms(400);
-// 		uart_tx(COMM_UART, str, strlen(str));
-		UDR0 = 'H';
+ 		uart_tx(COMM_UART, str, strlen(str));
  		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 	}

@@ -99,7 +99,7 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	
 	UBRRn(uart) = (16000000l/(8*baud)) - 1;
 	UCSRnA(uart) = _BV(U2X0);
-	UCSRnB(uart) = _BV(RXCIE0) ;
+	UCSRnB(uart) = _BV(RXCIE0) | _BV(TXCIE0);
 	UCSRnC(uart) = _BV(UCSZ01) | _BV(UCSZ00)
 	               | ((stopbits == 2) ? _BV(USBS0) : 0)
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
@@ -149,25 +149,27 @@ ISR(USART3_RX_vect){
 
 /* UART transmit (data register empty) interrupts and handler. */
 static void uart_tx_isr(uint8_t uart){
+	UDR0 = 'D';
 // 	uint16_t r = circ_remove(UT + uart);
 // 	if(r != CIRC_EOF){
 // 		UDRn(uart) = r;
 // 	}
 }
 
-ISR(USART0_UDRE_vect){
+ISR(USART0_TX_vect){
+	//UDR0 = 'D';
 	uart_tx_isr(0);
 }
 
-ISR(USART1_UDRE_vect){
+ISR(USART1_TX_vect){
 	uart_tx_isr(1);
 }
 
-ISR(USART2_UDRE_vect){
+ISR(USART2_TX_vect){
 	uart_tx_isr(2);
 }
 
-ISR(USART3_UDRE_vect){
+ISR(USART3_TX_vect){
 	uart_tx_isr(3);
 }
 

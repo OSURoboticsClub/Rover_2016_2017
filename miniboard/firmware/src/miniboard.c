@@ -59,7 +59,7 @@ int main(void){
 // 		uart_tx(COMM_UART, str, strlen(str));
 		_delay_ms(400);
 // 		uart_tx(COMM_UART, str, strlen(str));
-		//UDR0 = 'H';
+		UDR0 = 'H';
  		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 	}

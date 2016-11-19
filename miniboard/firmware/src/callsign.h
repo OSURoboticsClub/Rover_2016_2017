@@ -2,12 +2,25 @@
  * Miniboard Firmware
  *
  * callsign.h - Video stream morse code callsign sender.
+ * Author(s) Nick Ames, Aaron Cohen
  */
+
+#ifndef CALLSIGN_H
+#define CALLSIGN_H
+
 #include <stdint.h>
 #include <stdbool.h>
+#include <avr/io.h>
 
-/* Set to true by the callsign sender when a callsign has been entered. */
-extern bool CallsignSet;
+#define CALLSIGN_FREQ 121
+
+#define DIT_LENGTH CALLSIGN_FREQ >> 2
+
+#define CALLSIGN_DDR DDRB
+
+#define CALLSIGN_BANK PORTB
+
+#define CALLSIGN_PIN PB6
 
 /* To comply with FCC regulations, the FPV video transmitter system must
  * send the callsign of the licensed ham radio operator responsible for it.
@@ -30,4 +43,6 @@ extern bool CallsignSet;
 
 /* Set the FPV callsign and start sending it.
  * This function will copy the callsign into module-specific memory. */
-void callsign(uint8_t *callsign_str);
+void set_callsign(uint8_t *callsign_str);
+
+#endif /* CALLSIGN_H */

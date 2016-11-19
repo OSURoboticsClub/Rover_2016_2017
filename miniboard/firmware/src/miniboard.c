@@ -48,7 +48,6 @@ void init(void){
 
 int main(void){
 	init();
-	_delay_ms(2000);
 	while(1){
 		uint8_t buf[5];
 		uint16_t r = uart_rx(COMM_UART, buf, 5);
@@ -59,14 +58,14 @@ int main(void){
 	
 	while(1){
 		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C\n\r";
-		uart_tx(COMM_UART, str, strlen(str));
- 		uart_tx(COMM_UART, str, strlen(str));
- 		uart_tx(COMM_UART, str, strlen(str));
- 		uart_tx(COMM_UART, str, strlen(str));
- 		uart_tx(COMM_UART, str, strlen(str));
- 		uart_tx(COMM_UART, str, strlen(str));
+		uart_tx(COMM_UART, str, strlen((char *) str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
 		_delay_ms(400);
- 		uart_tx(COMM_UART, str, strlen(str));
+ 		uart_tx(COMM_UART, str, strlen((char *) str));
  		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 	}

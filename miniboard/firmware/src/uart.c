@@ -99,17 +99,11 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	
 	UBRRn(uart) = (16000000l/(8*baud)) - 1;
 	UCSRnA(uart) = _BV(U2X0);
-	UCSRnB(uart) = _BV(RXCIE0) | _BV(TXCIE0);
 	UCSRnC(uart) = _BV(UCSZ01) | _BV(UCSZ00)
 	               | ((stopbits == 2) ? _BV(USBS0) : 0)
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
 	               | ((parity == 2) ? _BV(UPM01) : 0);
-	UCSRnB(uart) |= _BV(RXEN0) | _BV(TXEN0);
-	
-	/* Clear RX FIFO. */
-	volatile uint8_t dummy;
-	dummy = UDRn(uart);
-	dummy = UDRn(uart);
+	UCSRnB(uart) = _BV(RXCIE0) | _BV(TXCIE0) | _BV(RXEN0) | _BV(TXEN0);
 }
 
 /* Disable a uart. */
@@ -119,7 +113,6 @@ void uart_disable(uint8_t uart){
 
 /* UART receive interrupts and handler. */
 static void uart_rx_isr(uint8_t uart){
-	int r = UDR0;
 	if(uart == 0 && UART0RXHandler != NULL){
 		UART0RXHandler(UDRn(uart));
 	} else

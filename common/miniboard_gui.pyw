@@ -50,7 +50,22 @@ class MiniboardIO():
 		for c in reply:
 			print "0x%02X, "%ord(c),
 		print "\n",
-		return reply
+		if reply[0] != chr(0x01):
+			print "Error: missing start byte."
+			return ""
+		if reply[-1] != chr(0x03):
+			print "Error: missing end byte."
+			return ""
+		reply = reply[1:-1]
+		extracted = []
+		esc = False
+		for c in reply:
+			if c == chr(0x02) and not esc:
+				esc = True
+				continue
+			extracted.append(c)
+			esc = False
+		return "".join(extracted)
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""
@@ -86,13 +101,15 @@ class RegisterController():
 		def func():
 			print "Write reg 0x%02X (%s): "%(self.reg["code"], self.reg["name"])
 			p = [chr(self.reg["code"] | 0x00)]
-			for a,w in zip(self.reg["argument"], self.widgets):
+			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
+				if a[0] == "*":
+					self.widgets[i-1].setValue(len(str(w.text())))
+			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
 				if a[0] != "*":
 					value = w.value()
 					p += list(struct.pack(self.fmtcodes[a[0]], value))
 				else:
-					pass
-					#TODO: variable-length
+					p += str(w.text())
 			reply = self.io.writeread(p)
 		return func
 		
@@ -102,7 +119,24 @@ class RegisterController():
 			print "Read reg 0x%02X (%s): "%(self.reg["code"], self.reg["name"])
 			p = [chr(self.reg["code"] | 0x80)]
 			reply = self.io.writeread(p)
-			#TODO: Read and parse
+			if reply[0] != p[0]:
+				print "Error: incorrect command code. Expected 0x%02X, got 0x%02X"%(p[0], reply[0])
+			b = 1
+			vs = []
+			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
+				if a[0] != "*":
+					s = struct.calcsize(self.fmtcodes[a[0]])
+					value = struct.unpack(self.fmtcodes[a[0]], reply[b:b+s])[0]
+					vs.append(value)
+					b += s
+				else:
+					s = vs[i-1]
+					value = reply[b:b+s]
+					b+=s
+				try:
+					w.setValue(value)
+				except:
+					w.setText(value)
 		return func
 		
 	def update(self):

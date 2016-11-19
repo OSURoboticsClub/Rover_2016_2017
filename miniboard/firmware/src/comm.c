@@ -34,7 +34,7 @@ void send_packet(uint8_t *data, uint16_t count){
 	buf[0] = 0x01;
 	uint16_t c = 1;
 	for(uint16_t i=0; i<count; i++,c++){
-		if(data[i] == 0x01 || data[i] == 0x01 || data[i] == 0x01){
+		if(data[i] == 0x01 || data[i] == 0x02 || data[i] == 0x03){
 			buf[c] = 0x02;
 			c++;
 		}

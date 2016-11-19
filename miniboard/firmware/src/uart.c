@@ -99,7 +99,7 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	
 	UBRRn(uart) = (16000000l/(8*baud)) - 1;
 	UCSRnA(uart) = _BV(U2X0);
-	UCSRnB(uart) = _BV(RXCIE0) | _BV(UDRE0);
+	UCSRnB(uart) = _BV(RXCIE0) | _BV(UDRIE0);
 	UCSRnC(uart) = _BV(UCSZ01) | _BV(UCSZ00)
 	               | ((stopbits == 2) ? _BV(USBS0) : 0)
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
@@ -222,6 +222,7 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 		}
 	} else {
 		/* Interrupt Mode. */
+		UDR0 = 'I';
 		
 	}
 }

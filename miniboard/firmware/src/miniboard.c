@@ -16,10 +16,19 @@
 #include <stdio.h>
 #include <string.h>
 
+void camera_command_trigger(){
+	
+}
+
+void debugging_info_trigger(){
+	
+}
+
 /* Setup all peripherals and subsystems. */
 void init(void){
 	comm_init();
 	//sabertooth_init();
+	sei();
 }
 
 int main(void){
@@ -27,30 +36,17 @@ int main(void){
 	
 	while(1){
 		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C";
+//uart_tx(COMM_UART, str, strlen(str));
 // 		uart_tx(COMM_UART, str, strlen(str));
 // 		uart_tx(COMM_UART, str, strlen(str));
 // 		uart_tx(COMM_UART, str, strlen(str));
 // 		uart_tx(COMM_UART, str, strlen(str));
 // 		uart_tx(COMM_UART, str, strlen(str));
+		_delay_ms(500);
 // 		uart_tx(COMM_UART, str, strlen(str));
-		_delay_ms(100);
-// 		uart_tx(COMM_UART, str, strlen(str));
-		UDR0 = 'H';
-// 		DDRB |= _BV(PB7);
-// 
-// 		PORTB |= _BV(PB7);
-// 		uint16_t v = adc_voltage(0, ADC_REF_RATIOMETRIC);
-// 		PORTB &= ~_BV(PB7);
-// 
-// 		char str[128];
-// 		snprintf(str, 128, "ADC Reading: %d\r\n", v);
-// 
-// 		_delay_ms(500);
-// 		uart_tx(0, str, strlen(str));
-// 		_delay_ms(500);
-// 		sabertooth_set_speed(0, 0, -20);
-// 		_delay_ms(1000);
-// 		sabertooth_set_speed(0, 0, 20);
+		//UDR0 = 'H';
+ 		DDRB |= _BV(PB7);
+		PORTB ^= _BV(PB7);
 	}
 	return(0);
 }

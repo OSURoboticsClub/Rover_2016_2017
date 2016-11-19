@@ -46,7 +46,7 @@ download:
 		then \
 			$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
 		else \
-			echo "Port $(PROGRAMMER_PORT) and $(PROGRAMMER_PORT_ALT) not found; skipping programming."; \
+			echo "Port $(PROGRAMMER_PORT) or $(PROGRAMMER_PORT_ALT) not found; skipping programming."; \
 		fi; \
 	fi;
 	

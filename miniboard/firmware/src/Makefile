@@ -1,6 +1,7 @@
 MCU:= atmega2560
 PROGRAMMER:= wiring
 PROGRAMMER_PORT:= /dev/ttyACM0
+PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
 
 CC:=avr-gcc
 OBJCOPY:=avr-objcopy
@@ -41,7 +42,12 @@ download:
 	then \
 		$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r;\
 	else \
-		echo "Port $(PROGRAMMER_PORT) not found; skipping programming.";\
+		if [ -c $(PROGRAMMER_PORT_ALT) ];\
+		then \
+			$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
+		else \
+			echo "Port $(PROGRAMMER_PORT) and $(PROGRAMMER_PORT_ALT) not found; skipping programming."; \
+		fi; \
 	fi;
 	
 

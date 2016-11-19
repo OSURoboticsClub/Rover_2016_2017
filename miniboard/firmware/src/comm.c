@@ -80,4 +80,4 @@ void comm_receive_byte(uint8_t byte){
 	}
 }
 
-void (*UART0RXHandler)(uint8_t) = comm_receive_byte;
+//void (*UART0RXHandler)(uint8_t) = comm_receive_byte;

@@ -48,6 +48,14 @@ void init(void){
 
 int main(void){
 	init();
+	_delay_ms(2000);
+	while(1){
+		uint8_t buf[5];
+		uint16_t r = uart_rx(COMM_UART, buf, 5);
+		if(r){
+			uart_tx(COMM_UART, buf, r);
+		}
+	}
 	
 	while(1){
 		uint8_t *str = (uint8_t *) "Hello 123 456 789          Testing A B C\n\r";

@@ -105,6 +105,11 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
 	               | ((parity == 2) ? _BV(UPM01) : 0);
 	UCSRnB(uart) |= _BV(RXEN0) | _BV(TXEN0);
+	
+	/* Clear RX FIFO. */
+	volatile uint8_t dummy;
+	dummy = UDRn(uart);
+	dummy = UDRn(uart);
 }
 
 /* Disable a uart. */
@@ -242,12 +247,14 @@ uint8_t uart_tx_in_progress(uint8_t uart){
  * this function will never provide any data. */
 uint8_t uart_rx(uint8_t uart, uint8_t *data, uint8_t capacity){
 	uint16_t i;
-	for(i=0; i<capacity; i++){
-		uint16_t r = circ_remove(UR + uart);
-		if(r == CIRC_EOF){
-			break;
-		} else {
-			data[i] = r;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+		for(i=0; i<capacity; i++){
+			uint16_t r = circ_remove(UR + uart);
+			if(r == CIRC_EOF){
+				break;
+			} else {
+				data[i] = r;
+			}
 		}
 	}
 	return i;

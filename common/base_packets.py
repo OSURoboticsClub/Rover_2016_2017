@@ -9,7 +9,6 @@ def write_header(file_name, cmd_list):
     '''This function will generate the header file
     for the packet library used for the base station.'''
     with open(file_name, "w+") as fh:
-        fh.write('#include "sendpacket.h"\n')
         fh.write(cg.gen_header(cmd_list))
 
     

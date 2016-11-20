@@ -12,6 +12,7 @@
 #include "commgen.h"
 #include "adc.h"
 #include "sabertooth.h"
+#include "callsign.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,12 +44,12 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	//sabertooth_init();
+	//set_callsign("asdf");
 	sei();
 }
 
 void miniboard_main(){
 	init();
-	
 	while(1){
 		/* Miniboard main loop. */
 		DDRB |= _BV(PB7);

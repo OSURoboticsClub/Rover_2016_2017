@@ -5,8 +5,10 @@
 #include <QSerialPort>
 #include <QDebug>
 #include <QQuickWidget>
+#include <QTimer>
 
 #include "serialhandler.h"
+#include "frsky.h"
 
 
 namespace Ui {
@@ -25,14 +27,18 @@ public:
 private:
     Ui::MainWindow *ui;
     QSerialPort output;
+    FrSky frsky;
+    QTimer tmr;
+
+    bool f_haveJoystick;
 
 public slots:
     void connectSerial();
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-    void on_pushButton_3_clicked();
+    void on_btnConnectSerials_clicked();
+    void on_btnSendMsg_clicked();
+    void on_btnReadInput_clicked();
 };
 
 #endif // MAINWINDOW_H

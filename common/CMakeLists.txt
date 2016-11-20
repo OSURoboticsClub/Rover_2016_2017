@@ -15,11 +15,11 @@ add_custom_target(generation
     DEPENDS commgen.h commgen.c)
 
 set(SOURCES
-    commgen.c
+    #commgen.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../base/sendpacket.cpp)
 
 set(HEADERS
-    commgen.h
+    #commgen.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../base/sendpacket.h)
 
 

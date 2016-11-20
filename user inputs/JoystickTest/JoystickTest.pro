@@ -18,7 +18,7 @@ LIBS += -L"/home/joe/Documents/SFML-2.4.0/lib"
 
 # Add SFML window library, where Joystick is located
 LIBS += -lsfml-window
-LIBS += -lsfml-system
+#LIBS += -lsfml-system
 
 SOURCES += main.cpp\
         mainwindow.cpp \

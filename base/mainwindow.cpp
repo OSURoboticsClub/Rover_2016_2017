@@ -48,17 +48,17 @@ void MainWindow::connectSerial()
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_btnConnectSerials_clicked()
 {
     this->connectSerial();
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_btnSendMsg_clicked()
 {
-    send_pause(10);
+    //send_pause(10);
 }
 
-void MainWindow::on_pushButton_3_clicked()
+void MainWindow::on_btnReadInput_clicked()
 {
     this->m_serial->setupPort("/dev/pts/9");
     this->m_serial->run();

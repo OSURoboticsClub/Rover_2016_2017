@@ -36,7 +36,7 @@ commgen.o: ../../../common/SPECIFICATION.md
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. -c $< -o $@ $(LIBS)
 	
 # Compile & link
-$(OUTFILE).bin: $(OBJFILES)
+$(OUTFILE).bin: $(OBJFILES) miniboard.c
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. $(FILE) $(OBJFILES) -o $(OUTFILE).elf $(LIBS)
 	@$(OBJCOPY) -O binary -R .eeprom $(OUTFILE).elf $(OUTFILE).bin
 	@$(OBJCOPY) -O ihex -R .eeprom $(OUTFILE).elf $(OUTFILE).hex

@@ -46,6 +46,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="serialRead">
+        <property name="text">
+         <string>start serial read</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>

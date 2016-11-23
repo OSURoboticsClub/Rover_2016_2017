@@ -28,11 +28,15 @@ signals:
 protected:
 
 private:
-    void readData();
     QSerialPort port;
     void sendBuffer(QByteArray array);
     int state = 0;
     QString portName;
+
+public slots:
+    void readData();
+
+
 };
 
 extern SerialHandler serial;

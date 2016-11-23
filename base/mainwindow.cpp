@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     m_serial = &serial;
+    serialRead = new SerialHandler();
+    connect(this, SIGNAL(serialRead_start()), serialRead, SLOT(readData()));
 }
 
 MainWindow::~MainWindow()
@@ -68,4 +70,11 @@ void MainWindow::on_pushButton_4_clicked()
 {
     uint8_t buffer[10] = {};
 
+}
+
+
+
+void MainWindow::on_serialRead_clicked()
+{
+    emit serialRead_start();
 }

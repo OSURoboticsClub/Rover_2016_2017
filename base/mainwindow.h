@@ -25,6 +25,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QSerialPort output;
+    SerialHandler *serialRead;
 
 public slots:
     void connectSerial();
@@ -34,6 +35,10 @@ private slots:
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void on_serialRead_clicked();
+
+signals:
+ void serialRead_start();
 };
 
 #endif // MAINWINDOW_H

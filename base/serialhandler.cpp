@@ -94,6 +94,7 @@ void SerialHandler::write(uint8_t *data, uint16_t count)
  **/
 void SerialHandler::readData()
 {
+    qDebug() << "Reading Data";
 /*
     uint8_t *buffer = (uint8_t *)malloc(0);
     char curChar[1] = {0};
@@ -127,6 +128,9 @@ void SerialHandler::readData()
                 packets_BatteryVoltage p = decodeBatteryVoltage(packet);
 
                 qDebug() << p.battery_voltage;
+
+
+
             }
             freeMessageBuffer(packet);
             return;

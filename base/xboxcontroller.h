@@ -13,13 +13,13 @@ class XboxController : public AbstractController
 {
     Q_OBJECT
 public:
-    XboxController();
+    explicit XboxController(QString port, QObject *parent = 0);
     ~XboxController();
     double axisRightX() {return m_gamepad->axisRightX();}
     double axisRightY() {return m_gamepad->axisRightY();}
     double axisLeftX() {return m_gamepad->axisLeftX();}
     double axisLeftY() {return m_gamepad->axisLeftY();}
-    bool  buttonA() {return m_gamepad->buttonA();}
+    bool buttonA() {return m_gamepad->buttonA();}
     bool buttonB() {return m_gamepad->buttonB();}
     bool buttonY() {return m_gamepad->buttonY();}
     bool buttonX() {return m_gamepad->buttonX();}

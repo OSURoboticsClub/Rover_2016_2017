@@ -10,6 +10,7 @@ set(SOURCES
    serialhandler.cpp
    abstractcontroller.cpp
    xboxcontroller.cpp
+   frsky.cpp
 )
 
 set(HEADERS
@@ -17,6 +18,7 @@ set(HEADERS
     serialhandler.h
     abstractcontroller.h
     xboxcontroller.h
+    frsky.h
 )
 
 # Set forms

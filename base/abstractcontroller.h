@@ -12,27 +12,27 @@ class AbstractController : public QObject
     Q_OBJECT
 public:
     explicit AbstractController(QObject *parent = 0);
-    double axisRightY() const;
-    double axisRightX();
-    double axisLeftX();
-    double axisLeftY();
-    bool  buttonA();
-    bool buttonB();
-    bool buttonY();
-    bool buttonX();
-    bool buttonL1();
-    bool buttonL3();
-    double buttonL2();
-    bool buttonR1();
-    bool buttonR3();
-    double buttonR2();
-    bool buttonUp();
-    bool buttonDown();
-    bool buttonLeft();
-    bool buttonRight();
-    bool buttonStart();
-    bool buttonselect();
-    bool buttonCenter();
+    virtual double axisRightY() = 0;
+    virtual double axisRightX() = 0;
+    virtual double axisLeftX() = 0;
+    virtual double axisLeftY() = 0;
+    virtual bool  buttonA() = 0;
+    virtual bool buttonB() = 0;
+    virtual bool buttonY() = 0;
+    virtual bool buttonX() = 0;
+    virtual bool buttonL1() = 0;
+    virtual bool buttonL3() = 0;
+    virtual double buttonL2() = 0;
+    virtual bool buttonR1() = 0;
+    virtual bool buttonR3() = 0;
+    virtual double buttonR2() = 0;
+    virtual bool buttonUp() = 0;
+    virtual bool buttonDown() = 0;
+    virtual bool buttonLeft() = 0;
+    virtual bool buttonRight() = 0;
+    virtual bool buttonStart() = 0;
+    virtual bool buttonselect() = 0;
+    virtual bool buttonCenter() = 0;
 
 signals:
     void axisRightYChanged(double value);
@@ -56,8 +56,6 @@ signals:
     void buttonStartChanged(bool value);
     void buttoSelectChanged(bool value);
     void buttonCenterChanged(bool value);
-
-
 
 public slots:
 };

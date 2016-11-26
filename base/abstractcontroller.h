@@ -12,12 +12,13 @@ class AbstractController : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbstractController(QObject *parent = 0);
+    explicit AbstractController(QString port, QObject *parent = 0);
+    virtual ~AbstractController();
     virtual double axisRightX() = 0;
     virtual double axisRightY() = 0;
     virtual double axisLeftX() = 0;
     virtual double axisLeftY() = 0;
-    virtual bool  buttonA() = 0;
+    virtual bool buttonA() = 0;
     virtual bool buttonB() = 0;
     virtual bool buttonY() = 0;
     virtual bool buttonX() = 0;

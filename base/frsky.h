@@ -11,7 +11,7 @@ class FrSky : public AbstractController
 {
     Q_OBJECT
 public:
-    FrSky();
+    explicit FrSky(QString port, QObject *parent = 0);
     ~FrSky();
     double axisRightX() {}
     double axisRightY() {}

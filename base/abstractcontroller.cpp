@@ -1,6 +1,11 @@
 #include "abstractcontroller.h"
 
-AbstractController::AbstractController(QObject *parent) : QObject(parent)
+AbstractController::AbstractController(QString port, QObject *parent) : QObject(parent)
+{
+
+}
+
+AbstractController::~AbstractController()
 {
 
 }

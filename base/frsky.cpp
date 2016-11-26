@@ -1,6 +1,6 @@
 #include "frsky.h"
 
-FrSky::FrSky()
+FrSky::FrSky(QString port, QObject *parent) : AbstractController(port, parent)
 {
 
 }

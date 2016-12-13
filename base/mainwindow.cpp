@@ -11,17 +11,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    m_serial = &serial;
     serialRead = new SerialHandler();
-    connect(this, SIGNAL(serialRead_start()), serialRead, SLOT(readData()));
+    connect(this, SIGNAL(startReadIn()), serialRead, SLOT(readData()));
+    //this will allow the serialRead thread to exit correctly once main window needs to close
+    connect(serialRead, SIGNAL(finished()), serialRead, SLOT(deleteLater()));
+    _serialRunning = false;
 }
 
 MainWindow::~MainWindow()
 {
+    qDebug() << "start destruct";
+    //emit serialRead_stop();
+    serialRead->exit();
     delete ui;
+    delete serialRead;
+    qDebug() << "end destruct";
 }
 
 
+/* *
+ * Might need to add an "exec" to this,
+ * as well as a "_connectedAlready" bool
+ */
 void MainWindow::connectSerial()
 {
 
@@ -49,23 +60,7 @@ void MainWindow::connectSerial()
     }
 }
 
-
-void MainWindow::on_pushButton_clicked()
-{
-    this->connectSerial();
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    send_pause(10);
-}
-
-void MainWindow::on_pushButton_3_clicked()
-{
-    this->m_serial->setupPort("/dev/pts/9");
-    this->m_serial->run();
-}
-
+//add exec
 void MainWindow::on_pushButton_4_clicked()
 {
     uint8_t buffer[10] = {};
@@ -73,8 +68,30 @@ void MainWindow::on_pushButton_4_clicked()
 }
 
 
-
+/*
+ * starts the serial read.
+ * Port and all that junk needs to be handled in this thread/object
+ */
 void MainWindow::on_serialRead_clicked()
 {
-    emit serialRead_start();
+    if (!_serialRunning){
+        serialRead->start();
+        emit startReadIn();
+        _serialRunning = true;
+
+    }
+}
+
+
+/*
+ * destructor won't be called if you exit main thread,
+ * so have to add destructor functionality to both
+ */
+void MainWindow::on_exit_clicked()
+{
+    if (serialRead != 0 && serialRead->isRunning() ) {
+        serialRead->requestInterruption();
+        serialRead->wait();
+    }
+    exit(0);
 }

@@ -19,7 +19,6 @@ public:
     void setupPort(QString portName);
     bool isReady() const;
     void write(uint8_t *data, uint16_t count);
-    void run();
 
 signals:
     // TODO: fill these in
@@ -32,9 +31,11 @@ private:
     void sendBuffer(QByteArray array);
     int state = 0;
     QString portName;
+    bool m_run;
 
 public slots:
     void readData();
+    void leave();
 
 
 };

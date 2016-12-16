@@ -32,6 +32,7 @@ private:
     int state = 0;
     QString portName;
     bool m_run;
+    void run();
 
 public slots:
     void readData();

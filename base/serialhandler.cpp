@@ -85,11 +85,11 @@ void SerialHandler::write(uint8_t *data, uint16_t count)
  **/
 void SerialHandler::readData()
 {
-    while (!this->isInterruptionRequested()){
+    while (!this->isInterruptionRequested() && m_run){
         qDebug() << "Reading Data";
         sleep(1);
     }
-    this->exit();
+    this->exit(0);
 /*
     uint8_t *buffer = (uint8_t *)malloc(0);
     char curChar[1] = {0};
@@ -136,8 +136,7 @@ void SerialHandler::readData()
 */
 }
 
-void SerialHandler::leave() {
-    qDebug() << "exciting read in";
+void SerialHandler::stop() {
+    qDebug() << "exiting read in";
     m_run = false;
-    this->quit();
 }

@@ -38,6 +38,7 @@ private slots:
 
 signals:
     void startReadIn();
+    void stopReadIn();
 };
 
 #endif // MAINWINDOW_H

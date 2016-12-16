@@ -13,15 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     serialRead = new SerialHandler();
     connect(this, SIGNAL(startReadIn()), serialRead, SLOT(readData()));
+    connect(this, SIGNAL(stopReadIn()), serialRead, SLOT(stop()));
     //this will allow the serialRead thread to exit correctly once main window needs to close
     connect(serialRead, SIGNAL(finished()), serialRead, SLOT(deleteLater()));
     _serialRunning = false;
 }
 
+//would need to destruct in the close button as well
 MainWindow::~MainWindow()
 {
     qDebug() << "start destruct";
-    //emit serialRead_stop();
     serialRead->exit();
     delete ui;
     delete serialRead;
@@ -93,5 +94,6 @@ void MainWindow::on_exit_clicked()
         serialRead->requestInterruption();
         serialRead->wait();
     }
+
     exit(0);
 }

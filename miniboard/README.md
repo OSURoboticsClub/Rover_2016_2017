@@ -135,7 +135,7 @@ AND yields 1 if and only if *all* of its inputs are 1.
 
 OR yields 1 if *any* its inputs are 1.
 
-### OR Operation
+### NOT Operation
 | A | NOT |
 |---|---|
 | 1 | 0 |

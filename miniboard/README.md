@@ -150,7 +150,8 @@ However, these terms can also mean the least and most significant *bytes*.)
 For instance, the following byte is equal to 0xA6 in hexadecimal, or 166 decimal:
 
 | Bit Number | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
-|  Bit Value | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 |
+| ------     | --- | --- | --- | --- | --- | --- | --- | --- |
+| Bit Value  | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 |
 
 ### Using OR to Set Bits
 

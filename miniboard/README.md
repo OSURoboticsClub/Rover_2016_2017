@@ -73,7 +73,6 @@ Several GPIO pins are included for future expansion.
 | GPIO3     | PK6 |
 | GPIO4     | PF6 |
 | GPIO5     | PK3 |
-| GPIO6     | PK4 | 
 
 # Notes on Microcontroller Programming
 Programming microcontrollers in C is very similar to regular C programming,

@@ -21,11 +21,21 @@ don't change the name of existing command arguments.
 
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
-| Command not Recognized | - | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. | 
-| Pause | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause | 
-| Battery voltage | R | 0x06 | u16 battery_voltage | - | Battery voltage in mV | 
-| Drive Motor Power | RW | 0x10 | i8 left_drive, i8 right_drive | 0,0 | -127 = full reverse 128 = full forward | 
-| Swerve Drive State | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
-| Select Camera | RW | 0x20 | u8 selected_camera | 0 | 0-3; select camera feed to send to the base station and to send commands to. TODO: define which camera corresponds to which number | 
-| Camera Command | W | 0x30 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
-| Debugging Info | R | 0x50 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
+| Command not Recognized | -  | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. | 
+| Pause                  | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause | 
+| Battery Voltage        | R  | 0x06 | u16 battery_voltage | - | Battery voltage in mV | 
+| Drive Motor Power      | RW | 0x10 | i8 l_f_drive, i8 l_m_drive, i8 l_b_drive, i8 r_f_drive, i8 r_m_drive, i8 r_b_drive | 0,0,0,0,0,0 | -127 = full reverse 128 = full forward, r = right, l = left, f = front, m = middle, b = back | 
+| Swerve Drive State     | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
+| Arm Motors             | RW | 0x12 | i8 arm_motor_1, i8 arm_motor_2, i8 arm_motor_3, i8 arm_motor_4, i8 arm_motor_5 | 0,0,0,0,0 | -127 = full reverse 128 = full forward TODO: Define motor->joint mapping
+| Potentiometers         | R  | 0x13 | u8 pot_1, u8 pot_2, u8 pot_3, u8 pot_4, u8 pot_5 | 0,0,0,0,0 | Potentiometer readings |
+| Servo                  |  W | 0x14 | u8 ax12_addr, i16 ax12_angle | 0,0 | Set the target angle of an AX12 servo. |
+| Select Camera          | RW | 0x20 | u8 selected_camera | 0 | 0-5; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
+| Callsign               | RW | 0x21 | u8 callsign_data_length, * callsign_data| - | ASCII string of callsign (use numerals and capital letters only) |
+| Camera Command         |  W | 0x22 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
+| GPS Position           | R  | 0x23 | u8 gps_valid, i32 latitude, i32 longitude, u32 altitude| 0,0,0,0 | GPS Position. Good when valid != 0. TODO: define units. |
+| GPS Heading            | R  | 0x24 | i16 gps_heading | 0 | GPS Heading. Check GPS Position for validity. TODO: define units. |
+| GPS Speed              | R  | 0x25 | u16 gps_speed   | 0 | GPS Speed, in cm/s. Check GPS Position for validity. |
+| Magnetometer           | R  | 0x26 | i16 mag_x, i16 mag_y, i16 mag_z | 0,0,0 | External magnetometer reading. TODO: define units and axis directions. |
+| Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
+| Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
+| Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |

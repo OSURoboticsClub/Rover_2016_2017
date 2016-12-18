@@ -21,7 +21,7 @@ don't change the name of existing command arguments.
 
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
-| Command not Recognized | -  | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. | 
+| Command not Recognized | -  | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. |
 | Pause                  | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause | 
 | Battery Voltage        | R  | 0x06 | u16 battery_voltage | - | Battery voltage in mV | 
 | Drive Motor Power      | RW | 0x10 | i8 l_f_drive, i8 l_m_drive, i8 l_b_drive, i8 r_f_drive, i8 r_m_drive, i8 r_b_drive | 0,0,0,0,0,0 | -127 = full reverse 128 = full forward, r = right, l = left, f = front, m = middle, b = back | 
@@ -39,3 +39,4 @@ don't change the name of existing command arguments.
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
 | Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
+| Build Info             | R  | 0x71 | u8 build_info_length, * build_info_data | - | Read out string describing when/how the firmware was built. |

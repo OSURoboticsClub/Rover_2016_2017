@@ -5,15 +5,16 @@ argument), this program provides a GUI that can be used to get/set
 all registers on the miniboard."""
 
 import sys
+import math
 import docparse #TODO: Add a try/catch and pop-up dialog.
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import struct
 import serial
 
-#TODO: Set limits of spinboxes based on var size
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
+#TODO: Add big pause/unpause buttons
 SerialPort = "/dev/ttyACM0"
 
 class MiniboardIO():
@@ -154,7 +155,7 @@ def argtype_minval(argtype):
 		return -(2**(int(argtype[1:])-1))
 	else:
 		return 0
-
+	
 def argtype_maxval(argtype):
 	"""Return the minimum value for a numerical argument type."""
 	if argtype[0] == "u":
@@ -163,6 +164,11 @@ def argtype_maxval(argtype):
 		return 2**(int(argtype[1:])-1) - 1
 	else:
 		return 0
+
+def argtype_minwidth(argtype):
+	"""Return the minimum width of a spinbox for the given argument type."""
+	m = 2.5 + math.ceil(math.log10(argtype_maxval(argtype)))
+	return m * 9
 
 def setup(window, spec_table, io):
 	ww = QWidget(window)
@@ -192,6 +198,7 @@ def setup(window, spec_table, io):
 					widget.setEnabled(False)
 				widget.setMinimum(argtype_minval(a[0]))
 				widget.setMaximum(argtype_maxval(a[0]))
+				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
 			control_widgets.append(widget)
 			subtitle = QLabel(a[1])
 			subtitle.setFont(QFont("", 8))

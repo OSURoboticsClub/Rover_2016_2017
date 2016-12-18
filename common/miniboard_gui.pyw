@@ -13,8 +13,7 @@ import serial
 
 #TODO: Set limits of spinboxes based on var size
 #TODO: Check lengths everywhere, for validation
-#TODO: Add serial port 
-#TODO: Grey out read-only items
+#TODO: Add serial port selection
 SerialPort = "/dev/ttyACM0"
 
 class MiniboardIO():
@@ -147,6 +146,24 @@ def horizontalLine():
 	line.setFrameShadow(QFrame.Sunken)
 	return line
 
+def argtype_minval(argtype):
+	"""Return the minimum value for a numerical argument type."""
+	if argtype[0] == "u":
+		return 0
+	elif argtype[0]  == "i":
+		return -(2**(int(argtype[1:])-1))
+	else:
+		return 0
+
+def argtype_maxval(argtype):
+	"""Return the minimum value for a numerical argument type."""
+	if argtype[0] == "u":
+		return 2**(int(argtype[1:])) - 1
+	elif argtype[0] == "i":
+		return 2**(int(argtype[1:])-1) - 1
+	else:
+		return 0
+
 def setup(window, spec_table, io):
 	ww = QWidget(window)
 	flayout = QFormLayout()
@@ -173,6 +190,8 @@ def setup(window, spec_table, io):
 				widget = QSpinBox()
 				if a[2] or "w" not in r["rw"]:
 					widget.setEnabled(False)
+				widget.setMinimum(argtype_minval(a[0]))
+				widget.setMaximum(argtype_maxval(a[0]))
 			control_widgets.append(widget)
 			subtitle = QLabel(a[1])
 			subtitle.setFont(QFont("", 8))

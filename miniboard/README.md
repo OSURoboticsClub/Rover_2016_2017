@@ -5,7 +5,7 @@ This folder contains the code for the onboard Rover miniboard.
 ## UARTS
 - UART0: Data radio - comm.h (and USB serial port)
 - UART1: Saberteeth/AX12 - sabertooth.h/ax12.h (switch between using analog switch)
-- UART2: GPS (38400 baud) - gps.h
+- UART2: GPS (9600 baud) - gps.h
 - UART3: Camera Control/S-BUS - -/sbus.h (Camera control is TX, S-BUS is  RX.)
 
 ## Sabertooth/AX12 Switch control lines

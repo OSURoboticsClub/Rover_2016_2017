@@ -17,13 +17,18 @@
 #include <stdio.h>
 #include <string.h>
 
-void camera_command_trigger(){
+void camera_command_trigger(void){
 	
 }
 
-void debugging_info_trigger(){
+void debugging_info_trigger(void){
 	
 }
+
+void callsign_trigger(void){
+	
+}
+
 
 /* ISR that fires if an interrupt is enabled without a corresponding handler. */
 ISR(BADISR_vect){
@@ -48,7 +53,7 @@ void init(void){
 	sei();
 }
 
-void miniboard_main(){
+void miniboard_main(void){
 	init();
 	while(1){
 		/* Miniboard main loop. */

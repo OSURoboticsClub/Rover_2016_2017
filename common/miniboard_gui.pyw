@@ -12,9 +12,9 @@ import struct
 import serial
 
 #TODO: Set limits of spinboxes based on var size
-#TODO: Parse options to create drop-down
 #TODO: Check lengths everywhere, for validation
-
+#TODO: Add serial port 
+#TODO: Grey out read-only items
 SerialPort = "/dev/ttyACM0"
 
 class MiniboardIO():
@@ -171,7 +171,7 @@ def setup(window, spec_table, io):
 				widget = QLineEdit()
 			else:
 				widget = QSpinBox()
-				if a[2]:
+				if a[2] or "w" not in r["rw"]:
 					widget.setEnabled(False)
 			control_widgets.append(widget)
 			subtitle = QLabel(a[1])

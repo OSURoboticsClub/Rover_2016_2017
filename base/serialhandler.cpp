@@ -1,5 +1,5 @@
 /**
- * The SerialHandler class will handle serial interfacing with the radio that
+ *asdff The SerialHandler class will handle serial interfacing with the radio that
  * will transmit data to the rover. This class will contain methods for sending
  * packets to the rover. It will also emit read packets from the serial and
  * emit signals when a packet is recieved.

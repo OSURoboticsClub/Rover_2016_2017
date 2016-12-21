@@ -1,5 +1,5 @@
 /**
- *asdff The SerialHandler class will handle serial interfacing with the radio that
+ *The SerialHandler class will handle serial interfacing with the radio that
  * will transmit data to the rover. This class will contain methods for sending
  * packets to the rover. It will also emit read packets from the serial and
  * emit signals when a packet is recieved.
@@ -18,7 +18,6 @@ SerialHandler serial;
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
     m_run = true;
-    this->start();
 }
 
 SerialHandler::~SerialHandler()
@@ -27,7 +26,15 @@ SerialHandler::~SerialHandler()
 }
 
 void SerialHandler::run(){
-    readData();
+    qDebug() << "starting serial read";
+    while (m_run){
+        qDebug() << "Reading Data";
+        sleep(2);
+        qDebug() << "------------";
+        sleep(2);
+    }
+    qDebug() << "exciting serial read";
+    //this->terminate();
 }
 
 void SerialHandler::setupPort(QString name)
@@ -89,10 +96,7 @@ void SerialHandler::write(uint8_t *data, uint16_t count)
  **/
 void SerialHandler::readData()
 {
-    while (1){
-        qDebug() << "Reading Data";
-        sleep(1);
-    }
+
     //this->exit(0);
 /*
     uint8_t *buffer = (uint8_t *)malloc(0);
@@ -140,7 +144,7 @@ void SerialHandler::readData()
 */
 }
 
-void SerialHandler::stop() {
+void SerialHandler::stopThread() {
     qDebug() << "exiting read in";
     m_run = false;
 }

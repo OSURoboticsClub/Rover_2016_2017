@@ -37,13 +37,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="serialRead">
-        <property name="text">
-         <string>start serial read</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="exit">
         <property name="text">
          <string>exit</string>

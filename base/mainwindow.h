@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QQuickWidget>
 #include <QThread>
+#include <QTime>
 
 #include "serialhandler.h"
 
@@ -19,6 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    virtual void closeEvent ( QCloseEvent * event );
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -27,18 +29,20 @@ private:
     QSerialPort output;
     SerialHandler *serialRead;
     bool _serialRunning;
+    int numThreads;
+    QThread **threadArray;
 
 public slots:
     void connectSerial();
 
 private slots:
     void on_pushButton_4_clicked();
-    void on_serialRead_clicked();
     void on_exit_clicked();
 
 signals:
     void startReadIn();
     void stopReadIn();
+    void closeThreads();
 };
 
 #endif // MAINWINDOW_H

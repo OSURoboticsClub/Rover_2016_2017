@@ -36,7 +36,7 @@ private:
 
 public slots:
     void readData();
-    void stop();
+    void stopThread();
 
 
 };

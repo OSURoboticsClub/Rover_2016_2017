@@ -11,21 +11,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(this, SIGNAL(startReadIn()), serialRead, SLOT(readData()));
-    connect(this, SIGNAL(stopReadIn()), serialRead, SLOT(stop()));
-    //this will allow the serialRead thread to exit correctly once main window needs to close
-    //connect(serialRead, SIGNAL(finished()), serialRead, SLOT(deleteLater()));
+
+    serialRead = new SerialHandler();
+    numThreads = 1;
+    //QThread **threadArray = new QThread *[numThreads]; //1 thread
+    //threadArray[0] = serialRead;
+    serialRead->start();
+
+    for (int i = 0; i < numThreads;i++)
+    {
+        //threadArray[i]->start();
+    }
+
+    connect(this, SIGNAL(closeThreads()), serialRead, SLOT(stopThread()));
     _serialRunning = false;
 }
 
 //would need to destruct in the close button as well
 MainWindow::~MainWindow()
 {
-    qDebug() << "start destruct";
-    serialRead->exit();
-    delete ui;
-    delete serialRead;
-    qDebug() << "end destruct";
 }
 
 
@@ -72,15 +76,41 @@ void MainWindow::on_pushButton_4_clicked()
  * starts the serial read.
  * Port and all that junk needs to be handled in this thread/object
  */
-void MainWindow::on_serialRead_clicked()
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (!_serialRunning){
-        serialRead = new SerialHandler();
-        _serialRunning = true;
 
+    qDebug() << "start close";
+    emit closeThreads();
+    serialRead->wait();
+    /*
+    for (int i = 0; i < numThreads; i++)
+    {
+        delete [] threadArray[i];
     }
-}
 
+    delete [] threadArray;
+    */
+    delete serialRead;
+    delete ui;
+    qDebug() << "end close";
+    event->accept();
+
+
+    /*emit closeThreads();
+    bool allThreadsKilled = false;
+    int numThreadsRunning = 0;
+    bool terminateHasRun = false;
+
+    QTime startTime = currentTime();
+
+    while (!allThreadsKilled)
+    {
+        if ()
+    }*/
+
+}
 
 /*
  * destructor won't be called if you exit main thread,
@@ -88,9 +118,5 @@ void MainWindow::on_serialRead_clicked()
  */
 void MainWindow::on_exit_clicked()
 {
-    qDebug() << "start destruct";
-    delete ui;
-    delete serialRead;
-    qDebug() << "end destruct";
-    exit(0);
+    this->close();
 }

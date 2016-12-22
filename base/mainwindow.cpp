@@ -14,13 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     serialRead = new SerialHandler();
     numThreads = 1;
-    //QThread **threadArray = new QThread *[numThreads]; //1 thread
-    //threadArray[0] = serialRead;
-    serialRead->start();
+    threadArray = new QThread *[numThreads];
+    threadArray[0]= serialRead;
 
     for (int i = 0; i < numThreads;i++)
     {
-        //threadArray[i]->start();
+        threadArray[i]->start();
     }
 
     connect(this, SIGNAL(closeThreads()), serialRead, SLOT(stopThread()));
@@ -73,43 +72,83 @@ void MainWindow::on_pushButton_4_clicked()
 
 
 /*
- * starts the serial read.
- * Port and all that junk needs to be handled in this thread/object
+ * Part I: Close event without timeout check
+ * Part II: Close event with Timeout check
  */
-
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-
+    /*
     qDebug() << "start close";
     emit closeThreads();
     serialRead->wait();
-    /*
+
     for (int i = 0; i < numThreads; i++)
     {
-        delete [] threadArray[i];
+        delete threadArray[i];
     }
+    delete threadArray;
 
-    delete [] threadArray;
-    */
-    delete serialRead;
+    //delete serialRead;
     delete ui;
     qDebug() << "end close";
     event->accept();
+    */
 
-
-    /*emit closeThreads();
+    qDebug() << "closing";
+    emit closeThreads();
     bool allThreadsKilled = false;
     int numThreadsRunning = 0;
     bool terminateHasRun = false;
 
-    QTime startTime = currentTime();
+    QTime startTime;
+    startTime.start();
 
     while (!allThreadsKilled)
     {
-        if ()
-    }*/
+        for (int i = 0;i < numThreads;i++)
+        {
+            if (threadArray[i]->isRunning())
+            {
+                numThreadsRunning++;
+            }
+        }
+        if (numThreadsRunning > 0)
+        {
+            numThreadsRunning = 0;
 
+            if (!terminateHasRun)
+            {
+                if (startTime.elapsed() > 8000) //terminate time is 8 seconds. Change to appropriate amount later
+                {
+                    for (int k = 0;k < numThreads;k++)
+                    {
+                        if (threadArray[k]->isRunning())
+                        {
+                            qDebug() << "Terminating thread: " + k;
+                            threadArray[k]->terminate();
+                        }
+                    }
+                    terminateHasRun = true;
+                    allThreadsKilled = true;
+                }
+            }
+        }
+
+        else
+        {
+            allThreadsKilled = true;
+        }
+    }
+
+    for (int i = 0; i < numThreads; i++)
+    {
+        delete threadArray[i];
+    }
+    delete threadArray;
+    delete ui;
+
+    qDebug() << "closed";
+    event->accept();
 }
 
 /*

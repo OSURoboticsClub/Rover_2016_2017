@@ -22,3 +22,7 @@ XboxController::~XboxController()
     delete m_gamepad;
 }
 
+XboxController::axisYChanged(double left, double right)
+{
+
+}

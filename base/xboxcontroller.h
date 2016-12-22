@@ -36,9 +36,14 @@ public:
     bool buttonStart() {return m_gamepad->buttonStart();}
     bool buttonSelect() {return m_gamepad->buttonSelect();}
     bool buttonCenter() {return m_gamepad->buttonCenter();}
-
+signals:
+    void axisYChanged(double left, double right);
 private:
     QGamepad *m_gamepad;
+    void connectGamepad();
+private slots:
+    void axisLeftYChangedCallback(double value);
+    void axisRightYChangedCallback(double value);
 };
 
 #endif // XBOXCONTROLLER_H

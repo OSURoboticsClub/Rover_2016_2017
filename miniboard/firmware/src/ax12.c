@@ -7,7 +7,7 @@
 #include "ax12.h"
 #include "uart.h"
 
-#define AX12_UART 2
+#define AX12_UART 1
 
 /* Initialize the UART for the AX12s (and connect the AX12s with the
  * switch).

@@ -1,19 +1,19 @@
-#include "controlhandler.h"
+#include "controllerhandler.h"
 
 
 
-ControlHandler::ControlHandler(QObject *parent)
+ControllerHandler::ControllerHandler(QObject *parent)
     : QObject(parent)
 {
 
 }
 
-ControlHandler::~ControlHandler()
+ControllerHandler::~ControllerHandler()
 {
     delete controllers;
 }
 
-int ControlHandler::getControllerCount() {
+int ControllerHandler::getControllerCount() {
     int count = 0;
     for(unsigned int i = 0; i < sf::Joystick::Count; i++) {
         if(sf::Joystick::isConnected(i)) count++;
@@ -21,7 +21,7 @@ int ControlHandler::getControllerCount() {
     return count;
 }
 
-void ControlHandler::eventLoop() {
+void ControllerHandler::eventLoop() {
     // TODO: while some better condition
     while(1) {
         if(controllerCount != getControllerCount()) resetControllers();
@@ -32,7 +32,7 @@ void ControlHandler::eventLoop() {
     }
 }
 
-void ControlHandler::resetControllers() {
+void ControllerHandler::resetControllers() {
     controllers = new QList<ControllerPointer>();
     controllerCount = getControllerCount();
     for(int i = 0; i < controllerCount; i++) {
@@ -53,19 +53,19 @@ void ControlHandler::resetControllers() {
     // and connect them
 }
 
-void ControlHandler::connectControllers()
+void ControllerHandler::connectControllers()
 {
     if(controllerCount > 0 && maxUsableControllers > 0) {
         connectDriveController(controllers->at(0));
     }
 }
 
-void ControlHandler::connectDriveController(ControllerPointer controller) {
+void ControllerHandler::connectDriveController(ControllerPointer controller) {
     // TODO
 
 }
 
-void ControlHandler::start()
+void ControllerHandler::start()
 {
     resetControllers();
     eventLoop();

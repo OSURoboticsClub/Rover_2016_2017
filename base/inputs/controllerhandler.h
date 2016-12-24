@@ -1,5 +1,5 @@
-#ifndef CONTROLHANDLER_H
-#define CONTROLHANDLER_H
+#ifndef CONTROLLERHANDLER_H
+#define CONTROLLERHANDLER_H
 
 #include <algorithm>
 
@@ -16,12 +16,12 @@
 typedef QSharedPointer<AbstractController> ControllerPointer;
 
 
-class ControlHandler : public QObject
+class ControllerHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ControlHandler(QObject *parent = 0);
-    ~ControlHandler();
+    explicit ControllerHandler(QObject *parent = 0);
+    ~ControllerHandler();
     // TODO: controllerCount(); (renaming)
     int getControllerCount();
 public slots:
@@ -38,4 +38,4 @@ private:
 
 };
 
-#endif // CONTROLHANDLER_H
+#endif // CONTROLLERHANDLER_H

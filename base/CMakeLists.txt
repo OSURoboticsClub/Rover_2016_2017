@@ -8,19 +8,21 @@ set(SOURCES
    main.cpp
    mainwindow.cpp
    serialhandler.cpp
-   controlhandler.cpp
-   abstractcontroller.cpp
-   xboxcontroller.cpp
-   frsky.cpp
+
+   inputs/controllerhandler.cpp
+   inputs/abstractcontroller.cpp
+   inputs/xboxcontroller.cpp
+   inputs/frsky.cpp
 )
 
 set(HEADERS
     mainwindow.h
     serialhandler.h
-    controlhandler.h
-    abstractcontroller.h
-    xboxcontroller.h
-    frsky.h
+
+    inputs/controllerhandler.h
+    inputs/abstractcontroller.h
+    inputs/xboxcontroller.h
+    inputs/frsky.h
 )
 
 # Set forms

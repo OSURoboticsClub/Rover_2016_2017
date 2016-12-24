@@ -61,7 +61,8 @@ The FPV video source switch is controlled by PH6 (A), PB4 (B), PB5 (C), and PB6 
 | None (blank)   |  H  |  H  |  H  |  H  |
 
 ## FPV Callsign Sender
-A morse-code audio stream of the callsign, to comply with FCC regs, on pin PE4. 
+A morse-code audio stream of the callsign, to comply with FCC regs, on pin PE4.
+The callsign sender also uses timer 1. 
 
 ## GPIO
 Several GPIO pins are included for future expansion.

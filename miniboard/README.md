@@ -17,6 +17,9 @@ high, the AX12 line is selected.
 TODO: Add enable/disable functionality to uart module.
 TODO: Add switch control line function.
 
+## GPS
+In addition to UART2, the GPS module also uses timer 5 for validity determination.
+
 ## Compass
 The GPS module includes a magnetometer to determine the compass heading. It is accessed over I2C (PD1/PD0).
 Since the GPS module is located outside of the e-box on a somewhat long cable, a slow clock speed (perhaps 50kHz)

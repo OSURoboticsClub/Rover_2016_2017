@@ -13,9 +13,13 @@
 #include "adc.h"
 #include "sabertooth.h"
 #include "callsign.h"
+#include "gps.h"
 
 #include <stdio.h>
 #include <string.h>
+
+/* TODO: Watchdog timer. */
+/* TODO: Debug facilities. */
 
 /* Triggers for data read commands. */
 void camera_command_trigger(void){
@@ -54,6 +58,7 @@ ISR(BADISR_vect){
 /* Setup all peripherals and subsystems. */
 void init(void){
 	comm_init();
+	gps_init();
 	//sabertooth_init();
 	//set_callsign("asdf");
 	sei();

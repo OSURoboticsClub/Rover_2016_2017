@@ -15,6 +15,7 @@ import serial
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
+#TODO: Add auto-updating (1Hz?)
 SerialPort = "/dev/ttyACM0"
 
 class MiniboardIO():

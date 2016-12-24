@@ -16,7 +16,6 @@ class AbstractController : public QObject
 {
     Q_OBJECT
 public:
-<<<<<<< HEAD
     explicit AbstractController(int id, QObject *parent = 0);
     ~AbstractController();
     virtual void emitChanges() = 0;
@@ -26,31 +25,6 @@ public:
     virtual double axisLeftY() = 0;
     virtual double axisRightX() = 0;
     virtual double axisRightY() = 0;
-=======
-    explicit AbstractController(QString port, QObject *parent = 0);
-    virtual ~AbstractController();
-    virtual double axisRightX() = 0;
-    virtual double axisRightY() = 0;
-    virtual double axisLeftX() = 0;
-    virtual double axisLeftY() = 0;
-    virtual bool buttonA() = 0;
-    virtual bool buttonB() = 0;
-    virtual bool buttonY() = 0;
-    virtual bool buttonX() = 0;
-    virtual bool buttonL1() = 0;
-    virtual double buttonL2() = 0;
-    virtual bool buttonL3() = 0;
-    virtual bool buttonR1() = 0;
-    virtual double buttonR2() = 0;
-    virtual bool buttonR3() = 0;
-    virtual bool buttonUp() = 0;
-    virtual bool buttonDown() = 0;
-    virtual bool buttonLeft() = 0;
-    virtual bool buttonRight() = 0;
-    virtual bool buttonStart() = 0;
-    virtual bool buttonSelect() = 0;
-    virtual bool buttonCenter() = 0;
->>>>>>> 91ddf59f49015932795badb5f5e9d4fc164fcab2
 
 signals:
     virtual void axisLeftXChanged(double value) = 0;
@@ -63,7 +37,6 @@ protected:
     float axisTolerance = 0;
     int priority;
 
-<<<<<<< HEAD
     // Copied and adapted from SFML/Window/JoystickImpl.hpp
     struct JoystickState {
         JoystickState()
@@ -78,10 +51,6 @@ protected:
         bool  buttons[sf::Joystick::ButtonCount]; ///< Status of each button (true = pressed)
     };
     JoystickState *currentState;
-
-=======
-public slots:
->>>>>>> 91ddf59f49015932795badb5f5e9d4fc164fcab2
 };
 
 #endif // ABSTRACTCONTROLLER_H

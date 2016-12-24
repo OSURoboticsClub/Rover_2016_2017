@@ -1,10 +1,7 @@
 #include "frsky.h"
 
-<<<<<<< HEAD
+
 FrSky::FrSky(int id, QObject *parent) : AbstractController(id, parent)
-=======
-FrSky::FrSky(QString port, QObject *parent) : AbstractController(port, parent)
->>>>>>> 91ddf59f49015932795badb5f5e9d4fc164fcab2
 {
 
 }
@@ -13,7 +10,6 @@ FrSky::~FrSky()
 {
 
 }
-<<<<<<< HEAD
 
 void FrSky::emitChanges()
 {
@@ -74,5 +70,3 @@ double FrSky::axisRightY()
 {
     return currentState->axes[static_cast<int>(axisMappings::RIGHT_Y)];
 }
-=======
->>>>>>> 91ddf59f49015932795badb5f5e9d4fc164fcab2

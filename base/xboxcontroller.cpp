@@ -1,27 +1,10 @@
 #include "xboxcontroller.h"
 
-<<<<<<< HEAD
 
 XboxController::XboxController(int id, QObject *parent) : AbstractController(id, parent)
 {
-=======
-#include <QDebug>
->>>>>>> 91ddf59f49015932795badb5f5e9d4fc164fcab2
 
-XboxController::XboxController(QString port, QObject *parent) : AbstractController(port, parent)
-{
-    QList<int> gamepads = QGamepadManager::instance()->connectedGamepads();
-    QList<int>::const_iterator i;
-    for(i = gamepads.begin(); i != gamepads.end(); ++i) {
-        /*
-        if(*i->name() == port) {
-            m_gamepad = i;
-        }
-        */
-    }
-    qDebug() << "Could not identify port";
 }
-
 
 XboxController::~XboxController()
 {
@@ -118,4 +101,3 @@ bool XboxController::buttonY()
 {
     return currentState->axes[static_cast<int>(buttonMappings::Y)];
 }
-

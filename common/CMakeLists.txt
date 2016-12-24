@@ -2,7 +2,7 @@ project(packets)
 
 set("${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -g")
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../base/")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../base/serial/")
 
 add_custom_command(OUTPUT commgen.h commgen.c
     COMMAND python base_packets.py
@@ -16,11 +16,11 @@ add_custom_target(generation
 
 set(SOURCES
     commgen.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../base/serial/comm.cpp)
 
 set(HEADERS
     commgen.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../base/serial/comm.h)
 
 
 add_library(packets SHARED ${SOURCES} ${HEADERS})

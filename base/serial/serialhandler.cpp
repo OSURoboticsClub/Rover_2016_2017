@@ -6,7 +6,7 @@
  **/
 
 
-#include "serialhandler.h"
+#include "serial/serialhandler.h"
 
 /* This is a global instance of the SerialHandler class. The main intent of
  * implementing this is for a serial singleton class to be accessible from

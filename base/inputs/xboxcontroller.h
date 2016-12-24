@@ -30,12 +30,6 @@ class XboxController : public AbstractController
 public:
     explicit XboxController(int id, QObject *parent = 0);
     ~XboxController();
-    virtual void emitChanges();
-
-    virtual double axisLeftX();
-    virtual double axisLeftY();
-    virtual double axisRightX();
-    virtual double axisRightY();
 
     bool buttonA();
     bool buttonB();
@@ -58,29 +52,14 @@ public:
     bool buttonCenter();
 */
 signals:
-    virtual void axisLeftXChanged(double value);
-    virtual void axisLeftYChanged(double value);
-    virtual void axisRightXChanged(double value);
-    virtual void axisRightYChanged(double value);
-
     void buttonAChanged(bool value);
     void buttonBChanged(bool value);
     void buttonXChanged(bool value);
     void buttonYChanged(bool value);
 
-private:
-    enum class axisMappings {
-        LEFT_X = sf::Joystick::Axis::X,
-        LEFT_Y = sf::Joystick::Axis::Y,
-        RIGHT_X = sf::Joystick::Axis::U,
-        RIGHT_Y = sf::Joystick::Axis::R,
-    };
-    enum class buttonMappings {
-        A = sf::Joystick::X,
-        B = sf::Joystick::Y,
-        X = sf::Joystick::Z,
-        Y = sf::Joystick::R,
-    };
+protected:
+    virtual void emitAxisChanges(int axisIndex, double value);
+    virtual void emitButtonChanges(int buttonIndex, bool value);
 };
 
 #endif // XBOXCONTROLLER_H

@@ -13,29 +13,11 @@ class FrSky : public AbstractController
 public:
     explicit FrSky(int id, QObject *parent = 0);
     ~FrSky();
-    virtual void emitChanges();
-
-    virtual double axisLeftX();
-    virtual double axisLeftY();
-    virtual double axisRightX();
-    virtual double axisRightY();
 
 signals:
-    virtual void axisLeftXChanged(double value);
-    virtual void axisLeftYChanged(double value);
-    virtual void axisRightXChanged(double value);
-    virtual void axisRightYChanged(double value);
 
-private:
-    enum class axisMappings {
-        LEFT_X = sf::Joystick::Axis::X,
-        LEFT_Y = sf::Joystick::Axis::Y,
-        RIGHT_X = sf::Joystick::Axis::U,
-        RIGHT_Y = sf::Joystick::Axis::R,
-    };
-    enum class buttonMappings {
+protected:
 
-    };
 };
 
 #endif // FRSKY_H

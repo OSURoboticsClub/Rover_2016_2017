@@ -48,7 +48,7 @@ void ControllerHandler::resetControllers() {
 
     std::sort(controllers->begin(), controllers->end(),
               [](ControllerPointer a, ControllerPointer b) -> bool
-              { return a->getPriority() < b->getPriority(); }
+              { return a->priority() < b->priority(); }
     );
     // and connect them
 }

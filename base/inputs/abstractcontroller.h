@@ -18,39 +18,47 @@ class AbstractController : public QObject
 public:
     explicit AbstractController(int id, QObject *parent = 0);
     ~AbstractController();
-    virtual void emitChanges() = 0;
-    int getPriority() {return priority;}
+    virtual void emitChanges();
 
-    virtual double axisLeftX() = 0;
-    virtual double axisLeftY() = 0;
-    virtual double axisRightX() = 0;
-    virtual double axisRightY() = 0;
+    int priority() { return m_priority; }
+
+    double axisLeftX() const;
+    double axisLeftY() const;
+    double axisRightX() const;
+    double axisRightY() const;
 
 signals:
-    virtual void axisLeftXChanged(double value) = 0;
-    virtual void axisLeftYChanged(double value) = 0;
-    virtual void axisRightXChanged(double value) = 0;
-    virtual void axisRightYChanged(double value) = 0;
+    void axisLeftXChanged(double value);
+    void axisLeftYChanged(double value);
+    void axisRightXChanged(double value);
+    void axisRightYChanged(double value);
 
 protected:
-    int id;
-    float axisTolerance = 0;
-    int priority;
+    virtual void emitAxisChanges(int axisIndex, double value);
+    virtual void emitButtonChanges(int buttonIndex, bool value);
+
+    static const int AXIS_LEFT_X = 0;
+    static const int AXIS_LEFT_Y = 1;
+    static const int AXIS_RIGHT_X = 2;
+    static const int AXIS_RIGHT_Y = 3;
+
+
+    int m_id;
+    float m_axisTolerance;
+    int m_priority;
+
 
     // Copied and adapted from SFML/Window/JoystickImpl.hpp
     struct JoystickState {
         JoystickState()
         {
-            connected = false;
             std::fill(axes, axes + sf::Joystick::AxisCount, 0.f);
             std::fill(buttons, buttons + sf::Joystick::ButtonCount, false);
         }
-
-        bool  connected;                          ///< Is the joystick currently connected?
         float axes[sf::Joystick::AxisCount];      ///< Position of each axis, in range [-100, 100]
         bool  buttons[sf::Joystick::ButtonCount]; ///< Status of each button (true = pressed)
     };
-    JoystickState *currentState;
+    JoystickState *m_currentState;
 };
 
 #endif // ABSTRACTCONTROLLER_H

@@ -1,12 +1,20 @@
 #include "abstractcontroller.h"
 
+#include <algorithm>
 
 AbstractController::AbstractController(int id, QObject *parent)
     : QObject(parent),
       m_id(id),
-      m_axisTolerance(0)
+      m_axisTolerance(0),
+      m_priority(0)
 {
     m_currentState = new JoystickState();
+}
+
+AbstractController::JoystickState::JoystickState()
+{
+    std::fill(axes, axes + js::AxisCount, 0.f);
+    std::fill(buttons, buttons + js::ButtonCount, false);
 }
 
 AbstractController::~AbstractController()
@@ -16,16 +24,16 @@ AbstractController::~AbstractController()
 
 void AbstractController::emitChanges()
 {
-    for(unsigned int i = 0; i < sf::Joystick::AxisCount; i++) {
-        float axisPos = sf::Joystick::getAxisPosition(m_id, static_cast<sf::Joystick::Axis>(i));
+    for(unsigned int i = 0; i < js::AxisCount; i++) {
+        float axisPos = js::getAxisPosition(m_id, static_cast<js::Axis>(i));
         if(std::abs(axisPos - m_currentState->axes[i]) > m_axisTolerance) {
             emitAxisChanges(i, axisPos);
         }
         m_currentState->axes[i] = axisPos;
     }
 
-    for(unsigned int j = 0; j < sf::Joystick::ButtonCount; j++) {
-        bool buttonPressed = sf::Joystick::isButtonPressed(m_id, j);
+    for(unsigned int j = 0; j < js::ButtonCount; j++) {
+        bool buttonPressed = js::isButtonPressed(m_id, j);
         if(buttonPressed != m_currentState->axes[j]) {
             emitButtonChanges(j, buttonPressed);
         }
@@ -42,12 +50,23 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
         break;
     case AXIS_LEFT_Y:
         emit axisLeftYChanged(value);
+        //double right = ;
+        emit axisYChanged(
+                    value,
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_LEFT_X))
+                    );
         break;
     case AXIS_RIGHT_X:
         emit axisRightXChanged(value);
         break;
     case AXIS_RIGHT_Y:
         emit axisRightYChanged(value);
+        emit axisYChanged(
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_LEFT_X)),
+                    value
+                    );
         break;
     default:
         break;

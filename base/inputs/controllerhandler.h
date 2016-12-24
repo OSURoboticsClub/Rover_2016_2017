@@ -1,17 +1,16 @@
 #ifndef CONTROLLERHANDLER_H
 #define CONTROLLERHANDLER_H
 
-#include <algorithm>
 
 #include <QObject>
 #include <QList>
+#include <QSharedPointer>
 
-#include "frsky.h"
-#include "abstractcontroller.h"
-#include "xboxcontroller.h"
-#include "serialhandler.h"
+#include "inputs/abstractcontroller.h"
+#include "inputs/xboxcontroller.h"
+#include "inputs/frsky.h"
+
 #include "commgen.h"
-#include "comm.h"
 
 typedef QSharedPointer<AbstractController> ControllerPointer;
 
@@ -22,18 +21,25 @@ class ControllerHandler : public QObject
 public:
     explicit ControllerHandler(QObject *parent = 0);
     ~ControllerHandler();
-    // TODO: controllerCount(); (renaming)
-    int getControllerCount();
+    int controllerCount();
 public slots:
     void start();
+    void stop();
 private:
-    QList<ControllerPointer> *controllers;
-    int controllerCount;
-    int maxUsableControllers = 1;
     void eventLoop();
     void resetControllers();
     void connectControllers();
     void connectDriveController(ControllerPointer controller);
+
+    QList<ControllerPointer> *m_controllers;
+    bool m_stop;
+    int m_controllerCount;
+    int m_maxUsableControllers = 1;
+
+private slots:
+    void sendDriveMotorPower(double left, double right);
+    // value is actually not used
+    // TODO: maybe better way to do this?
     // TODO: connect other controllers
 
 };

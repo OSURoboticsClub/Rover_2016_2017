@@ -4,7 +4,7 @@
 #include "abstractcontroller.h"
 
 /*
- * TODO: This class needs to be fully implemented, similar to the
+ * TODO: This class needs to be fully implemented
  */
 
 class FrSky : public AbstractController

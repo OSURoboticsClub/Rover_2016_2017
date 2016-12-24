@@ -1,5 +1,3 @@
-#include <QMainWindow>
-#include <QApplication>
 #include "comm.h"
 #include "serialhandler.h"
 

@@ -3,7 +3,7 @@
 
 XboxController::XboxController(int id, QObject *parent) : AbstractController(id, parent)
 {
-
+    // TODO: set priority
 }
 
 XboxController::~XboxController()
@@ -23,20 +23,20 @@ void XboxController::emitButtonChanges(int buttonIndex, bool value)
 
 bool XboxController::buttonA()
 {
-    //return currentState->axes[static_cast<int>(buttonMappings::A)];
+    return m_currentState->buttons[BUTTON_A];
 }
 
 bool XboxController::buttonB()
 {
-    //return currentState->axes[static_cast<int>(buttonMappings::B)];
+    return m_currentState->buttons[BUTTON_B];
 }
 
 bool XboxController::buttonX()
 {
-    //return currentState->axes[static_cast<int>(buttonMappings::X)];
+    return m_currentState->buttons[BUTTON_X];
 }
 
 bool XboxController::buttonY()
 {
-//    return currentState->axes[static_cast<int>(buttonMappings::Y)];
+    return m_currentState->buttons[BUTTON_Y];
 }

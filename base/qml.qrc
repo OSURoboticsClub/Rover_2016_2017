@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>map.qml</file>
         <file>panel.qml</file>
     </qresource>
 </RCC>

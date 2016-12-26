@@ -241,7 +241,7 @@ by inverting the output of `(1 << n)` (or `_BV(n)`) using the NOT operator. In C
 is represented by the tilde (`~`). It works on the value to its right:
 
 ```
-~1101b == ~(1 << 1) == ~_BV(1)
+1101b == ~(1 << 1) == ~_BV(1)
 ```
 
 Combining what we've learned, we can clear bits in registers:

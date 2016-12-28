@@ -2,15 +2,39 @@
 ## Packet Structure
 The Xtend radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into commands by special bytes. Each command has the following format:
 
-> \<start byte\>, \<length byte\>, \<2 byte CRC\>, \<command byte\>, [0 or more data bytes]
+> \<start byte (0x01)\>, \<length byte\>, \<2 byte CRC (little-endian)\>, \<command byte\>, [0 or more data bytes]
 
-Commands are delineated with start bytes. Following the start byte is a length byte that encodes the size of the packet, which is the size of all packet data after this byte (including the 2 byte CRC, command byte, and data bytes). Encoding the length allows for unambiguously delineating the boundaries of the packet. This strategy avoids the use of escape bytes, and ensures that packets with fixed size arguments are always the same size. Following the length byte is a two byte circular redundancy check (CRC) value that allows for checking if any packet data has been corrupted during transmission. The command byte and the data bytes are used as inputs into the algorithm. Details on the implementation of the CRC are in the code. Finally, a command byte determines the type of the encoded packet (see Packet Type Specification), followed by packet data.
+A start byte (value 0x01) begins each command. (Before receiving a start byte, the receiver should ignore all non-start input bytes.) Following the start byte is a single byte indicating the packet length (as an unsigned integer). The length takes into account all following bytes (the CRC, command bytes, and data byte(s)). After the length byte is the CRC, which is used to validate the contents of the packet after reception. (See below for details on CRC calculation. Packets with an invalid CRC should be silently ignored.) Collectively, the start byte, length byte, and CRC are the packet header.
+
+Following the packet header is the packet body, which is composed of a command byte (see Packet Types) and zero or more data bytes. The number and meaning of data bytes depends on the command byte, but will be reflected in the length byte in the header.
 
 Special bytes:
   Start - 0x01
 
+## CRC Calculation
+The CRC is 16-bit with a polynomial of 0x1021 and an initial value 0xFFFF. The CRC is calculated over the packet body (command byte and data byte(s)). The following function will calculate the CRC:
+
+```
+uint16_t calc_crc(uint8_t *body, int body_length){
+	uint16_t remainder = 0xFFFF;
+	for (int i = 0; i < body_length; i++){
+		remainder ^= body[i] << 8;
+		for (int bit = 8; bit > 0; bit--){
+			if (remainder & 0x8000){
+				remainder = (remainder << 1) ^ 0x1021;
+			} else {
+				remainder = (remainder << 1);
+			}
+		}
+	}
+	return remainder;
+}
+```
+
+After the CRC has been calculated, it should be checked for agreement with the CRC in the packet header. If they disagree, the packet should be silently discarded.
+
 ## Packet Types
-Commands are sent from the computer to the rover, and result in a reply from the rover to the computer. Command execution and the reply occur after the entire length of the packet is received and verified against the CRC. Conceptually, commands can be thought of as reading or writing values in the rover's memory. The MSB (bit 7, 0x80) of the command indicates whether that command is reading or writing (0 = writing, 1 = reading). When reading, the command should contain no data.
+Commands are sent from the computer to the rover, and result in a reply from the rover to the computer. Command execution and the reply occur after the entire length of the packet is received and verified against the CRC. Conceptually, commands can be thought of as reading or writing values in the rover's memory. The MSB (bit 7, 0x80) of the command byte indicates whether that command is reading or writing (0 = writing, 1 = reading). When reading, the command should contain no data.
 For each command, the rover sends a reply containing the command (in the same read/write form as it received it) and any additional data. For write commands, no data is sent in the reply. For read commands, the requested data is sent in the reply. If the rover receives a command it does not recognize, it sends a reply with a command byte of 0x00. If the computer attempts to write a read-only register, the rover acts as if the write succeeded.
  
 Multi-byte values are transmitted little-endian. Two’s complement is used for signed values.
@@ -19,6 +43,7 @@ Camera video data is transmitted through a separate interface. Camera commands a
 
 Note: when adding commands to the table, each argument's name must be unique among all commands. Since they are used in the rover firmware,
 don't change the name of existing command arguments.
+
 ## Packet Type Specification
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 

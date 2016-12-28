@@ -2,7 +2,10 @@
 ## Packet Structure
 The data radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into command packets by special bytes. Each command packet has the following format:
 
-> \<start byte (0x01)\>, \<length byte\>, \<2 byte CRC (little-endian)\>, \<command byte\>, [0 or more data bytes]
+```
+<start byte (0x01)>, <length byte>, <2 byte CRC (little-endian)>, <command byte>, [0 or more data bytes]
+└────────────────────────Packet Header──────────────────────────┘└────────────Packet Body──────────────┘
+```
 
 A start byte (value 0x01) begins each packet. (Before receiving a start byte, the receiver should ignore all non-start input bytes.) Following the start byte is a single byte indicating the packet length (as an unsigned integer). The length takes into account all following bytes (the CRC, command bytes, and data byte(s)). After the length byte is the CRC, which is used to validate the contents of the packet after reception. (See below for details on CRC calculation. Packets with an invalid CRC should be silently ignored.) Collectively, the start byte, length byte, and CRC are the packet header.
 

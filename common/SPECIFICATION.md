@@ -1,6 +1,6 @@
 # Radio Communication Specification
 ## Packet Structure
-The Xtend radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into commands by special bytes. Each command has the following format:
+The data radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into commands by special bytes. Each command has the following format:
 
 > \<start byte (0x01)\>, \<length byte\>, \<2 byte CRC (little-endian)\>, \<command byte\>, [0 or more data bytes]
 

@@ -34,7 +34,6 @@ void SerialHandler::run(){
         sleep(2);
     }
     qDebug() << "exciting serial read";
-    //this->terminate();
 }
 
 void SerialHandler::setupPort(QString name)
@@ -145,6 +144,5 @@ void SerialHandler::readData()
 }
 
 void SerialHandler::stopThread() {
-    qDebug() << "exiting read in";
     m_run = false;
 }

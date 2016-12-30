@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     serialRead = new SerialHandler();
     numThreads = 1;
     threadArray = new QThread *[numThreads];
-    threadArray[0]= serialRead;
+    threadArray[0] = serialRead;
 
     for (int i = 0; i < numThreads;i++)
     {

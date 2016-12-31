@@ -32,6 +32,7 @@ void PacketHandler::parsePacket(quint8 size)
         // error handling
 }
 
+// TODO: initial
 quint16 PacketHandler::crc(void *data, int size, quint16 initial)
 {
     quint16 remainder = 0xFFFF;

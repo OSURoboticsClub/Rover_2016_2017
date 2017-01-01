@@ -20,6 +20,7 @@
 
 /* TODO: Watchdog timer. */
 /* TODO: Debug facilities. */
+/* TODO: Fix unnecessary memory consumption of variable-length registers. */
 
 /* Triggers for data read commands. */
 void camera_command_trigger(void){
@@ -34,7 +35,6 @@ void callsign_trigger(void){
 	
 }
 
-/* TODO: Fix unnecessary memory consumption of variable-length registers. */
 void build_info_trigger(void){
 
 }

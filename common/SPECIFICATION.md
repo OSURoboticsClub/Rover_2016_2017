@@ -59,13 +59,13 @@ don't change the name of existing command arguments.
 | Potentiometers         | R  | 0x13 | u8 pot_1, u8 pot_2, u8 pot_3, u8 pot_4, u8 pot_5 | 0,0,0,0,0 | Potentiometer readings |
 | Servo                  |  W | 0x14 | u8 ax12_addr, i16 ax12_angle | 0,0 | Set the target angle of an AX12 servo. |
 | Select Camera          | RW | 0x20 | u8 selected_camera | 0 | 0-5; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
-| Callsign               | RW | 0x21 | * callsign_data| - | ASCII string of callsign (use numerals and capital letters only) |
-| Camera Command         |  W | 0x22 | * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
+| Callsign               | RW | 0x21 | u8 callsign_data_length, * callsign_data| - | ASCII string of callsign (use numerals and capital letters only) |
+| Camera Command         |  W | 0x22 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
 | GPS Position           | R  | 0x23 | u8 gps_valid, i64 latitude, i64 longitude, u32 altitude | 0,0,0,0 | GPS Position. Good when valid != 0. Sign meaning: +=north/east. Latitude and longitude are in 10e-6 minute units. Altitude is in meters. |
 | GPS Heading            | R  | 0x24 | i16 gps_heading | 0 | GPS Heading, in hundredths of a degree. Check GPS Position for validity. |
 | GPS Speed              | R  | 0x25 | u16 gps_speed   | 0 | GPS Speed, in m/h. Check GPS Position for validity. |
 | Magnetometer           | R  | 0x26 | i16 mag_x, i16 mag_y, i16 mag_z | 0,0,0 | External magnetometer reading. TODO: define units and axis directions. |
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
-| Debugging Info         | R  | 0x70 | * debug_str_data  | - | Read out the latest debug message. |
-| Build Info             | R  | 0x71 | * build_info_data | - | Read out string describing when/how the firmware was built. |
+| Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
+| Build Info             | R  | 0x71 | u8 build_info_data_length, * build_info_data | - | Read out string describing when/how the firmware was built. |

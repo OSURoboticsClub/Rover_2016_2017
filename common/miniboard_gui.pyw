@@ -12,8 +12,9 @@ from PyQt4.QtCore import *
 import struct
 import serial
 import signal
+import os
 
-signal.signal(signal.SIGINT, signal.SIG_DFL)
+signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
@@ -27,12 +28,7 @@ class MiniboardIO():
 	path = SerialPortPath
 	baud = 9600
 	def __init__(self):
-		self.__tty = serial.Serial(port=self.path,
-		                           baudrate=self.baud,
-	                               parity=serial.PARITY_NONE,
-	                               stopbits=serial.STOPBITS_ONE,
-	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.1)
+		os.system("stty -F %s -hupcl"%self.path)
 	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def write(self, packet_contents):
@@ -79,8 +75,15 @@ class MiniboardIO():
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""
+		self.__tty = serial.Serial(port=self.path,
+		                           baudrate=self.baud,
+	                               parity=serial.PARITY_NONE,
+	                               stopbits=serial.STOPBITS_ONE,
+	                               bytesize=serial.EIGHTBITS,
+	                               timeout=0.1)
 		self.write(packet_contents)
 		reply = self.read()
+		self.__tty.close()
 		return reply
 	
 	def port_info(self):
@@ -123,7 +126,7 @@ class RegisterController():
 			p = [chr(self.reg["code"] | 0x80)]
 			reply = self.io.writeread(p)
 			if reply[0] != p[0]:
-				print "Error: incorrect command code. Expected 0x%02X, got 0x%02X"%(p[0], reply[0])
+				print "Error: incorrect command code. Expected 0x%02X, got 0x%02X"%(ord(p[0]), ord(reply[0]))
 			b = 1
 			vs = []
 			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
@@ -175,6 +178,68 @@ def argtype_minwidth(argtype):
 	m = 2.5 + math.ceil(math.log10(argtype_maxval(argtype)))
 	return m * 9
 
+class BigIntSpinBox(QAbstractSpinBox):
+    """From http://stackoverflow.com/questions/26841036/pyqt4-spinbox-with-64bit-integers"""
+    def __init__(self, parent=None):
+        super(BigIntSpinBox, self).__init__(parent)
+
+        self._singleStep = 1
+        self._minimum = -18446744073709551616
+        self._maximum = 18446744073709551615
+
+        self.lineEdit = QLineEdit(self)
+
+        rx = QRegExp("[1-9]\\d{0,20}")
+        validator = QRegExpValidator(rx, self)
+
+        self.lineEdit.setValidator(validator)
+        self.setLineEdit(self.lineEdit)
+
+    def value(self):
+        try:
+            return int(self.lineEdit.text())
+        except:
+            raise
+            return 0
+
+    def setValue(self, value):
+        if self._valueInRange(value):
+            self.lineEdit.setText(str(value))
+
+    def stepBy(self, steps):
+        self.setValue(self.value() + steps*self.singleStep())
+
+    def stepEnabled(self):
+        return self.StepUpEnabled | self.StepDownEnabled
+
+    def setSingleStep(self, singleStep):
+        assert isinstance(singleStep, int)
+        # don't use negative values
+        self._singleStep = abs(singleStep)
+
+    def singleStep(self):
+        return self._singleStep
+
+    def minimum(self):
+        return self._minimum
+
+    def setMinimum(self, minimum):
+        assert isinstance(minimum, int) or isinstance(minimum, long)
+        self._minimum = minimum
+
+    def maximum(self):
+        return self._maximum
+
+    def setMaximum(self, maximum):
+        assert isinstance(maximum, int) or isinstance(maximum, long)
+        self._maximum = maximum
+
+    def _valueInRange(self, value):
+        if value >= self.minimum() and value <= self.maximum():
+            return True
+        else:
+            return False
+
 def setup(window, spec_table, io):
 	ww = QWidget(window)
 	flayout = QFormLayout()
@@ -198,7 +263,7 @@ def setup(window, spec_table, io):
 			if a[0] == "*":
 				widget = QLineEdit()
 			else:
-				widget = QSpinBox()
+				widget = BigIntSpinBox()
 				if a[2] or "w" not in r["rw"]:
 					widget.setEnabled(False)
 				widget.setMinimum(argtype_minval(a[0]))

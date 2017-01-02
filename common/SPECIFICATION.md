@@ -61,7 +61,7 @@ don't change the name of existing command arguments.
 | Select Camera          | RW | 0x20 | u8 selected_camera | 0 | 0-5; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
 | Callsign               | RW | 0x21 | u8 callsign_data_length, * callsign_data| - | ASCII string of callsign (use numerals and capital letters only) |
 | Camera Command         |  W | 0x22 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
-| GPS Position           | R  | 0x23 | u8 gps_valid, i64 latitude, i64 longitude, u32 altitude | 0,0,0,0 | GPS Position. Good when valid != 0. Sign meaning: +=north/east. Latitude and longitude are in 10e-6 minute units. Altitude is in meters. |
+| GPS Position           | R  | 0x23 | u8 gps_valid, i64 latitude, i64 longitude, i32 altitude | 0,0,0,0 | GPS Position. Good when valid != 0. Sign meaning: +=north/east. Latitude and longitude are in 10e-6 minute units. Altitude is in meters. |
 | GPS Heading            | R  | 0x24 | i16 gps_heading | 0 | GPS Heading, in hundredths of a degree. Check GPS Position for validity. |
 | GPS Speed              | R  | 0x25 | u16 gps_speed   | 0 | GPS Speed, in m/h. Check GPS Position for validity. |
 | Magnetometer           | R  | 0x26 | i16 mag_x, i16 mag_y, i16 mag_z | 0,0,0 | External magnetometer reading. TODO: define units and axis directions. |

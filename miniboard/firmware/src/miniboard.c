@@ -66,6 +66,10 @@ void init(void){
 
 void miniboard_main(void){
 	init();
+	Data->gps_valid = 1;
+	Data->longitude = 100;
+	Data->latitude = 101;
+	Data->altitude = 56;
 	while(1){
 		/* Miniboard main loop. */
 		DDRB |= _BV(PB7);

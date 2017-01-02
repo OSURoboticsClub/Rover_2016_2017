@@ -94,7 +94,7 @@ class RegisterController():
 		self.reg = reg_dict
 		self.widgets = widgets
 		self.io = io
-		self.fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i"}
+		self.fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i", "i64":"<Q", "i64":"<q"}
 	def writefunc(self):
 		"""Return a function (due to pyqt weirdness) for writing this register to the miniboard."""
 		def func():

@@ -224,15 +224,14 @@ ISR(TIMER1_OVF_vect)
 		CALLSIGN_BANK &= ~(CALLSIGN_BANK & _BV(CALLSIGN_PIN));
 }
 
-void set_callsign(uint8_t *callsign_str) {
-	uint8_t callsign_len = strnlen(callsign_str, 16);
+void set_callsign(uint8_t *callsign_str, uint8_t callsign_len){
 
 	// Set the callsign and the first morse character
 	callsign_set = true;
   	strncpy(callsign, callsign_str, callsign_len);
 	load_morse(callsign[0]);
 
-	// Enable output pin B6
+	// Enable output pin 
 	CALLSIGN_DDR |= _BV(CALLSIGN_PIN);
 
 	// No TIMER1 prescaling

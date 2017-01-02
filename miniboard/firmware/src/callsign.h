@@ -43,6 +43,6 @@
 
 /* Set the FPV callsign and start sending it.
  * This function will copy the callsign into module-specific memory. */
-void set_callsign(uint8_t *callsign_str);
+void set_callsign(uint8_t *callsign_str, uint8_t callsign_len);
 
 #endif /* CALLSIGN_H */

@@ -4,6 +4,7 @@
  * gps.c - Ublox Neo-7M GPS module interface.
  * Author(s): Nick Ames
  */
+#include <avr/io.h>
 #include "gps.h"
 #include "uart.h"
 #include "commgen.h"
@@ -293,6 +294,8 @@ static void handle_nmea(uint8_t *buf, uint8_t size){
 
 /* Handle each byte as it comes into the UART. */
 void gps_byte_handler(uint8_t c){
+	UDR0 = c;
+	return;
 	if(GPSBufSize < GPS_BUF_LEN){
 		GPSBuf[GPSBufSize] = c;
 		GPSBufSize++;

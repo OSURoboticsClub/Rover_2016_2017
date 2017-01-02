@@ -11,6 +11,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import struct
 import serial
+import signal
+
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
@@ -73,7 +76,8 @@ class MiniboardIO():
 	                               parity=serial.PARITY_NONE,
 	                               stopbits=serial.STOPBITS_ONE,
 	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.1)
+	                               timeout=0.1,
+	                               dsrdtr=True)
 		self.write(packet_contents)
 		reply = self.read()
 		self.__tty.close()

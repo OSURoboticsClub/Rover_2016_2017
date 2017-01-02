@@ -19,12 +19,20 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
 #TODO: Add auto-updating (1Hz?)
-SerialPort = "/dev/ttyACM0"
+#TODO: Add scroll bar
+SerialPortPath = "/dev/ttyACM0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
-	path = SerialPort
+	path = SerialPortPath
 	baud = 9600
+	def __init__(self):
+		self.__tty = serial.Serial(port=self.path,
+		                           baudrate=self.baud,
+	                               parity=serial.PARITY_NONE,
+	                               stopbits=serial.STOPBITS_ONE,
+	                               bytesize=serial.EIGHTBITS,
+	                               timeout=0.1)
 	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def write(self, packet_contents):
@@ -71,16 +79,8 @@ class MiniboardIO():
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""
-		self.__tty = serial.Serial(port=self.path,
-		                           baudrate=self.baud,
-	                               parity=serial.PARITY_NONE,
-	                               stopbits=serial.STOPBITS_ONE,
-	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.1,
-	                               dsrdtr=True)
 		self.write(packet_contents)
 		reply = self.read()
-		self.__tty.close()
 		return reply
 	
 	def port_info(self):

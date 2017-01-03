@@ -7,6 +7,7 @@
 #include <avr/interrupt.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
+#include <util/atomic.h>
 #include "uart.h"
 #include "comm.h"
 #include "commgen.h"
@@ -64,10 +65,22 @@ void init(void){
 	sei();
 }
 
+/* Get a value, then atomically set the target variable. */
+#define atomic_set(target, value) do {typeof(target) __valstore = value; ATOMIC_BLOCK(ATOMIC_RESTORESTATE){target = __valstore;} } while(0)
+
 void miniboard_main(void){
 	init();
+	/* Miniboard main loop. */
 	while(1){
-		/* Miniboard main loop. */
+		/* (GPS handled in-module) */
+		/* ADC (Pot channels and battery.) */
+		atomic_set(Data->battery_voltage, battery_mV());
+		atomic_set(Data->pot_1, pot_channel(1));
+		atomic_set(Data->pot_2, pot_channel(2));
+		atomic_set(Data->pot_3, pot_channel(3));
+		atomic_set(Data->pot_4, pot_channel(4));
+		atomic_set(Data->pot_5, pot_channel(5));
+		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 		_delay_ms(300);

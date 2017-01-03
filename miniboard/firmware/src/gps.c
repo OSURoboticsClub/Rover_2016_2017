@@ -4,7 +4,7 @@
  * gps.c - Ublox Neo-7M GPS module interface.
  * Author(s): Nick Ames
  */
-#include <avr/io.h>
+#include <avr/interrupt.h>
 #include "gps.h"
 #include "uart.h"
 #include "commgen.h"
@@ -26,17 +26,25 @@ void gps_init(void){
 }
 
 #define GPS_BUF_LEN 100
-#define GPS_VALID_TIMEOUT 3 #Number of seconds before the GPS fix is marked invalid
+#define GPS_VALID_TIMEOUT 3 /* Number of seconds before the GPS fix is marked invalid. Max. 4. */
 static uint8_t GPSBuf[GPS_BUF_LEN];
 static uint8_t GPSBufSize;
 
 /* Start a countdown timer for GPS_VALID_TIMEOUT seconds.
  * Once it expires, the Data->gps_valid field will be set to 0. */
 static void start_gps_valid_timer(void){
-	//TODO: Use timer 5
+	TCCR5B = 0;
+	TCNT5 = 0;
+	OCR5A = (uint16_t) 15625*GPS_VALID_TIMEOUT;
+	TIMSK5 = _BV(OCIE5A);
+	TCCR5B = _BV(CS52) | _BV(CS50); /* Set 1024 prescaler. */
 }
 
-/* TODO: interrupt for gps valid timer goes here. */
+ISR(TIMER5_COMPA_vect){
+	Data->gps_pos_valid = 0;
+	Data->gps_track_valid = 0;
+	TCCR5B = 0;
+}
 
 /* Parse a buffer of comma-separated fields. 
  * Ftable will be populated with the indexes of the
@@ -253,11 +261,10 @@ static void handle_gga(uint8_t *buf, uint8_t size){
 	if(*(buf + ftable[6]) == '0')return; /* No fix. */
 	
 	if(extract_decimal_precision(buf + ftable[9], 1, &altitude))return;
-	
 	Data->latitude = latitude;
 	Data->longitude = longitude;
 	Data->altitude = altitude;
-	Data->gps_valid = 1;
+	Data->gps_pos_valid = 1;
 	start_gps_valid_timer();
 }
 
@@ -265,12 +272,19 @@ static void handle_gga(uint8_t *buf, uint8_t size){
 static void handle_vtg(uint8_t *buf, uint8_t size){
 	int32_t heading, speed;
 	uint8_t ftable[15];
-	if(9 != parse_table(buf, size, ftable, 15))return;
-	if(*(buf + ftable[9]) != 'A')return;
-	if(extract_decimal_precision(buf + ftable[1], 2, &heading))return;
-	if(extract_decimal_precision(buf + ftable[7], 3, &speed))return;
+	if(9 != parse_table(buf, size, ftable, 15))goto error;
+	if(*(buf + ftable[9]) != 'A')goto error;
+	if(extract_decimal_precision(buf + ftable[1], 2, &heading))goto error;
+	if(extract_decimal_precision(buf + ftable[7], 3, &speed))goto error;
 	Data->gps_heading = heading;
 	Data->gps_speed = speed;
+	start_gps_valid_timer();
+	return;
+	
+	error:
+	/* Invalidate the gps track immediately, separately from the gps position,
+	 * since the receiver can provide position information without giving a track. */
+	Data->gps_track_valid = 0;
 }
 
 /* Check a string against a memory buffer.
@@ -294,8 +308,6 @@ static void handle_nmea(uint8_t *buf, uint8_t size){
 
 /* Handle each byte as it comes into the UART. */
 void gps_byte_handler(uint8_t c){
-	UDR0 = c;
-	return;
 	if(GPSBufSize < GPS_BUF_LEN){
 		GPSBuf[GPSBufSize] = c;
 		GPSBufSize++;

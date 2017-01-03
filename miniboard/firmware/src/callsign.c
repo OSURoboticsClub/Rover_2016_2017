@@ -225,10 +225,9 @@ ISR(TIMER1_OVF_vect)
 }
 
 void set_callsign(uint8_t *callsign_str, uint8_t callsign_len){
-
 	// Set the callsign and the first morse character
 	callsign_set = true;
-  	strncpy(callsign, callsign_str, callsign_len);
+  	strncpy((char *)callsign, (char *)callsign_str, callsign_len);
 	load_morse(callsign[0]);
 
 	// Enable output pin 

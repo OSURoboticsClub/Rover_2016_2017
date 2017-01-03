@@ -19,7 +19,6 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
-#TODO: Add auto-updating (1Hz?)
 #TODO: Add scroll bar
 SerialPortPath = "/dev/ttyACM0"
 

@@ -19,7 +19,6 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
-#TODO: Add scroll bar
 SerialPortPath = "/dev/ttyACM0"
 
 class MiniboardIO():
@@ -358,10 +357,17 @@ def setup(window, spec_table, io):
 	gh.addWidget(wbtn)
 	vlayout.addLayout(gh)
 	vlayout.addWidget(horizontalLine())
-	vlayout.addLayout(flayout)
+	scrollarea = QScrollArea()
+	scrollarea.setWidgetResizable(True)
+	inner = QFrame(scrollarea)
+	inner.setLayout(flayout)
+	scrollarea.setWidget(inner)
+	vlayout.addWidget(scrollarea)
 	ww.setLayout(vlayout)
 	window.setCentralWidget(ww)
-
+	sh = flayout.sizeHint()
+	window.resize(QSize(sh.width() + 50, 700))
+	
 def get_specpath():
 	"""Return the path to the specification file,
 	   using a hardcoded default, command-line argument, pop-up dialog, etc."""

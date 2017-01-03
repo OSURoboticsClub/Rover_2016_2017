@@ -29,16 +29,29 @@ class MiniboardIO():
 	def __init__(self):
 		os.system("stty -F %s -hupcl"%self.path)
 	
+	def calc_crc(self, body):
+		body = [ord(b) for b in body]
+		remainder = 0xFFFF
+		for i in range(0, len(body)):
+			remainder ^= body[i] << 8
+			remainder &= 0xFFFF
+			for bit in reversed(range(1,9)):
+				if remainder & 0x8000:
+					remainder = (remainder << 1) ^ 0x1021
+					remainder &= 0xFFFF
+				else:
+					remainder <<= 1
+					remainder &= 0xFFFF
+		return remainder
+	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def write(self, packet_contents):
-		"""Write a packet to the miniboard, inserting start, end, and escape bytes
-		   where necessary. """
+		"""Write a packet to the miniboard, inserting the header first."""
 		print "  send: ",
 		packet_contents = "".join(packet_contents)
-		packet_contents = packet_contents.replace(chr(0x02), "".join([chr(0x02), chr(0x02)]))
-		packet_contents = packet_contents.replace(chr(0x01), "".join([chr(0x02), chr(0x01)]))
-		packet_contents = packet_contents.replace(chr(0x03), "".join([chr(0x02), chr(0x03)]))
-		packet_contents = chr(0x01) + packet_contents + chr(0x03)
+		plen = len(packet_contents) + 2
+		crc = self.calc_crc(packet_contents)
+		packet_contents = chr(0x01) + chr(plen)  + chr(crc & 0xFF) + chr(crc >> 8) + packet_contents
 		for c in packet_contents:
 			print "0x%02X, "%ord(c),
 		print "\n",
@@ -46,8 +59,8 @@ class MiniboardIO():
 	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def read(self):
-		"""Read a packet from the miniboard and return the contents (with
-		   start, end, and escape bytes removed.
+		"""Read a packet from the miniboard and return the contents
+		   (with header removed).
 		   If the miniboard takes too long to reply, or if an error occurs,
 		   an exception will be raised. TODO: Exception type."""
 		print "  recv: ",
@@ -55,22 +68,22 @@ class MiniboardIO():
 		for c in reply:
 			print "0x%02X, "%ord(c),
 		print "\n",
+		if len(reply) == 0:
+			print "Error: no reply."
+			return ""
 		if reply[0] != chr(0x01):
 			print "Error: missing start byte."
 			return ""
-		if reply[-1] != chr(0x03):
-			print "Error: missing end byte."
+		if len(reply) < 5:
+			print "Error: no enough bytes."
 			return ""
-		reply = reply[1:-1]
-		extracted = []
-		esc = False
-		for c in reply:
-			if c == chr(0x02) and not esc:
-				esc = True
-				continue
-			extracted.append(c)
-			esc = False
-		return "".join(extracted)
+		if (len(reply) - 2) != ord(reply[1]):
+			print "Error: length mismatch (header says %d, packet is %d)"%(ord(reply[1]), len(reply))
+			return ""
+		if self.calc_crc(reply[4:]) != (ord(reply[3])<<8 | ord(reply[2])):
+			print "Error: CRC mismatch."
+			return ""
+		return "".join(reply[4:])
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""

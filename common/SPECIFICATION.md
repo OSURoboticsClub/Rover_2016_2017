@@ -1,6 +1,6 @@
 # Radio Communication Specification
 ## Packet Structure
-The data radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into command packets by special bytes. Each command packet has the following format:
+The data radios provide a bidirectional pipe between the rover and the computer (similar to a serial cable). Data is sent LSB first, just as in RS-232. This byte stream is divided into command packets. Each command packet has the following format:
 
 ```
 <start byte (0x01)>, <length byte>, <2 byte CRC (little-endian)>, <command byte>, [0 or more data bytes]
@@ -9,7 +9,7 @@ The data radios provide a bidirectional pipe between the rover and the computer 
 
 A start byte (value 0x01) begins each packet. (Before receiving a start byte, the receiver should ignore all non-start input bytes.) Following the start byte is a single byte indicating the packet length (as an unsigned integer). The length takes into account all following bytes (the CRC, command bytes, and data byte(s)). After the length byte is the CRC, which is used to validate the contents of the packet after reception. (See below for details on CRC calculation. Packets with an invalid CRC should be silently ignored.) Collectively, the start byte, length byte, and CRC are the packet header.
 
-Following the packet header is the packet body, which is composed of a command byte (see Packet Types) and zero or more data bytes. The number and meaning of data bytes depends on the command byte, but will be reflected in the length byte in the header.
+Following the packet header is the packet body, which is composed of a command byte (see Packet Types) and zero or more data bytes. Up to 127 bytes of packet data are permitted. The number and meaning of data bytes depends on the command byte, but will be reflected in the length byte in the header.
 
 Special bytes:
   Start - 0x01
@@ -41,7 +41,7 @@ Commands are sent from the computer to the rover, and result in a reply from the
 For each command, the rover sends a reply containing the command (in the same read/write form as it received it) and any additional data. For write commands, no data is sent in the reply. For read commands, the requested data is sent in the reply. If the rover receives a command it does not recognize, it sends a reply with a command byte of 0x00. If the computer attempts to write a read-only register, the rover acts as if the write succeeded.
  
 Multi-byte values are transmitted little-endian. Two’s complement is used for signed values.
-In the following table, argument specifications begin with a code (i8 = 8-bit int, u16 = 16-bit unsigned int, etc) indicating the size of each argument. Any variable length arguments are specified using a star (\*). The leftmost argument is the first to the sent down the pipe.
+In the following table, argument specifications begin with a code (i8 = 8-bit int, u16 = 16-bit unsigned int, etc) indicating the size of each argument. Any variable length arguments are specified using a star (\*). The leftmost argument is the first in the packet data.
 Camera video data is transmitted through a separate interface. Camera commands and camera selection are sent through this command protocol.
 
 Note: when adding commands to the table, each argument's name must be unique among all commands. Since they are used in the rover firmware,

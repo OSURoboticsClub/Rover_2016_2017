@@ -19,7 +19,6 @@ public:
     void setupPort(QString portName);
     bool isReady() const;
     void write(uint8_t *data, uint16_t count);
-    void run();
 
 signals:
     // TODO: fill these in
@@ -28,11 +27,16 @@ signals:
 protected:
 
 private:
-    void readData();
     QSerialPort port;
     void sendBuffer(QByteArray array);
     int state = 0;
     QString portName;
+    bool m_run;
+    void run();
+
+public slots:
+    void readData();
+    void stop();
 };
 
 extern SerialHandler serial;

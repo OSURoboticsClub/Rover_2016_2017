@@ -5,6 +5,9 @@
 #include <QObject>
 #include <QList>
 #include <QSharedPointer>
+#include <QObject>
+#include <QThread>
+#include <QDebug>
 
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
@@ -15,7 +18,7 @@
 typedef QSharedPointer<AbstractController> ControllerPointer;
 
 
-class ControllerHandler : public QObject
+class ControllerHandler : public QThread
 {
     Q_OBJECT
 public:
@@ -23,9 +26,9 @@ public:
     ~ControllerHandler();
     int controllerCount();
 public slots:
-    void start();
     void stop();
 private:
+    void run();
     void eventLoop();
     void resetControllers();
     void connectControllers();

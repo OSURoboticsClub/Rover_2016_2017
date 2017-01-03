@@ -8,7 +8,7 @@ set(SOURCES
    main.cpp
    mainwindow.cpp
    serialhandler.cpp
-
+  
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
@@ -48,3 +48,4 @@ target_link_libraries(main Qt5::Gamepad)
 target_link_libraries(main Qt5::SerialPort)
 target_link_libraries(main Qt5::QuickWidgets)
 target_link_libraries(main ${SFML_LIBRARIES})
+

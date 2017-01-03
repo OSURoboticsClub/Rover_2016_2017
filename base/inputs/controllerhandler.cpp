@@ -3,7 +3,7 @@
 #include <algorithm>
 
 ControllerHandler::ControllerHandler(QObject *parent)
-    : QObject(parent),
+    : QThread(parent),
       m_stop(false)
 {
 
@@ -15,7 +15,7 @@ ControllerHandler::~ControllerHandler()
 }
 
 
-void ControllerHandler::start()
+void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
@@ -35,15 +35,18 @@ int ControllerHandler::controllerCount() {
 }
 
 void ControllerHandler::eventLoop() {
+    qDebug() << "starting controller handler";
     while(!m_stop) {
         if(m_controllerCount != controllerCount()) resetControllers();
         for(int i = 0; i < std::min(m_controllerCount, m_maxUsableControllers); i++) {
             (*m_controllers)[i]->emitChanges();
         }
     }
+    qDebug() << "exciting controller handler";
 }
 
 void ControllerHandler::resetControllers() {
+    qDebug() << "resetting controllers";
     m_controllers = new QList<ControllerPointer>();
     m_controllerCount = controllerCount();
     for(int i = 0; i < m_controllerCount; i++) {

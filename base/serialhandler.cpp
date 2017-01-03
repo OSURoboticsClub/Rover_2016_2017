@@ -18,6 +18,7 @@ SerialHandler serial;
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
+     m_run = true;
 }
 
 SerialHandler::~SerialHandler()
@@ -27,13 +28,15 @@ SerialHandler::~SerialHandler()
 
 void SerialHandler::run()
 {
-    if(!this->isReady()) {
-        qDebug() << "Serial is not set up";
-        return;
+    qDebug() << "starting serial read";
+    while (m_run){
+        /*qDebug() << "Reading Data";
+        sleep(2);
+        qDebug() << "------------";
+        sleep(2);*/
     }
-    else {
-        readData();
-    }
+    qDebug() << "exciting serial read";
+
 }
 
 void SerialHandler::setupPort(QString name)
@@ -136,4 +139,7 @@ void SerialHandler::readData()
     }
     while(port.isReadable());
 */
+}
+void SerialHandler::stop() {
+    m_run = false;
 }

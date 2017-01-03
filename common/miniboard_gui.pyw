@@ -240,12 +240,15 @@ class BigIntSpinBox(QAbstractSpinBox):
         else:
             return False
 
+AutoreadTimer = None
+
 def setup(window, spec_table, io):
 	ww = QWidget(window)
 	flayout = QFormLayout()
 	vlayout = QVBoxLayout()
 	read_list = []
 	write_list = []
+	autoread_list = []
 	for r in spec_table:
 		label = QLabel(r["name"])
 		hl = QHBoxLayout()
@@ -285,16 +288,22 @@ def setup(window, spec_table, io):
 		wbtn = QToolButton()
 		wbtn.setText("Write")
 		wbtn.pressed.connect(writefunc)
+		ar_check = QCheckBox()
+		
 		if "r" not in r["rw"]:
 			rbtn.setEnabled(False)
+			ar_check.setEnabled(False)
 		else:
 			read_list.append(readfunc)
+			autoread_list.append((ar_check, readfunc))
 		if "w" not in r["rw"]:
 			wbtn.setEnabled(False)
 		else:
 			write_list.append(writefunc)
+			
 		bvl = QVBoxLayout()
 		hbvl = QHBoxLayout()
+		hbvl.addWidget(ar_check)
 		hbvl.addWidget(rbtn)
 		hbvl.addWidget(wbtn)
 		bvl.addLayout(hbvl)
@@ -313,15 +322,28 @@ def setup(window, spec_table, io):
 	def write_all():
 		for f in write_list:
 			f()
+	
+	def autoread():
+		for t in autoread_list:
+			if t[0].isChecked(): 
+				print "autoread"
+				t[1]()
+	
 	rbtn = QToolButton()
 	rbtn.setText("Read All")
 	rbtn.pressed.connect(read_all)
 	wbtn = QToolButton()
 	wbtn.setText("Write All")
 	wbtn.pressed.connect(write_all)
+	ar_lbl = QLabel("Auto Read");
+	
+	timer = QTimer(ar_lbl)
+	timer.timeout.connect(autoread)
+	timer.start(1000);
+	
+	gh.addWidget(ar_lbl)
 	gh.addWidget(rbtn)
 	gh.addWidget(wbtn)
-	
 	vlayout.addLayout(gh)
 	vlayout.addWidget(horizontalLine())
 	vlayout.addLayout(flayout)

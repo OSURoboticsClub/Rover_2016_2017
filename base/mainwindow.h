@@ -1,7 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
+#include <QVector2D>
+#include <QVector>
 #include <QMainWindow>
 #include <QSerialPort>
 #include <QDebug>
@@ -11,6 +12,7 @@
 
 #include "serialhandler.h"
 #include "inputs/controllerhandler.h"
+#include "threadarray.h"
 
 
 namespace Ui {
@@ -32,7 +34,9 @@ private:
     ControllerHandler *m_controller;
     bool _serialRunning;
     int numThreads;
-    QThread **threadArray;
+    ThreadArray *threadarray;
+    //QThread **threadArray;
+    //QVector<QVector<QThread>> threadArray;
 
 private slots:
     void on_exit_clicked();

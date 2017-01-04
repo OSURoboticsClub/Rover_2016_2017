@@ -8,6 +8,7 @@ set(SOURCES
    main.cpp
    mainwindow.cpp
    serialhandler.cpp
+   threadarray.cpp
   
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
@@ -18,6 +19,7 @@ set(SOURCES
 set(HEADERS
     mainwindow.h
     serialhandler.h
+    threadarray.h
 
     inputs/controllerhandler.h
     inputs/abstractcontroller.h

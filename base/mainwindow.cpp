@@ -10,13 +10,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    threadarray = new ThreadArray();
     m_serial = new SerialHandler();
     m_controller = new ControllerHandler();
+    /*
     numThreads = 2;
     threadArray = new QThread *[numThreads];
+    //QVector<QVector<QThread>> threadArray(numThreads);
     threadArray[0] = m_serial;
     threadArray[1] = m_controller;
-
+    //threadArray.push_back(m_serial);
+    //threadArray.push_back(m_controller);
     for (int i = 0; i < numThreads;i++)
     {
         threadArray[i]->start();
@@ -24,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(closeThreads()), m_serial, SLOT(stop()));
     connect(this,SIGNAL(closeThreads()), m_controller, SLOT(stop()));
+    */
+
+
+    threadarray->push(m_serial);
+    threadarray->push(m_controller);
     _serialRunning = false;
 }
 
@@ -41,8 +50,9 @@ void MainWindow::on_exit_clicked()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    /*
+
     qDebug() << "start close";
+    /*
     emit closeThreads();
     m_serial->wait();
     for (int i = 0; i < numThreads; i++)
@@ -54,7 +64,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     delete ui;
     qDebug() << "end close";
     event->accept();
-    */
+
 
     qDebug() << "closing";
     emit closeThreads();
@@ -107,6 +117,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
         delete threadArray[i];
     }
     delete threadArray;
+    */
+
+    while (!threadarray->clear()){}
+    delete threadarray;
     delete ui;
 
     qDebug() << "closed";

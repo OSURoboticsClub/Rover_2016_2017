@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QThread>
 #include <QTime>
+#include "serialhandler.h"
+#include "inputs/controllerhandler.h"
 
 class ThreadArray : public QObject {
     Q_OBJECT
@@ -18,12 +20,14 @@ private:
     struct threadnode {
         QThread *n_thread;
         threadnode *next;
+        int order;
     };
     threadnode *threadhead;
     //this is so that I don't have to rewrite the clear function
     QThread **threadArray;
     void convertToArray();
     void deleteThreadNodes();
+    bool clearing;
 
 signals:
     void closeThreads();

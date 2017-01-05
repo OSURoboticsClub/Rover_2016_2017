@@ -19,6 +19,7 @@ void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
+    qDebug() << "exciting controller handler";
 }
 
 void ControllerHandler::stop()
@@ -42,7 +43,6 @@ void ControllerHandler::eventLoop() {
             (*m_controllers)[i]->emitChanges();
         }
     }
-    qDebug() << "exciting controller handler";
 }
 
 void ControllerHandler::resetControllers() {

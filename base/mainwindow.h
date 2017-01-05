@@ -34,7 +34,7 @@ private:
     ControllerHandler *m_controller;
     bool _serialRunning;
     int numThreads;
-    ThreadArray *threadarray;
+    ThreadArray threadarray;
     //QThread **threadArray;
     //QVector<QVector<QThread>> threadArray;
 

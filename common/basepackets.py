@@ -3,78 +3,97 @@
 """This packet generates C++ files for handling packets on the
 side of the base station."""
 import re
+from collections import OrderedDict
 
 class BasePackets(object):
-    def __init__(self, specification=None, header_template=None,
-                 source_template=None, header_output="p.h",
-                 source_output="packethandler.cpp"):
-        self.packets = None
-        self.specification = specification
-        self.header_template = header_template
-        self.source_template = source_template
-        self.header_output = header_output
-        self.source_output = source_output
+    def __init__(self, specification=None, files={}):
+        # files {"input_file": "output_file"}
+        self._packets = None
+        self._specification = specification
+        self.files = files
 
-        self._arg_size_extractor = re.compile(r"(\d|\*)+$")
+        self._params = {}
         self._tabsize = 4
 
-    def write_header(self):
-        if self.specification is None:
-            raise ValueError("The specification file has not been specified.")
-        elif self.header_template is None:
-            raise ValueError("Header template is not specified.")
-        elif self.header_output is None:
-            raise ValueError("Header output is not specified.")
+        # requires removing all whitespace
+        self._param_extractor = re.compile(r"(?<=:)[a-zA-Z0-9_]+")
 
-        if self.packets is None:
+        self._class_extractor = re.compile(r"(?<=class )[a-zA-Z]+")
+        self._function_arg_extractor = re.compile(r"\(.+\)")
+        self._arg_size_extractor = re.compile(r"(\d|\*)+$")
+
+    def packets():
+        def fget(self):
+            return self._packets
+        return locals()
+    packets = property(**packets())
+
+    def specification():
+        def fget(self):
+            return self._specification
+        def fset(self, value):
+            self._specification = value
+        return locals()
+    specification = property(**specification())
+
+    def files():
+        def fget(self):
+            return self._files
+        def fset(self, value):
+            self._files = OrderedDict(sorted(value.items(),
+                key=lambda x: x[0].endswith(".cpp")))
+        return locals()
+    files = property(**files())
+
+    def write_files(self):
+        for t, s in self._files.iteritems():
+            self._write_file(str(t), str(s))
+
+    def _write_file(self, template, output):
+        if self._specification is None:
+            raise ValueError("The specification file has not been specified.")
+        if self._packets is None:
             self.extract_table()
 
-        with open(self.header_template, "r") as f:
-            header_template = f.read().splitlines()
+        with open(template) as f:
+            file_template = f.read().splitlines()
 
-        with open(self.header_output, "w+") as fh:
-            for line in header_template:
-                fh.write(line)
-                fh.write("\n")
-                if "@packet_types_header" in line:
-                    fh.write(self.packet_types_header(line=line))
+        with open(output, "w+") as f:
+            for line in file_template:
+                f.write(line + "\n")
+                if "class" in line:
+                    if "enum" in line:
+                        continue
+                    self._params.update({"class":
+                        re.search(self._class_extractor, line).group(0)})
+                if "@" not in line:
+                    continue
+                elif "@datastream" in line:
+                    self._params.update({"datastream":
+                        self._extract_param(line)})
+                elif "@types_enum" in line:
+                    self._params.update({"types_enum":
+                        self._extract_param(line)})
+                elif "@crc" in line:
+                    self._params.update({"crc":
+                        self._extract_param(line)})
+                elif "@packet_types_header" in line:
+                    f.write(self.packet_types_header(line=line))
                 elif "@recieved_signals_header" in line:
-                    fh.write(self.packet_signals_header(line=line))
+                    f.write(self.packet_signals_header(line=line))
                 elif "@write_slots_header" in line:
-                    fh.write(self.write_slots_header(line=line))
+                    f.write(self.write_slots_header(line=line))
                 elif "@read_slots_header" in line:
-                    fh.write(self.read_slots_header(line=line))
-
-
-    def write_source(self):
-        if self.specification is None:
-            raise ValueError("The specification file has not been specified.")
-        elif self.source_template is None:
-            raise ValueError("Source template is not specified.")
-        elif self.source_output is None:
-            raise ValueError("Source output is not specified.")
-
-        if self.packets is None:
-            self.extract_table()
-
-        with open(self.source_template, "r") as f:
-            source_template = f.read().splitlines()
-
-        with open(self.source_output, "w+") as fh:
-            for line in source_template:
-                fh.write(line)
-                fh.write("\n")
-                if "@parse_read_cases" in line:
-                    fh.write(self.parse_read_cases(line=line))
-                elif "@parse_write_cases" in line:
-                    fh.write(self.parse_write_cases(line=line))
+                    f.write(self.read_slots_header(line=line))
+                elif "@parse_packets" in line:
+                    f.write(self.parse_packets(line=line))
                 elif "@write_slots_source" in line:
-                    fh.write(self.write_slots_source(line=line))
+                    f.write(self.write_slots_source(line=line))
                 elif "@read_slots_source" in line:
-                    fh.write(self.read_slots_source(line=line))
+                    f.write(self.read_slots_source(line=line))
 
     def extract_table(self):
-        with open(self.specification, "r") as f:
+        with open(self._specification, "r") as f:
             file_str = f.read()
 
         s = file_str.find("\n| Name | RW | Command Code")
@@ -84,7 +103,7 @@ class BasePackets(object):
             table_str = file_str[s:]
         else:
             table_str = file_str[s:s + e]
-        self.packets = []
+        self._packets = []
         for l in table_str.split("\n"):
             if len(l) == 0: continue
             if l[0] == "|":
@@ -109,7 +128,7 @@ class BasePackets(object):
                 raise RuntimeError(
                     "Default list length mismatch on command %s" % name
                 )
-            self.packets.append({
+            self._packets.append({
                 "name": name,
                 "rw": rw,
                 "code": code,
@@ -121,7 +140,7 @@ class BasePackets(object):
     def packet_types_header(self, line=None):
         string = ""
         ws = self._whitespace(line)
-        for packet in self.packets:
+        for packet in self._packets:
             uppercase_name = packet["name"].upper().replace(" ", "_")
             string += ws + ("%s = %i,\n" % (uppercase_name, packet["code"]))
         return string
@@ -129,17 +148,17 @@ class BasePackets(object):
     def packet_signals_header(self, line=None):
         string = ""
         ws = self._whitespace(line)
-        for packet in self.packets:
+        for packet in self._packets:
             if "r" in packet["rw"]:
 
-                string += (ws + "void " + self._get_signal_name(packet) + "(" +
+                string += (ws + "void " + self._signal_name(packet) + "(" +
                           self._argument_proto(packet) + ");\n")
         return string
 
     def write_slots_header(self, line=None):
         string = ""
         ws = self._whitespace(line)
-        for packet in self.packets:
+        for packet in self._packets:
             if "w" in packet["rw"]:
                 string += (ws + "void write" + self._camelcase(packet["name"]) +
                            "(" + self._argument_proto(packet) + ");\n")
@@ -148,38 +167,48 @@ class BasePackets(object):
     def read_slots_header(self, line=None):
         string = ""
         ws = self._whitespace(line)
-        for packet in self.packets:
+        for packet in self._packets:
             if "r" in packet["rw"]:
                 string += (ws + "void read" + self._camelcase(packet["name"]) +
                            "();\n")
         return string
 
-    def parse_read_cases(self, line=None):
-        string = ""
+    def parse_packets(self, line=None):
         ws = self._whitespace(line)
+        string = ""
+        string += ws + "quint16 _crc;\n"
+        string += ws + ("%s >> _crc;\n" % self._params["datastream"])
+        string += ws + "quint8 _packetType;\n"
+        string += ws + ("%s >> _packetType;\n" % self._params["datastream"])
         i = 0
-        for packet in self.packets:
+        for packet in self._packets:
             uppercase_name = packet["name"].upper().replace(" ", "_")
             if "r" not in packet["rw"]:
                 continue
 
             if i is 0:
-                string += (ws + "if(packet.at(0) == m_types::%s) {\n"
-                           % uppercase_name)
+                string += (ws + "if(_packetType == static_cast<quint8>" +
+                    "(%s::%s)) {\n" % (
+                        self._params["types_enum"],
+                        uppercase_name)
+                    )
                 i += 1
             else:
-                string += (ws + "else if(packet.at(0) == m_types::%s) {\n"
-                           % uppercase_name)
-            packet_size = self._get_packet_size(packet)
+                string += (ws + "else if(_packetType == static_cast<quint8>" +
+                    "(%s::%s)) {\n" % (
+                        self._params["types_enum"],
+                        uppercase_name)
+                    )
+            packet_size = self._packet_size(packet)
             if packet_size is not None:
-                string += (ws + "\tif(packet.size() != %i) return;\n" %
-                           packet_size)
-                for arg in pacet["argument"]:
+                for arg in packet["argument"]:
                     arg_type = self._expand_argument(arg[0])
                     string += ws + "\t%s %s;\n" % (arg_type, arg[1])
-                    string += ws + "\tstream >> %s;\n" % arg[1]
+                    string += ws + "\t%s >> %s;\n" % (
+                        self._params["datastream"], arg[1]
+                    )
 
-                string += ws + "\temit " + self._get_signal_name(packet) + "("
+                string += ws + "\temit " + self._signal_name(packet) + "("
                 string += "".join(map(lambda x: x[1] + ", ",
                                       packet["argument"])).strip(" ,")
                 string += ");\n"
@@ -188,24 +217,40 @@ class BasePackets(object):
 
         return string.expandtabs(self._tabsize)
 
-    def _get_signal_name(self, packet):
-        return (self._camelcase(packet["name"], capitalize_first_word=False) +
-                "Received")
-
-    def parse_write_cases(self, line=None):
-        string = ""
-        ws = self._whitespace(line)
-        return string
 
     def write_slots_source(self, line=None):
         string = ""
-        ws = self._whitespace(line)
-        return string
+        for packet in self._packets:
+            if "w" not in packet["rw"]:
+                continue
+            # TODO: CRC
+            string += ("void %s::write%s (%s)\n{\n" % (
+                self._params["class"],
+                self._camelcase(packet["name"]),
+                self._argument_proto(packet),
+            ))
+            string += "\t" + self._params["datastream"]
+            for arg in packet["argument"]:
+                string += " << " + arg[1]
+            string += ";\n}\n\n"
+        return string.expandtabs(self._tabsize)
 
     def read_slots_source(self, line=None):
         string = ""
         ws = self._whitespace(line)
         return string
+
+    def _parse_function_args(self, str):
+        arguments = re.search(self._function_arg_extractor, str).group(0)
+        if arguments is None:
+            return None
+        arguments = arguments.strip("() ")
+        arguments = list(map(lambda x: x.strip(" ,"), arguments))
+        return arguments
+
+    def _signal_name(self, packet):
+        return (self._camelcase(packet["name"], capitalize_first_word=False) +
+                "Received")
 
     def _expand_argument(self, arg):
         if arg == "*":
@@ -241,7 +286,7 @@ class BasePackets(object):
         num_spaces = (len(reference) - len(reference.lstrip(" ")))
         return " " * num_spaces
 
-    def _get_packet_size(self, packet):
+    def _packet_size(self, packet):
         size = 0
         for arg in packet["argument"]:
             arg_size = re.search(self._arg_size_extractor, arg[0]).group(0)
@@ -256,6 +301,10 @@ class BasePackets(object):
             size += arg_size
         return size
 
+    def _extract_param(self, string):
+        s = string.replace(" ", "")
+        return re.search(self._param_extractor, s).group(0)
+
 
 if __name__ == "__main__":
     import argparse
@@ -264,11 +313,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--src", type=str, default=".")
     parser.add_argument("--dest", type=str, default=".")
+    parser.add_argument("--name", type=str, default="packethandler")
     parser.add_argument("--spec", type=str, default="SPECIFICATION.md")
     args = parser.parse_args()
-
-    spec_file = os.path.join(args.src, args.spec)
-
-    b = BasePackets(specification="SPECIFICATION.md",
-                    source_template="packethandler.cpp", source_output="p.cpp")
-    b.write_source()
+    header_template = os.path.join(args.src, args.name) + ".h"
+    header_output = os.path.join(args.dest, args.name) + ".h"
+    source_template = os.path.join(args.src, args.name) + ".cpp"
+    source_output = os.path.join(args.dest, args.name) + ".cpp"
+    specification = args.spec
+    b = BasePackets(
+        specification=specification,
+        files = {header_template: header_output, source_template: source_output}
+    )
+    b.write_files()

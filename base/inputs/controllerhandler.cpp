@@ -88,7 +88,7 @@ void ControllerHandler::sendDriveMotorPower(double left, double right)
     right *= conversionFactor;
     int8_t l_drive = static_cast<int8_t>(left);
     int8_t r_drive = static_cast<int8_t>(right);
-
+    /*
     send_drive_motor_power(l_drive, l_drive, l_drive,
-                           r_drive, r_drive, r_drive);
+                           r_drive, r_drive, r_drive); */
 }

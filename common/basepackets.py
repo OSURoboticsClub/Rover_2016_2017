@@ -344,7 +344,7 @@ class BasePackets(object):
                 self._camelcase(packet["name"]),
                 self._argument_proto(packet),
             ))
-
+            # TODO: this needs to be a spearate function
             string += "\tquint16 _crc = 0xFFFF;\n"
             for arg in packet["argument"]:
                 string += ("\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (

@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stop()));
     _serialRunning = false;
-    emit startThreads();
 }
 
 //would need to destruct in the close button as well
@@ -147,3 +146,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
  * destructor won't be called if you exit main thread,
  * so have to add destructor functionality to both
  */
+
+void MainWindow::on_actionStart_Thread_triggered()
+{
+    emit startThreads();
+}
+
+void MainWindow::on_actionStop_Thread_triggered()
+{
+    emit closeThreads();
+}

@@ -27,7 +27,7 @@ private:
     Ui::MainWindow *ui;
 
     QSerialPort output;
-    SerialHandler *serialRead;
+
     bool _serialRunning;
     int numThreads;
     QThread **threadArray;
@@ -38,6 +38,10 @@ public slots:
     void connectSerial();
 
 private slots:
+
+    void on_actionStart_Thread_triggered();
+
+    void on_actionStop_Thread_triggered();
 
 signals:
     void startReadIn();

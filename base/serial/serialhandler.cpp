@@ -7,21 +7,68 @@
 
 
 #include "serial/serialhandler.h"
+#include <QSerialPortInfo>
 
 
+SerialHandler* SerialHandler::createInstance()
+{
+    return new SerialHandler();
+}
+
+SerialHandler* SerialHandler::instance()
+{
+    return Singleton<SerialHandler>::instance(SerialHandler::createInstance);
+}
+
+SerialHandler::~SerialHandler()
+{
+}
+
+void SerialHandler::start()
+{
+    qDebug() << "starting serial read";
+    eventLoop();
+}
+
+bool SerialHandler::connectDevice()
+{
+    QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
+    for(int i = 0; i < serialPorts.size(); i++) {
+        if(serialPorts[i].serialNumber() == "serial string") {
+            setDevice(new QSerialPort(serialPorts[i]));
+            return true;
+        }
+    }
+    return false;
+}
+
+void SerialHandler::setDevice(QIODevice *d)
+{
+    m_datastream.setDevice(d);
+}
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
     m_run = true;
 }
 
-SerialHandler::~SerialHandler()
+SerialHandler::SerialHandler(QIODevice *d, QObject *parent) :
+    QThread(parent),
+    m_datastream(d)
 {
-    //delete port;
 }
 
-void SerialHandler::run(){
-    qDebug() << "starting serial read";
+SerialHandler::SerialHandler(QByteArray *a, QIODevice::OpenMode flags, QObject *parent) :
+    QThread(parent),
+    m_datastream(a, flags)
+{
+}
+
+
+
+
+void SerialHandler::eventLoop()
+{
     while (m_run){
         qDebug() << "Reading Data";
         sleep(2);
@@ -31,113 +78,12 @@ void SerialHandler::run(){
     qDebug() << "exciting serial read";
 }
 
-void SerialHandler::setupPort(QString name)
-{
-    this->portName = name;
-    port.setPortName(this->portName);
-    if(port.open(QIODevice::ReadOnly)) {
-        if(!port.setBaudRate(QSerialPort::Baud57600)) {
-            qDebug() << port.errorString();
-            return;
-        }
-        if(!port.setDataBits(QSerialPort::Data8)) {
-            qDebug() << port.errorString();
-            return;
-        }
-        if(!port.setParity(QSerialPort::NoParity)) {
-            qDebug() << port.errorString();
-            return;
-        }
-        if(!port.setStopBits(QSerialPort::OneStop)) {
-            qDebug() << port.errorString();
-            return;
-        }
-        if(!port.setFlowControl(QSerialPort::NoFlowControl)) {
-            qDebug() << port.errorString();
-            return;
-        }
-    }
-    else {
-        qDebug() << port.errorString();
-        return;
-    }
-    this->state = 1;
-}
 
-/**
- * Checks if the serial is ready for reading/writing.
- **/
-bool SerialHandler::isReady() const
-{
-    if(this->state > 0)
-        return true;
-    return false;
-}
-
-/**
- * Writes to the QSerialPort instance within the class.
- **/
-void SerialHandler::write(uint8_t *data, uint16_t count)
-{
-    port.write(reinterpret_cast<const char*>(data), count);
-}
-
-/**
- * Continuous loop for reading data from the serial. This function continuously
- * reads bytes from the serial and stores them. When a complete packet is
- * received, a signal is emitted with the data from the packet. This function
- * runs in a separate thread.
- **/
-void SerialHandler::readData()
+void SerialHandler::parsePacket(int size)
 {
 
-    //this->exit(0);
-/*
-    uint8_t *buffer = (uint8_t *)malloc(0);
-    char curChar[1] = {0};
-    size_t size = 0;
-    if(!port.isReadable())
-    {
-        qDebug() << "The port is unreadable";
-        return;
-    }
-    do
-    {
-        if(!port.getChar(curChar))
-            continue;
-        size++;
-        buffer = (uint8_t *)realloc(buffer, size);
-        if(*curChar == ESCAPE_BYTE) {
-            this->port.getChar(curChar);
-            buffer[size-1] = (uint8_t)*curChar;
-            continue;
-        }
-        if(*curChar == STOP_BYTE) {
-            size_t size = 0;
-            free(buffer);
-            uint8_t *buffer = (uint8_t *)malloc(0);
-            messageBuffer *packet = (messageBuffer *)malloc(sizeof(messageBuffer *));
-            packet->buffer = buffer;
-            packet->size = size;
-
-            if(*packet->buffer == BATTERYVOLTAGE_TYPE)
-            {
-                packets_BatteryVoltage p = decodeBatteryVoltage(packet);
-
-                qDebug() << p.battery_voltage;
-
-
-
-            }
-            freeMessageBuffer(packet);
-            return;
-        }
-        buffer[size-1] = (uint8_t)*curChar;
-    }
-    while(port.isReadable() && !this->isInterruptionRequested());
-*/
 }
 
-void SerialHandler::stopThread() {
+void SerialHandler::stop() {
     m_run = false;
 }

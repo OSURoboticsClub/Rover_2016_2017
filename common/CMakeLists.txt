@@ -4,12 +4,12 @@ set("${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -g")
 
 include_directories("${CMAKE_SOURCE_DIR}/../base/serial/")
 
-add_custom_command(OUTPUT packethandler.h packethandler.cpp
+add_custom_command(OUTPUT serialhandler.h serialhandler.cpp
     COMMAND python basepackets.py
-    ARGS --dest="${CMAKE_CURRENT_BINARY_DIR}"
-    ARGS --src="${CMAKE_CURRENT_SOURCE_DIR}"
+    ARGS --dest="${CMAKE_BINARY_DIR}/base/serial/"
+    ARGS --src="${CMAKE_SOURCE_DIR}/base/serial/"
     DEPENDS basepackets.py
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/base/serial/)
 
 add_custom_target(generation
     DEPENDS packethandler.h packethandler.cpp)

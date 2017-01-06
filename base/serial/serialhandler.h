@@ -14,11 +14,14 @@
 class SerialHandler : public QThread
 {
     Q_OBJECT
+public:
     ~SerialHandler();
     static SerialHandler* instance();
 
 
     bool connectDevice();
+
+    void setDevice(QIODevice *d);
     QIODevice *device() const;
 
 private:

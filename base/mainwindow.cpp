@@ -11,17 +11,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    serialRead = new SerialHandler();
     numThreads = 1;
     threadArray = new QThread *[numThreads];
-    threadArray[0] = serialRead;
+    threadArray[0] = SerialHandler::instance();
 
     for (int i = 0; i < numThreads;i++)
     {
         threadArray[i]->start();
     }
 
-    connect(this, SIGNAL(closeThreads()), serialRead, SLOT(stopThread()));
+    connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stopThread()));
     _serialRunning = false;
 
 }

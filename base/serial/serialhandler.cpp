@@ -7,6 +7,7 @@
 
 
 #include "serial/serialhandler.h"
+#include "singleton.h"
 #include <QSerialPortInfo>
 
 

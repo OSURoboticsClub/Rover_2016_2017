@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QQuickWidget>
+#include <QThread>
+#include <QTime>
 
 #include "serialhandler.h"
 #include "inputs/controllerhandler.h"
@@ -17,13 +19,33 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    virtual void closeEvent ( QCloseEvent * event );
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
+
+    QSerialPort output;
+    SerialHandler *serialRead;
+    bool _serialRunning;
+    int numThreads;
+    QThread **threadArray;
+
     SerialHandler *m_serial;
     ControllerHandler *m_controller;
+
+public slots:
+    void connectSerial();
+
+private slots:
+
+signals:
+    void startReadIn();
+    void stopReadIn();
+    void closeThreads();
+
+
 };
 
 #endif // MAINWINDOW_H

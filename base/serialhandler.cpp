@@ -1,5 +1,5 @@
 /**
- * The SerialHandler class will handle serial interfacing with the radio that
+ *The SerialHandler class will handle serial interfacing with the radio that
  * will transmit data to the rover. This class will contain methods for sending
  * packets to the rover. It will also emit read packets from the serial and
  * emit signals when a packet is recieved.
@@ -17,6 +17,7 @@ SerialHandler serial;
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
+    m_run = true;
 }
 
 SerialHandler::~SerialHandler()
@@ -24,15 +25,15 @@ SerialHandler::~SerialHandler()
     //delete port;
 }
 
-void SerialHandler::run()
-{
-    if(!this->isReady()) {
-        qDebug() << "Serial is not set up";
-        return;
+void SerialHandler::run(){
+    qDebug() << "starting serial read";
+    while (m_run){
+        qDebug() << "Reading Data";
+        sleep(2);
+        qDebug() << "------------";
+        sleep(2);
     }
-    else {
-        readData();
-    }
+    qDebug() << "exciting serial read";
 }
 
 void SerialHandler::setupPort(QString name)
@@ -94,6 +95,8 @@ void SerialHandler::write(uint8_t *data, uint16_t count)
  **/
 void SerialHandler::readData()
 {
+
+    //this->exit(0);
 /*
     uint8_t *buffer = (uint8_t *)malloc(0);
     char curChar[1] = {0};
@@ -127,12 +130,19 @@ void SerialHandler::readData()
                 packets_BatteryVoltage p = decodeBatteryVoltage(packet);
 
                 qDebug() << p.battery_voltage;
+
+
+
             }
             freeMessageBuffer(packet);
             return;
         }
         buffer[size-1] = (uint8_t)*curChar;
     }
-    while(port.isReadable());
+    while(port.isReadable() && !this->isInterruptionRequested());
 */
+}
+
+void SerialHandler::stopThread() {
+    m_run = false;
 }

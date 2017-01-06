@@ -14,23 +14,17 @@ class SerialHandler : public QThread
 {
     Q_OBJECT
 public:
-    explicit SerialHandler(QObject *parent = 0);
+
+    SerialHandler(QObject *parent = 0);
+    explicit SerialHandler(QIODevice *d, QObject *parent = 0);
+    SerialHandler(QByteArray *a, QIODevice::OpenMode flags, QObject *parent = 0);
     ~SerialHandler();
-    void setupPort(QString portName);
-    bool isReady() const;
-    void write(uint8_t *data, uint16_t count);
 
-signals:
-    // TODO: fill these in
-    void batteryVoltageChanged(uint16_t voltage);
-
-protected:
+    QIODevice *device() const;
+    void setDevice(QIODevice *d);
+    void unsetDevice();
 
 private:
-    QSerialPort port;
-    void sendBuffer(QByteArray array);
-    int state = 0;
-    QString portName;
     bool m_run;
     void run();
 

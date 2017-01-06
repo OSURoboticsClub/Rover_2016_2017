@@ -7,7 +7,7 @@
 
 
 #include "serial/serialhandler.h"
-#include "singleton.h"
+#include "serial/singleton.h"
 #include <QSerialPortInfo>
 
 
@@ -66,53 +66,10 @@ bool SerialHandler::connectDevice()
 
 void SerialHandler::setDevice(QIODevice *d)
 {
-    m_datastream.setDevice(d);
+
 }
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
     m_run = true;
 }
-/*
-SerialHandler::SerialHandler(QIODevice *d, QObject *parent) :
-    QThread(parent),
-    m_datastream(d)
-{
-}
-
-SerialHandler::SerialHandler(QByteArray *a, QIODevice::OpenMode flags, QObject *parent) :
-    QThread(parent),
-    m_datastream(a, flags)
-{
-}
-*/
-
-void SerialHandler::parsePacket(quint8 size)
-{
-    /* datastream head at CRC */
-    /* @parse_packets */
-}
-
-quint16 SerialHandler::crc(void *data, int size, quint16 initial)
-{
-    quint16 remainder = initial;
-    quint8 *bytes = reinterpret_cast<quint8 *>(data);
-    for (int i = 0; i < size; i++){
-        remainder ^= bytes[i] << 8;
-        for (int bit = 8; bit > 0; bit--){
-            if (remainder & 0x8000){
-                remainder = (remainder << 1) ^ 0x1021;
-            } else {
-                remainder = (remainder << 1);
-            }
-        }
-    }
-    return remainder;
-}
-
-/* @write_slots_source */
-
-
-/* @read_slots_source */
-
-

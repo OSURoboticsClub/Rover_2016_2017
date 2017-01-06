@@ -1,30 +1,25 @@
-project(packets)
 
-set("${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -g")
+set(PACKETS_SOURCES
+    "${CMAKE_BINARY_DIR}/common/packets.cpp"
+)
 
-include_directories("${CMAKE_SOURCE_DIR}/../base/serial/")
+set(PACKETS_HEADERS
+    "${CMAKE_BINARY_DIR}/common/packets.h"
+)
 
-add_custom_command(OUTPUT serialhandler.h serialhandler.cpp
-    COMMAND python basepackets.py
-    ARGS --dest="${CMAKE_BINARY_DIR}/base/serial/"
+
+add_custom_command(
+    OUTPUT ${PACKETS_SOURCES} ${PACKETS_HEADERS}
+    COMMAND python3 basepackets.py
+    ARGS --dest="${CMAKE_BINARY_DIR}/common/"
     ARGS --src="${CMAKE_SOURCE_DIR}/base/serial/"
-    DEPENDS basepackets.py
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/base/serial/)
-
-add_custom_target(generation
-    DEPENDS packethandler.h packethandler.cpp)
-
-set(SOURCES
-    packethandler.cpp
+    DEPENDS "${CMAKE_SOURCE_DIR}/common/basepackets.py"
+    DEPENDS "${CMAKE_SOURCE_DIR}/base/serial/packets.h" "${CMAKE_SOURCE_DIR}/base/serial/packets.cpp"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/common/"
 )
 
-set(HEADERS
-    packethandler.h
-)
+qt5_wrap_cpp(GENERATED_MOC ${PACKETS_HEADERS})
 
-
-add_library(packets SHARED ${SOURCES} ${HEADERS})
-add_dependencies(packets generation)
+add_library(packets SHARED ${GENERATED_MOC} ${PACKETS_SOURCES})
 
 target_link_libraries(packets Qt5::Widgets)
-target_link_libraries(packets Qt5::SerialPort)

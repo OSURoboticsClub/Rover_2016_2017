@@ -3,8 +3,6 @@ project(Rover2017)
 
 set(INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/install)
 
-# for commgen.h
-include_directories("${CMAKE_BINARY_DIR}/common/")
 
 ########## Qt Configuration ##########
 
@@ -45,6 +43,6 @@ include_directories(${SFML_INCLUDE_DIR})
 
 
 ########## Subdirectories ##########
-add_subdirectory(base)
 add_subdirectory(common)
+add_subdirectory(base)
 add_subdirectory(test)

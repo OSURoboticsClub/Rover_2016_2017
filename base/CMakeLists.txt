@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
+include_directories("${CMAKE_BINARY_DIR}/common/")
 
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/../common/")
 
 # Set project sources
 set(SOURCES
@@ -9,7 +9,6 @@ set(SOURCES
    mainwindow.cpp
 
    serial/serialhandler.cpp
-
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
@@ -22,7 +21,6 @@ set(HEADERS
     serial/serialhandler.h
     serial/call_once.h
     serial/singleton.h
-
     inputs/controllerhandler.h
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
@@ -40,10 +38,11 @@ set(RESOURCES
 )
 
 
+
 # Tell CMake to create the main executable
 add_executable(main ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES})
-
 target_link_libraries(main packets)
+
 # Link libraries from Qt5
 target_link_libraries(main Qt5::Widgets)
 target_link_libraries(main Qt5::Qml)

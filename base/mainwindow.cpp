@@ -6,18 +6,19 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_controller()
 {
     ui->setupUi(this);
 
     numThreads = 0;
     QThread *threadArray[numThreads];
 
-    qDebug() << SerialHandler::instance();
+    connect(this, SIGNAL(startThreads()), SerialHandler::instance(), SLOT(start()));
 
-    connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stopThread()));
+    connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stop()));
     _serialRunning = false;
-
+    emit startThreads();
 }
 
 //would need to destruct in the close button as well

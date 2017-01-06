@@ -25,10 +25,6 @@ SerialHandler::~SerialHandler()
 {
 }
 
-void SerialHandler::start()
-{
-    run();
-}
 
 void SerialHandler::run()
 {

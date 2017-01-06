@@ -20,6 +20,8 @@ set(HEADERS
     mainwindow.h
 
     serial/serialhandler.h
+    serial/call_once.h
+    serial/singleton.h
 
     inputs/controllerhandler.h
     inputs/abstractcontroller.h

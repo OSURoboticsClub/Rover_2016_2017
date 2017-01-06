@@ -32,7 +32,6 @@ private:
     int numThreads;
     QThread **threadArray;
 
-    SerialHandler *m_serial;
     ControllerHandler *m_controller;
 
 public slots:
@@ -44,7 +43,7 @@ signals:
     void startReadIn();
     void stopReadIn();
     void closeThreads();
-
+    void startThreads();
 
 };
 

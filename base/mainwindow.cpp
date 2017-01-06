@@ -3,7 +3,6 @@
 
 #include <QDebug>
 
-#include "commgen.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,14 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numThreads = 1;
-    threadArray = new QThread *[numThreads];
-    threadArray[0] = SerialHandler::instance();
+    numThreads = 0;
+    QThread *threadArray[numThreads];
 
-    for (int i = 0; i < numThreads;i++)
-    {
-        threadArray[i]->start();
-    }
+    qDebug() << SerialHandler::instance();
 
     connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stopThread()));
     _serialRunning = false;
@@ -30,7 +25,6 @@ MainWindow::~MainWindow()
 {
     this->close();
     delete ui;
-    delete m_serial;
     delete m_controller;
 }
 

@@ -27,9 +27,30 @@ SerialHandler::~SerialHandler()
 
 void SerialHandler::start()
 {
+    run();
+}
+
+void SerialHandler::run()
+{
     qDebug() << "starting serial read";
     eventLoop();
 }
+
+void SerialHandler::eventLoop()
+{
+    while (m_run){
+        qDebug() << "Reading Data";
+        sleep(2);
+        qDebug() << "------------";
+        sleep(2);
+    }
+    qDebug() << "exciting serial read";
+}
+
+void SerialHandler::stop() {
+    m_run = false;
+}
+
 
 bool SerialHandler::connectDevice()
 {
@@ -52,7 +73,7 @@ SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {
     m_run = true;
 }
-
+/*
 SerialHandler::SerialHandler(QIODevice *d, QObject *parent) :
     QThread(parent),
     m_datastream(d)
@@ -64,27 +85,34 @@ SerialHandler::SerialHandler(QByteArray *a, QIODevice::OpenMode flags, QObject *
     m_datastream(a, flags)
 {
 }
+*/
 
-
-
-
-void SerialHandler::eventLoop()
+void SerialHandler::parsePacket(quint8 size)
 {
-    while (m_run){
-        qDebug() << "Reading Data";
-        sleep(2);
-        qDebug() << "------------";
-        sleep(2);
+    /* datastream head at CRC */
+    /* @parse_packets */
+}
+
+quint16 SerialHandler::crc(void *data, int size, quint16 initial)
+{
+    quint16 remainder = initial;
+    quint8 *bytes = reinterpret_cast<quint8 *>(data);
+    for (int i = 0; i < size; i++){
+        remainder ^= bytes[i] << 8;
+        for (int bit = 8; bit > 0; bit--){
+            if (remainder & 0x8000){
+                remainder = (remainder << 1) ^ 0x1021;
+            } else {
+                remainder = (remainder << 1);
+            }
+        }
     }
-    qDebug() << "exciting serial read";
+    return remainder;
 }
 
+/* @write_slots_source */
 
-void SerialHandler::parsePacket(int size)
-{
 
-}
+/* @read_slots_source */
 
-void SerialHandler::stop() {
-    m_run = false;
-}
+

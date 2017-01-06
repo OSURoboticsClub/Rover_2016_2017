@@ -27,8 +27,7 @@ private:
 template <class T>
 T* Singleton<T>::instance(CreateInstanceFunction create)
 {
-  // Had to fix this so that it passed address
-  Singleton::create.store(&create);
+  Singleton::create.store(create());
   qCallOnce(init, flag);
   return (T*)tptr.load();
 }
@@ -38,8 +37,8 @@ void Singleton<T>::init()
 {
   static Singleton singleton;
   if (singleton.inited) {
-    CreateInstanceFunction createFunction = (CreateInstanceFunction)Singleton::create.load();
-    tptr.store(createFunction());
+    CreateInstanceFunction *createFunction = (CreateInstanceFunction *)Singleton::create.load();
+    tptr.store(createFunction);
   }
 }
  

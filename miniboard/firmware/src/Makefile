@@ -17,7 +17,7 @@ OUTFILE:=../build/miniboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=commgen.o comm.o callsign.o sabertooth.o adc.o  uart.o
+OBJFILES:=commgen.o comm.o callsign.o sabertooth.o adc.o  gps.o uart.o
 # Main file
 FILE:=miniboard.c
 
@@ -36,7 +36,7 @@ commgen.o: ../../../common/SPECIFICATION.md
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. -c $< -o $@ $(LIBS)
 	
 # Compile & link
-$(OUTFILE).bin: $(OBJFILES)
+$(OUTFILE).bin: $(OBJFILES) miniboard.c
 	@$(CC) -mmcu=$(MCU) $(CFLAGS) -I. $(FILE) $(OBJFILES) -o $(OUTFILE).elf $(LIBS)
 	@$(OBJCOPY) -O binary -R .eeprom $(OUTFILE).elf $(OUTFILE).bin
 	@$(OBJCOPY) -O ihex -R .eeprom $(OUTFILE).elf $(OUTFILE).hex

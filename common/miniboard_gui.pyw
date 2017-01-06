@@ -5,33 +5,53 @@ argument), this program provides a GUI that can be used to get/set
 all registers on the miniboard."""
 
 import sys
+import math
 import docparse #TODO: Add a try/catch and pop-up dialog.
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import struct
 import serial
+import signal
+import os
 
-#TODO: Set limits of spinboxes based on var size
-#TODO: Parse options to create drop-down
+signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
+
 #TODO: Check lengths everywhere, for validation
-
-SerialPort = "/dev/ttyACM0"
+#TODO: Add serial port selection
+#TODO: Add big pause/unpause buttons
+#TODO: Add scroll bar
+SerialPortPath = "/dev/ttyACM0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
-	path = SerialPort
+	path = SerialPortPath
 	baud = 9600
+	def __init__(self):
+		os.system("stty -F %s -hupcl"%self.path)
+	
+	def calc_crc(self, body):
+		body = [ord(b) for b in body]
+		remainder = 0xFFFF
+		for i in range(0, len(body)):
+			remainder ^= body[i] << 8
+			remainder &= 0xFFFF
+			for bit in reversed(range(1,9)):
+				if remainder & 0x8000:
+					remainder = (remainder << 1) ^ 0x1021
+					remainder &= 0xFFFF
+				else:
+					remainder <<= 1
+					remainder &= 0xFFFF
+		return remainder
 	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def write(self, packet_contents):
-		"""Write a packet to the miniboard, inserting start, end, and escape bytes
-		   where necessary. """
+		"""Write a packet to the miniboard, inserting the header first."""
 		print "  send: ",
 		packet_contents = "".join(packet_contents)
-		packet_contents = packet_contents.replace(chr(0x02), "".join([chr(0x02), chr(0x02)]))
-		packet_contents = packet_contents.replace(chr(0x01), "".join([chr(0x02), chr(0x01)]))
-		packet_contents = packet_contents.replace(chr(0x03), "".join([chr(0x02), chr(0x03)]))
-		packet_contents = chr(0x01) + packet_contents + chr(0x03)
+		plen = len(packet_contents) + 2
+		crc = self.calc_crc(packet_contents)
+		packet_contents = chr(0x01) + chr(plen)  + chr(crc & 0xFF) + chr(crc >> 8) + packet_contents
 		for c in packet_contents:
 			print "0x%02X, "%ord(c),
 		print "\n",
@@ -39,8 +59,8 @@ class MiniboardIO():
 	
 	#DON'T USE DIRECTLY RIGHT NOW! Use writeread()
 	def read(self):
-		"""Read a packet from the miniboard and return the contents (with
-		   start, end, and escape bytes removed.
+		"""Read a packet from the miniboard and return the contents
+		   (with header removed).
 		   If the miniboard takes too long to reply, or if an error occurs,
 		   an exception will be raised. TODO: Exception type."""
 		print "  recv: ",
@@ -48,22 +68,22 @@ class MiniboardIO():
 		for c in reply:
 			print "0x%02X, "%ord(c),
 		print "\n",
+		if len(reply) == 0:
+			print "Error: no reply."
+			return ""
 		if reply[0] != chr(0x01):
 			print "Error: missing start byte."
 			return ""
-		if reply[-1] != chr(0x03):
-			print "Error: missing end byte."
+		if len(reply) < 5:
+			print "Error: no enough bytes."
 			return ""
-		reply = reply[1:-1]
-		extracted = []
-		esc = False
-		for c in reply:
-			if c == chr(0x02) and not esc:
-				esc = True
-				continue
-			extracted.append(c)
-			esc = False
-		return "".join(extracted)
+		if (len(reply) - 2) != ord(reply[1]):
+			print "Error: length mismatch (header says %d, packet is %d)"%(ord(reply[1]), len(reply))
+			return ""
+		if self.calc_crc(reply[4:]) != (ord(reply[3])<<8 | ord(reply[2])):
+			print "Error: CRC mismatch."
+			return ""
+		return "".join(reply[4:])
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""
@@ -93,7 +113,7 @@ class RegisterController():
 		self.reg = reg_dict
 		self.widgets = widgets
 		self.io = io
-		self.fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i"}
+		self.fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i", "i64":"<Q", "i64":"<q"}
 	def writefunc(self):
 		"""Return a function (due to pyqt weirdness) for writing this register to the miniboard."""
 		def func():
@@ -118,7 +138,7 @@ class RegisterController():
 			p = [chr(self.reg["code"] | 0x80)]
 			reply = self.io.writeread(p)
 			if reply[0] != p[0]:
-				print "Error: incorrect command code. Expected 0x%02X, got 0x%02X"%(p[0], reply[0])
+				print "Error: incorrect command code. Expected 0x%02X, got 0x%02X"%(ord(p[0]), ord(reply[0]))
 			b = 1
 			vs = []
 			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
@@ -147,12 +167,100 @@ def horizontalLine():
 	line.setFrameShadow(QFrame.Sunken)
 	return line
 
+def argtype_minval(argtype):
+	"""Return the minimum value for a numerical argument type."""
+	if argtype[0] == "u":
+		return 0
+	elif argtype[0]  == "i":
+		return -(2**(int(argtype[1:])-1))
+	else:
+		return 0
+	
+def argtype_maxval(argtype):
+	"""Return the minimum value for a numerical argument type."""
+	if argtype[0] == "u":
+		return 2**(int(argtype[1:])) - 1
+	elif argtype[0] == "i":
+		return 2**(int(argtype[1:])-1) - 1
+	else:
+		return 0
+
+def argtype_minwidth(argtype):
+	"""Return the minimum width of a spinbox for the given argument type."""
+	m = 2.5 + math.ceil(math.log10(argtype_maxval(argtype)))
+	return m * 9
+
+class BigIntSpinBox(QAbstractSpinBox):
+    """From http://stackoverflow.com/questions/26841036/pyqt4-spinbox-with-64bit-integers"""
+    def __init__(self, parent=None):
+        super(BigIntSpinBox, self).__init__(parent)
+
+        self._singleStep = 1
+        self._minimum = -18446744073709551616
+        self._maximum = 18446744073709551615
+
+        self.lineEdit = QLineEdit(self)
+
+        rx = QRegExp("[1-9]\\d{0,20}")
+        validator = QRegExpValidator(rx, self)
+
+        self.lineEdit.setValidator(validator)
+        self.setLineEdit(self.lineEdit)
+
+    def value(self):
+        try:
+            return int(self.lineEdit.text())
+        except:
+            raise
+            return 0
+
+    def setValue(self, value):
+        if self._valueInRange(value):
+            self.lineEdit.setText(str(value))
+
+    def stepBy(self, steps):
+        self.setValue(self.value() + steps*self.singleStep())
+
+    def stepEnabled(self):
+        return self.StepUpEnabled | self.StepDownEnabled
+
+    def setSingleStep(self, singleStep):
+        assert isinstance(singleStep, int)
+        # don't use negative values
+        self._singleStep = abs(singleStep)
+
+    def singleStep(self):
+        return self._singleStep
+
+    def minimum(self):
+        return self._minimum
+
+    def setMinimum(self, minimum):
+        assert isinstance(minimum, int) or isinstance(minimum, long)
+        self._minimum = minimum
+
+    def maximum(self):
+        return self._maximum
+
+    def setMaximum(self, maximum):
+        assert isinstance(maximum, int) or isinstance(maximum, long)
+        self._maximum = maximum
+
+    def _valueInRange(self, value):
+        if value >= self.minimum() and value <= self.maximum():
+            return True
+        else:
+            return False
+
+AutoreadTimer = None
+
 def setup(window, spec_table, io):
 	ww = QWidget(window)
 	flayout = QFormLayout()
 	vlayout = QVBoxLayout()
 	read_list = []
 	write_list = []
+	autoread_list = []
 	for r in spec_table:
 		label = QLabel(r["name"])
 		hl = QHBoxLayout()
@@ -170,9 +278,12 @@ def setup(window, spec_table, io):
 			if a[0] == "*":
 				widget = QLineEdit()
 			else:
-				widget = QSpinBox()
-				if a[2]:
+				widget = BigIntSpinBox()
+				if a[2] or "w" not in r["rw"]:
 					widget.setEnabled(False)
+				widget.setMinimum(argtype_minval(a[0]))
+				widget.setMaximum(argtype_maxval(a[0]))
+				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
 			control_widgets.append(widget)
 			subtitle = QLabel(a[1])
 			subtitle.setFont(QFont("", 8))
@@ -189,16 +300,22 @@ def setup(window, spec_table, io):
 		wbtn = QToolButton()
 		wbtn.setText("Write")
 		wbtn.pressed.connect(writefunc)
+		ar_check = QCheckBox()
+		
 		if "r" not in r["rw"]:
 			rbtn.setEnabled(False)
+			ar_check.setEnabled(False)
 		else:
 			read_list.append(readfunc)
+			autoread_list.append((ar_check, readfunc))
 		if "w" not in r["rw"]:
 			wbtn.setEnabled(False)
 		else:
 			write_list.append(writefunc)
+			
 		bvl = QVBoxLayout()
 		hbvl = QHBoxLayout()
+		hbvl.addWidget(ar_check)
 		hbvl.addWidget(rbtn)
 		hbvl.addWidget(wbtn)
 		bvl.addLayout(hbvl)
@@ -217,15 +334,28 @@ def setup(window, spec_table, io):
 	def write_all():
 		for f in write_list:
 			f()
+	
+	def autoread():
+		for t in autoread_list:
+			if t[0].isChecked(): 
+				print "autoread"
+				t[1]()
+	
 	rbtn = QToolButton()
 	rbtn.setText("Read All")
 	rbtn.pressed.connect(read_all)
 	wbtn = QToolButton()
 	wbtn.setText("Write All")
 	wbtn.pressed.connect(write_all)
+	ar_lbl = QLabel("Auto Read");
+	
+	timer = QTimer(ar_lbl)
+	timer.timeout.connect(autoread)
+	timer.start(1000);
+	
+	gh.addWidget(ar_lbl)
 	gh.addWidget(rbtn)
 	gh.addWidget(wbtn)
-	
 	vlayout.addLayout(gh)
 	vlayout.addWidget(horizontalLine())
 	vlayout.addLayout(flayout)

@@ -10,7 +10,7 @@
 extern bool CallsignSet;
 
 /* This module needs to provide a function to select a camera input
- * with an 8:1 analog multiplexer. If CallsignSet is false, it
+ * with an 6:1 analog multiplexer. If CallsignSet is false, it
  * must actually select channel 0, and select the correct channel
  * only when CallsignSet becomes true.
  * It must also provide a function for issuing commands to a

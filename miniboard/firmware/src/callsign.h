@@ -16,11 +16,11 @@
 
 #define DIT_LENGTH CALLSIGN_FREQ >> 2
 
-#define CALLSIGN_DDR DDRB
+#define CALLSIGN_DDR DDRE
 
-#define CALLSIGN_BANK PORTB
+#define CALLSIGN_BANK PORTE
 
-#define CALLSIGN_PIN PB6
+#define CALLSIGN_PIN PE4
 
 /* To comply with FCC regulations, the FPV video transmitter system must
  * send the callsign of the licensed ham radio operator responsible for it.
@@ -43,6 +43,6 @@
 
 /* Set the FPV callsign and start sending it.
  * This function will copy the callsign into module-specific memory. */
-void set_callsign(uint8_t *callsign_str);
+void set_callsign(uint8_t *callsign_str, uint8_t callsign_len);
 
 #endif /* CALLSIGN_H */

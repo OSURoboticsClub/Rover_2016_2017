@@ -2,13 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSerialPort>
-#include <QDebug>
 #include <QQuickWidget>
 #include <QThread>
 #include <QTime>
 
 #include "serialhandler.h"
+#include "inputs/controllerhandler.h"
 
 
 namespace Ui {
@@ -26,23 +25,27 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
     QSerialPort output;
     SerialHandler *serialRead;
     bool _serialRunning;
     int numThreads;
     QThread **threadArray;
 
+    SerialHandler *m_serial;
+    ControllerHandler *m_controller;
+
 public slots:
     void connectSerial();
 
 private slots:
-    void on_pushButton_4_clicked();
-    void on_exit_clicked();
 
 signals:
     void startReadIn();
     void stopReadIn();
     void closeThreads();
+
+
 };
 
 #endif // MAINWINDOW_H

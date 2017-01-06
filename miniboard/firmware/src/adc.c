@@ -59,5 +59,14 @@ uint16_t adc_voltage(uint8_t channel, uint8_t reference){
 	}
 }
 
+/* Return the potentiometer position (from 0-255) of a
+ * miniboard potentiometer channel. */
+uint8_t pot_channel(uint8_t channel){
+	uint8_t chmap[] = {0, 2, 4, 1, 3, 5};
+	return adc_voltage(chmap[channel], ADC_REF_RATIOMETRIC) >> 2;
+}
 
-
+/* Return the battery voltage (in mV). */
+uint16_t battery_mV(void){
+	return (30050L * (uint32_t) adc_voltage(0, ADC_REF_RATIOMETRIC)) / 1024;
+}

@@ -4,7 +4,6 @@
 #include <QDebug>
 
 #include "commgen.h"
-#include "comm.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,11 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(closeThreads()), serialRead, SLOT(stopThread()));
     _serialRunning = false;
+
 }
 
 //would need to destruct in the close button as well
 MainWindow::~MainWindow()
 {
+    this->close();
+    delete ui;
+    delete m_serial;
+    delete m_controller;
 }
 
 
@@ -64,12 +68,6 @@ void MainWindow::connectSerial()
 }
 
 //add exec
-void MainWindow::on_pushButton_4_clicked()
-{
-    uint8_t buffer[10] = {};
-
-}
-
 
 /*
  * Part I: Close event without timeout check
@@ -155,7 +153,3 @@ void MainWindow::closeEvent(QCloseEvent *event)
  * destructor won't be called if you exit main thread,
  * so have to add destructor functionality to both
  */
-void MainWindow::on_exit_clicked()
-{
-    this->close();
-}

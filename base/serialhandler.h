@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QDebug>
-#include <QSerialPort>
+#include <QtSerialPort/QSerialPort>
 #include <QByteArray>
 
 // http://stackoverflow.com/questions/15103599/qt-serial-port-reading-data-consistently

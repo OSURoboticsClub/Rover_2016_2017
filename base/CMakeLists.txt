@@ -7,7 +7,8 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}/../common/")
 set(SOURCES
    main.cpp
    mainwindow.cpp
-   serialhandler.cpp
+
+   serial/serialhandler.cpp
 
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
@@ -17,7 +18,8 @@ set(SOURCES
 
 set(HEADERS
     mainwindow.h
-    serialhandler.h
+
+    serial/serialhandler.h
 
     inputs/controllerhandler.h
     inputs/abstractcontroller.h

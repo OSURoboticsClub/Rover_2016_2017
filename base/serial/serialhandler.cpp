@@ -6,14 +6,9 @@
  **/
 
 
-#include "serialhandler.h"
+#include "serial/serialhandler.h"
 
-/* This is a global instance of the SerialHandler class. The main intent of
- * implementing this is for a serial singleton class to be accessible from
- * anywhere within the program. At least for writing to a serial port, there
- * should only be one instance of the SerialHandler class within the program.
- */
-SerialHandler serial;
+
 
 SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
 {

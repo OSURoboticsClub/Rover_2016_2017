@@ -41,6 +41,4 @@ public slots:
 
 };
 
-extern SerialHandler serial;
-
 #endif // SERIALHANDLER_H

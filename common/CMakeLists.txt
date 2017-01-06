@@ -2,25 +2,25 @@ project(packets)
 
 set("${CMAKE_CXX_FLAGS} -Wall -Werror -O3 -g")
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../base/")
+include_directories("${CMAKE_SOURCE_DIR}/../base/serial/")
 
-add_custom_command(OUTPUT commgen.h commgen.c
-    COMMAND python base_packets.py
+add_custom_command(OUTPUT packethandler.h packethandler.cpp
+    COMMAND python basepackets.py
     ARGS --dest="${CMAKE_CURRENT_BINARY_DIR}"
     ARGS --src="${CMAKE_CURRENT_SOURCE_DIR}"
-    DEPENDS base_packets.py
+    DEPENDS basepackets.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(generation
-    DEPENDS commgen.h commgen.c)
+    DEPENDS packethandler.h packethandler.cpp)
 
 set(SOURCES
-    commgen.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.cpp)
+    packethandler.cpp
+)
 
 set(HEADERS
-    commgen.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../base/comm.h)
+    packethandler.h
+)
 
 
 add_library(packets SHARED ${SOURCES} ${HEADERS})

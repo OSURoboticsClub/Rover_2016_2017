@@ -10,7 +10,6 @@
 #include "inputs/xboxcontroller.h"
 #include "inputs/frsky.h"
 
-#include "commgen.h"
 
 typedef QSharedPointer<AbstractController> ControllerPointer;
 

@@ -5,27 +5,30 @@
 #include <QObject>
 #include <QList>
 #include <QSharedPointer>
+#include <QThread>
+
 
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
 #include "inputs/frsky.h"
 
-#include "commgen.h"
 
 typedef QSharedPointer<AbstractController> ControllerPointer;
 
 
-class ControllerHandler : public QObject
+class ControllerHandler : public QThread
 {
     Q_OBJECT
 public:
     explicit ControllerHandler(QObject *parent = 0);
     ~ControllerHandler();
     int controllerCount();
+    void run() Q_DECL_OVERRIDE;
+
 public slots:
-    void start();
-    void stop();
+    void quit();
 private:
+
     void eventLoop();
     void resetControllers();
     void connectControllers();

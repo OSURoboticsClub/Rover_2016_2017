@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QQuickWidget" name="quickWidget">
       <property name="resizeMode">
        <enum>QQuickWidget::SizeRootObjectToView</enum>
@@ -38,6 +38,23 @@
      <height>19</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuSerial_Port">
+    <property name="title">
+     <string>Serial Port</string>
+    </property>
+    <addaction name="actionAutodetect_Serial"/>
+    <addaction name="actionStart_Thread"/>
+    <addaction name="actionStop_Thread"/>
+   </widget>
+   <widget class="QMenu" name="menuUser_Inputs">
+    <property name="title">
+     <string>User Inputs</string>
+    </property>
+    <addaction name="actionStart_Thread_2"/>
+    <addaction name="actionStop_Thread_2"/>
+   </widget>
+   <addaction name="menuSerial_Port"/>
+   <addaction name="menuUser_Inputs"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -48,6 +65,31 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAutodetect_Serial">
+   <property name="text">
+    <string>Autodetect Serial</string>
+   </property>
+  </action>
+  <action name="actionStart_Thread">
+   <property name="text">
+    <string>Start Thread</string>
+   </property>
+  </action>
+  <action name="actionStop_Thread">
+   <property name="text">
+    <string>Stop Thread</string>
+   </property>
+  </action>
+  <action name="actionStart_Thread_2">
+   <property name="text">
+    <string>Start Thread</string>
+   </property>
+  </action>
+  <action name="actionStop_Thread_2">
+   <property name="text">
+    <string>Stop Thread</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

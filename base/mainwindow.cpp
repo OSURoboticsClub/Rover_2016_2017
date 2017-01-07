@@ -7,16 +7,17 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_controller()
+    m_inputs(new ControllerHandler)
 {
     ui->setupUi(this);
 
     numThreads = 0;
     QThread *threadArray[numThreads];
 
-    connect(this, SIGNAL(startThreads()), SerialHandler::instance(), SLOT(start()));
-
-    connect(this, SIGNAL(closeThreads()), SerialHandler::instance(), SLOT(stop()));
+    connect(this, SIGNAL(startSerial()), SerialHandler::instance(), SLOT(start()));
+    connect(this, SIGNAL(stopSerial()), SerialHandler::instance(), SLOT(stop()));
+    connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
+    connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(quit()));
     _serialRunning = false;
 }
 
@@ -25,7 +26,7 @@ MainWindow::~MainWindow()
 {
     this->close();
     delete ui;
-    delete m_controller;
+    delete m_inputs;
 }
 
 
@@ -149,10 +150,20 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::on_actionStart_Thread_triggered()
 {
-    emit startThreads();
+    emit startSerial();
 }
 
 void MainWindow::on_actionStop_Thread_triggered()
 {
-    emit closeThreads();
+    emit stopSerial();
+}
+
+void MainWindow::on_actionStart_Thread_2_triggered()
+{
+    emit startInputs();
+}
+
+void MainWindow::on_actionStop_Thread_2_triggered()
+{
+    emit stopInputs();
 }

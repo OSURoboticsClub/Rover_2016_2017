@@ -7,7 +7,7 @@
 #include <QtSerialPort/QSerialPort>
 
 
-#include "packets.h"
+#include <packets.h>
 // http://stackoverflow.com/questions/15103599/qt-serial-port-reading-data-consistently
 
 
@@ -23,7 +23,7 @@ public:
 
     void setDevice(QIODevice *d);
     QIODevice *device() const;
-
+    Packets *p() const {return m_packets;}
 signals:
 
 
@@ -31,7 +31,7 @@ public slots:
     void stop();
 
 private:
-    Packets m_packets;
+    Packets *m_packets;
     SerialHandler(QObject *parent = 0);
     static SerialHandler* createInstance();
 

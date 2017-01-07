@@ -50,6 +50,8 @@
     <property name="title">
      <string>User Inputs</string>
     </property>
+    <addaction name="actionStart_Thread_2"/>
+    <addaction name="actionStop_Thread_2"/>
    </widget>
    <addaction name="menuSerial_Port"/>
    <addaction name="menuUser_Inputs"/>
@@ -74,6 +76,16 @@
    </property>
   </action>
   <action name="actionStop_Thread">
+   <property name="text">
+    <string>Stop Thread</string>
+   </property>
+  </action>
+  <action name="actionStart_Thread_2">
+   <property name="text">
+    <string>Start Thread</string>
+   </property>
+  </action>
+  <action name="actionStop_Thread_2">
    <property name="text">
     <string>Stop Thread</string>
    </property>

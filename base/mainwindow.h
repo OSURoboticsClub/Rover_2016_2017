@@ -32,7 +32,7 @@ private:
     int numThreads;
     QThread **threadArray;
 
-    ControllerHandler *m_controller;
+    ControllerHandler *m_inputs;
 
 public slots:
     void connectSerial();
@@ -43,7 +43,17 @@ private slots:
 
     void on_actionStop_Thread_triggered();
 
+    void on_actionStart_Thread_2_triggered();
+
+    void on_actionStop_Thread_2_triggered();
+
 signals:
+
+    void startSerial();
+    void stopSerial();
+    void startInputs();
+    void stopInputs();
+
     void startReadIn();
     void stopReadIn();
     void closeThreads();

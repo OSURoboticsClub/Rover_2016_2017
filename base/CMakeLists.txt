@@ -17,7 +17,6 @@ set(SOURCES
 
 set(HEADERS
     mainwindow.h
-
     serial/serialhandler.h
     serial/call_once.h
     serial/singleton.h
@@ -40,7 +39,7 @@ set(RESOURCES
 
 
 # Tell CMake to create the main executable
-add_executable(main ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES})
+add_executable(main ${GENERATED_MOC} ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES})
 target_link_libraries(main packets)
 
 # Link libraries from Qt5

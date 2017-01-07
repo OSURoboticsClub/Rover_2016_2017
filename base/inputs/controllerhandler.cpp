@@ -1,9 +1,11 @@
 #include "controllerhandler.h"
 
+#include <QDebug>
 #include <algorithm>
+#include "serial/serialhandler.h"
 
 ControllerHandler::ControllerHandler(QObject *parent)
-    : QObject(parent),
+    : QThread(parent),
       m_stop(false)
 {
 
@@ -15,14 +17,15 @@ ControllerHandler::~ControllerHandler()
 }
 
 
-void ControllerHandler::start()
+void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
 }
 
-void ControllerHandler::stop()
+void ControllerHandler::quit()
 {
+    qDebug() << "quitting ControllerHandler thread";
     m_stop = true;
 }
 
@@ -35,11 +38,13 @@ int ControllerHandler::controllerCount() {
 }
 
 void ControllerHandler::eventLoop() {
+    qDebug() << "entering ControllerHandler event loop";
     while(!m_stop) {
         if(m_controllerCount != controllerCount()) resetControllers();
         for(int i = 0; i < std::min(m_controllerCount, m_maxUsableControllers); i++) {
             (*m_controllers)[i]->emitChanges();
         }
+        msleep(500);
     }
 }
 
@@ -88,6 +93,9 @@ void ControllerHandler::sendDriveMotorPower(double left, double right)
     right *= conversionFactor;
     int8_t l_drive = static_cast<int8_t>(left);
     int8_t r_drive = static_cast<int8_t>(right);
+    SerialHandler::instance()->p()->writeDriveMotorPower(
+        l_drive, l_drive, l_drive, r_drive, r_drive, r_drive
+    );
     /*
     send_drive_motor_power(l_drive, l_drive, l_drive,
                            r_drive, r_drive, r_drive); */

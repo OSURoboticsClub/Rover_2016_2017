@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QDebug>
+#include <QIODevice>
 #include <QtSerialPort/QSerialPort>
 
 
@@ -19,13 +20,15 @@ public:
     static SerialHandler* instance();
 
     void run() Q_DECL_OVERRIDE;
+
     bool connectDevice();
-
     void setDevice(QIODevice *d);
-    QIODevice *device() const;
-    Packets *p() const {return m_packets;}
-signals:
+    void setBuffer(QByteArray *a);
+    QIODevice *device();
 
+    Packets *p() const {return m_packets;}
+
+signals:
 
 public slots:
     void stop();
@@ -35,7 +38,6 @@ private:
     SerialHandler(QObject *parent = 0);
     static SerialHandler* createInstance();
 
-    quint16 crc(void *data, int size, quint16 initial);
     bool m_run = true;
     void eventLoop();
 

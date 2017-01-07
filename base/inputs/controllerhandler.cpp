@@ -96,7 +96,4 @@ void ControllerHandler::sendDriveMotorPower(double left, double right)
     SerialHandler::instance()->p()->writeDriveMotorPower(
         l_drive, l_drive, l_drive, r_drive, r_drive, r_drive
     );
-    /*
-    send_drive_motor_power(l_drive, l_drive, l_drive,
-                           r_drive, r_drive, r_drive); */
 }

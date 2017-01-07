@@ -1,25 +1,23 @@
 #include "packets.h"
-
+#include <QIODevice>
 Packets::Packets(QObject *parent) :
     QObject(parent),
     m_datastream()
 {
 }
 
-Packets::Packets(QIODevice *d, QObject *parent) :
-    QObject(parent),
-    m_datastream(d)
-{
-}
-
-Packets::Packets(QByteArray *a, QIODevice::OpenMode flags, QObject *parent) :
-    QObject(parent),
-    m_datastream(a, flags)
-{
-}
-
 Packets::~Packets()
 {
+}
+
+void Packets::setDevice(QIODevice *d)
+{
+    m_datastream.setDevice(d);
+}
+
+QIODevice *Packets::device()
+{
+    return m_datastream.device();
 }
 
 /* start and end bytes, as well as escape bytes removed */

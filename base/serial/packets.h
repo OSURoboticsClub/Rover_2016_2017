@@ -18,16 +18,13 @@ class Packets : public QObject
         @crc: crc
     */
 public:
-    Packets(QObject *parent = 0);
-    explicit Packets(QIODevice *d, QObject *parent = 0);
-    Packets(QByteArray *a, QIODevice::OpenMode flags, QObject *parent = 0);
+    explicit Packets(QObject *parent = 0);
     ~Packets();
 
     void parsePacket(quint8 size);
 
-    QIODevice *device() const;
+    QIODevice *device();
     void setDevice(QIODevice *d);
-    void unsetDevice();
 
     enum class Types: quint8 {
         /* @packet_types_header */

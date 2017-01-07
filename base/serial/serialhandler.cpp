@@ -9,6 +9,7 @@
 #include "serial/serialhandler.h"
 #include "serial/singleton.h"
 #include <QSerialPortInfo>
+#include <QBuffer>
 
 
 SerialHandler* SerialHandler::createInstance()
@@ -23,6 +24,7 @@ SerialHandler* SerialHandler::instance()
 
 SerialHandler::~SerialHandler()
 {
+    delete m_packets;
 }
 
 
@@ -62,10 +64,23 @@ bool SerialHandler::connectDevice()
 
 void SerialHandler::setDevice(QIODevice *d)
 {
-
+    m_packets->setDevice(d);
 }
 
-SerialHandler::SerialHandler(QObject *parent) : QThread(parent)
+void SerialHandler::setBuffer(QByteArray *a)
+{
+    QBuffer *buffer = new QBuffer(a);
+    m_packets->setDevice(buffer);
+}
+
+QIODevice *SerialHandler::device()
+{
+    return m_packets->device();
+}
+
+SerialHandler::SerialHandler(QObject *parent)
+    : QThread(parent),
+      m_packets(new Packets())
 {
     m_run = true;
 }

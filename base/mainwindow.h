@@ -35,7 +35,6 @@ private:
     ControllerHandler *m_inputs;
 
 public slots:
-    void connectSerial();
 
 private slots:
 
@@ -46,6 +45,10 @@ private slots:
     void on_actionStart_Thread_2_triggered();
 
     void on_actionStop_Thread_2_triggered();
+
+    void on_actionPing_triggered();
+
+    void on_actionAutodetect_Serial_triggered();
 
 signals:
 

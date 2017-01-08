@@ -386,18 +386,19 @@ class BasePackets(object):
                 self._camelcase(packet["name"]),
                 self._argument_proto(packet),
             ))
+            string += '\tqDebug() << "writing a packet";\n'
             string += "\tquint8 _packetType = static_cast<quint8>(%s::%s);\n" % (
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
 
             string += self._crc_calculation(packet)
-            string += "\t%s << %s;\n" % (
+            string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
             if self._packet_size(packet) is not None:
-                string += "\t%s << %s;\n" % (
+                string += "\t%s << (quint8)%s;\n" % (
                     self._params["datastream"],
                     self._packet_size(packet)
                 )
@@ -442,17 +443,18 @@ class BasePackets(object):
                 self._params["class"],
                 self._camelcase(packet["name"]),
             )
+            string += '\tqDebug() << "writing a packet";\n'
             string += ("\tquint8 _packetType = static_cast<quint8>(%s::%s) "
                 "| 0x80;\n") % (
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
             string += self._crc_calculation(packet, write=False)
-            string += "\t%s << %s;\n" % (
+            string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
-            string += "\t%s << 3;\n" % self._params["datastream"]
+            string += "\t%s << (quint8)3;\n" % self._params["datastream"]
             string += "\t%s << _crc;\n" % self._params["datastream"]
             string += "\t%s << _packetType;\n" % (
                 self._params["datastream"],

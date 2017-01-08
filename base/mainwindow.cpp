@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
+#include <QBuffer>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -34,32 +35,7 @@ MainWindow::~MainWindow()
  * Might need to add an "exec" to this,
  * as well as a "_connectedAlready" bool
  */
-void MainWindow::connectSerial()
-{
 
-    output.setPortName("pts/9");
-
-    if(output.open(QIODevice::WriteOnly)){
-        if(!output.setBaudRate(QSerialPort::Baud57600))
-            qDebug()<<output.errorString();
-
-        if(!output.setDataBits(QSerialPort::Data8))
-            qDebug()<<output.errorString();
-
-        if(!output.setParity(QSerialPort::NoParity))
-            qDebug()<<output.errorString();
-
-        if(!output.setStopBits(QSerialPort::OneStop))
-            qDebug()<<output.errorString();
-
-        if(!output.setFlowControl(QSerialPort::NoFlowControl))
-            qDebug()<<output.errorString();
-    }
-
-    else {
-        qDebug() << output.errorString();
-    }
-}
 
 //add exec
 
@@ -166,4 +142,25 @@ void MainWindow::on_actionStart_Thread_2_triggered()
 void MainWindow::on_actionStop_Thread_2_triggered()
 {
     emit stopInputs();
+}
+
+void MainWindow::on_actionPing_triggered()
+{
+    // SerialHandler::instance()->p()->readPause();
+
+    //QBuffer buffer;
+    //buffer.open(QIODevice::ReadWrite);
+    //SerialHandler::instance()->p()->setDevice(&buffer);
+    SerialHandler::instance()->p()->readPause();
+/*
+    quint8 type = 0x05 | 0x80;
+    qDebug() << SerialHandler::instance()->p()->crc(&type, 1, 0xFFFF);
+    qDebug() << buffer.data().toHex();
+*/
+
+}
+
+void MainWindow::on_actionAutodetect_Serial_triggered()
+{
+    SerialHandler::instance()->connectDevice();
 }

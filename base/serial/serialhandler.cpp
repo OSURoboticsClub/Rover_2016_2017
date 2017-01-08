@@ -37,10 +37,13 @@ void SerialHandler::run()
 void SerialHandler::eventLoop()
 {
     while (m_run){
-        qDebug() << "Reading Data";
-        sleep(2);
-        qDebug() << "------------";
-        sleep(2);
+        if(m_packets->device()->waitForReadyRead(500)) {
+            qDebug() << "read something";
+            QByteArray readData;
+            readData.append(m_packets->device()->readAll());
+            qDebug() << readData;
+        }
+
     }
     qDebug() << "exciting serial read";
 }
@@ -50,16 +53,26 @@ void SerialHandler::stop() {
 }
 
 
-bool SerialHandler::connectDevice()
+void SerialHandler::connectDevice()
 {
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
     for(int i = 0; i < serialPorts.size(); i++) {
-        if(serialPorts[i].serialNumber() == "serial string") {
-            setDevice(new QSerialPort(serialPorts[i]));
-            return true;
+        // for now
+        qDebug() << serialPorts[i].portName();
+        if(serialPorts[i].portName() == "ttyUSB0") {
+            qDebug() << "identifyed serial";
+            QSerialPort *serial = new QSerialPort(serialPorts[i]);
+            if(!serial->open(QIODevice::ReadWrite)) {
+                qDebug() << tr("error %1").arg(serial->error());
+            }
+            serial->setBaudRate(9600);
+            serial->setDataBits(QSerialPort::Data8);
+            serial->setParity(QSerialPort::NoParity);
+            serial->setStopBits(QSerialPort::OneStop);
+
+            setDevice(serial);
         }
     }
-    return false;
 }
 
 void SerialHandler::setDevice(QIODevice *d)

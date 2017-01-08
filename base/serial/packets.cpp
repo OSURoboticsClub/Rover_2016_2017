@@ -1,5 +1,7 @@
 #include "packets.h"
 #include <QIODevice>
+#include <QDebug>
+
 Packets::Packets(QObject *parent) :
     QObject(parent),
     m_datastream()

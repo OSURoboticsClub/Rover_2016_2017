@@ -26,6 +26,7 @@ public:
     QIODevice *device();
     void setDevice(QIODevice *d);
 
+    quint16 crc(void *data, int size, quint16 initial);
     enum class Types: quint8 {
         /* @packet_types_header */
     };
@@ -42,7 +43,6 @@ public slots:
 private:
    Types m_types;
    QDataStream m_datastream;
-   quint16 crc(void *data, int size, quint16 initial);
 };
 
 #endif // PACKETS_H

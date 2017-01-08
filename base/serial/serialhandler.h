@@ -21,7 +21,7 @@ public:
 
     void run() Q_DECL_OVERRIDE;
 
-    bool connectDevice();
+
     void setDevice(QIODevice *d);
     void setBuffer(QByteArray *a);
     QIODevice *device();
@@ -32,6 +32,7 @@ signals:
 
 public slots:
     void stop();
+    void connectDevice();
 
 private:
     Packets *m_packets;

@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
+    <item row="0" column="0">
      <widget class="QQuickWidget" name="quickWidget">
       <property name="resizeMode">
        <enum>QQuickWidget::SizeRootObjectToView</enum>
@@ -45,6 +45,7 @@
     <addaction name="actionAutodetect_Serial"/>
     <addaction name="actionStart_Thread"/>
     <addaction name="actionStop_Thread"/>
+    <addaction name="actionPing"/>
    </widget>
    <widget class="QMenu" name="menuUser_Inputs">
     <property name="title">
@@ -88,6 +89,11 @@
   <action name="actionStop_Thread_2">
    <property name="text">
     <string>Stop Thread</string>
+   </property>
+  </action>
+  <action name="actionPing">
+   <property name="text">
+    <string>Ping</string>
    </property>
   </action>
  </widget>

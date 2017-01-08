@@ -6,6 +6,7 @@ Packets::Packets(QObject *parent) :
     QObject(parent),
     m_datastream()
 {
+	m_datastream.setByteOrder(QDataStream::LittleEndian);
 }
 
 Packets::~Packets()

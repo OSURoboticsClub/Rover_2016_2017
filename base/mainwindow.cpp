@@ -146,16 +146,14 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 
 void MainWindow::on_actionPing_triggered()
 {
-    // SerialHandler::instance()->p()->readPause();
-
-    //QBuffer buffer;
-    //buffer.open(QIODevice::ReadWrite);
-    //SerialHandler::instance()->p()->setDevice(&buffer);
     SerialHandler::instance()->p()->readPause();
 /*
-    quint8 type = 0x05 | 0x80;
-    qDebug() << SerialHandler::instance()->p()->crc(&type, 1, 0xFFFF);
+    QBuffer buffer;
+    buffer.open(QIODevice::ReadWrite);
+    SerialHandler::instance()->p()->setDevice(&buffer);
+    SerialHandler::instance()->p()->readPause();
     qDebug() << buffer.data().toHex();
+
 */
 
 }

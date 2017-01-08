@@ -37,11 +37,25 @@ void SerialHandler::run()
 void SerialHandler::eventLoop()
 {
     while (m_run){
-        if(m_packets->device()->waitForReadyRead(500)) {
-            qDebug() << "read something";
-            QByteArray readData;
-            readData.append(m_packets->device()->readAll());
-            qDebug() << readData;
+        if(m_packets->device()->bytesAvailable() >= 2) {
+            qDebug() << "read some bytes";
+            quint8 start, size;
+            *m_packets->datastream() >> start;
+
+            qDebug() << start;
+            if(start != 0x01) continue;
+            qDebug() << "sucessfully read start byte";
+            *m_packets->datastream() >> size;
+
+            if(size < 3) continue;
+            qDebug() << "read size of: " << size;
+            qDebug() << "about to parse packet";
+            while(m_packets->device()->bytesAvailable() < size) {
+                msleep(50);
+            }
+            m_packets->parsePacket(size);
+            /* readData.append(m_packets->device()->readAll()); */
+            //qDebug() << readData.toHex();
         }
 
     }

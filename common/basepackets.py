@@ -303,8 +303,8 @@ class BasePackets(object):
             else:
                 conditional = "else if"
 
-            string += (ws + "%s(_packetType == static_cast<quint8>"
-            "(%s::%s)) {\n" % (
+            string += (ws + "%s(_packetType == (static_cast<quint8>"
+            "(%s::%s) | 0x80)) {\n" % (
                     conditional,
                     self._params["types_enum"],
                     uppercase_name)
@@ -329,6 +329,7 @@ class BasePackets(object):
                 # TODO: checking against crc (high priority)
                 # then emit
                 string += ws + "\tif(_crc == _read_crc) {\n"
+                string += ws + '\t\tqDebug() << "parsed a packet";\n'
                 string += ws + "\t\temit " + self._signal_name(packet) + "("
                 string += "".join(map(lambda x: x[1] + ", ",
                                       packet["argument"])).strip(" ,")
@@ -363,8 +364,8 @@ class BasePackets(object):
             uppercase_name = packet["name"].upper().replace(" ", "_")
             if "w" not in packet["rw"]:
                 continue
-            string += (ws + "else if(_packetType == (static_cast<quint8>"
-            "(%s::%s) | 0x80)) {\n") % (
+            string += (ws + "else if(_packetType == static_cast<quint8>"
+            "(%s::%s)) {\n") % (
                     self._params["types_enum"],
                     uppercase_name
             )

@@ -255,6 +255,7 @@ AutoreadTimer = None
 
 def setup(window, spec_table, io):
 	ww = QWidget(window)
+	window.setWindowTitle("Miniboard GUI Test Tool")
 	flayout = QFormLayout()
 	vlayout = QVBoxLayout()
 	read_list = []

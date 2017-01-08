@@ -17,7 +17,7 @@ Special bytes:
 ## CRC Calculation
 The CRC is 16-bit with a polynomial of 0x1021 and an initial value 0xFFFF. The CRC is calculated over the packet body (command byte and data byte(s)). The following function will calculate the CRC:
 
-```c
+```
 uint16_t calc_crc(uint8_t *body, int body_length){
 	uint16_t remainder = 0xFFFF;
 	for (int i = 0; i < body_length; i++){

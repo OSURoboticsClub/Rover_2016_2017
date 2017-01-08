@@ -216,7 +216,13 @@ class BasePackets(object):
                 "code": code,
                 "argument": argument,
                 "default": default,
-                "notes": notes})
+                "notes": notes
+            })
+        # removing redundant packet arguments
+        for packet in self._packets:
+            for i, arg in enumerate(packet["argument"]):
+                if "length" in arg[1]:
+                    packet["argument"].pop(i)
 
 
     def packet_types_header(self, line=None):
@@ -279,8 +285,8 @@ class BasePackets(object):
         ws = self._whitespace(line)
         string = ""
         # bitshift in the crc, and the packet type
-        string += ws + "quint16 _crc;\n"
-        string += ws + ("%s >> _crc;\n" % self._params["datastream"])
+        string += ws + "quint16 _read_crc;\n"
+        string += ws + ("%s >> _read_crc;\n" % self._params["datastream"])
         string += ws + "quint8 _packetType;\n"
         string += ws + ("%s >> _packetType;\n" % self._params["datastream"])
 
@@ -292,20 +298,17 @@ class BasePackets(object):
                 continue
 
             if i is 0:
-                # checks if the packet is of a certain type
-                string += (ws + "if(_packetType == static_cast<quint8>" +
-                    "(%s::%s)) {\n" % (
-                        self._params["types_enum"],
-                        uppercase_name)
-                    )
                 i += 1
+                conditional = "if"
             else:
-                # same as above
-                string += (ws + "else if(_packetType == static_cast<quint8>" +
-                    "(%s::%s)) {\n" % (
-                        self._params["types_enum"],
-                        uppercase_name)
-                    )
+                conditional = "else if"
+
+            string += (ws + "%s(_packetType == static_cast<quint8>"
+            "(%s::%s)) {\n" % (
+                    conditional,
+                    self._params["types_enum"],
+                    uppercase_name)
+            )
             packet_size = self._packet_size(packet)
             # TODO: what if the packet size is variable? This requires adding
             # in a size argument to the parse_packets function, creating a data
@@ -321,15 +324,54 @@ class BasePackets(object):
                     string += ws + "\t%s >> %s;\n" % (
                         self._params["datastream"], arg[1]
                     )
+                string += self._crc_calculation(packet, ws=ws, write=True)
+
                 # TODO: checking against crc (high priority)
                 # then emit
-                string += ws + "\temit " + self._signal_name(packet) + "("
-                # TODO: improve readability
+                string += ws + "\tif(_crc == _read_crc) {\n"
+                string += ws + "\t\temit " + self._signal_name(packet) + "("
                 string += "".join(map(lambda x: x[1] + ", ",
                                       packet["argument"])).strip(" ,")
                 string += ");\n"
+                string += ws + "\t}\n"
 
+            else:
+                string += ws + "\tchar _data[size];\n" # TODO: remove hard coding
+                string += ws + "\t%s.readRawData(_data, size);\n" % (
+                    self._params["datastream"],
+                )
+                string += ws + "\tQByteArray _byte_array = QByteArray(_data);\n"
+
+
+                string += ws + "\tquint16 _crc = 0xFFFF;\n"
+
+                string += ws + "\t_crc = %s(&_packetType, sizeof(quint8), _crc);\n" % (
+                    self._params["crc"],
+                )
+                string += ws + "\t_crc = %s(&_byte_array, size, _crc);\n" % (
+                    self._params["crc"]
+                )
+                string += ws + "\tif(_crc == _read_crc) {\n"
+                string += ws + "\t\temit %s(_byte_array);\n" % (
+                    self._signal_name(packet)
+                )
+                string += ws + "\t}\n"
+                # TODO
             string += ws + "}\n"
+
+        for packet in self._packets:
+            uppercase_name = packet["name"].upper().replace(" ", "_")
+            if "w" not in packet["rw"]:
+                continue
+            string += (ws + "else if(_packetType == (static_cast<quint8>"
+            "(%s::%s) | 0x80)) {\n") % (
+                    self._params["types_enum"],
+                    uppercase_name
+            )
+            # TODO: don't do anything yet, but to be added
+            # TODO: like a qDebug statement
+            string += ws + "}\n"
+
 
         return string.expandtabs(self._tabsize)
 
@@ -344,15 +386,12 @@ class BasePackets(object):
                 self._camelcase(packet["name"]),
                 self._argument_proto(packet),
             ))
-            # TODO: this needs to be a spearate function
-            string += "\tquint16 _crc = 0xFFFF;\n"
-            for arg in packet["argument"]:
-                string += ("\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
-                        self._params["crc"],
-                        arg[1],
-                        self._expand_argument(arg[0]),
-                    )
-                )
+            string += "\tquint8 _packetType = static_cast<quint8>(%s::%s);\n" % (
+                    self._params["types_enum"],
+                    self._uppercase_name(packet),
+            )
+
+            string += self._crc_calculation(packet)
             string += "\t%s << %s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
@@ -362,21 +401,65 @@ class BasePackets(object):
                     self._params["datastream"],
                     self._packet_size(packet)
                 )
+            else:
+                string += "\t%s << static_cast<quint8>(%s.size() + 3);\n" % (
+                    self._params["datastream"],
+                    packet["argument"][-1][1],
+                )
             string += "\t%s << _crc;\n" % self._params["datastream"]
-            string += "\t%s << static_cast<quint8>(%s::%s);\n" % (
+            string += "\t%s << _packetType;\n" % (
                 self._params["datastream"],
-                self._params["types_enum"],
-                self._uppercase_name(packet),
             )
             for arg in packet["argument"]:
                 string += "\t%s << %s;\n" % (self._params["datastream"], arg[1])
             string += "}\n\n"
         return string.expandtabs(self._tabsize)
 
+    def _crc_calculation(self, packet, ws="", write=True, packet_type="_packetType"):
+        string = ""
+        string += ws + "\tquint16 _crc = 0xFFFF;\n"
+        string += ws + "\t_crc = %s(&%s, sizeof(quint8), _crc);\n" % (
+            self._params["crc"],
+            packet_type,
+        )
+        if not write:
+            return string
+
+        for arg in packet["argument"]:
+            string += ws + "\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
+                    self._params["crc"],
+                    arg[1],
+                    self._expand_argument(arg[0]),
+            )
+        return string
+
     def read_slots_source(self, line=None):
         string = ""
-        ws = self._whitespace(line)
-        return string
+        for packet in self._packets:
+            if "r" not in packet["rw"]:
+                continue
+            string += "void %s::read%s()\n{\n" % (
+                self._params["class"],
+                self._camelcase(packet["name"]),
+            )
+            string += ("\tquint8 _packetType = static_cast<quint8>(%s::%s) "
+                "| 0x80;\n") % (
+                    self._params["types_enum"],
+                    self._uppercase_name(packet),
+            )
+            string += self._crc_calculation(packet, write=False)
+            string += "\t%s << %s;\n" % (
+                self._params["datastream"],
+                self._params["start_byte"],
+            )
+            string += "\t%s << 3;\n" % self._params["datastream"]
+            string += "\t%s << _crc;\n" % self._params["datastream"]
+            string += "\t%s << _packetType;\n" % (
+                self._params["datastream"],
+            )
+            string += "}\n\n"
+        return string.expandtabs(self._tabsize)
+
 
     def _parse_function_args(self, str):
         arguments = re.search(self._function_arg_extractor, str).group(0)
@@ -392,7 +475,7 @@ class BasePackets(object):
 
     def _expand_argument(self, arg):
         if arg == "*":
-            arg_type = "quint8"
+            arg_type = "QByteArray"
         elif "u" in arg:
             arg_type = "q" + arg.replace("u", "uint")
         elif "i" in arg:
@@ -406,7 +489,6 @@ class BasePackets(object):
         for arg in packet["argument"]:
             arg_type = self._expand_argument(arg[0])
             argument_str += arg_type + " " + arg[1] + ", "
-
         argument_str = argument_str.strip(" ,")
         return argument_str
 

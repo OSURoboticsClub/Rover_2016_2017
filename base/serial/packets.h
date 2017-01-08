@@ -37,7 +37,7 @@ signals:
 public slots:
     /* @write_slots_header */
 
-    /* read_slots_header */
+    /* @read_slots_header */
 
 private:
    Types m_types;

@@ -369,6 +369,13 @@ class BasePackets(object):
                     self._params["types_enum"],
                     uppercase_name
             )
+            string += ws + "\tquint16 _crc = 0xFFFF;\n"
+            string += ws + "\t_crc = %s(&_packetType, sizeof(quint8), _crc);\n" % (
+                self._params["crc"],
+            )
+            string += ws + "\tif(_crc == _read_crc) {\n"
+            string += ws + '\t\tqDebug() << "parsed a packet";\n'
+            string += ws + "\t}\n"
             # TODO: don't do anything yet, but to be added
             # TODO: like a qDebug statement
             string += ws + "}\n"
@@ -412,8 +419,28 @@ class BasePackets(object):
             string += "\t%s << _packetType;\n" % (
                 self._params["datastream"],
             )
-            for arg in packet["argument"]:
-                string += "\t%s << %s;\n" % (self._params["datastream"], arg[1])
+            if self._packet_size(packet) is not None:
+                for arg in packet["argument"]:
+                    string += "\t%s << %s;\n" % (
+                        self._params["datastream"], arg[1]
+                    )
+            else:
+                string += ("\tif(%s.byteOrder() == QDataStream::LittleEndian) "
+                    "{\n") % (
+                        self._params["datastream"]
+                    )
+                '''
+                string += "\t\tstd::reverse(%s.constBegin(), %s.constEnd());\n" % (
+                    packet["argument"][-1][1],
+                    packet["argument"][-1][1],
+                ) '''
+                string += "\t}\n"
+                string += "\t%s.writeRawData(%s.constData(), %s.size());\n" % (
+                    self._params["datastream"],
+                    packet["argument"][-1][1],
+                    packet["argument"][-1][1],
+                )
+
             string += "}\n\n"
         return string.expandtabs(self._tabsize)
 

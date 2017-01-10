@@ -1,4 +1,5 @@
 #include "packets.h"
+#include <algorithm>
 #include <QIODevice>
 #include <QDebug>
 

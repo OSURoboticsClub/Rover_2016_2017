@@ -53,6 +53,7 @@
     </property>
     <addaction name="actionStart_Thread_2"/>
     <addaction name="actionStop_Thread_2"/>
+    <addaction name="actionIdentify_controllers"/>
    </widget>
    <addaction name="menuSerial_Port"/>
    <addaction name="menuUser_Inputs"/>
@@ -94,6 +95,11 @@
   <action name="actionPing">
    <property name="text">
     <string>Ping</string>
+   </property>
+  </action>
+  <action name="actionIdentify_controllers">
+   <property name="text">
+    <string>Identify controllers</string>
    </property>
   </action>
  </widget>

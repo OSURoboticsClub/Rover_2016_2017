@@ -23,6 +23,7 @@ public:
     explicit ControllerHandler(QObject *parent = 0);
     ~ControllerHandler();
     int controllerCount();
+    void resetControllers();
     void run() Q_DECL_OVERRIDE;
 
 public slots:
@@ -30,13 +31,13 @@ public slots:
 private:
 
     void eventLoop();
-    void resetControllers();
     void connectControllers();
     void connectDriveController(ControllerPointer controller);
 
     QList<ControllerPointer> *m_controllers;
     bool m_stop;
     int m_controllerCount;
+    int m_usableControllerCount;
     int m_maxUsableControllers = 1;
 
 private slots:

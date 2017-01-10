@@ -146,19 +146,26 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 
 void MainWindow::on_actionPing_triggered()
 {
-    SerialHandler::instance()->p()->readPause();
-/*
+
+
     QBuffer buffer;
     buffer.open(QIODevice::ReadWrite);
     SerialHandler::instance()->p()->setDevice(&buffer);
-    SerialHandler::instance()->p()->readPause();
+
+    SerialHandler::instance()->p()->writeCameraCommand(QByteArray("something"));
+
     qDebug() << buffer.data().toHex();
 
-*/
+
 
 }
 
 void MainWindow::on_actionAutodetect_Serial_triggered()
 {
     SerialHandler::instance()->connectDevice();
+}
+
+void MainWindow::on_actionIdentify_controllers_triggered()
+{
+    m_inputs->resetControllers();
 }

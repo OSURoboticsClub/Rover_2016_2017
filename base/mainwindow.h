@@ -50,6 +50,8 @@ private slots:
 
     void on_actionAutodetect_Serial_triggered();
 
+    void on_actionIdentify_controllers_triggered();
+
 signals:
 
     void startSerial();

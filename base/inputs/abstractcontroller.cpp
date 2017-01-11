@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+
 AbstractController::AbstractController(int id, QObject *parent)
     : QObject(parent),
       m_id(id),
@@ -27,6 +28,7 @@ void AbstractController::emitChanges()
     for(unsigned int i = 0; i < js::AxisCount; i++) {
         float axisPos = js::getAxisPosition(m_id, static_cast<js::Axis>(i));
         if(std::abs(axisPos - m_currentState->axes[i]) > m_axisTolerance) {
+
             emitAxisChanges(i, axisPos);
         }
         m_currentState->axes[i] = axisPos;
@@ -54,7 +56,7 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
         emit axisYChanged(
                     value,
                     js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_LEFT_X))
+                        static_cast<js::Axis>(AXIS_RIGHT_Y))
                     );
         break;
     case AXIS_RIGHT_X:
@@ -64,7 +66,7 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
         emit axisRightYChanged(value);
         emit axisYChanged(
                     js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_LEFT_X)),
+                        static_cast<js::Axis>(AXIS_LEFT_Y)),
                     value
                     );
         break;

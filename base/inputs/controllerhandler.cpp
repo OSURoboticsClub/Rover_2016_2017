@@ -45,7 +45,7 @@ void ControllerHandler::eventLoop() {
         for(int i = 0; i < std::min(m_usableControllerCount, m_maxUsableControllers); i++) {
             (*m_controllers)[i]->emitChanges();
         }
-        msleep(500);
+        msleep(100);
     }
 }
 

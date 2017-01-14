@@ -1,5 +1,5 @@
 #include "abstractcontroller.h"
-
+#include <cmath>
 #include <algorithm>
 
 

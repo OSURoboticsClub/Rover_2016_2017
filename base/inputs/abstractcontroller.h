@@ -6,6 +6,9 @@
 
 typedef ::sf::Joystick js;
 
+/*
+ *
+ */
 class AbstractController : public QObject
 {
     Q_OBJECT

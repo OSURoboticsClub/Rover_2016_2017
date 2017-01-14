@@ -425,16 +425,6 @@ class BasePackets(object):
                         self._params["datastream"], arg[1]
                     )
             else:
-                string += ("\tif(%s.byteOrder() == QDataStream::LittleEndian) "
-                    "{\n") % (
-                        self._params["datastream"]
-                    )
-                '''
-                string += "\t\tstd::reverse(%s.constBegin(), %s.constEnd());\n" % (
-                    packet["argument"][-1][1],
-                    packet["argument"][-1][1],
-                ) '''
-                string += "\t}\n"
                 string += "\t%s.writeRawData(%s.constData(), %s.size());\n" % (
                     self._params["datastream"],
                     packet["argument"][-1][1],

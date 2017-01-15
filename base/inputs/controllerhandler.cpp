@@ -58,7 +58,7 @@ void ControllerHandler::resetControllers() {
             qDebug() << "identified joystick with product id: " << id.productId;
             if(id.productId == 1025) { // TODO: actual values here
                 m_controllers->push_back(ControllerPointer (new XboxController(i)));
-            } else if(id.productId == 1) {
+            } else if(id.productId == 22288) {
                 m_controllers->push_back(ControllerPointer (new FrSky(i)));
             } // etc.
         }

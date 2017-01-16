@@ -17,7 +17,7 @@ public:
 signals:
 
 protected:
-
+    static const int AXIS_RIGHT_Y = 3;
 };
 
 #endif // FRSKY_H

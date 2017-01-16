@@ -4,17 +4,10 @@
  * ax12.h - AX12 Servo module.
  */
 #include <stdint.h>
+#include <stdbool.h>
 
-
-/* Set the analog switch to transmit on the AX12 line. */
-static void ax12_tx(void){
-	//TODO
-}
-
-/* Set the analog switch to receive on the AX12 line. */
-static void ax12_rx(void){
-	//TODO
-}
+#define AX12_UART 1
+#define AX12_ALL_BROADCAST_ID 0xFE
 
 /* This module needs to be able to control AX12 servos.
  * There should be a function to tell an AX12 to move to
@@ -34,18 +27,18 @@ static void ax12_rx(void){
  * the AX12s. */
 void ax12_init(void);
 
-/* Set the angle of a given AX12 servo. */
-void ax12_angle(uint8_t servo_addr, int16_t angle){
-	//things to do:
-	//  -configure uart with AX12 baud rate
-	//  -set analog switch to TX mode
-	
+/* Change the broadcast ID of ax12 servo (range 0-253) */
+void ax12_set_id(uint8_t prev_id, uint8_t new_id);
+
+/* Toggle the servo LED */
+void ax12_toggle_led(uint8_t servo_id, bool toggle);
+
+/* Set the goal position */
+void ax12_set_goal_position(uint8_t servo_id, uint16_t angle);
+
+/* Set the moving speed */
+void ax12_set_moving_speed(uint8_t servo_id, uint16_t speed);
 
 /* Wait until no more data is being sent from the AX12 UART,
  * then disable it. */
-void ax12_release(void){
-	while(uart_tx_in_progress(AX12_UART)){
-		/* Wait for send to finish. */
-	}
-	uart_disable(AX12_UART);
-}
+void ax12_release(void);

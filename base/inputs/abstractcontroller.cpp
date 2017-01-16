@@ -1,6 +1,7 @@
 #include "abstractcontroller.h"
 #include <cmath>
 #include <algorithm>
+#include <QDebug>
 
 
 AbstractController::AbstractController(int id, QObject *parent)
@@ -28,7 +29,7 @@ void AbstractController::emitChanges()
     for(unsigned int i = 0; i < js::AxisCount; i++) {
         float axisPos = js::getAxisPosition(m_id, static_cast<js::Axis>(i));
         if(std::abs(axisPos - m_currentState->axes[i]) > m_axisTolerance) {
-
+            qDebug() << "axis changed: " << i;
             emitAxisChanges(i, axisPos);
         }
         m_currentState->axes[i] = axisPos;

@@ -15,6 +15,9 @@
 /* Initialize sabertooth communication by enabling the sabertooth UART */
 void sabertooth_init(void);
 
+/* Release sabertooth UART */
+void sabertooth_release(void);
+
 /* Set the speed of the sabertooth motor driver.
  *  addr is the sabertooth address, from 0-7.
  *  motor is a value that specifies which motor to set.

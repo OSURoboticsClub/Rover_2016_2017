@@ -6,7 +6,7 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QThread>
-
+#include <QDebug>
 
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
@@ -38,6 +38,7 @@ typedef QSharedPointer<AbstractController> ControllerPointer;
  * necessary setup can be invoked by calling the run() method. Likewise, calling
  * the quit() slot will exit the event loop.
  */
+
 class ControllerHandler : public QThread
 {
     Q_OBJECT
@@ -64,9 +65,10 @@ public:
     void run() Q_DECL_OVERRIDE;
 
 public slots:
-    void quit();
-private:
+    void stop();
 
+private:
+    void run();
     void eventLoop();
     void connectControllers();
     void connectDriveController(ControllerPointer controller);

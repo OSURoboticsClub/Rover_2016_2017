@@ -7,8 +7,10 @@ include_directories("${CMAKE_BINARY_DIR}/common/")
 set(SOURCES
    main.cpp
    mainwindow.cpp
-
    serial/serialhandler.cpp
+
+   threadarray.cpp
+  
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
@@ -20,6 +22,9 @@ set(HEADERS
     serial/serialhandler.h
     serial/call_once.h
     serial/singleton.h
+
+    threadarray.h
+
     inputs/controllerhandler.h
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
@@ -50,3 +55,4 @@ target_link_libraries(main Qt5::Gamepad)
 target_link_libraries(main Qt5::SerialPort)
 target_link_libraries(main Qt5::QuickWidgets)
 target_link_libraries(main ${SFML_LIBRARIES})
+

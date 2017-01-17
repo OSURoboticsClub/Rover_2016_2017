@@ -21,9 +21,10 @@ void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
+    qDebug() << "exciting controller handler";
 }
 
-void ControllerHandler::quit()
+void ControllerHandler::stop()
 {
     qDebug() << "quitting ControllerHandler thread";
     m_stop = true;
@@ -50,6 +51,7 @@ void ControllerHandler::eventLoop() {
 }
 
 void ControllerHandler::resetControllers() {
+    qDebug() << "resetting controllers";
     m_controllers = new QList<ControllerPointer>();
     m_controllerCount = controllerCount();
     for(int i = 0; i < m_controllerCount; i++) {

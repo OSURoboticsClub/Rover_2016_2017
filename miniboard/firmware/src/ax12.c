@@ -2,7 +2,7 @@
  * Miniboard Firmware
  *
  * ax12.h - AX12 Servo module.
- * Author(s): 
+ * Author(s): Jarrod Hollis
  */
 #include "ax12.h"
 #include "uart.h"

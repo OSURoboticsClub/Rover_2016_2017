@@ -1,14 +1,8 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QtSerialPort/QSerialPort>
 #include <QApplication>
-#include <QtQuickWidgets/QQuickWidget>
+#include <QtDebug>
+#include <QDebug>
+#include <QFile>
 #include <QTextStream>
-
-#include "mainwindow.h"
-#include "serial/serialhandler.h"
-
-#define SerialHandlerInstance Singleton<SerialHandler>::instance()
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {
@@ -33,13 +27,10 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
     ts << txt << endl;
 }
 
-int main(int argc, char *argv[])
+int main( int argc, char * argv[] )
 {
-
-    QApplication app(argc, argv);
+    QApplication app( argc, argv );
     qInstallMessageHandler(myMessageHandler);
-    MainWindow w;
-    w.show();
+    ...
     return app.exec();
-
 }

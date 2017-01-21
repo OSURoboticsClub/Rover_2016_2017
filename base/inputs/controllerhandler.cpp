@@ -21,9 +21,10 @@ void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
+    qDebug() << "exciting controller handler";
 }
 
-void ControllerHandler::quit()
+void ControllerHandler::stop()
 {
     qDebug() << "quitting ControllerHandler thread";
     m_stop = true;
@@ -50,6 +51,7 @@ void ControllerHandler::eventLoop() {
 }
 
 void ControllerHandler::resetControllers() {
+    qDebug() << "resetting controllers";
     m_controllers = new QList<ControllerPointer>();
     m_controllerCount = controllerCount();
     for(int i = 0; i < m_controllerCount; i++) {
@@ -58,7 +60,7 @@ void ControllerHandler::resetControllers() {
             qDebug() << "identified joystick with product id: " << id.productId;
             if(id.productId == 1025) { // TODO: actual values here
                 m_controllers->push_back(ControllerPointer (new XboxController(i)));
-            } else if(id.productId == 1) {
+            } else if(id.productId == 22288) {
                 m_controllers->push_back(ControllerPointer (new FrSky(i)));
             } // etc.
         }

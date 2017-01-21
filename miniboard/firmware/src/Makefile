@@ -1,6 +1,6 @@
 MCU:= atmega2560
 PROGRAMMER:= wiring
-PROGRAMMER_PORT:= /dev/tty.usbmodem1421
+PROGRAMMER_PORT:= /dev/ttyACM0
 PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
 
 SIMAVR:=simavr
@@ -17,7 +17,7 @@ OUTFILE:=../build/miniboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=commgen.o comm.o callsign.o sabertooth.o ax12.o adc.o  gps.o uart.o
+OBJFILES:=commgen.o comm.o callsign.o sabertooth.o adc.o  gps.o uart.o
 # Main file
 FILE:=miniboard.c
 

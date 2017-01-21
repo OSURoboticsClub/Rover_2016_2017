@@ -27,12 +27,6 @@ struct ax12_packet {
 	uint8_t length;
 } __attribute__((__packed__));
 
-struct ax12_status_packet {
-	uint8_t servo_id;
-	uint8_t error_flags;
-	
-};
-
 /* Set the analog switch to transmit on the AX12 line. */
 static void ax12_switch_tx(void) {
 	DDRC |= _BV(PC6);
@@ -70,11 +64,9 @@ static void ax12_write_packet(uint8_t servo_id, uint8_t *data, uint8_t length) {
  * be called after using the saberteeth and before using the AX12s. */
 void ax12_init(void) {
 	uart_enable(AX12_UART, 1000000, 1, 0);
-	//ax12_status_return_level(AX12_ALL_BROADCAST_ID, NO_RESPONSE);
 	ax12_switch_tx();
-	//ax12_enable(AX12_ALL_BROADCAST_ID);
-	uint8_t packet[] = {0xff, 0xff, 0xfe, 0x04, 0x03, 0x19, 0x01, ~(0x1f)};
-	uart_tx(AX12_UART, packet, 8);
+	ax12_status_return_level(AX12_ALL_BROADCAST_ID, NO_RESPONSE);
+	ax12_enable(AX12_ALL_BROADCAST_ID);
 }
 
 /* Wait until no more data is being sent from the AX12 UART,

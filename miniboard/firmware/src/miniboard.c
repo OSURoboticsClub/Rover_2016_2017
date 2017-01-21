@@ -15,7 +15,6 @@
 #include "sabertooth.h"
 #include "callsign.h"
 #include "gps.h"
-#include "ax12.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -92,24 +91,6 @@ int main(void){
 	/* For testing, remove the following call and insert your code below.
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
-	//miniboard_main();
-	init();
-	ax12_init();
-	
-	/*ax12_toggle_led(AX12_ALL_BROADCAST_ID, true);
-	_delay_ms(1000);
-	ax12_toggle_led(AX12_ALL_BROADCAST_ID, false);
-	_delay_ms(500);
-	ax12_set_moving_speed(AX12_ALL_BROADCAST_ID, 0x1ff);
-	_delay_ms(500);
-	ax12_set_goal_position(AX12_ALL_BROADCAST_ID, 0x000);
-	_delay_ms(4500);
-	ax12_set_moving_speed(AX12_ALL_BROADCAST_ID, 0x3ff);
-	_delay_ms(500);
-	ax12_set_goal_position(AX12_ALL_BROADCAST_ID, 0x3ff);
-	_delay_ms(5000);*/
-	while(1){
-		
-	}
+	miniboard_main();
 	return(0);
 }

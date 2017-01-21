@@ -8,7 +8,7 @@ ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
 
 }
 
-void ThreadArray::push(QThread *m_thread, bool startImmediately = false)
+void ThreadArray::push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
         threadnode *temp = new threadnode;

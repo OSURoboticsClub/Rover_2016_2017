@@ -68,7 +68,7 @@ public slots:
     void stop();
 
 private:
-    void run();
+    //void run();
     void eventLoop();
     void connectControllers();
     void connectDriveController(ControllerPointer controller);

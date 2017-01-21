@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QThread>
 #include <QTime>
-#include "serialhandler.h"
+#include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
 
 class ThreadArray : public QObject {

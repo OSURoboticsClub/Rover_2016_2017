@@ -16,3 +16,11 @@ extern bool CallsignSet;
  * It must also provide a function for issuing commands to a
  * Sony FCB-EX1020 camera. The actual commands will be provided
  * by the control software. */
+
+/* Set the output of the video switch.
+ * 0 = None
+ * 1 = Input 1
+ * 2 = Input 2
+ * ...
+ * 6 = Input 6 */
+void videoswitch_select(uint8_t input);

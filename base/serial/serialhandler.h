@@ -21,7 +21,7 @@ public:
 
     void run() Q_DECL_OVERRIDE;
 
-
+    SerialHandler(QObject *parent = 0);
     void setDevice(QIODevice *d);
     void setBuffer(QByteArray *a);
     QIODevice *device();
@@ -36,7 +36,7 @@ public slots:
 
 private:
     Packets *m_packets;
-    SerialHandler(QObject *parent = 0);
+
     static SerialHandler* createInstance();
 
     bool m_run = true;

@@ -2,6 +2,7 @@ MCU:= atmega2560
 PROGRAMMER:= wiring
 PROGRAMMER_PORT:= /dev/ttyACM0
 PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
+PROGRAMMER_PORT_OSX:= /dev/tty.usbmodem1421
 
 SIMAVR:=simavr
 
@@ -17,7 +18,7 @@ OUTFILE:=../build/miniboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=commgen.o comm.o callsign.o sabertooth.o adc.o  gpio.o gps.o videoswitch.o uart.o
+OBJFILES:=commgen.o comm.o callsign.o sabertooth.o adc.o  gpio.o gps.o videoswitch.o uart.o ax12.o
 # Main file
 FILE:=miniboard.c
 
@@ -51,7 +52,12 @@ download:
 		then \
 			$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
 		else \
-			echo "Port $(PROGRAMMER_PORT) or $(PROGRAMMER_PORT_ALT) not found; skipping programming."; \
+			if [ -c $(PROGRAMMER_PORT_OSX) ];\
+			then \
+				$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_OSX) -D -U flash:w:$(OUTFILE).bin:r; \
+			else \
+				echo "Port $(PROGRAMMER_PORT), $(PROGRAMMER_PORT_ALT), or $(PROGRAMMER_PORT_OSX) not found; skipping programming."; \
+			fi; \
 		fi; \
 	fi;
 

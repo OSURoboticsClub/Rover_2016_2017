@@ -15,6 +15,3 @@ void imu_accel(int16_t *ax, int16_t *ay, int16_t *az);
 /* Get rotation rate values.
  * TODO: units. */
 void imu_gyro(int16_t *gx, int16_t *gy, int16_t *gz);
-
-/* Get magnetometer values. */
-void imu_mag(int16_t *mx, int16_t *my, int16_t *mz);

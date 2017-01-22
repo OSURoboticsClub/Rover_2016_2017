@@ -15,6 +15,7 @@
 #include "sabertooth.h"
 #include "callsign.h"
 #include "gps.h"
+#include "ax12.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -77,6 +77,10 @@ void miniboard_main(void){
 		/* (handled in-module) */
 		
 		/* Saberteeth */
+		while(uart_tx_in_progress(AX12_UART)){
+			/* Wait for AX12 stuff to finish. */
+		}
+		sabertooth_init();
 		if(0 == Data->pause_state){
 			/* Paused */
 			sabertooth_set_speed(0, 0, 0);
@@ -102,7 +106,7 @@ void miniboard_main(void){
 			if(1 == Data->swerve_state){
 				/* Staight */
 				sabertooth_set_speed(3, 0, 127);
-			} else if(-1 == Data->swerve_state){
+			} else if(2 == Data->swerve_state){
 				/* Turn */
 				sabertooth_set_speed(3, 0, -127);
 			} else {
@@ -128,6 +132,9 @@ void miniboard_main(void){
 		//TODO
 		
 		/* AX12 */
+		while(uart_tx_in_progress(AX12_UART)){
+			/* Wait for sabertooth stuff to finish. */
+		}
 		//TODO
 		
 		DDRB |= _BV(PB7);

@@ -47,6 +47,9 @@ void ax12_init(void);
 /* Wait until no more data is being sent from the AX12 UART, then disable it. */
 void ax12_release(void);
 
+/* Reset servo settings to factory defaults */
+void ax12_reset(uint8_t servo_id);
+
 /* Change the broadcast ID of ax12 servo (range 0-253).
  * DO NOT SET MULTIPLE SERVOS TO SAME ID! */
 void ax12_set_id(uint8_t prev_id, uint8_t new_id);

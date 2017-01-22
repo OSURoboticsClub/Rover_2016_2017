@@ -78,6 +78,19 @@ void ax12_release(void) {
 	uart_disable(AX12_UART);
 }
 
+/* Reset servo settings to factory defaults */
+void ax12_reset(uint8_t servo_id) {
+	struct ax12_packet packet;
+	packet.length = 6;
+	packet.buffer[0] = 0xff;
+	packet.buffer[1] = 0xff;
+	packet.buffer[2] = servo_id;
+	packet.buffer[3] = 0x02;
+	packet.buffer[4] = AX12_INSTRUCTION_RESET;
+	packet.buffer[5] = ~(packet.buffer[2] + packet.buffer[3] + packet.buffer[4]);
+	uart_tx(AX12_UART, (uint8_t *) &packet, packet.length);
+}
+
 /* Change the broadcast ID of ax12 servo (range 0-253).
  * DO NOT SET MULTIPLE SERVOS TO SAME ID! */
 void ax12_set_id(uint8_t prev_id, uint8_t new_id) {

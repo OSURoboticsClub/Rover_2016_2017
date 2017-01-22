@@ -13,6 +13,7 @@
 #include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
 #include "threadarray.h"
+#include "miniboardupdater.h"
 
 
 namespace Ui {
@@ -32,14 +33,12 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    ThreadArray threadarray;
+    ThreadArray *threadarray;
 
     QSerialPort output;
 
-    bool _serialRunning;
-
     ControllerHandler *m_inputs;
-    SerialHandler *m_serial;
+    MiniBoardUpdater *m_updater;
 
 public slots:
 

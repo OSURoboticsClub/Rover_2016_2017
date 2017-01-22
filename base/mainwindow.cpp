@@ -9,19 +9,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_inputs(new ControllerHandler),
-    m_serial(new SerialHandler)
+    m_updater(new MiniBoardUpdater)
 {
     ui->setupUi(this);
 
-    connect(this, SIGNAL(startSerial()), m_serial, SLOT(start()));
-    connect(this, SIGNAL(stopSerial()), m_serial, SLOT(stop()));
-    connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
-    connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
-    threadarray.push(m_serial, true);
-    threadarray.push(m_inputs, true);
+    threadarray = new ThreadArray;
+    threadarray->push(m_inputs, true);
+    threadarray->push(m_updater, true);
 
-    _serialRunning = false;
 }
 
 //would need to destruct in the close button as well
@@ -98,7 +94,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     qDebug() << "start close";
 
-    threadarray.clear();
+    threadarray->clear();
+
+    delete threadarray;
     delete ui;
 
     qDebug() << "closed";

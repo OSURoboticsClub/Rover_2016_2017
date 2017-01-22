@@ -138,8 +138,18 @@ void miniboard_main(void){
 		}
 		//TODO
 		
+		/* Compass */
+		//TODO
+		
+		/* IMU */
+		//TODO
+		
+		/* GPIO */
+		//TODO
+		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
+		//TODO: Take this out?
 		_delay_ms(100);
 	}
 }

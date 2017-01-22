@@ -16,7 +16,7 @@
 #include "callsign.h"
 #include "gps.h"
 #include "ax12.h"
-
+#include "videoswitch.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -129,7 +129,8 @@ void miniboard_main(void){
 		atomic_set(Data->pot_5, pot_channel(5));
 		
 		/* Video Switch */
-		//TODO
+		//TODO: add callsign restriction
+		videoswitch_select(Data->selected_camera);
 		
 		/* AX12 */
 		while(uart_tx_in_progress(AX12_UART)){
@@ -139,7 +140,7 @@ void miniboard_main(void){
 		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
-		_delay_ms(300);
+		_delay_ms(100);
 	}
 }
 

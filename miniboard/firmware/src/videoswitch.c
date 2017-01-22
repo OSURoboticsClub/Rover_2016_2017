@@ -18,10 +18,7 @@ extern bool CallsignSet;
  * 2 = Input 2
  * ...
  * 6 = Input 6 */
-void videoswitch_select(uint8_t input);
-
 void videoswitch_select(uint8_t input){
-	
 	switch(input){
 		
 		case 1	:

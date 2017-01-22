@@ -15,7 +15,8 @@
 #include "sabertooth.h"
 #include "callsign.h"
 #include "gps.h"
-
+#include "ax12.h"
+#include "videoswitch.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -72,7 +73,53 @@ void miniboard_main(void){
 	init();
 	/* Miniboard main loop. */
 	while(1){
-		/* (GPS handled in-module) */
+		/* GPS */
+		/* (handled in-module) */
+		
+		/* Saberteeth */
+		while(uart_tx_in_progress(AX12_UART)){
+			/* Wait for AX12 stuff to finish. */
+		}
+		sabertooth_init();
+		if(0 == Data->pause_state){
+			/* Paused */
+			sabertooth_set_speed(0, 0, 0);
+			sabertooth_set_speed(0, 1, 0);
+			sabertooth_set_speed(1, 0, 0);
+			sabertooth_set_speed(1, 1, 0);
+			sabertooth_set_speed(2, 0, 0);
+			sabertooth_set_speed(2, 1, 0);
+			sabertooth_set_speed(3, 0, 0);
+			sabertooth_set_speed(3, 1, 0);
+			sabertooth_set_speed(4, 0, 0);
+			sabertooth_set_speed(4, 1, 0);
+			sabertooth_set_speed(5, 0, 0);
+			sabertooth_set_speed(5, 1, 0);
+		} else {
+			/* Not Paused */
+			sabertooth_set_speed(0, 0, Data->l_f_drive);
+			sabertooth_set_speed(0, 1, Data->r_f_drive);
+			sabertooth_set_speed(1, 0, Data->l_m_drive);
+			sabertooth_set_speed(1, 1, Data->r_m_drive);
+			sabertooth_set_speed(2, 0, Data->l_b_drive);
+			sabertooth_set_speed(2, 1, Data->r_b_drive);
+			if(1 == Data->swerve_state){
+				/* Staight */
+				sabertooth_set_speed(3, 0, 127);
+			} else if(2 == Data->swerve_state){
+				/* Turn */
+				sabertooth_set_speed(3, 0, -127);
+			} else {
+				/* No motion */
+				sabertooth_set_speed(3, 0, 0);
+			}
+			sabertooth_set_speed(3, 1, Data->arm_motor_1);
+			sabertooth_set_speed(4, 0, Data->arm_motor_2);
+			sabertooth_set_speed(4, 1, Data->arm_motor_3);
+			sabertooth_set_speed(5, 0, Data->arm_motor_4);
+			sabertooth_set_speed(5, 1, Data->arm_motor_5);
+		}
+		
 		/* ADC (Pot channels and battery.) */
 		atomic_set(Data->battery_voltage, battery_mV());
 		atomic_set(Data->pot_1, pot_channel(1));
@@ -81,9 +128,35 @@ void miniboard_main(void){
 		atomic_set(Data->pot_4, pot_channel(4));
 		atomic_set(Data->pot_5, pot_channel(5));
 		
+		/* Video Switch */
+		//TODO: add callsign restriction
+		videoswitch_select(Data->selected_camera);
+		
+		/* AX12 */
+		while(uart_tx_in_progress(AX12_UART)){
+			/* Wait for sabertooth stuff to finish. */
+		}
+		ax12_init();
+		if(0 == Data->pause_state) {
+			ax12_disable(AX12_ALL_BROADCAST_ID);
+		} else {
+			ax12_enable(AX12_ALL_BROADCAST_ID);
+			ax12_set_goal_position(Data->ax12_addr, (uint16_t) Data->ax12_angle);
+		}
+		
+		/* Compass */
+		//TODO
+		
+		/* IMU */
+		//TODO
+		
+		/* GPIO */
+		//TODO
+		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
-		_delay_ms(300);
+		//TODO: Take this out?
+		_delay_ms(100);
 	}
 }
 

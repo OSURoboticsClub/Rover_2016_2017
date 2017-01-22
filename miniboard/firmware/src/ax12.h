@@ -2,6 +2,7 @@
  * Miniboard Firmware
  *
  * ax12.h - AX12 Servo module.
+ * Author(s): Jarrod Hollis 
  */
 #include <stdint.h>
 #include <stdbool.h>
@@ -45,6 +46,9 @@ void ax12_init(void);
 
 /* Wait until no more data is being sent from the AX12 UART, then disable it. */
 void ax12_release(void);
+
+/* Reset servo settings to factory defaults */
+void ax12_reset(uint8_t servo_id);
 
 /* Change the broadcast ID of ax12 servo (range 0-253).
  * DO NOT SET MULTIPLE SERVOS TO SAME ID! */

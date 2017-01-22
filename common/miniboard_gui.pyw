@@ -19,7 +19,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
-SerialPortPath = "/dev/ttyACM0"
+SerialPortPath = "/dev/ttyUSB0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""

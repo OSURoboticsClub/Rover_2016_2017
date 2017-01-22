@@ -101,7 +101,7 @@ void miniboard_main(void){
 			if(1 == Data->swerve_state){
 				/* Staight */
 				sabertooth_set_speed(3, 0, 127);
-			} else if(-1 == Data->swerve_state){
+			} else if(2 == Data->swerve_state){
 				/* Turn */
 				sabertooth_set_speed(3, 0, -127);
 			} else {

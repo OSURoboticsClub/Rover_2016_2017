@@ -136,7 +136,13 @@ void miniboard_main(void){
 		while(uart_tx_in_progress(AX12_UART)){
 			/* Wait for sabertooth stuff to finish. */
 		}
-		//TODO
+		ax12_init();
+		if(0 == Data->pause_state) {
+			ax12_disable(AX12_ALL_BROADCAST_ID);
+		} else {
+			ax12_enable(AX12_ALL_BROADCAST_ID);
+			ax12_set_goal_position(Data->ax12_addr, (uint16_t) Data->ax12_angle);
+		}
 		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);

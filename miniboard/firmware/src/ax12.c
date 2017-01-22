@@ -66,7 +66,6 @@ void ax12_init(void) {
 	uart_enable(AX12_UART, 1000000, 1, 0);
 	ax12_switch_tx();
 	ax12_status_return_level(AX12_ALL_BROADCAST_ID, NO_RESPONSE);
-	ax12_enable(AX12_ALL_BROADCAST_ID);
 }
 
 /* Wait until no more data is being sent from the AX12 UART,
@@ -135,7 +134,7 @@ void ax12_set_temperature_limit(uint8_t servo_id, uint8_t temp) {
  * The formula for setting voltage limits is voltage = value / 10.
  * If voltage is ever outside limits, a voltage range error will return. */
 void ax12_set_voltage_limit(uint8_t servo_id, uint8_t low, uint8_t high) {
-	uint8_t data_low[] = {0x0C, high};
+	uint8_t data_low[] = {0x0C, low};
 	uint8_t data_high[] = {0x0D, high};
 	ax12_write_packet(servo_id, data_low, 2);
 	ax12_write_packet(servo_id, data_high, 2);

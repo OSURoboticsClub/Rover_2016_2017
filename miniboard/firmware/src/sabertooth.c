@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "uart.h"
 #include "sabertooth.h"
+#include <avr/interrupt.h>
 
 /* Macro for translating from local sabertooth address (0-7) to global
  * sabertooth address (128-135). */
@@ -36,12 +37,13 @@ void sabertooth_tx(struct sabertooth_packet *packet) {
 }
 
 void sabertooth_init(void) {
+	DDRC |= _BV(PC6);
+	PORTC &= ~_BV(PC6);
 	uart_enable(SABERTOOTH_UART, 9600, 1, 0);
+}
 
-	for (int s = 0; s < 8; s++) {
-		sabertooth_set_speed(s, 0, 0);
-		sabertooth_set_speed(s, 1, 0);
-	}
+void sabertooth_release(void) {
+	uart_disable(SABERTOOTH_UART);
 }
 
 void sabertooth_set_speed(uint8_t addr, uint8_t motor, int8_t speed) {

@@ -17,7 +17,7 @@ Special bytes:
 ## CRC Calculation
 The CRC is 16-bit with a polynomial of 0x1021 and an initial value 0xFFFF. The CRC is calculated over the packet body (command byte and data byte(s)). The following function will calculate the CRC:
 
-```
+```c
 uint16_t calc_crc(uint8_t *body, int body_length){
 	uint16_t remainder = 0xFFFF;
 	for (int i = 0; i < body_length; i++){
@@ -58,7 +58,7 @@ don't change the name of existing command arguments.
 | Arm Motors             | RW | 0x12 | i8 arm_motor_1, i8 arm_motor_2, i8 arm_motor_3, i8 arm_motor_4, i8 arm_motor_5 | 0,0,0,0,0 | -127 = full reverse 128 = full forward TODO: Define motor->joint mapping
 | Potentiometers         | R  | 0x13 | u8 pot_1, u8 pot_2, u8 pot_3, u8 pot_4, u8 pot_5 | 0,0,0,0,0 | Potentiometer readings, each 0-255. |
 | Servo                  |  W | 0x14 | u8 ax12_addr, i16 ax12_angle | 0,0 | Set the target angle of an AX12 servo. |
-| Select Camera          | RW | 0x20 | u8 selected_camera | 0 | 0-5; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
+| Select Camera          | RW | 0x20 | u8 selected_camera | 1 | 1-6; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
 | Callsign               | RW | 0x21 | u8 callsign_data_length, * callsign_data| - | ASCII string of callsign (use numerals and capital letters only) |
 | Camera Command         |  W | 0x22 | u8 camera_data_length, * camera_data | - | Custom camera commands defined in camera manual. camera_data_length defines the number of data bytes in the command (0-255). camera_data is the command to be sent to the camera.|
 | GPS Position           | R  | 0x23 | u8 gps_pos_valid, i64 latitude, i64 longitude, i32 altitude | 0,0,0,0 | GPS Position. Good when valid != 0. Sign meaning: +=north/east. Latitude and longitude are in 10e-6 minute units. Altitude is in meters. |

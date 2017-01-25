@@ -19,7 +19,9 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Check lengths everywhere, for validation
 #TODO: Add serial port selection
 #TODO: Add big pause/unpause buttons
-SerialPortPath = "/dev/ttyACM0"
+#TODO: Fix issue with spinbox that prevents typing 0 or -
+
+SerialPortPath = "/dev/ttyUSB0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
@@ -27,7 +29,12 @@ class MiniboardIO():
 	baud = 9600
 	def __init__(self):
 		os.system("stty -F %s -hupcl"%self.path)
-	
+		self.__tty = serial.Serial(port=self.path,
+		                           baudrate=self.baud,
+	                               parity=serial.PARITY_NONE,
+	                               stopbits=serial.STOPBITS_ONE,
+	                               bytesize=serial.EIGHTBITS,
+	                               timeout=0.1)
 	def calc_crc(self, body):
 		body = [ord(b) for b in body]
 		remainder = 0xFFFF
@@ -86,15 +93,15 @@ class MiniboardIO():
 	
 	def writeread(self, packet_contents):
 		"""Write a packet to the miniboard and return the reply."""
-		self.__tty = serial.Serial(port=self.path,
-		                           baudrate=self.baud,
-	                               parity=serial.PARITY_NONE,
-	                               stopbits=serial.STOPBITS_ONE,
-	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.1)
+		#self.__tty = serial.Serial(port=self.path,
+		                           #baudrate=self.baud,
+	                               #parity=serial.PARITY_NONE,
+	                               #stopbits=serial.STOPBITS_ONE,
+	                               #bytesize=serial.EIGHTBITS,
+	                               #timeout=0.1)
 		self.write(packet_contents)
 		reply = self.read()
-		self.__tty.close()
+		#self.__tty.close()
 		return reply
 	
 	def port_info(self):

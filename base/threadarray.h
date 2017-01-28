@@ -11,7 +11,7 @@
 class ThreadArray : public QObject {
     Q_OBJECT
 public:
-    void push(QThread *m_thread, bool startImmediately = false);
+    void push(QThread *m_thread, bool startImmediately);
     bool clear();
     explicit ThreadArray(QObject *parent = 0);
     ~ThreadArray();
@@ -20,7 +20,6 @@ private:
     struct threadnode {
         QThread *n_thread;
         threadnode *next;
-        int order;
         bool _running;
     };
     threadnode *threadhead;
@@ -28,7 +27,6 @@ private:
     QThread **threadArray;
     void convertToArray();
     bool clearing;
-
 signals:
     void closeThreads();
 };

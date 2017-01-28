@@ -12,6 +12,7 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     "/opt/Qt/5.7/gcc_64"
 	"~/Qt5.7.0/5.7/gcc_64"
     "~/Qt/5.7/gcc_64"
+    "~/Qt5.7.0/5.7/gcc_64"
 )
 
 # Find the necessary Qt libraries

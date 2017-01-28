@@ -56,6 +56,7 @@ void SerialHandler::eventLoop()
             m_packets->parsePacket(size);
             /* readData.append(m_packets->device()->readAll()); */
             //qDebug() << readData.toHex();
+
         }
 
     }

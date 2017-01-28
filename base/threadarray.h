@@ -21,6 +21,7 @@ private:
         QThread *n_thread;
         threadnode *next;
         bool _running;
+        bool nextBlank;
     };
     threadnode *threadhead;
     //this is so that I don't have to rewrite the clear function

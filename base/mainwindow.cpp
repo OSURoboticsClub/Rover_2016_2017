@@ -59,7 +59,7 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 void MainWindow::on_actionPing_triggered()
 {
 
-
+    /*
     QBuffer buffer;
     buffer.open(QIODevice::ReadWrite);
     SerialHandler::instance()->p()->setDevice(&buffer);
@@ -67,6 +67,7 @@ void MainWindow::on_actionPing_triggered()
     SerialHandler::instance()->p()->writeCameraCommand(QByteArray("something"));
 
     qDebug() << buffer.data().toHex();
+    */
 
 
 

@@ -12,28 +12,34 @@ ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
 void ThreadArray::push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
-
+        qDebug() << 1;
         threadnode *temp = new threadnode;
         temp->n_thread = m_thread;
-        temp->next = NULL;
-
+        temp->next = new threadnode;
+        temp->nextBlank = true;
+        qDebug() << 2;
         if (threadhead == NULL) {
+
             threadhead = temp;
+
         }
         else {
             threadnode* last = threadhead;
-            for(int i=0;i<numThreads;i++) last = last->next;
+            for(int i=0;i<numThreads;i++) {
+                last = last->next;
+            }
+            qDebug() << "here";
             last->next = temp;
+            last->nextBlank = false;
+            qDebug() << "there";
         }
 
         if (startImmediately){
-            qDebug() << 1;
             m_thread->start();
         }
-        qDebug() << 2;
+        qDebug() << 3;
         connect(this, SIGNAL(closeThreads()), m_thread, SLOT(stop()));
         numThreads++;
-        qDebug() << 3;
 
     }
 }
@@ -44,7 +50,7 @@ void ThreadArray::convertToArray()
     threadArray = new QThread *[numThreads];
     for (int i = 0;i < numThreads;i++){
         threadArray[i] = temp->n_thread;
-        if (temp->next != NULL) {
+        if (!temp->nextBlank) {
             temp = temp->next;
         }
     }
@@ -54,6 +60,7 @@ void ThreadArray::convertToArray()
 bool ThreadArray :: clear()
 {
     if (!clearing){
+        qDebug() << 'a';
         clearing = true;
         emit closeThreads();
         bool allThreadsKilled = false;
@@ -64,14 +71,14 @@ bool ThreadArray :: clear()
         startTime.start();
 
         convertToArray();
-
+        qDebug() << 'b';
         while (!allThreadsKilled)
         {
+            qDebug() << 'c';
             for (int i = 0;i < numThreads;i++)
             {
                 if (threadArray[i]->isRunning())
                 {
-
                     numThreadsRunning++;
                 }
             }
@@ -101,12 +108,20 @@ bool ThreadArray :: clear()
             {
                 allThreadsKilled = true;
             }
+            qDebug() << 'd';
         }
+        qDebug() << 'e';
         for (int i = 0; i < numThreads; i++)
         {
+            qDebug() << numThreads;
+            qDebug() << numThreadsRunning;
+            qDebug() << "here";
             delete threadArray[i];
+            qDebug() << "there";
         }
         delete threadArray;
+
+        qDebug() << 'f';
 
         return true;
     }

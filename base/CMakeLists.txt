@@ -10,6 +10,8 @@ set(SOURCES
    serial/serialhandler.cpp
 
    threadarray.cpp
+
+   miniboardupdater.cpp
   
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
@@ -24,6 +26,8 @@ set(HEADERS
     serial/singleton.h
 
     threadarray.h
+
+    miniboardupdater.h
 
     inputs/controllerhandler.h
     inputs/abstractcontroller.h

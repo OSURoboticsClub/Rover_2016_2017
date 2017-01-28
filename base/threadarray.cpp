@@ -4,33 +4,38 @@ ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
 {
     numThreads = 0;
     clearing = false;
-    threadhead = new threadnode;
+    threadhead = NULL;
 
 }
+
 
 void ThreadArray::push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
-        threadnode *temp = new threadnode;
-        temp = threadhead;
 
-        int i = 0;
-        for (i = 0; i < numThreads;i++){
-            temp->next = new threadnode;
-            temp = temp->next;
-        }
+        threadnode *temp = new threadnode;
         temp->n_thread = m_thread;
         temp->next = NULL;
-        temp->order = i + 1;
 
-        if (startImmediately){
-            temp->n_thread->start();
+        if (threadhead == NULL) {
+            threadhead = temp;
+        }
+        else {
+            threadnode* last = threadhead;
+            for(int i=0;i<numThreads;i++) last = last->next;
+            last->next = temp;
         }
 
-        connect(this, SIGNAL(closeThreads()),temp->n_thread, SLOT(stop()));
+        if (startImmediately){
+            qDebug() << 1;
+            m_thread->start();
+        }
+        qDebug() << 2;
+        connect(this, SIGNAL(closeThreads()), m_thread, SLOT(stop()));
         numThreads++;
-    }
+        qDebug() << 3;
 
+    }
 }
 
 void ThreadArray::convertToArray()

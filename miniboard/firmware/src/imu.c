@@ -101,18 +101,13 @@ void imu_init(void){
 /* Get acceleration values.
  * TODO: units. */
 void imu_accel(int16_t *ax, int16_t *ay, int16_t *az){
-	//cache x, y, z values
-	static int16_t ax_val = 0;
-	static int16_t ay_val = 0;
-	static int16_t az_val = 0;
+	int16_t ax_val = 0;
+	int16_t ay_val = 0;
+	int16_t az_val = 0;
 	
-	//If the new_data bit is set, write that data to the values
-		//read LSBs
-		//read MSBs
-		//convert to int16, though the data is in 12 bits
-	//repeat for Y and Z
-		
-	//other stuff?
+	uint8_t r;
+	read_reg(spi_cs_accel, 0, &r, 1);
+	
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 		*ax = ax_val;
 		*ay = ay_val;
@@ -124,9 +119,9 @@ void imu_accel(int16_t *ax, int16_t *ay, int16_t *az){
  * TODO: units. */
 void imu_gyro(int16_t *gx, int16_t *gy, int16_t *gz){
 	//cache dx, dy, dz values
-	static int16_t gx_val = 0;
-	static int16_t gy_val = 0;
-	static int16_t gz_val = 0;
+	int16_t gx_val = 0;
+	int16_t gy_val = 0;
+	int16_t gz_val = 0;
 	
 	//do things, see imu_accel for the rough layout
 	

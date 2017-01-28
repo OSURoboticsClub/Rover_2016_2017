@@ -17,6 +17,8 @@
 #include "gps.h"
 #include "ax12.h"
 #include "videoswitch.h"
+#include "imu.h"
+#include "gpio.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -61,7 +63,7 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	//sabertooth_init();
+	imu_init();
 	//set_callsign("asdf");
 	sei();
 }
@@ -148,7 +150,13 @@ void miniboard_main(void){
 		//TODO
 		
 		/* IMU */
-		//TODO
+		int16_t x, y, z;
+		imu_accel(&x, &y, &z);
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+			Data->accel_x = x;
+			Data->accel_y = y;
+			Data->accel_z = z;
+		}
 		
 		/* GPIO */
 		//TODO

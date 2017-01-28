@@ -15,8 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     threadarray = new ThreadArray;
-    threadarray->push(m_inputs, true);
-    threadarray->push(m_updater, true);
+    threadarray->push(m_inputs, false);
+    threadarray->push(m_updater, false);
+
+    connect(this, SIGNAL(startSerial()), SerialHandler::instance(), SLOT(start()));
+    connect(this, SIGNAL(stopSerial()), SerialHandler::instance(), SLOT(stop()));
+    connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
+    connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
 }
 

@@ -31,6 +31,10 @@ SerialHandler::~SerialHandler()
 void SerialHandler::run()
 {
     qDebug() << "starting serial read";
+    QByteArray *buffer = new QByteArray();
+    if(m_packets->device() == NULL) {
+        setBuffer(buffer);
+    }
     eventLoop();
 }
 
@@ -105,7 +109,6 @@ QIODevice *SerialHandler::device()
 {
     return m_packets->device();
 }
-
 SerialHandler::SerialHandler(QObject *parent)
     : QThread(parent),
       m_packets(new Packets())

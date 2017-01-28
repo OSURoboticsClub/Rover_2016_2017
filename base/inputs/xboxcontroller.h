@@ -62,9 +62,8 @@ protected:
     static const int BUTTON_B = 1;
     static const int BUTTON_X = 2;
     static const int BUTTON_Y = 3;
-
-    virtual void emitAxisChanges(int axisIndex, double value);
-    virtual void emitButtonChanges(int buttonIndex, bool value);
+    void emitAxisChanges(int axisIndex, double value);
+    void emitButtonChanges(int buttonIndex, bool value);
 };
 
 #endif // XBOXCONTROLLER_H

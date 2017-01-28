@@ -1,4 +1,5 @@
 #include "abstractcontroller.h"
+#include "xboxcontroller.h"
 #include <cmath>
 #include <algorithm>
 #include <QDebug>
@@ -37,8 +38,10 @@ void AbstractController::emitChanges()
 
     for(unsigned int j = 0; j < js::ButtonCount; j++) {
         bool buttonPressed = js::isButtonPressed(m_id, j);
-        if(buttonPressed != m_currentState->axes[j]) {
-            emitButtonChanges(j, buttonPressed);
+        if(buttonPressed != m_currentState->buttons[j]) {
+            //emit ButtonChanges(j, buttonPressed);
+            qDebug() <<"button is changed"<< j;
+
         }
         m_currentState->buttons[j] = buttonPressed;
     }
@@ -50,6 +53,12 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
     switch (axisIndex) {
     case AXIS_LEFT_X:
         emit axisLeftXChanged(value);
+
+        emit axisXChanged(
+                    value,
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_RIGHT_X))
+                    );
         break;
     case AXIS_LEFT_Y:
         emit axisLeftYChanged(value);
@@ -62,6 +71,11 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
         break;
     case AXIS_RIGHT_X:
         emit axisRightXChanged(value);
+        emit axisXChanged(
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_LEFT_X)),
+                    value
+                    );
         break;
     case AXIS_RIGHT_Y:
         emit axisRightYChanged(value);
@@ -78,7 +92,34 @@ void AbstractController::emitAxisChanges(int axisIndex, double value)
 
 void AbstractController::emitButtonChanges(int buttonIndex, bool value)
 {
-
+    /*
+    switch (buttonIndex) {
+    case BUTTON_A:
+        emit buttonAChanged(value);
+        break;
+    case BUTTON_B:
+        emit buttonBChanged(value);
+        emit axisYChanged(
+                    value,
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_RIGHT_Y))
+                    );
+        break;
+    case BUTTON_X:
+        emit buttonXChanged(value);
+        break;
+    case BUTTON_Y:
+        emit buttonYChanged(value);
+        emit axisYChanged(
+                    js::getAxisPosition(m_id,
+                        static_cast<js::Axis>(AXIS_LEFT_Y)),
+                    value
+                    );
+        break;
+    default:
+        break;
+    }
+    */
 }
 
 double AbstractController::axisLeftX() const

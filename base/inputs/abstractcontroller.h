@@ -30,6 +30,7 @@ signals:
     void axisRightXChanged(double value);
     void axisRightYChanged(double value);
 
+    void axisXChanged(double left, double right);
     void axisYChanged(double left, double right);
 
 protected:
@@ -44,7 +45,6 @@ protected:
     int m_id;
     float m_axisTolerance;
     int m_priority;
-
 
     // Copied and adapted from SFML/Window/JoystickImpl.hpp
     struct JoystickState {

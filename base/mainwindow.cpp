@@ -65,15 +65,12 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 void MainWindow::on_actionPing_triggered()
 {
 
-    /*
-    QBuffer buffer;
-    buffer.open(QIODevice::ReadWrite);
-    SerialHandler::instance()->p()->setDevice(&buffer);
 
-    SerialHandler::instance()->p()->writeCameraCommand(QByteArray("something"));
+    //QBuffer buffer;
+    //buffer.open(QIODevice::ReadWrite);
+    //SerialHandler::instance()->p()->setDevice(&buffer);
 
-    qDebug() << buffer.data().toHex();
-    */
+    SerialHandler::instance()->p()->readBatteryVoltage();
 
 
 

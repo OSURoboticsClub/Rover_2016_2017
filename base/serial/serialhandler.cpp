@@ -50,7 +50,7 @@ void SerialHandler::eventLoop()
             if(start != 0x01) continue;
             qDebug() << "sucessfully read start byte";
             *m_packets->datastream() >> size;
-
+            qDebug() << size;
             if(size < 3) continue;
             qDebug() << "read size of: " << size;
             qDebug() << "about to parse packet";
@@ -75,12 +75,13 @@ void SerialHandler::stop() {
 void SerialHandler::connectDevice()
 {
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
-    for(int i = 0; i < serialPorts.size(); i++) {
+    //for(int i = 0; i < serialPorts.size(); i++) {
         // for now
-        qDebug() << serialPorts[i].portName();
-        if(serialPorts[i].portName() == "ttyUSB0") {
+    if(!serialPorts.isEmpty()){
+        qDebug() << serialPorts[0].portName();
+        //if(serialPorts[i].portName() == "ttyUSB0") {
             qDebug() << "identifyed serial";
-            QSerialPort *serial = new QSerialPort(serialPorts[i]);
+            QSerialPort *serial = new QSerialPort(serialPorts[0]);
             if(!serial->open(QIODevice::ReadWrite)) {
                 qDebug() << tr("error %1").arg(serial->error());
             }
@@ -90,8 +91,9 @@ void SerialHandler::connectDevice()
             serial->setStopBits(QSerialPort::OneStop);
 
             setDevice(serial);
-        }
     }
+            //}
+    //}
 }
 
 void SerialHandler::setDevice(QIODevice *d)

@@ -63,7 +63,7 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	imu_init();
+	//imu_init();
 	//set_callsign("asdf");
 	sei();
 }
@@ -79,9 +79,9 @@ void miniboard_main(void){
 		/* (handled in-module) */
 		
 		/* Saberteeth */
-		while(uart_tx_in_progress(AX12_UART)){
-			/* Wait for AX12 stuff to finish. */
-		}
+// 		while(uart_tx_in_progress(AX12_UART)){
+// 			/* Wait for AX12 stuff to finish. */
+// 		}
 		sabertooth_init();
 		if(0 == Data->pause_state){
 			/* Paused */
@@ -135,28 +135,28 @@ void miniboard_main(void){
 		videoswitch_select(Data->selected_camera);
 		
 		/* AX12 */
-		while(uart_tx_in_progress(AX12_UART)){
-			/* Wait for sabertooth stuff to finish. */
-		}
-		ax12_init();
-		if(0 == Data->pause_state) {
-			ax12_disable(AX12_ALL_BROADCAST_ID);
-		} else {
-			ax12_enable(AX12_ALL_BROADCAST_ID);
-			ax12_set_goal_position(Data->ax12_addr, (uint16_t) Data->ax12_angle);
-		}
+// 		while(uart_tx_in_progress(AX12_UART)){
+// 			/* Wait for sabertooth stuff to finish. */
+// 		}
+// 		ax12_init();
+// 		if(0 == Data->pause_state) {
+// 			ax12_disable(AX12_ALL_BROADCAST_ID);
+// 		} else {
+// 			ax12_enable(AX12_ALL_BROADCAST_ID);
+// 			ax12_set_goal_position(Data->ax12_addr, (uint16_t) Data->ax12_angle);
+// 		}
 		
 		/* Compass */
 		//TODO
 		
 		/* IMU */
-		int16_t x, y, z;
-		imu_accel(&x, &y, &z);
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-			Data->accel_x = x;
-			Data->accel_y = y;
-			Data->accel_z = z;
-		}
+// 		int16_t x, y, z;
+// 		imu_accel(&x, &y, &z);
+// 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+// 			Data->accel_x = x;
+// 			Data->accel_y = y;
+// 			Data->accel_z = z;
+// 		}
 		
 		/* GPIO */
 		//TODO

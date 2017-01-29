@@ -37,9 +37,10 @@ protected:
     virtual void emitAxisChanges(int axisIndex, double value);
     virtual void emitButtonChanges(int buttonIndex, bool value);
 
+    // TODO : change this to a struct possible
     static const int AXIS_LEFT_Y = 1;
-    static const int AXIS_LEFT_X = 3;
-    static const int AXIS_RIGHT_Y = 5;
+    static const int AXIS_LEFT_X = 2;
+    static const int AXIS_RIGHT_Y = 3;
     static const int AXIS_RIGHT_X = 4;
 
     int m_id;

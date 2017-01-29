@@ -10,11 +10,14 @@ set(SOURCES
    serial/serialhandler.cpp
 
    threadarray.cpp
+
+   miniboardupdater.cpp
   
    inputs/controllerhandler.cpp
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
    inputs/frsky.cpp
+   inputs/ps3.cpp
 )
 
 set(HEADERS
@@ -25,10 +28,13 @@ set(HEADERS
 
     threadarray.h
 
+    miniboardupdater.h
+
     inputs/controllerhandler.h
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
     inputs/frsky.h
+    inputs/ps3.h
 )
 
 # Set forms

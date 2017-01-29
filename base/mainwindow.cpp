@@ -9,19 +9,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_inputs(new ControllerHandler),
-    m_serial(new SerialHandler)
+    m_updater(new MiniBoardUpdater)
 {
     ui->setupUi(this);
 
-    connect(this, SIGNAL(startSerial()), m_serial, SLOT(start()));
-    connect(this, SIGNAL(stopSerial()), m_serial, SLOT(stop()));
+
+    threadarray = new ThreadArray;
+    threadarray->push(SerialHandler::instance(), false);
+    threadarray->push(m_inputs, false);
+    threadarray->push(m_updater, false);
+
+    connect(this, SIGNAL(startSerial()), SerialHandler::instance(), SLOT(start()));
+    connect(this, SIGNAL(stopSerial()), SerialHandler::instance(), SLOT(stop()));
     connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
     connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
-    threadarray.push(m_serial, true);
-    threadarray.push(m_inputs, true);
-
-    _serialRunning = false;
 }
 
 //would need to destruct in the close button as well
@@ -63,7 +65,7 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 void MainWindow::on_actionPing_triggered()
 {
 
-
+    /*
     QBuffer buffer;
     buffer.open(QIODevice::ReadWrite);
     SerialHandler::instance()->p()->setDevice(&buffer);
@@ -71,6 +73,7 @@ void MainWindow::on_actionPing_triggered()
     SerialHandler::instance()->p()->writeCameraCommand(QByteArray("something"));
 
     qDebug() << buffer.data().toHex();
+    */
 
 
 
@@ -98,7 +101,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     qDebug() << "start close";
 
-    threadarray.clear();
+    threadarray->clear();
+
+    delete threadarray;
     delete ui;
 
     qDebug() << "closed";

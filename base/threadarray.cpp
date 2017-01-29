@@ -4,33 +4,39 @@ ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
 {
     numThreads = 0;
     clearing = false;
-    threadhead = new threadnode;
+    threadhead = NULL;
 
 }
+
 
 void ThreadArray::push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
         threadnode *temp = new threadnode;
-        temp = threadhead;
-
-        int i = 0;
-        for (i = 0; i < numThreads;i++){
-            temp->next = new threadnode;
-            temp = temp->next;
-        }
         temp->n_thread = m_thread;
-        temp->next = NULL;
-        temp->order = i + 1;
+        temp->next = new threadnode;
+        temp->nextBlank = true;
+        if (threadhead == NULL) {
+
+            threadhead = temp;
+
+        }
+        else {
+            threadnode* last = threadhead;
+            for(int i=0;i<numThreads;i++) {
+                last = last->next;
+            }
+            last->next = temp;
+            last->nextBlank = false;
+        }
 
         if (startImmediately){
-            temp->n_thread->start();
+            m_thread->start();
         }
-
-        connect(this, SIGNAL(closeThreads()),temp->n_thread, SLOT(stop()));
+        connect(this, SIGNAL(closeThreads()), m_thread, SLOT(stop()));
         numThreads++;
-    }
 
+    }
 }
 
 void ThreadArray::convertToArray()
@@ -39,7 +45,7 @@ void ThreadArray::convertToArray()
     threadArray = new QThread *[numThreads];
     for (int i = 0;i < numThreads;i++){
         threadArray[i] = temp->n_thread;
-        if (temp->next != NULL) {
+        if (!temp->nextBlank) {
             temp = temp->next;
         }
     }
@@ -59,14 +65,12 @@ bool ThreadArray :: clear()
         startTime.start();
 
         convertToArray();
-
         while (!allThreadsKilled)
         {
             for (int i = 0;i < numThreads;i++)
             {
                 if (threadArray[i]->isRunning())
                 {
-
                     numThreadsRunning++;
                 }
             }
@@ -97,11 +101,11 @@ bool ThreadArray :: clear()
                 allThreadsKilled = true;
             }
         }
-        for (int i = 0; i < numThreads; i++)
-        {
-            delete threadArray[i];
+        threadnode *temp = threadhead;
+        while (!temp->nextBlank){
+            threadhead = temp->next;
+            delete temp;
         }
-        delete threadArray;
 
         return true;
     }

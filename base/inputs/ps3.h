@@ -9,6 +9,11 @@ class Ps3 : public AbstractController
 public:
     explicit Ps3(int id, QObject *parent = 0);
     ~Ps3();
+    using AbstractController::emitChanges;
+    using AbstractController::emitAxisChanges;
+protected:
+    int AXIS_RIGHT_Y = 3;
+
 };
 
 #endif // PS3_H

@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     threadarray = new ThreadArray;
+    threadarray->push(SerialHandler::instance(), false);
     threadarray->push(m_inputs, false);
     threadarray->push(m_updater, false);
 

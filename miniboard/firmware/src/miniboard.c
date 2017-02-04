@@ -15,6 +15,7 @@
 #include "sabertooth.h"
 #include "callsign.h"
 #include "gps.h"
+#include "compass.h"
 #include "ax12.h"
 #include "videoswitch.h"
 #include "imu.h"
@@ -63,6 +64,7 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
+	comp_init();
 	//imu_init();
 	//set_callsign("asdf");
 	sei();
@@ -147,7 +149,7 @@ void miniboard_main(void){
 // 		}
 		
 		/* Compass */
-		//TODO
+		//retrieve();
 		
 		/* IMU */
 // 		int16_t x, y, z;

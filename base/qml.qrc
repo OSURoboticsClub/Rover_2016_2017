@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>panel.qml</file>
+        <file>button1.qml</file>
     </qresource>
 </RCC>

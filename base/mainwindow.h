@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QQuickWidget>
 #include <QThread>
+#include <QQuickView>
 #include <QTime>
 
 #include "serial/serialhandler.h"
@@ -37,10 +38,15 @@ private:
 
     QSerialPort output;
 
+    bool m_closing = false;
+
     ControllerHandler *m_inputs;
     MiniBoardUpdater *m_updater;
 
 public slots:
+    void printFromQml(const QString &msg){
+        qDebug() << "called";
+    }
 
 private slots:
 
@@ -58,8 +64,6 @@ private slots:
 
     void on_actionIdentify_controllers_triggered();
 
-    void on_exit_clicked();
-
 signals:
 
     void startSerial();
@@ -71,6 +75,8 @@ signals:
     void stopReadIn();
     void closeThreads();
     void startThreads();
+
+    void deleteThisQuickViewShit();
 
 
 };

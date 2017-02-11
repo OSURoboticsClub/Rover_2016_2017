@@ -21,6 +21,7 @@ set(SOURCES
 
 set(HEADERS
     mainwindow.h
+    messagehandler.h
     serial/serialhandler.h
     serial/call_once.h
     serial/singleton.h

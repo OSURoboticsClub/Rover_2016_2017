@@ -32,5 +32,11 @@ Item {
                 anchors.fill: parent
             }
         }
+
+        Tab {
+            id: settings
+            title: "Settings"
+            source: "Settings.qml"
+        }
     }
 }

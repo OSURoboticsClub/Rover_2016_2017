@@ -15,8 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     threadarray = new ThreadArray;
-    threadarray->push(m_inputs, true);
-    threadarray->push(m_updater, true);
+    threadarray->push(SerialHandler::instance(), false);
+    threadarray->push(m_inputs, false);
+    threadarray->push(m_updater, false);
+
+    connect(this, SIGNAL(startSerial()), SerialHandler::instance(), SLOT(start()));
+    connect(this, SIGNAL(stopSerial()), SerialHandler::instance(), SLOT(stop()));
+    connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
+    connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
 }
 
@@ -59,15 +65,12 @@ void MainWindow::on_actionStop_Thread_2_triggered()
 void MainWindow::on_actionPing_triggered()
 {
 
-    /*
-    QBuffer buffer;
-    buffer.open(QIODevice::ReadWrite);
-    SerialHandler::instance()->p()->setDevice(&buffer);
 
-    SerialHandler::instance()->p()->writeCameraCommand(QByteArray("something"));
+    //QBuffer buffer;
+    //buffer.open(QIODevice::ReadWrite);
+    //SerialHandler::instance()->p()->setDevice(&buffer);
 
-    qDebug() << buffer.data().toHex();
-    */
+    SerialHandler::instance()->p()->readBatteryVoltage();
 
 
 

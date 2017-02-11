@@ -62,7 +62,9 @@ void ControllerHandler::resetControllers() {
                 m_controllers->push_back(ControllerPointer (new XboxController(i)));
             } else if(id.productId == 22288) {
                 m_controllers->push_back(ControllerPointer (new FrSky(i)));
-            } // etc.
+            } else if(id.productId == 49686) {
+                m_controllers->push_back(ControllerPointer (new Ps3(i)));
+            }
         }
     }
     m_usableControllerCount = m_controllers->size();

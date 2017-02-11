@@ -66,5 +66,9 @@ don't change the name of existing command arguments.
 | Magnetometer           | R  | 0x26 | i16 mag_x, i16 mag_y, i16 mag_z | 0,0,0 | External magnetometer reading. TODO: define units and axis directions. |
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
+| Compass Heading        | R  | 0x29 | u8 compass_heading_valid, i16 compass_heading | 0,0 | Magnetic compass heading. TODO: define units and axis directions. |
+| GPIO Direction         | RW | 0x30 | u8 gpio_dir | 0 | GPIO pin directions. 1 = out, 0 = in. Mapping: MSB X X 5 4 3 2 1 X LSB. |
+| GPIO Out Value         | RW | 0x31 | u8 gpio_out | 0 | GPIO pin directions. 1 = high, 0 = low. If high in input mode, pull-up resistor is enabled. Mapping: MSB X X 5 4 3 2 1 X LSB. |
+| GPIO Read State        | RW | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
 | Build Info             | R  | 0x71 | u8 build_info_data_length, * build_info_data | - | Read out string describing when/how the firmware was built. |

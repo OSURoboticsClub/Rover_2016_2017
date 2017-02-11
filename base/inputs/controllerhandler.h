@@ -11,6 +11,7 @@
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
 #include "inputs/frsky.h"
+#include "inputs/ps3.h"
 
 
 /*

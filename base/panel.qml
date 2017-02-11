@@ -3,10 +3,11 @@ import QtQuick.Controls 2.0
 import QtPositioning 5.7
 import QtQuick.Extras 1.4
 import QtQuick.Layouts 1.3
-import QtGamepad 1.0
+
 import QtQuick.Templates 2.0
 
 Item {
+    property int t
     id: item1
     Gauge {
         id: rightMotor

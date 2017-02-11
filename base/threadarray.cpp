@@ -12,12 +12,10 @@ ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
 void ThreadArray::push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
-        qDebug() << 1;
         threadnode *temp = new threadnode;
         temp->n_thread = m_thread;
         temp->next = new threadnode;
         temp->nextBlank = true;
-        qDebug() << 2;
         if (threadhead == NULL) {
 
             threadhead = temp;
@@ -28,16 +26,13 @@ void ThreadArray::push(QThread *m_thread, bool startImmediately)
             for(int i=0;i<numThreads;i++) {
                 last = last->next;
             }
-            qDebug() << "here";
             last->next = temp;
             last->nextBlank = false;
-            qDebug() << "there";
         }
 
         if (startImmediately){
             m_thread->start();
         }
-        qDebug() << 3;
         connect(this, SIGNAL(closeThreads()), m_thread, SLOT(stop()));
         numThreads++;
 
@@ -60,7 +55,6 @@ void ThreadArray::convertToArray()
 bool ThreadArray :: clear()
 {
     if (!clearing){
-        qDebug() << 'a';
         clearing = true;
         emit closeThreads();
         bool allThreadsKilled = false;
@@ -71,10 +65,8 @@ bool ThreadArray :: clear()
         startTime.start();
 
         convertToArray();
-        qDebug() << 'b';
         while (!allThreadsKilled)
         {
-            qDebug() << 'c';
             for (int i = 0;i < numThreads;i++)
             {
                 if (threadArray[i]->isRunning())
@@ -108,20 +100,12 @@ bool ThreadArray :: clear()
             {
                 allThreadsKilled = true;
             }
-            qDebug() << 'd';
         }
-        qDebug() << 'e';
-        for (int i = 0; i < numThreads; i++)
-        {
-            qDebug() << numThreads;
-            qDebug() << numThreadsRunning;
-            qDebug() << "here";
-            delete threadArray[i];
-            qDebug() << "there";
+        threadnode *temp = threadhead;
+        while (!temp->nextBlank){
+            threadhead = temp->next;
+            delete temp;
         }
-        delete threadArray;
-
-        qDebug() << 'f';
 
         return true;
     }

@@ -9,6 +9,8 @@ import QtQuick.Templates 2.0
 Item {
     property int t
     id: item1
+    width: 200
+    height: 600
     /*
     Gauge {
         id: voltometer
@@ -217,20 +219,22 @@ Item {
     */
     ColumnLayout {
         id: columnLayout1
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
 
         RowLayout {
             id: rowLayout2
+            Layout.fillWidth: true
 
 
             Gauge {
                 id: leftMotor
-                /*
-                width: parent.width * .5
-                height: parent.height * .2
-                anchors.leftMargin: 219
-                anchors.topMargin: 67
-                */
                 antialiasing: true
                 maximumValue: 13
                 value: 5
@@ -238,15 +242,6 @@ Item {
             }
             Gauge {
                 id: rightMotor
-                /*
-                anchors{
-                    top: unknownCommand.bottom
-                    right: parent.right
-                }*/
-                /*
-                height: parent.height * .2
-                anchors.rightMargin: -219
-                anchors.topMargin: 67*/
                 antialiasing: true
                 enabled: true
                 visible: true
@@ -260,9 +255,37 @@ Item {
             id: accelerometer
             width: parent.width * .5
             height: parent.height * .2
+            Layout.fillWidth: true
             value: 63
             maximumValue: 100
         }
-    }
 
+       Gauge {
+        id: voltometer
+        width: parent.width * .5
+        height: parent.height * .2
+        Layout.fillWidth: true
+        scale: 1
+        value: 75
+        maximumValue: 100
+        }
+       Gauge {
+           id: gyro
+
+           width: parent.width * .5
+           height: parent.height * .2
+           Layout.fillWidth: true
+           value: 63
+           maximumValue: 100
+       }
+    Text {
+        id: cameraSelect
+
+        width: parent.width * .5
+        height: parent.height * .2
+        text: qsTr("Camera 3")
+        verticalAlignment: Text.AlignVCenter
+        font.pixelSize: 20
+    }
+   }
 }

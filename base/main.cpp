@@ -5,6 +5,7 @@
 #include <QtQuickWidgets/QQuickWidget>
 #include <QTextStream>
 
+#include "messagehandler.h"
 #include "mainwindow.h"
 #include "serial/serialhandler.h"
 
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
 {
 
     QApplication app(argc, argv);
-
+    qInstallMessageHandler(myMessageHandler);
     MainWindow w;
     w.show();
     return app.exec();

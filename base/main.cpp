@@ -7,6 +7,7 @@
 #include <QQuickView>
 #include <QQmlContext>
 #include <QQuickItem>
+#include <QtWebEngine>
 
 #include "mainwindow.h"
 #include "serial/serialhandler.h"
@@ -23,22 +24,26 @@ int main(int argc, char *argv[])
 
  //   QQuickItem *item = qobject_cast<QQuickItem*>(object);
 //    item->setWidth(500);
+    QtWebEngine::initialize();
 
-    QQuickView view(QUrl(QStringLiteral("qrc:/panel.qml")));
-    QObject *item = view.rootObject();
+    QQuickView view;
+    view.setSource(QUrl("qrc:/main.qml"));
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
 
-    MainWindow w;
+//    QObject *item = view.rootObject();
 
-    QObject::connect(item, SIGNAL(debugTest(QString)), &w, SLOT(printFromQml(QString)));
-    QObject::connect(item, SIGNAL(closeMainWindow()), &w, SLOT(close()));
-    QObject::connect(item, SIGNAL(closeMainWindow()), item, SLOT(deleteLater()));
+    //MainWindow w;
+
+    //QObject::connect(item, SIGNAL(debugTest(QString)), &w, SLOT(printFromQml(QString)));
+    //QObject::connect(item, SIGNAL(closeMainWindow()), &w, SLOT(close()));
+    //QObject::connect(item, SIGNAL(closeMainWindow()), item, SLOT(deleteLater()));
 
     //w.show();
     view.show();
 
-       qDebug() << "main";
+    QObject *object = view.rootObject();
+
+    //   qDebug() << "main";
 
     return app.exec();
-
-
 }

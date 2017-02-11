@@ -161,7 +161,9 @@ void miniboard_main(void){
 // 		}
 		
 		/* GPIO */
-		//TODO
+		gpio_set_state(Data->gpio_dir);
+		gpio_set_out(Data->gpio_out);
+		Data->gpio_state = gpio_get_state();
 		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);

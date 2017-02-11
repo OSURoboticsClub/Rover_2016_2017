@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
     connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
+
 }
 
 //would need to destruct in the close button as well
@@ -88,21 +89,18 @@ void MainWindow::on_actionIdentify_controllers_triggered()
 }
 
 
-void MainWindow::on_exit_clicked()
-{
-    this->close();
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 
     qDebug() << "start close";
+    if (!m_closing){
+        m_closing = true;
+        threadarray->clear();
 
-    threadarray->clear();
+        delete threadarray;
+        delete ui;
 
-    delete threadarray;
-    delete ui;
-
-    qDebug() << "closed";
-    event->accept();
+        qDebug() << "closed";
+        event->accept();
+    }
 }

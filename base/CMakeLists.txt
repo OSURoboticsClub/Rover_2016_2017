@@ -44,6 +44,8 @@ set(FORMS
 
 # Set any resource files
 set(RESOURCES
+    panel.qml
+    button1.qml
     qml.qrc
 )
 
@@ -60,5 +62,5 @@ target_link_libraries(main Qt5::Quick)
 target_link_libraries(main Qt5::Gamepad)
 target_link_libraries(main Qt5::SerialPort)
 target_link_libraries(main Qt5::QuickWidgets)
+target_link_libraries(main Qt5::WebEngine)
 target_link_libraries(main ${SFML_LIBRARIES})
-

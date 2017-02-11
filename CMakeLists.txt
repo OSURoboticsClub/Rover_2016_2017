@@ -10,7 +10,7 @@ set(INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/install)
 # TODO: add more paths to account for different install locations
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     "/opt/Qt/5.7/gcc_64"
-	"~/Qt5.7.0/5.7/gcc_64"
+    "~/Qt5.7.0/5.7/gcc_64"
     "~/Qt/5.7/gcc_64"
     "~/Qt5.7.0/5.7/gcc_64"
 )
@@ -22,6 +22,7 @@ find_package(Qt5Quick 5.7 REQUIRED)
 find_package(Qt5Gamepad 5.7 REQUIRED)
 find_package(Qt5SerialPort 5.7 REQUIRED)
 find_package(Qt5QuickWidgets 5.7 REQUIRED)
+find_package(Qt5WebEngine 5.7 REQUIRED)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

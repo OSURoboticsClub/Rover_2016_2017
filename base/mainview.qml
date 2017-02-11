@@ -5,17 +5,17 @@ import QtQuick.Layouts 1.3
 
 Item {
     id: mainView
-    width: parent.width
-    height: parent.height
+    //width: parent.width
+    //height: parent.height
     property int j: 1
     TabView {
         id: mainTab
         width: parent.width
         height: parent.height
-//        anchors.fill: parent
+        //        anchors.fill: parent
         Tab {
             title: "map"
- /*           Item {
+            /*           Item {
                 id: map
                 WebEngineView {
                     anchors.fill: parent
@@ -24,13 +24,8 @@ Item {
             }
 */
         }
-        Tab {
-            title: "raw values"
-
-            ColumnLayout {
-                id: columnLayout
-                anchors.fill: parent
-            }
+        RawValues {
+            id: rawValues
         }
     }
 }

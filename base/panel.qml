@@ -9,26 +9,21 @@ import QtQuick.Templates 2.0
 Item {
     property int t
     id: item1
-    Gauge {
-        id: rightMotor
-        x: 125
-        y: 250
-        width: 50
-        height: 100
-        enabled: true
-        visible: true
-        value: 10
-        rotation: 0
-        maximumValue: 13
-        clip: false
-    }
-
+    width: 200
+    height: 600
+    /*
     Gauge {
         id: voltometer
-        x: 50
-        y: 75
-        width: 100
-        height: 100
+        y: 486
+        anchors{
+            bottom: parent.bottom
+            left: parent.left
+        }
+
+        width: parent.width * .5
+        height: parent.height * .2
+        anchors.bottomMargin: -6
+        anchors.leftMargin: 445
         scale: 1
         enabled: false
         value: 75
@@ -37,115 +32,260 @@ Item {
 
     StatusIndicator {
         id: roverMoving
-        x: 179
-        y: 1
+        x: 399
+        anchors{
+            right: parent.right
+            top: parent.top
+        }
+
         width: 20
         height: 20
         color: "#24f10a"
+        anchors.rightMargin: -219
+        anchors.topMargin: 7
         active: true
     }
 
     StatusIndicator {
         id: unknownCommand
-        x: 1
-        y: 1
+        anchors{
+            left: parent.left
+            top: parent.top
+        }
         width: 20
         height: 20
         color: "#fb0d0d"
+        anchors.leftMargin: 219
+        anchors.topMargin: 7
         active: true
-    }
-
-    Gauge {
-        id: leftMotor
-        x: 25
-        y: 250
-        width: 50
-        height: 100
-        antialiasing: true
-        maximumValue: 13
-        value: 5
-        visible: true
     }
     
     Text {
         id: cameraSelect
-        x: 50
-        y: 425
-        width: 100
-        height: 100
+        y: 280
+        anchors{
+            bottom: gyro.top
+            left: parent.left
+        }
+        width: parent.width * .5
+        height: parent.height * .2
         text: qsTr("Camera 3")
+        anchors.bottomMargin: -223
+        anchors.leftMargin: 236
         verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 20
     }
 
     Gauge {
         id: accelerometer
-        x: 50
-        y: 575
-        width: 100
-        height: 100
+        y: 322
+        anchors{
+            bottom: voltometer.top
+            left: parent.horizontalCenter
+        }
+        width: parent.width * .5
+        height: parent.height * .2
+        anchors.bottomMargin: 23
+        anchors.leftMargin: 219
+        value: 63
+        maximumValue: 100
+    }
+
+    Gauge {
+        id: gyro
+        y: 184
+        anchors{
+            bottom: accelerometer.top
+            left: parent.left
+        }
+        width: parent.width * .5
+        height: parent.height * .2
+        anchors.bottomMargin: 11
+        anchors.leftMargin: 520
         value: 63
         maximumValue: 100
     }
 
     Text {
         id: errorText
-        x: 1
-        y: 25
+        anchors{
+            top: unknownCommand.bottom
+            left: parent.left
+        }
         width: 25
         height: 20
         text: qsTr("Error")
+        anchors.leftMargin: 219
+        anchors.topMargin: 7
         font.pixelSize: 8
     }
 
     Text {
         id: moveText
-        x: 179
-        y: 25
-        width: 20
+        x: 394
+        anchors{
+            top: roverMoving.bottom
+            right: parent.right
+        }
+        width: 25
         height: 20
         text: qsTr("Moving")
+        anchors.rightMargin: -219
+        anchors.topMargin: 7
         horizontalAlignment: Text.AlignRight
         font.pixelSize: 8
     }
 
     Text {
         id: voltText
-        x: 65
-        y: 181
+        anchors{
+            top: voltometer.bottom
+            left: parent.left
+        }
+
         width: 70
         height: 15
         text: qsTr("Voltometer")
+        anchors.leftMargin: 319
+        anchors.topMargin: 7
         horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
         font.pixelSize: 12
     }
 
     Text {
         id: leftText
-        x: 21
-        y: 356
+        anchors{
+            top: leftMotor.bottom
+            left: parent.left
+        }
+
         text: qsTr("Left Motor")
+        anchors.leftMargin: 219
+        anchors.topMargin: 7
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 12
     }
 
     Text {
         id: rightText
-        x: 117
-        y: 356
+        x: 353
+        anchors{
+            top: rightMotor.bottom
+            right: parent.right
+        }
         text: qsTr("Right Motor")
+        anchors.rightMargin: -219
+        anchors.topMargin: 7
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 12
     }
 
     Text {
         id: accelText
-        x: 60
-        y: 681
+        anchors{
+            top: accelerometer.bottom
+            left: parent.left
+        }
         text: qsTr("Accelerometer")
+        anchors.leftMargin: 319
+        anchors.topMargin: 7
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: 12
     }
 
+    Text {
+        id: gyroText
+        anchors{
+            top: gyro.bottom
+            left: parent.left
+        }
+        text: qsTr("Gyro")
+        anchors.leftMargin: 319
+        anchors.topMargin: 7
+        horizontalAlignment: Text.AlignHCenter
+        font.pixelSize: 12
+    }
+
+    RowLayout {
+        id: rowLayout1
+        x: 236
+        y: 74
+        width: 100
+        height: 100
+        anchors.right: parent.right
+        anchors.rightMargin: -136
+    }
+    */
+    ColumnLayout {
+        id: columnLayout1
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+
+        RowLayout {
+            id: rowLayout2
+            Layout.fillWidth: true
+
+
+            Gauge {
+                id: leftMotor
+                antialiasing: true
+                maximumValue: 13
+                value: 5
+                visible: true
+            }
+            Gauge {
+                id: rightMotor
+                antialiasing: true
+                enabled: true
+                visible: true
+                value: 10
+                rotation: 0
+                maximumValue: 13
+                clip: false
+            }
+        }
+        Gauge {
+            id: accelerometer
+            width: parent.width * .5
+            height: parent.height * .2
+            Layout.fillWidth: true
+            value: 63
+            maximumValue: 100
+        }
+
+       Gauge {
+        id: voltometer
+        width: parent.width * .5
+        height: parent.height * .2
+        Layout.fillWidth: true
+        scale: 1
+        value: 75
+        maximumValue: 100
+        }
+       Gauge {
+           id: gyro
+
+           width: parent.width * .5
+           height: parent.height * .2
+           Layout.fillWidth: true
+           value: 63
+           maximumValue: 100
+       }
+    Text {
+        id: cameraSelect
+
+        width: parent.width * .5
+        height: parent.height * .2
+        text: qsTr("Camera 3")
+        verticalAlignment: Text.AlignVCenter
+        font.pixelSize: 20
+    }
+   }
 }

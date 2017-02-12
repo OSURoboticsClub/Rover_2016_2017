@@ -24,6 +24,11 @@ Item {
             }
 */
         }
+
+        Tab {
+            id: settings
+            title: "Settings"
+            source: "Settings.qml"
         Tab {
             id: rawValues
             visible: false

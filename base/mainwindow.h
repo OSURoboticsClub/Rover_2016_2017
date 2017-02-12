@@ -17,22 +17,18 @@
 #include "miniboardupdater.h"
 
 
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class MainWindow : public QObject
 {
     Q_OBJECT
 
 public:
-    virtual void closeEvent (QCloseEvent *event);
+    MainWindow(QObject *);
 
-    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+
+    QObject *item;
 
     ThreadArray *threadarray;
 
@@ -44,9 +40,9 @@ private:
     MiniBoardUpdater *m_updater;
 
 public slots:
-    void printFromQml(const QString &msg){
-        qDebug() << "called";
-    }
+    void close();
+    void setUIVoltage(quint16);
+    //batteryVoltageReceived(battery_voltage)
 
 private slots:
 
@@ -75,8 +71,6 @@ signals:
     void stopReadIn();
     void closeThreads();
     void startThreads();
-
-    void deleteThisQuickViewShit();
 
 
 };

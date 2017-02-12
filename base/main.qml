@@ -8,7 +8,7 @@ Item {
     width: 800
     height: 600
 
-
+    signal _serialHandlerOn()
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

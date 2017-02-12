@@ -66,6 +66,7 @@ Item {
         enabled: false
         value: 75
         maximumValue: 100
+        objectName: "voltometer"
 
     }
 

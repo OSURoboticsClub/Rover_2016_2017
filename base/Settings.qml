@@ -3,13 +3,16 @@ import QtQuick.Controls 1.0
 
 Item {
     anchors.fill: parent
-
     Button {
         id: serialHandlerOn
         x: 8
         y: 8
         height: 35
         text: qsTr("turn on SerialHandler")
+        objectName: "serialHandlerOn"
+        onClicked : {
+            window._serialHandlerOn();
+        }
     }
 
     Button {

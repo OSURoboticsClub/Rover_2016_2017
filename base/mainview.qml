@@ -24,9 +24,6 @@ Item {
             }
 */
         }
-        RawValues {
-            id: rawValues
-        }
 
         Tab {
             id: settings

@@ -6,6 +6,8 @@
 #include <QTime>
 #include <QDebug>
 
+#include "serial/serialhandler.h"
+
 class MiniBoardUpdater : public QThread
 {
     Q_OBJECT

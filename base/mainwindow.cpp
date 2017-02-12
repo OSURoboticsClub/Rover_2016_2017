@@ -5,15 +5,10 @@
 #include <QBuffer>
 
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
+MainWindow::MainWindow(QObject *_item) :
     m_inputs(new ControllerHandler),
     m_updater(new MiniBoardUpdater)
 {
-    ui->setupUi(this);
-
-
     threadarray = new ThreadArray;
     threadarray->push(SerialHandler::instance(), false);
     threadarray->push(m_inputs, false);
@@ -24,7 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
     connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
+    connect(SerialHandler::instance()->p(), SIGNAL(batteryVoltageReceived(quint16)), this, SLOT(setUIVoltage(quint16)));   item = _item;
 
+    item = _item;
+
+    connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
 }
 
 //would need to destruct in the close button as well
@@ -89,7 +88,7 @@ void MainWindow::on_actionIdentify_controllers_triggered()
 }
 
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::close()
 {
 
     qDebug() << "start close";
@@ -98,9 +97,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
         threadarray->clear();
 
         delete threadarray;
-        delete ui;
 
         qDebug() << "closed";
-        event->accept();
     }
+}
+
+void MainWindow::setUIVoltage(quint16 val){
+    QObject *rect = item->findChild<QObject*>("voltometer");
+    if (rect)
+        rect->setProperty("value", val);
 }

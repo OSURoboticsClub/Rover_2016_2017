@@ -32,9 +32,8 @@ int main(int argc, char *argv[])
 
 //    QObject *item = view.rootObject();
 
-    //MainWindow w;
 
-    //QObject::connect(item, SIGNAL(debugTest(QString)), &w, SLOT(printFromQml(QString)));
+
     //QObject::connect(item, SIGNAL(closeMainWindow()), &w, SLOT(close()));
     //QObject::connect(item, SIGNAL(closeMainWindow()), item, SLOT(deleteLater()));
 
@@ -42,6 +41,7 @@ int main(int argc, char *argv[])
     view.show();
 
     QObject *object = view.rootObject();
+    MainWindow w(object);
 
     //   qDebug() << "main";
 

@@ -274,6 +274,7 @@ Item {
 
             Gauge {
                 id: leftMotor
+                width: parent.width * 0.5
                 antialiasing: true
                 maximumValue: 13
                 value: 5
@@ -281,6 +282,7 @@ Item {
             }
             Gauge {
                 id: rightMotor
+                width: parent.width * 0.5
                 antialiasing: true
                 enabled: true
                 visible: true
@@ -290,6 +292,12 @@ Item {
                 clip: false
             }
         }
+        Text {
+            id: rightText
+            text: qsTr("Motors")
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 12
+        }
         Gauge {
             id: accelerometer
             width: parent.width * .5
@@ -298,7 +306,12 @@ Item {
             value: 63
             maximumValue: 100
         }
-
+        Text {
+            id: accelText
+            text: qsTr("Accelerometer")
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 12
+        }
        Gauge {
         id: voltometer
         width: parent.width * .5
@@ -308,6 +321,15 @@ Item {
         value: 75
         maximumValue: 100
         }
+       Text {
+           id: voltText
+           width: 70
+           height: 15
+           text: qsTr("Voltometer")
+           horizontalAlignment: Text.AlignHCenter
+           verticalAlignment: Text.AlignVCenter
+           font.pixelSize: 12
+       }
        Gauge {
            id: gyro
 
@@ -316,6 +338,12 @@ Item {
            Layout.fillWidth: true
            value: 63
            maximumValue: 100
+       }
+       Text {
+           id: gyroText
+           text: qsTr("Gyro")
+           horizontalAlignment: Text.AlignHCenter
+           font.pixelSize: 12
        }
     Text {
         id: cameraSelect

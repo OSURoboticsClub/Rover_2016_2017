@@ -9,6 +9,7 @@
 #include <QQuickItem>
 #include <QtWebEngine>
 
+#include "messagehandler.h"
 #include "mainwindow.h"
 #include "serial/serialhandler.h"
 
@@ -17,6 +18,8 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    qInstallMessageHandler(myMessageHandler);
+
 
 //    QQmlEngine engine;
 //    QQmlComponent component(&engine,QUrl(QStringLiteral("qrc:/panel.qml")));

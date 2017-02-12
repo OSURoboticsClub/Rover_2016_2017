@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+
 """This packet generates C++ files for handling packets on the
 side of the base station."""
+
 import re
 from collections import OrderedDict
 

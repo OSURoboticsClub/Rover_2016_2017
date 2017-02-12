@@ -7,14 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>761</width>
-    <height>515</height>
+    <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -22,7 +21,7 @@
      <x>0</x>
      <y>0</y>
      <width>761</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSerial_Port">

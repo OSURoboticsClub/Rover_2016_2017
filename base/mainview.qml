@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
-//import QtWebEngine 1.3
+//import QtWebEngine 1.4
+import QtWebEngine 1.3
 import QtQuick.Layouts 1.3
 
 Item {
@@ -15,12 +16,14 @@ Item {
         //        anchors.fill: parent
         Tab {
             title: "map"
+
+            WebEngineView {
+                anchors.fill: parent
+                url: "map.html"
+            }
             /*           Item {
                 id: map
-                WebEngineView {
-                    anchors.fill: parent
-                    url: "map.html"
-                }
+
             }
 */
         }
@@ -29,6 +32,7 @@ Item {
             id: settings
             title: "Settings"
             source: "Settings.qml"
+        }
         Tab {
             id: rawValues
             visible: false

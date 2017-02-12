@@ -6,12 +6,50 @@ import QtQuick.Layouts 1.3
 
 import QtQuick.Templates 2.0
 
+
 Item {
     property int t
     id: item1
     width: 200
     height: 600
     /*
+    id: item
+    width: 500; height: 100
+    signal debugTest(string msg)
+    signal closeMainWindow()
+    MouseArea {
+        anchors.rightMargin: -1
+        anchors.bottomMargin: -285
+        anchors.leftMargin: 1
+        anchors.topMargin: 1
+        anchors.fill: parent
+        //onClicked: item.debugTest("hello")
+        onClicked: item.closeMainWindow()
+    }
+
+    Rectangle{
+        x: 362
+        y: 1
+        width: 100
+        height: 100
+        scale: 1
+        enabled: true
+
+    }
+
+    Gauge {
+        id: rightMotor
+        x: 125
+        y: 250
+        width: 50
+        height: 100
+        enabled: true
+        visible: true
+        value: 10
+        rotation: 0
+        maximumValue: 13
+        clip: false
+    }
     Gauge {
         id: voltometer
         y: 486
@@ -28,6 +66,7 @@ Item {
         enabled: false
         value: 75
         maximumValue: 100
+
     }
 
     StatusIndicator {

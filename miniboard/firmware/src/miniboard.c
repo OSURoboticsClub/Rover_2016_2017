@@ -17,6 +17,7 @@
 #include "gps.h"
 #include "compass.h"
 #include "ax12.h"
+#include "s-bus.h"
 #include "videoswitch.h"
 #include "imu.h"
 #include "gpio.h"
@@ -64,9 +65,7 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	//comp_init();
-	//imu_init();
-	//set_callsign("asdf");
+	sbus_init();
 	sei();
 }
 

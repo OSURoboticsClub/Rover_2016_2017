@@ -6,5 +6,6 @@
         <file>mainview.qml</file>
         <file>map.html</file>
         <file>Settings.qml</file>
+        <file>RawValues.qml</file>
     </qresource>
 </RCC>

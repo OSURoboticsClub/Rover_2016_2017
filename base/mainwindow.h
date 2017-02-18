@@ -16,6 +16,7 @@
 #include "threadarray.h"
 #include "miniboardupdater.h"
 
+#define Handler SerialHandler::instance()->p()
 
 class MainWindow : public QObject
 {
@@ -42,6 +43,7 @@ private:
 public slots:
     void close();
     void setUIVoltage(quint16);
+    void setUIDriveMotorPower(qint8, qint8, qint8, qint8, qint8, qint8);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

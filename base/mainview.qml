@@ -46,7 +46,7 @@ Item {
 
                 Text {
                     id: batteryVoltage
-                    text: qsTr("Battery Voltage: " + j)
+                    text: qsTr("Battery Voltage: " + window.battery_voltage)
                     z: 1
                     verticalAlignment: Text.AlignTop
                     font.pixelSize: 15
@@ -60,37 +60,37 @@ Item {
 
                 Text {
                     id: lfDrive
-                    text: qsTr("   Left Front: " + j)
+                    text: qsTr("   Left Front: " + window.l_f_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: lmDrive
-                    text: qsTr("   Left Middle: " + j)
+                    text: qsTr("   Left Middle: " + window.l_m_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: lbDrive
-                    text: qsTr("   Left Back: " + j)
+                    text: qsTr("   Left Back: " + window.l_b_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rfDrive
-                    text: qsTr("   Right Front: " + j)
+                    text: qsTr("   Right Front: " + window.r_f_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rmDrive
-                    text: qsTr("   Right Middle: " + j)
+                    text: qsTr("   Right Middle: " + window.r_m_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rbDrive
-                    text: qsTr("   Right Back: " + j)
+                    text: qsTr("   Right Back: " + window.r_b_drive)
                     font.pixelSize: 12
                 }
 

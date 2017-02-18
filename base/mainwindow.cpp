@@ -19,11 +19,17 @@ MainWindow::MainWindow(QObject *_item) :
     connect(this, SIGNAL(startInputs()), m_inputs, SLOT(start()));
     connect(this, SIGNAL(stopInputs()), m_inputs, SLOT(stop()));
 
-    connect(SerialHandler::instance()->p(), SIGNAL(batteryVoltageReceived(quint16)), this, SLOT(setUIVoltage(quint16)));   item = _item;
+    connect(Handler, SIGNAL(batteryVoltageReceived(quint16)), this, SLOT(setUIVoltage(quint16)));
+    connect(Handler, SIGNAL(driveMotorPowerReceived(qint8, qint8, qint8, qint8, qint8, qint8)), this, SLOT(setUIDriveMotorPower(qint8,qint8,qint8,qint8,qint8,qint8)));
 
     item = _item;
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
+
+
+
+    if (item)
+        item->setProperty("battery_voltage", 2017);
 }
 
 //would need to destruct in the close button as well
@@ -102,8 +108,18 @@ void MainWindow::close()
     }
 }
 
-void MainWindow::setUIVoltage(quint16 val){
-    QObject *rect = item->findChild<QObject*>("voltometer");
-    if (rect)
-        rect->setProperty("value", val);
+void MainWindow::setUIVoltage(quint16 battery_voltage){
+    //QObject *rect = item->findChild<QObject*>("window");
+    if (item)
+        item->setProperty("battery_voltage", battery_voltage);
+}
+void MainWindow::setUIDriveMotorPower(qint8 l_f_drive, qint8 l_m_drive, qint8 l_b_drive, qint8 r_f_drive, qint8 r_m_drive, qint8 r_b_drive){
+    if (item){
+        item->setProperty("l_f_drive", l_f_drive);
+        item->setProperty("l_m_drive", l_m_drive);
+        item->setProperty("l_b_drive", l_b_drive);
+        item->setProperty("r_f_drive", r_f_drive);
+        item->setProperty("r_m_drive", r_m_drive);
+        item->setProperty("r_b_drive", r_b_drive);
+    }
 }

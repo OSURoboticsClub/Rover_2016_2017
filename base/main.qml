@@ -9,6 +9,13 @@ Item {
     height: 600
 
     signal _serialHandlerOn()
+    property int battery_voltage: 0
+    property int l_f_drive: 0
+    property int l_m_drive: 0
+    property int l_b_drive: 0
+    property int r_f_drive: 0
+    property int r_m_drive: 0
+    property int r_b_drive: 0
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

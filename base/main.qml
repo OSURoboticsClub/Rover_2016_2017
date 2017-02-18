@@ -8,9 +8,17 @@ Item {
     width: 800
     height: 600
 
-    property int batteryVoltage: 0
+
 
     signal _serialHandlerOn()
+    signal _serialHandlerOff()
+    signal _updaterOn()
+    signal _updaterOff()
+    signal _controllerHandlerOn()
+    signal _controllerHandlerOff()
+    signal _allThreadsClose()
+
+
     property int battery_voltage: 0
     property int l_f_drive: 0
     property int l_m_drive: 0
@@ -18,6 +26,27 @@ Item {
     property int r_f_drive: 0
     property int r_m_drive: 0
     property int r_b_drive: 0
+    property int swerve_state: 0
+    property int arm_motor_1: 0
+    property int arm_motor_2: 0
+    property int arm_motor_3: 0
+    property int arm_motor_4: 0
+    property int arm_motor_5: 0
+    property int selected_camera: 0
+    property int pot_1: 0
+    property int pot_2: 0
+    property int pot_3: 0
+    property int pot_4: 0
+    property int pot_5: 0
+    property int mag_x: 0
+    property int mag_y: 0
+    property int mag_z: 0
+    property string callsign_data: "NULL"
+    property int gyro_x: 0
+    property int gyro_y: 0
+    property int gyro_z: 0
+    property int gpio_dir: 0
+
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

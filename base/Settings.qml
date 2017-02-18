@@ -11,7 +11,7 @@ Item {
         text: qsTr("turn on SerialHandler")
         objectName: "serialHandlerOn"
         onClicked : {
-            window._serialHandlerOn();
+            root._serialHandlerOn();
         }
     }
 
@@ -20,7 +20,10 @@ Item {
         x: 8
         y: 41
         height: 35
-        text: qsTr("turn of SerialHandler")
+        text: qsTr("turn off SerialHandler")
+        onClicked : {
+            root._serialHandlerOff();
+        }
     }
 
     Button {
@@ -29,6 +32,9 @@ Item {
         y: 74
         height: 35
         text: "turn on updater"
+        onClicked : {
+            root._updaterOn();
+        }
     }
 
     Button {
@@ -37,6 +43,9 @@ Item {
         y: 105
         height: 35
         text: "turn off updater"
+        onClicked : {
+            root._updaterOff();
+        }
     }
 
     Button {
@@ -45,6 +54,9 @@ Item {
         y: 140
         height: 35
         text: qsTr("turn on controller handler")
+        onClicked : {
+            root._controllerHandlerOn();
+        }
     }
 
     Button {
@@ -53,5 +65,19 @@ Item {
         y: 175
         height: 35
         text: qsTr("turn off controller handler")
+        onClicked : {
+            root._controllerHandlerOff();
+        }
+    }
+
+    Button {
+        id: allThreadsClose
+        x: 236
+        y: 93
+        height: 35
+        text: qsTr("turn off all threads")
+        onClicked : {
+            root._allThreadsClose();
+        }
     }
 }

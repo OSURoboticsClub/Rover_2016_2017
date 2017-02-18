@@ -17,30 +17,31 @@ void MiniBoardUpdater::updateAll()
 {
     while(m_run){
         //if runtime has gone 1000 ms more
-        if ((runTime.elapsed() % 1000) == 0){
+        //if ((runTime.elapsed() % 5000) == 0){
             //qDebug() << "updating UI";
             //TODO: pull all things UI needs to display from robot
             //Handler->readPause();
+            msleep(1500);
             Handler->readBatteryVoltage();
-            Handler->readDriveMotorPower();
-            Handler->readSwerveDriveState();
-            Handler->readArmMotors();
-            //Handler->readPotentiometers();
-            Handler->readSelectCamera();
-            //Handler->readCallsign();
-            //Handler->readGpsPosition();
-            //Handler->readGpsTrack();
-            Handler->readMagnetometer();
-            //Handler->readAccelerometer();
-            Handler->readGyroscope();
-            //Handler->readCompassHeading();
-            //Handler->readGpioDirection();
-            //Handler->readGpioOutValue();
-            //Handler->readGpioReadState();
-            Handler->readDebuggingInfo();
-            Handler->readBuildInfo();
+//            Handler->readDriveMotorPower();
+//            Handler->readSwerveDriveState();
+//            Handler->readArmMotors();
+//            Handler->readPotentiometers();
+//            Handler->readSelectCamera();
+//            Handler->readCallsign();
+//            //Handler->readGpsPosition();
+//            //Handler->readGpsTrack();
+//            Handler->readMagnetometer();
+//            //Handler->readAccelerometer();
+//            Handler->readGyroscope();
+//            //Handler->readCompassHeading();
+//            Handler->readGpioDirection();
+//            //Handler->readGpioOutValue();
+//            //Handler->readGpioReadState();
+//            Handler->readDebuggingInfo();
+//            Handler->readBuildInfo();
 
-        }
+        //}
     }
 }
 

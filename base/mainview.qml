@@ -46,7 +46,7 @@ Item {
 
                 Text {
                     id: batteryVoltage
-                    text: qsTr("Battery Voltage: " + window.battery_voltage)
+                    text: qsTr("Battery Voltage: " + root.battery_voltage)
                     z: 1
                     verticalAlignment: Text.AlignTop
                     font.pixelSize: 15
@@ -60,43 +60,43 @@ Item {
 
                 Text {
                     id: lfDrive
-                    text: qsTr("   Left Front: " + window.l_f_drive)
+                    text: qsTr("   Left Front: " + root.l_f_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: lmDrive
-                    text: qsTr("   Left Middle: " + window.l_m_drive)
+                    text: qsTr("   Left Middle: " + root.l_m_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: lbDrive
-                    text: qsTr("   Left Back: " + window.l_b_drive)
+                    text: qsTr("   Left Back: " + root.l_b_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rfDrive
-                    text: qsTr("   Right Front: " + window.r_f_drive)
+                    text: qsTr("   Right Front: " + root.r_f_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rmDrive
-                    text: qsTr("   Right Middle: " + window.r_m_drive)
+                    text: qsTr("   Right Middle: " + root.r_m_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: rbDrive
-                    text: qsTr("   Right Back: " + window.r_b_drive)
+                    text: qsTr("   Right Back: " + root.r_b_drive)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: swerveDriveState
-                    text: qsTr("Swerve Drive State: ")
+                    text: qsTr("Swerve Drive State: " + root.swerve_state)
                     font.pixelSize: 15
                 }
 
@@ -107,27 +107,27 @@ Item {
                 }
                 Text {
                     id: m1
-                    text: qsTr("   Motor 1: " + j)
+                    text: qsTr("   Motor 1: " + root.arm_motor_1)
                     font.pixelSize: 12
                 }
                 Text {
                     id: m2
-                    text: qsTr("   Motor 2: " + j)
+                    text: qsTr("   Motor 2: " + root.arm_motor_2)
                     font.pixelSize: 12
                 }
                 Text {
                     id: m3
-                    text: qsTr("   Motor 3: " + j)
+                    text: qsTr("   Motor 3: " + root.arm_motor_3)
                     font.pixelSize: 12
                 }
                 Text {
                     id: m4
-                    text: qsTr("   Motor 4: " + j)
+                    text: qsTr("   Motor 4: " + root.arm_motor_4)
                     font.pixelSize: 12
                 }
                 Text {
                     id: m5
-                    text: qsTr("   Motor 5: " + j)
+                    text: qsTr("   Motor 5: " + root.arm_motor_5)
                     font.pixelSize: 12
                 }
 
@@ -138,39 +138,39 @@ Item {
                 }
                 Text {
                     id: pot1
-                    text: qsTr("   Pot 1: " + j)
+                    text: qsTr("   Pot 1: " + root.pot_1)
                     font.pixelSize: 12
                 }
                 Text {
                     id: pot2
-                    text: qsTr("   Pot 2: " + j)
+                    text: qsTr("   Pot 2: " + root.pot_2)
                     font.pixelSize: 12
                 }
                 Text {
                     id: pot3
-                    text: qsTr("   Pot 3: " + j)
+                    text: qsTr("   Pot 3: " + root.pot_3)
                     font.pixelSize: 12
                 }
                 Text {
                     id: pot4
-                    text: qsTr("   Pot 4: " + j)
+                    text: qsTr("   Pot 4: " + root.pot_4)
                     font.pixelSize: 12
                 }
                 Text {
                     id: pot5
-                    text: qsTr("   Pot 5: " + j)
+                    text: qsTr("   Pot 5: " + root.pot_5)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: selectedCamera
-                    text: qsTr("Selected Camera: " + j)
+                    text: qsTr("Selected Camera: " + root.selected_camera)
                     font.pixelSize: 15
                 }
 
                 Text {
                     id: callsign
-                    text: qsTr("Callsign: " + j)
+                    text: qsTr("Callsign: " + root.callsign_data)
                     font.pixelSize: 15
                 }
 
@@ -181,17 +181,17 @@ Item {
                 }
                 Text {
                     id: magX
-                    text: qsTr("   X: " + j)
+                    text: qsTr("   X: " + root.mag_x)
                     font.pixelSize: 12
                 }
                 Text {
                     id: magY
-                    text: qsTr("   Y: " + j)
+                    text: qsTr("   Y: " + root.mag_y)
                     font.pixelSize: 12
                 }
                 Text {
                     id: magZ
-                    text: qsTr("   Z: " + j)
+                    text: qsTr("   Z: " + root.mag_z)
                     font.pixelSize: 12
                 }
 
@@ -203,23 +203,23 @@ Item {
                 }
                 Text {
                     id: gyroX
-                    text: qsTr("   X: " + j)
+                    text: qsTr("   X: " + root.gyro_x)
                     font.pixelSize: 12
                 }
                 Text {
                     id: gyroY
-                    text: qsTr("   Y: " + j)
+                    text: qsTr("   Y: " + root.gyro_y)
                     font.pixelSize: 12
                 }
                 Text {
                     id: gyroZ
-                    text: qsTr("   Z: " + j)
+                    text: qsTr("   Z: " + root.gyro_z)
                     font.pixelSize: 12
                 }
 
                 Text {
                     id: gpioDir
-                    text: qsTr("GPIO direction: " + j)
+                    text: qsTr("GPIO direction: " + root.gpio_dir)
                     font.pixelSize: 15
                 }
                 Text {

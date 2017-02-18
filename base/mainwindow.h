@@ -44,6 +44,14 @@ public slots:
     void close();
     void setUIVoltage(quint16);
     void setUIDriveMotorPower(qint8, qint8, qint8, qint8, qint8, qint8);
+    void setUIDriveState(quint8);
+    void setUIArmMotor(qint8, qint8, qint8, qint8, qint8);
+    void setUICameraSelected(quint8);
+    void setUIPotentiometers(quint8, quint8, quint8, quint8, quint8);
+    void setUICallSign(QByteArray);
+    void setUIMagnetometer(qint16, qint16, qint16);
+    void setUIGyroscope(qint16, qint16, qint16);
+    void setUIGpioDirection(quint8);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

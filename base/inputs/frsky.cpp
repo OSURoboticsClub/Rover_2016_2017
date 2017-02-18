@@ -12,7 +12,7 @@ FrSky::~FrSky()
 }
 
 
-FrSky::emitAxisChanges(int axisIndex){
+void FrSky::emitAxisChanges(int axisIndex){
     if(mode == 0){
         if(axisIndex == 0 || axisIndex == 1) { //left and right y - drive motor power
             //sendDriveMotorPower(js::getAxisPosition(m_id, static_cast<js::Axis>(0)), js::getAxisPosition(m_id, static_cast<js::Axis>(1)));
@@ -20,7 +20,12 @@ FrSky::emitAxisChanges(int axisIndex){
     }
      else if (mode == 1) {
         if(axisIndex == 0 || axisIndex == 1 || axisIndex == 2 || axisIndex == 3 || axisIndex == 5){
-            //sendArmMotorPower();
+            double m1 = js::getAxisPosition(m_id, static_cast<js::Axis>(0));
+            double m2 = js::getAxisPosition(m_id, static_cast<js::Axis>(1));
+            double m3 = js::getAxisPosition(m_id, static_cast<js::Axis>(2));
+            double m4 = js::getAxisPosition(m_id, static_cast<js::Axis>(3));
+            double m5 = js::getAxisPosition(m_id, static_cast<js::Axis>(5));
+            sendArmMotorPower(m1, m2, m3, m4, m5);
         }
         else if(axisIndex == 4){
             //armGripper();
@@ -29,7 +34,7 @@ FrSky::emitAxisChanges(int axisIndex){
 }
 
 
-FrSky::emitButtonChanges(int buttonIndex){
+void FrSky::emitButtonChanges(int buttonIndex){
     if(buttonIndex == 0){ //SF - Pause
         //sendPause();
     }

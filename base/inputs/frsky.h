@@ -14,7 +14,8 @@ public:
 signals:
 
 protected:
-
+    void emitAxisChanges(int);
+    void emitButtonChanges(int);
 
 };
 

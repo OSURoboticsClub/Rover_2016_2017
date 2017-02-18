@@ -1,5 +1,6 @@
 #include "abstractcontroller.h"
 #include "xboxcontroller.h"
+#include "serial/serialhandler.h"
 #include <cmath>
 #include <algorithm>
 #include <QDebug>
@@ -60,11 +61,6 @@ void AbstractController::emitButtonChanges(int buttonIndex)
 }
 
 
-void AbstractController::sendArmMotorPower(double m1, double m2, double m3, double m4, double m5)
-{
-
-}
-/*
 void AbstractController::sendArmMotorPower(double motor1, double motor2, double motor3, double motor4, double motor5){
     double conversionFactor = 1.27;
     int8_t arm_motor_1 = static_cast<int8_t>(motor1 * conversionFactor);
@@ -74,4 +70,4 @@ void AbstractController::sendArmMotorPower(double motor1, double motor2, double 
     int8_t arm_motor_5 = static_cast<int8_t>(motor5 * conversionFactor);
     SerialHandler::instance()->p()->writeArmMotors(arm_motor_1, arm_motor_2, arm_motor_3, arm_motor_4, arm_motor_5);
 }
-*/
+

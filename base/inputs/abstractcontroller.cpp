@@ -50,12 +50,16 @@ void AbstractController::emitChanges()
 
 void AbstractController::emitAxisChanges(int axisIndex)
 {
-    if(axisIndex == 1) {
-        // stuff here
-    }
+
 }
 
 void AbstractController::emitButtonChanges(int buttonIndex)
+{
+
+}
+
+
+void AbstractController::sendArmMotorPower(double m1, double m2, double m3, double m4, double m5)
 {
 
 }

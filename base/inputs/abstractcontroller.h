@@ -22,6 +22,7 @@ signals:
 protected:
     virtual void emitAxisChanges(int axisIndex);
     virtual void emitButtonChanges(int buttonIndex);
+    void sendArmMotorPower(double m1, double m2, double m3, double m4, double m5);
 
     int m_id;
     float m_axisTolerance;

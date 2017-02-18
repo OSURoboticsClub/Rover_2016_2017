@@ -59,3 +59,15 @@ void AbstractController::emitButtonChanges(int buttonIndex)
 {
 
 }
+
+/*
+void AbstractController::sendArmMotorPower(double motor1, double motor2, double motor3, double motor4, double motor5){
+    double conversionFactor = 1.27;
+    int8_t arm_motor_1 = static_cast<int8_t>(motor1 * conversionFactor);
+    int8_t arm_motor_2 = static_cast<int8_t>(motor2 * conversionFactor);
+    int8_t arm_motor_3 = static_cast<int8_t>(motor3 * conversionFactor);
+    int8_t arm_motor_4 = static_cast<int8_t>(motor4 * conversionFactor);
+    int8_t arm_motor_5 = static_cast<int8_t>(motor5 * conversionFactor);
+    SerialHandler::instance()->p()->writeArmMotors(arm_motor_1, arm_motor_2, arm_motor_3, arm_motor_4, arm_motor_5);
+}
+*/

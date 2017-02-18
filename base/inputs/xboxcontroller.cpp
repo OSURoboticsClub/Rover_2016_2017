@@ -4,7 +4,6 @@
 XboxController::XboxController(int id, QObject *parent)
     : AbstractController(id, parent)
 {
-    // TODO: set priority
 }
 
 XboxController::~XboxController()
@@ -12,32 +11,15 @@ XboxController::~XboxController()
 
 }
 
-void XboxController::emitAxisChanges(int axisIndex, double value)
+void XboxController::emitAxisChanges(int axisIndex)
 {
-    AbstractController::emitAxisChanges(axisIndex, value);
+    if(axisIndex == 1) {
+        // send a packet
+    }
 }
 
-void XboxController::emitButtonChanges(int buttonIndex, bool value)
+void XboxController::emitButtonChanges(int buttonIndex)
 {
-    AbstractController::emitButtonChanges(buttonIndex, value);
+
 }
 
-bool XboxController::buttonA()
-{
-    return m_currentState->buttons[BUTTON_A];
-}
-
-bool XboxController::buttonB()
-{
-    return m_currentState->buttons[BUTTON_B];
-}
-
-bool XboxController::buttonX()
-{
-    return m_currentState->buttons[BUTTON_X];
-}
-
-bool XboxController::buttonY()
-{
-    return m_currentState->buttons[BUTTON_Y];
-}

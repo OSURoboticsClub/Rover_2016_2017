@@ -96,7 +96,7 @@ Item {
 
                 Text {
                     id: swerveDriveState
-                    text: qsTr("Swerve Drive State: " + j)
+                    text: qsTr("Swerve Drive State: ")
                     font.pixelSize: 15
                 }
 

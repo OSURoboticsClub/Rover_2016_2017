@@ -60,7 +60,7 @@ Item {
 
                     Text {
                         id: lfDrive
-                        text: qsTr("   Left Front: " + j)
+                        text: qsTr("   Left Front: " + root.batteryVoltage)
                         font.pixelSize: 12
                     }
 

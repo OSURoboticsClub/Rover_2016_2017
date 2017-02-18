@@ -81,10 +81,6 @@ void ControllerHandler::resetControllers() {
         }
     }
     m_usableControllerCount = m_controllers->size();
-    std::sort(m_controllers->begin(), m_controllers->end(),
-              [](ControllerPointer a, ControllerPointer b) -> bool
-              { return a->priority() < b->priority(); }
-    );
     connectControllers();
 
 }

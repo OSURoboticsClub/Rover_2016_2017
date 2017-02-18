@@ -4,9 +4,11 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
 
 Item {
-    id: window
+    id: root
     width: 800
     height: 600
+
+    property int batteryVoltage: 0
 
     signal _serialHandlerOn()
         Column {

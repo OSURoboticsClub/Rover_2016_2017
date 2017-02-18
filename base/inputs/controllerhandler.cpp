@@ -4,6 +4,19 @@
 #include <algorithm>
 #include "serial/serialhandler.h"
 
+/* TO Be used for updating the controllers and handling. The core functionality
+ * should be moved to the AbstractController Class. The AbstractController class
+ * should have all the commands for converting data and sending it to the rover.
+ * Additionally, the Controller classes will have functions that will update
+ * the controller states and emit changes to the rover.
+ * So,
+ * void emitChanges()
+ *      if(i == 1) {
+ *          convert and send packet
+ *      }
+ * .
+ */
+
 ControllerHandler::ControllerHandler(QObject *parent)
     : QThread(parent),
       m_stop(false)

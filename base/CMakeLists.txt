@@ -45,8 +45,6 @@ set(FORMS
 
 # Set any resource files
 set(RESOURCES
-    panel.qml
-    button1.qml
     qml.qrc
 )
 

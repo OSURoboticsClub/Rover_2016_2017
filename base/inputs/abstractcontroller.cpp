@@ -11,6 +11,7 @@ AbstractController::AbstractController(int id, QObject *parent)
       m_axisTolerance(0)
 {
     m_currentState = new JoystickState();
+    mode = static_cast<int>(js::isButtonPressed(m_id, 1));
 }
 
 AbstractController::JoystickState::JoystickState()

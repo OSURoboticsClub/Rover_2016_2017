@@ -30,6 +30,7 @@ protected:
 
     int m_id;
     float m_axisTolerance;
+    int mode = 0;
 
     // Copied and adapted from SFML/Window/JoystickImpl.hpp
     struct JoystickState {

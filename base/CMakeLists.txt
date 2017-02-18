@@ -17,7 +17,6 @@ set(SOURCES
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
    inputs/frsky.cpp
-   inputs/ps3.cpp
 )
 
 set(HEADERS
@@ -35,7 +34,6 @@ set(HEADERS
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
     inputs/frsky.h
-    inputs/ps3.h
 )
 
 # Set forms

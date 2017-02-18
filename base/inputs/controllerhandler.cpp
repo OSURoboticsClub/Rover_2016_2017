@@ -71,46 +71,13 @@ void ControllerHandler::resetControllers() {
         if(sf::Joystick::isConnected(i)) {
             sf::Joystick::Identification id = sf::Joystick::getIdentification(i);
             qDebug() << "identified joystick with product id: " << id.productId;
-            if(id.productId == 1025) { // TODO: actual values here
+            if(id.productId == 1025) {
                 m_controllers->push_back(ControllerPointer (new XboxController(i)));
             } else if(id.productId == 22288) {
                 m_controllers->push_back(ControllerPointer (new FrSky(i)));
-            } else if(id.productId == 49686) {
-                m_controllers->push_back(ControllerPointer (new Ps3(i)));
             }
         }
     }
     m_usableControllerCount = m_controllers->size();
-    connectControllers();
 
-}
-
-void ControllerHandler::connectControllers()
-{
-    // and connect them
-    if(m_usableControllerCount > 0 && m_maxUsableControllers > 0) {
-        connectDriveController(m_controllers->at(0));
-    }
-    if(m_usableControllerCount > 1 && m_maxUsableControllers > 1) {
-        // TODO: connect other input controller
-    } // etc.
-}
-
-void ControllerHandler::connectDriveController(ControllerPointer controller) {
-    connect(&(*controller), SIGNAL(axisYChanged(double,double)),
-            this, SLOT(sendDriveMotorPower(double,double)));
-}
-
-void ControllerHandler::sendDriveMotorPower(double left, double right)
-{
-    /* TODO: fix right value */
-    double conversionFactor = -1.27;
-    left *= conversionFactor;
-    right *= conversionFactor;
-    int8_t l_drive = static_cast<int8_t>(left);
-    int8_t r_drive = static_cast<int8_t>(right);
-    qDebug() << "writing motor power" << l_drive << r_drive;
-    SerialHandler::instance()->p()->writeDriveMotorPower(
-        l_drive, l_drive, l_drive, r_drive, r_drive, r_drive
-    );
 }

@@ -38,6 +38,7 @@ void SerialHandler::run()
     }
 
     eventLoop();
+    m_run = true;
 }
 
 void SerialHandler::eventLoop()

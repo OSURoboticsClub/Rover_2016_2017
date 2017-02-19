@@ -34,6 +34,7 @@ void ControllerHandler::run()
 {
     resetControllers();
     eventLoop();
+    m_stop = false;
     qDebug() << "exciting controller handler";
 }
 

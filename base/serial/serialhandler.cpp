@@ -36,6 +36,7 @@ void SerialHandler::run()
         setBuffer(buffer);
     }
     eventLoop();
+    m_run = true;
 }
 
 void SerialHandler::eventLoop()

@@ -8,9 +8,11 @@ MiniBoardUpdater::MiniBoardUpdater(QObject *parent)
 
 void MiniBoardUpdater::run()
 {
+
     qDebug() << "Update timer on";
     updateAll();
     qDebug() << "Update timer off";
+    m_run = true;
 }
 
 void MiniBoardUpdater::updateAll()

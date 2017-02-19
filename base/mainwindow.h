@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QQuickWidget>
 #include <QThread>
+#include <QQuickView>
 #include <QTime>
 
 #include "serial/serialhandler.h"
@@ -15,62 +16,48 @@
 #include "threadarray.h"
 #include "miniboardupdater.h"
 
+#define Handler SerialHandler::instance()->p()
 
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class MainWindow : public QObject
 {
     Q_OBJECT
 
 public:
-    virtual void closeEvent (QCloseEvent *event);
+    MainWindow(QObject *);
 
-    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+
+    QObject *item;
 
     ThreadArray *threadarray;
 
     QSerialPort output;
 
+    bool m_closing = false;
+
     ControllerHandler *m_inputs;
     MiniBoardUpdater *m_updater;
 
 public slots:
+    void close();
+    void setUIVoltage(quint16);
+    void setUIDriveMotorPower(qint8, qint8, qint8, qint8, qint8, qint8);
+    void setUIDriveState(quint8);
+    void setUIArmMotor(qint8, qint8, qint8, qint8, qint8);
+    void setUICameraSelected(quint8);
+    void setUIPotentiometers(quint8, quint8, quint8, quint8, quint8);
+    void setUICallSign(QByteArray);
+    void setUIMagnetometer(qint16, qint16, qint16);
+    void setUIGyroscope(qint16, qint16, qint16);
+    void setUIGpioDirection(quint8);
+    //batteryVoltageReceived(battery_voltage)
 
 private slots:
 
-    void on_actionStart_Thread_triggered();
-
-    void on_actionStop_Thread_triggered();
-
-    void on_actionStart_Thread_2_triggered();
-
-    void on_actionStop_Thread_2_triggered();
-
-    void on_actionPing_triggered();
-
-    void on_actionAutodetect_Serial_triggered();
-
-    void on_actionIdentify_controllers_triggered();
-
-    void on_exit_clicked();
 
 signals:
-
-    void startSerial();
-    void stopSerial();
-    void startInputs();
-    void stopInputs();
-
-    void startReadIn();
-    void stopReadIn();
-    void closeThreads();
-    void startThreads();
 
 
 };

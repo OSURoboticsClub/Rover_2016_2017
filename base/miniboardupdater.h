@@ -6,6 +6,10 @@
 #include <QTime>
 #include <QDebug>
 
+#include "serial/serialhandler.h"
+
+
+
 class MiniBoardUpdater : public QThread
 {
     Q_OBJECT
@@ -17,6 +21,8 @@ private:
     void updateAll();
     bool m_run = true;
     QTime runTime;
+signals:
+    void update();
 
 signals:
 

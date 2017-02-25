@@ -15,6 +15,7 @@ Item {
         height: parent.height
         //        anchors.fill: parent
         Tab {
+            id: map
             title: "map"
 
             WebEngineView {
@@ -26,6 +27,15 @@ Item {
 
             }
 */
+        }
+        Tab{
+            id: webGame
+            title: "Webgame"
+
+            WebEngineView {
+                anchors.fill: parent
+                url: "superGame.html"
+            }
         }
 
         Tab {

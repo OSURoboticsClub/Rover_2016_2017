@@ -52,6 +52,8 @@ public slots:
     void setUIMagnetometer(qint16, qint16, qint16);
     void setUIGyroscope(qint16, qint16, qint16);
     void setUIGpioDirection(quint8);
+
+    void colorSerialHandler(QString);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

@@ -43,6 +43,7 @@ void SerialHandler::run()
 
 void SerialHandler::eventLoop()
 {
+    emit changeButtonColor("#169d06");
     while (m_run){
         //qDebug() << m_packets->device()->bytesAvailable();
         if(m_packets->device()->bytesAvailable() >= 2) {
@@ -69,6 +70,7 @@ void SerialHandler::eventLoop()
         msleep(100);
     }
     qDebug() << "exciting serial read";
+    emit changeButtonColor("#9d0606");
 }
 
 void SerialHandler::stop() {
@@ -117,3 +119,5 @@ SerialHandler::SerialHandler(QObject *parent)
 {
     m_run = true;
 }
+
+

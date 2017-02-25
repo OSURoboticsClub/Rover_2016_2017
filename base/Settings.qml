@@ -80,4 +80,13 @@ Item {
             root._allThreadsClose();
         }
     }
+
+    Rectangle {
+        id: serialHandlerIndicator
+        x: 156
+        y: 8
+        width: 52
+        height: 35
+        color: root.colorSerialHandler;
+    }
 }

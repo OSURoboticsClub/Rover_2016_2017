@@ -47,6 +47,8 @@ Item {
     property int gyro_z: 0
     property int gpio_dir: 0
 
+    property string colorSerialHandler: "white"
+
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

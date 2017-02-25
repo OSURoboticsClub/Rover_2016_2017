@@ -34,6 +34,7 @@ MainWindow::MainWindow(QObject *_item) :
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));
+    connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString)), this, SLOT(colorSerialHandler(QString)));
 
     connect(item, SIGNAL(_updaterOn()), m_updater, SLOT(start()));
     connect(item, SIGNAL(_updaterOff()), m_updater, SLOT(stop()));
@@ -42,6 +43,8 @@ MainWindow::MainWindow(QObject *_item) :
     connect(item, SIGNAL(_controllerHandlerOff()), m_inputs, SLOT(stop()));
 
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
+
+
 
 
     if (item)
@@ -145,5 +148,11 @@ void MainWindow::setUIGyroscope(qint16 gyro_x, qint16 gyro_y, qint16 gyro_z){
 void MainWindow::setUIGpioDirection(quint8 gpio_dir){
     if (item){
         item->setProperty("gpio_dir", gpio_dir);
+    }
+}
+
+void MainWindow::colorSerialHandler(QString color){
+    if (item){
+        item->setProperty("colorSerialHandler", color);
     }
 }

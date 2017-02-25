@@ -17,6 +17,7 @@
 #include "gps.h"
 #include "compass.h"
 #include "ax12.h"
+#include "s-bus.h"
 #include "videoswitch.h"
 #include "imu.h"
 #include "gpio.h"
@@ -64,9 +65,13 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
+<<<<<<< HEAD
 	comp_init();
 	//imu_init();
 	//set_callsign("asdf");
+=======
+	sbus_init();
+>>>>>>> cfce5a55ae8189eaf3b2fa0f5388239745712d7e
 	sei();
 }
 
@@ -161,7 +166,9 @@ void miniboard_main(void){
 // 		}
 		
 		/* GPIO */
-		//TODO
+		gpio_set_state(Data->gpio_dir);
+		gpio_set_out(Data->gpio_out);
+		Data->gpio_state = gpio_get_state();
 		
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);

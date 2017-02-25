@@ -1,5 +1,6 @@
 #include "abstractcontroller.h"
 #include "xboxcontroller.h"
+#include "serial/serialhandler.h"
 #include <cmath>
 #include <algorithm>
 #include <QDebug>
@@ -8,10 +9,10 @@
 AbstractController::AbstractController(int id, QObject *parent)
     : QObject(parent),
       m_id(id),
-      m_axisTolerance(0),
-      m_priority(0)
+      m_axisTolerance(0)
 {
     m_currentState = new JoystickState();
+    mode = static_cast<int>(js::isButtonPressed(m_id, 1));
 }
 
 AbstractController::JoystickState::JoystickState()
@@ -31,7 +32,7 @@ void AbstractController::emitChanges()
         float axisPos = js::getAxisPosition(m_id, static_cast<js::Axis>(i));
         if(std::abs(axisPos - m_currentState->axes[i]) > m_axisTolerance) {
             qDebug() << "axis changed: " << i;
-            emitAxisChanges(i, axisPos);
+            emitAxisChanges(i);
         }
         m_currentState->axes[i] = axisPos;
     }
@@ -40,6 +41,7 @@ void AbstractController::emitChanges()
         bool buttonPressed = js::isButtonPressed(m_id, j);
         if(buttonPressed != m_currentState->buttons[j]) {
             //emit ButtonChanges(j, buttonPressed);
+            emitButtonChanges(j);
             qDebug() <<"button is changed"<< j;
 
         }
@@ -48,96 +50,24 @@ void AbstractController::emitChanges()
 
 }
 
-void AbstractController::emitAxisChanges(int axisIndex, double value)
+void AbstractController::emitAxisChanges(int axisIndex)
 {
-    switch (axisIndex) {
-    case AXIS_LEFT_X:
-        emit axisLeftXChanged(value);
 
-        emit axisXChanged(
-                    value,
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_RIGHT_X))
-                    );
-        break;
-    case AXIS_LEFT_Y:
-        emit axisLeftYChanged(value);
-        //double right = ;
-        emit axisYChanged(
-                    value,
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_RIGHT_Y))
-                    );
-        break;
-    case AXIS_RIGHT_X:
-        emit axisRightXChanged(value);
-        emit axisXChanged(
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_LEFT_X)),
-                    value
-                    );
-        break;
-    case AXIS_RIGHT_Y:
-        emit axisRightYChanged(value);
-        emit axisYChanged(
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_LEFT_Y)),
-                    value
-                    );
-        break;
-    default:
-        break;
-    }
 }
 
-void AbstractController::emitButtonChanges(int buttonIndex, bool value)
+void AbstractController::emitButtonChanges(int buttonIndex)
 {
-    /*
-    switch (buttonIndex) {
-    case BUTTON_A:
-        emit buttonAChanged(value);
-        break;
-    case BUTTON_B:
-        emit buttonBChanged(value);
-        emit axisYChanged(
-                    value,
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_RIGHT_Y))
-                    );
-        break;
-    case BUTTON_X:
-        emit buttonXChanged(value);
-        break;
-    case BUTTON_Y:
-        emit buttonYChanged(value);
-        emit axisYChanged(
-                    js::getAxisPosition(m_id,
-                        static_cast<js::Axis>(AXIS_LEFT_Y)),
-                    value
-                    );
-        break;
-    default:
-        break;
-    }
-    */
+
 }
 
-double AbstractController::axisLeftX() const
-{
-    return m_currentState->axes[AXIS_LEFT_X];
+
+void AbstractController::sendArmMotorPower(double motor1, double motor2, double motor3, double motor4, double motor5){
+    double conversionFactor = 1.27;
+    int8_t arm_motor_1 = static_cast<int8_t>(motor1 * conversionFactor);
+    int8_t arm_motor_2 = static_cast<int8_t>(motor2 * conversionFactor);
+    int8_t arm_motor_3 = static_cast<int8_t>(motor3 * conversionFactor);
+    int8_t arm_motor_4 = static_cast<int8_t>(motor4 * conversionFactor);
+    int8_t arm_motor_5 = static_cast<int8_t>(motor5 * conversionFactor);
+    SerialHandler::instance()->p()->writeArmMotors(arm_motor_1, arm_motor_2, arm_motor_3, arm_motor_4, arm_motor_5);
 }
 
-double AbstractController::axisLeftY() const
-{
-    return m_currentState->axes[AXIS_LEFT_Y];
-}
-
-double AbstractController::axisRightX() const
-{
-    return m_currentState->axes[AXIS_RIGHT_X];
-}
-
-double AbstractController::axisRightY() const
-{
-    return m_currentState->axes[AXIS_RIGHT_X];
-}

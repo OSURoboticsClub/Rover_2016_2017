@@ -1,5 +1,11 @@
 <RCC>
     <qresource prefix="/">
         <file>panel.qml</file>
+        <file>button1.qml</file>
+        <file>main.qml</file>
+        <file>mainview.qml</file>
+        <file>map.html</file>
+        <file>Settings.qml</file>
+        <file>RawValues.qml</file>
     </qresource>
 </RCC>

@@ -71,8 +71,6 @@ public slots:
 private:
     //void run();
     void eventLoop();
-    void connectControllers();
-    void connectDriveController(ControllerPointer controller);
 
     /*
      * The list containing the controller class instances that this class uses.
@@ -89,13 +87,7 @@ private:
      * The maximum amount of controllers that the class can use. This value
      * corresponds to the number of roles that can be assigned to a controller.
      */
-    int m_maxUsableControllers = 1;
-
-private slots:
-    void sendDriveMotorPower(double left, double right);
-    // value is actually not used
-    // TODO: maybe better way to do this?
-    // TODO: connect other controllers
+    int m_maxUsableControllers = 2;
 
 };
 

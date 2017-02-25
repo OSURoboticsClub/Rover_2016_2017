@@ -7,40 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>761</width>
-    <height>515</height>
+    <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QQuickWidget" name="quickWidget">
-      <property name="resizeMode">
-       <enum>QQuickWidget::SizeRootObjectToView</enum>
-      </property>
-      <property name="source">
-       <url>
-        <string>qrc:/panel.qml</string>
-       </url>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="exit">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>exit</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -48,7 +21,7 @@
      <x>0</x>
      <y>0</y>
      <width>761</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSerial_Port">
@@ -117,13 +90,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QQuickWidget</class>
-   <extends>QWidget</extends>
-   <header>QtQuickWidgets/QQuickWidget</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

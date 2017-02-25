@@ -207,7 +207,7 @@ class BigIntSpinBox(QAbstractSpinBox):
 
         self.lineEdit = QLineEdit(self)
 
-        rx = QRegExp("[1-9]\\d{0,20}")
+        rx = QRegExp("-[0-9]\\d{0,20}")
         validator = QRegExpValidator(rx, self)
 
         self.lineEdit.setValidator(validator)
@@ -280,17 +280,23 @@ def setup(window, spec_table, io):
 			if a[0] == "*":
 				annotated_args[i-1][2] = True
 				
-		for a in annotated_args:
+		for a in ,i in zip(annotated_args,range(0, len(annotated_args))):
 			vl = QVBoxLayout()
 			if a[0] == "*":
 				widget = QLineEdit()
-			else:
-				widget = BigIntSpinBox()
-				if a[2] or "w" not in r["rw"]:
-					widget.setEnabled(False)
+			elif a[0] == "u64" or "i64":
+				widget = QSpinBox()
 				widget.setMinimum(argtype_minval(a[0]))
 				widget.setMaximum(argtype_maxval(a[0]))
 				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
+			else:
+				widget = QSpinBox()
+				widget.setMinimum(argtype_minval(a[0]))
+				widget.setMaximum(argtype_maxval(a[0]))
+				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
+				widget.setValue(r["default"][i])
+			if a[2] or "w" not in r["rw"]:
+				widget.setEnabled(False)
 			control_widgets.append(widget)
 			subtitle = QLabel(a[1])
 			subtitle.setFont(QFont("", 8))

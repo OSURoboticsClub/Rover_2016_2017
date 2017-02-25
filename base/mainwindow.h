@@ -56,31 +56,8 @@ public slots:
 
 private slots:
 
-    void on_actionStart_Thread_triggered();
-
-    void on_actionStop_Thread_triggered();
-
-    void on_actionStart_Thread_2_triggered();
-
-    void on_actionStop_Thread_2_triggered();
-
-    void on_actionPing_triggered();
-
-    void on_actionAutodetect_Serial_triggered();
-
-    void on_actionIdentify_controllers_triggered();
 
 signals:
-
-    void startSerial();
-    void stopSerial();
-    void startInputs();
-    void stopInputs();
-
-    void startReadIn();
-    void stopReadIn();
-    void closeThreads();
-    void startThreads();
 
 
 };

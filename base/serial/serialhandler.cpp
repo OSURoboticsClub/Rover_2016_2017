@@ -31,10 +31,12 @@ SerialHandler::~SerialHandler()
 void SerialHandler::run()
 {
     qDebug() << "starting serial read";
+
     QByteArray *buffer = new QByteArray();
     if(m_packets->device() == NULL) {
         setBuffer(buffer);
     }
+
     eventLoop();
     m_run = true;
 }
@@ -42,6 +44,7 @@ void SerialHandler::run()
 void SerialHandler::eventLoop()
 {
     while (m_run){
+        //qDebug() << m_packets->device()->bytesAvailable();
         if(m_packets->device()->bytesAvailable() >= 2) {
             qDebug() << "read some bytes";
             quint8 start, size;
@@ -63,7 +66,7 @@ void SerialHandler::eventLoop()
             //qDebug() << readData.toHex();
 
         }
-
+        msleep(100);
     }
     qDebug() << "exciting serial read";
 }

@@ -401,12 +401,14 @@ class BasePackets(object):
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
-
+            string += "\tqDebug() << \"THERE\";\n"
             string += self._crc_calculation(packet)
+            string += "\tqDebug() << \"THERE\";\n"
             string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
+            string += "\tqDebug() << \"HERE\";\n"
             if self._packet_size(packet) is not None:
                 string += "\t%s << (quint8)%s;\n" % (
                     self._params["datastream"],
@@ -469,16 +471,20 @@ class BasePackets(object):
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
+            
             string += self._crc_calculation(packet, write=False)
+            string += "\tqDebug() << \"THERE\";\n"
             string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
+            string += "\tqDebug() << \"HERE\";\n"
             string += "\t%s << (quint8)3;\n" % self._params["datastream"]
             string += "\t%s << _crc;\n" % self._params["datastream"]
             string += "\t%s << _packetType;\n" % (
                 self._params["datastream"],
             )
+            
             string += "}\n\n"
         return string.expandtabs(self._tabsize)
 

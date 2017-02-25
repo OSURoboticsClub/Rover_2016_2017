@@ -6,12 +6,50 @@ import QtQuick.Layouts 1.3
 
 import QtQuick.Templates 2.0
 
+
 Item {
     property int t
     id: item1
     width: 200
     height: 600
     /*
+    id: item
+    width: 500; height: 100
+    signal debugTest(string msg)
+    signal closeMainWindow()
+    MouseArea {
+        anchors.rightMargin: -1
+        anchors.bottomMargin: -285
+        anchors.leftMargin: 1
+        anchors.topMargin: 1
+        anchors.fill: parent
+        //onClicked: item.debugTest("hello")
+        onClicked: item.closeMainWindow()
+    }
+
+    Rectangle{
+        x: 362
+        y: 1
+        width: 100
+        height: 100
+        scale: 1
+        enabled: true
+
+    }
+
+    Gauge {
+        id: rightMotor
+        x: 125
+        y: 250
+        width: 50
+        height: 100
+        enabled: true
+        visible: true
+        value: 10
+        rotation: 0
+        maximumValue: 13
+        clip: false
+    }
     Gauge {
         id: voltometer
         y: 486
@@ -28,6 +66,8 @@ Item {
         enabled: false
         value: 75
         maximumValue: 100
+        objectName: "voltometer"
+
     }
 
     StatusIndicator {
@@ -235,6 +275,7 @@ Item {
 
             Gauge {
                 id: leftMotor
+                width: parent.width * 0.5
                 antialiasing: true
                 maximumValue: 13
                 value: 5
@@ -242,6 +283,7 @@ Item {
             }
             Gauge {
                 id: rightMotor
+                width: parent.width * 0.5
                 antialiasing: true
                 enabled: true
                 visible: true
@@ -251,6 +293,12 @@ Item {
                 clip: false
             }
         }
+        Text {
+            id: rightText
+            text: qsTr("Motors")
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 12
+        }
         Gauge {
             id: accelerometer
             width: parent.width * .5
@@ -259,7 +307,12 @@ Item {
             value: 63
             maximumValue: 100
         }
-
+        Text {
+            id: accelText
+            text: qsTr("Accelerometer")
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 12
+        }
        Gauge {
         id: voltometer
         width: parent.width * .5
@@ -269,6 +322,15 @@ Item {
         value: 75
         maximumValue: 100
         }
+       Text {
+           id: voltText
+           width: 70
+           height: 15
+           text: qsTr("Voltometer")
+           horizontalAlignment: Text.AlignHCenter
+           verticalAlignment: Text.AlignVCenter
+           font.pixelSize: 12
+       }
        Gauge {
            id: gyro
 
@@ -277,6 +339,12 @@ Item {
            Layout.fillWidth: true
            value: 63
            maximumValue: 100
+       }
+       Text {
+           id: gyroText
+           text: qsTr("Gyro")
+           horizontalAlignment: Text.AlignHCenter
+           font.pixelSize: 12
        }
     Text {
         id: cameraSelect

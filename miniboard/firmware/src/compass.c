@@ -9,6 +9,7 @@
 #include "compass.h"
 #include "uart.h"
 #include "commgen.h"
+#include "math.h"
 
 //start condition transmitted
 #define TW START 0x08
@@ -25,6 +26,7 @@
 #define RD_CMD 0x3D
 #define DEV_WRITE (DEV_ADDRESS | WR_CMD) //LSB is a zero to write
 #define DEV_READ (DEV_ADDRESS | RD_CMD) //LSB is a one to read
+#define COMP_VALID_TIMEOUT 3
 #define CONF_A 0x00
 #define	CONF_B 0x01
 #define	MODE 0x02
@@ -34,9 +36,7 @@
 #define	Z_LSB 0x06
 #define	Y_MSB 0x07
 #define Y_LSB 0x08
-
-uint8_t comp_addr = 0x00;
-uint8_t eepromAddress = 00; // the address in the HMC6352 EEPROM from which to request the value of the I2C Slave Address
+#define PI 3.14159
 
 void comp_init(void) {
 	uart_enable(COMP_UART, 1000000, 1, 0);
@@ -46,10 +46,32 @@ void comp_init(void) {
 	mode();
 }
 
+static void start_comp_valid_timer(void){
+	TCCR2B = 0;
+	TCNT2 = 0;
+	OCR2A = (uint16_t) 15625*COMP_VALID_TIMEOUT;
+	TIMSK2 = _BV(OCIE2A);
+	TCCR2B = _BV(CS22) | _BV(CS20); /* Set 1024 prescaler. */
+}
+
+ISR(TIMER2_COMPA_vect){
+	Data->compass_heading_valid = 0;
+}
+
 void retrieve(){
-	read_x();
+	int16_t x = read_x();
 	read_z();
-	read_y();
+	int16_t y = read_y();
+	int16_t heading, val, y1, x1;
+
+	heading = atan2(-y,-x)*(180/PI);
+	if(heading < 0){
+		heading = heading + 360;
+	}
+
+	Data->compass_heading = heading;
+	Data->compass_heading_valid = 1;
+	start_comp_valid_timer();
 }
 
 void config_rega()
@@ -70,12 +92,14 @@ void mode()
 	twi_writeto(MODE, mode);
 }
 
-void read_x()
+int16_t read_x()
 {
 	uint8_t xh = twi_readfr(X_MSB);
 	uint8_t xl = twi_readfr(X_LSB);
+	uint16_t headingx = xl | (xh << 8);
 
-	Data->mag_x = xl | (xh << 8);
+	Data->mag_x = headingx;
+	return headingx;
 }
 
 void read_z()
@@ -86,12 +110,14 @@ void read_z()
 	Data->mag_z = zl | (zh << 8);
 }
 
-void read_y()
+int16_t read_y()
 {
 	uint8_t yh = twi_readfr(Y_MSB);
 	uint8_t yl = twi_readfr(Y_LSB);
+	uint16_t headingy = yl | (yh << 8);
 
-	Data->mag_y = yl | (yh << 8);
+	Data->mag_y = headingy;
+	return headingy;
 }
 
 

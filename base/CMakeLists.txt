@@ -17,7 +17,6 @@ set(SOURCES
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
    inputs/frsky.cpp
-   inputs/ps3.cpp
 )
 
 set(HEADERS
@@ -35,7 +34,6 @@ set(HEADERS
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
     inputs/frsky.h
-    inputs/ps3.h
 )
 
 # Set forms
@@ -61,5 +59,5 @@ target_link_libraries(main Qt5::Quick)
 target_link_libraries(main Qt5::Gamepad)
 target_link_libraries(main Qt5::SerialPort)
 target_link_libraries(main Qt5::QuickWidgets)
+target_link_libraries(main Qt5::WebEngine)
 target_link_libraries(main ${SFML_LIBRARIES})
-

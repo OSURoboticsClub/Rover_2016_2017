@@ -48,7 +48,7 @@ Tab {
             }
             Text {
                 id: rbDrive
-                text: qsTr("Right Back: " + )
+                text: qsTr("Right Back: " + j)
             }
         }
         

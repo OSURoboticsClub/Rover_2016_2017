@@ -280,7 +280,7 @@ def setup(window, spec_table, io):
 			if a[0] == "*":
 				annotated_args[i-1][2] = True
 				
-		for a in ,i in zip(annotated_args,range(0, len(annotated_args))):
+		for a,i in zip(annotated_args,range(0, len(annotated_args))):
 			vl = QVBoxLayout()
 			if a[0] == "*":
 				widget = QLineEdit()

@@ -18,12 +18,12 @@ public:
     int timeRunning();
 private:
     void run();
-    void updateAll();
+    void eventLoop();
     bool m_run = true;
     QTime runTime;
 
 signals:
-
+    void updateAll();
 public slots:
     void stop();
 };

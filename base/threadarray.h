@@ -13,7 +13,7 @@ class ThreadArray : public QObject {
 public:
     void push(QThread *m_thread, bool startImmediately);
     bool clear();
-    explicit ThreadArray(QObject *parent = 0);
+    ThreadArray();
     ~ThreadArray();
 private:
     int numThreads;

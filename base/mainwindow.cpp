@@ -32,6 +32,8 @@ MainWindow::MainWindow(QObject *_item) :
 
     item = _item;
 
+    //connect(item, SIGNAL(close), )
+
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));
 

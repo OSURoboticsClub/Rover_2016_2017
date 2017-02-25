@@ -4,18 +4,19 @@ MiniBoardUpdater::MiniBoardUpdater(QObject *parent)
     : QThread(parent)
 {
     runTime.start();
+    connect(this, SIGNAL(updateAll()), Handler, SLOT(readBatteryVoltage()));
 }
 
 void MiniBoardUpdater::run()
 {
 
     qDebug() << "Update timer on";
-    updateAll();
+    eventLoop();
     qDebug() << "Update timer off";
     m_run = true;
 }
 
-void MiniBoardUpdater::updateAll()
+void MiniBoardUpdater::eventLoop()
 {
     while(m_run){
         //if runtime has gone 1000 ms more
@@ -24,7 +25,8 @@ void MiniBoardUpdater::updateAll()
             //TODO: pull all things UI needs to display from robot
             //Handler->readPause();
             msleep(1500);
-            Handler->readBatteryVoltage();
+            emit updateAll();
+            //Handler->readBatteryVoltage();
 //            Handler->readDriveMotorPower();
 //            Handler->readSwerveDriveState();
 //            Handler->readArmMotors();

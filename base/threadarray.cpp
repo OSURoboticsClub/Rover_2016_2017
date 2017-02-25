@@ -1,7 +1,6 @@
 #include "threadarray.h"
 
-ThreadArray::ThreadArray(QObject *parent) : QObject(parent)
-{
+ThreadArray::ThreadArray(){
     numThreads = 0;
     clearing = false;
     threadhead = NULL;

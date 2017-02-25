@@ -64,7 +64,7 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	//comp_init();
+	comp_init();
 	//imu_init();
 	//set_callsign("asdf");
 	sei();
@@ -149,7 +149,7 @@ void miniboard_main(void){
 		}
 		
 		/* Compass */
-		//retrieve();
+		retrieve();
 		
 		/* IMU */
 // 		int16_t x, y, z;

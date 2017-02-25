@@ -26,6 +26,7 @@
 #define RD_CMD 0x3D
 #define DEV_WRITE (DEV_ADDRESS | WR_CMD) //LSB is a zero to write
 #define DEV_READ (DEV_ADDRESS | RD_CMD) //LSB is a one to read
+#define COMP_VALID_TIMEOUT 3
 #define CONF_A 0x00
 #define	CONF_B 0x01
 #define	MODE 0x02
@@ -37,7 +38,6 @@
 #define Y_LSB 0x08
 #define PI 3.14159
 
-
 void comp_init(void) {
 	uart_enable(COMP_UART, 1000000, 1, 0);
 	twi_init();
@@ -46,7 +46,15 @@ void comp_init(void) {
 	mode();
 }
 
-ISR(TIMER4_COMPA_vect){
+static void start_comp_valid_timer(void){
+	TCCR2B = 0;
+	TCNT2 = 0;
+	OCR2A = (uint16_t) 15625*COMP_VALID_TIMEOUT;
+	TIMSK2 = _BV(OCIE2A);
+	TCCR2B = _BV(CS22) | _BV(CS20); /* Set 1024 prescaler. */
+}
+
+ISR(TIMER2_COMPA_vect){
 	Data->compass_heading_valid = 0;
 }
 
@@ -56,34 +64,14 @@ void retrieve(){
 	int16_t y = read_y();
 	int16_t heading, val, y1, x1;
 
-	/*if (y>0 && x>0){
-		val = (atan2(y,x)*(180.0/PI));
-		heading = val;
+	heading = atan2(-y,-x)*(180/PI);
+	if(heading < 0){
+		heading = heading + 360;
 	}
-	else if(y>0 && x<0){
-		x1 = abs(x);
-		val = (atan2(y,x1)*(180.0/PI));
-		heading = val;
-	}
-	else if(y<0 && x>0){
-		y1 = abs(y);
-		val = (atan2(y1,x)*(180.0/PI));
-		heading = val;
-	}
-	else if(y<0 && x<0){
-		x1 = abs(x);
-		y1 = abs(y);
-		val = (atan2(y1,x1)*(180.0/PI));
-		heading = val;
-	}
-	else {
-		heading = 180;
-	}*/
-	//double mean = y/x;
-	heading = atan2(y,x)*(180/PI);
 
 	Data->compass_heading = heading;
 	Data->compass_heading_valid = 1;
+	start_comp_valid_timer();
 }
 
 void config_rega()

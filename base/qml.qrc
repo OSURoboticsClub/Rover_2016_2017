@@ -6,9 +6,9 @@
         <file>mainview.qml</file>
         <file>map.html</file>
         <file>Settings.qml</file>
-        <file>RawValues.qml</file>
         <file>superGame.html</file>
         <file>superGameScript.js</file>
+        <file>rawValues.qml</file>
     </qresource>
     <qresource prefix="/new/prefix1"/>
 </RCC>

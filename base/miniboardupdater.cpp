@@ -4,7 +4,7 @@ MiniBoardUpdater::MiniBoardUpdater(QObject *parent)
     : QThread(parent)
 {
 
-    runTime.start();
+    //runTime.start();
 
 }
 
@@ -20,31 +20,32 @@ void MiniBoardUpdater::run()
 void MiniBoardUpdater::eventLoop()
 {
     while(m_run){
-        emit update();
+        //emit update();
         //if runtime has gone 1000 ms more
-        if ((runTime.elapsed() % 5000) == 0){
-            emit updateAll();
-            Handler->readBatteryVoltage();
-            Handler->readDriveMotorPower();
-            Handler->readSwerveDriveState();
-            Handler->readArmMotors();
-            Handler->readPotentiometers();
-            Handler->readSelectCamera();
-            Handler->readCallsign();
-            //Handler->readGpsPosition();
-            //Handler->readGpsTrack();
-            Handler->readMagnetometer();
-            //Handler->readAccelerometer();
-            Handler->readGyroscope();
-            //Handler->readCompassHeading();
-            Handler->readGpioDirection();
-            //Handler->readGpioOutValue();
-            //Handler->readGpioReadState();
-            Handler->readDebuggingInfo();
-            Handler->readBuildInfo();
+        qDebug() << "Pulling Reads";
+        Handler->readBatteryVoltage();
+        Handler->readDriveMotorPower();
+        Handler->readSwerveDriveState();
+        Handler->readArmMotors();
+        Handler->readPotentiometers();
+        Handler->readSelectCamera();
+        Handler->readCallsign();
+        //Handler->readGpsPosition();
+        //Handler->readGpsTrack();
+        Handler->readMagnetometer();
+        //Handler->readAccelerometer();
+        Handler->readGyroscope();
+        //Handler->readCompassHeading();
+        Handler->readGpioDirection();
+        Handler->readGpioOutValue();
+        Handler->readGpioReadState();
+        Handler->readDebuggingInfo();
+        Handler->readBuildInfo();
+        qDebug() << "Done Pulling";
+        msleep(3000);
 
-        }
     }
+
 }
 
 void MiniBoardUpdater::stop()

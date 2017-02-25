@@ -27,6 +27,10 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(magnetometerReceived(qint16, qint16, qint16)), this, SLOT(setUIMagnetometer(qint16,qint16,qint16)));
     connect(Handler, SIGNAL(gyroscopeReceived(qint16, qint16, qint16)), this, SLOT(setUIGyroscope(qint16,qint16,qint16)));
     connect(Handler, SIGNAL(gpioDirectionReceived(quint8)), this, SLOT(setUIGpioDirection(quint8)));
+    connect(Handler, SIGNAL(gpioOutValueReceived(quint8)), this, SLOT(setUIGpioOut(quint8)));
+    connect(Handler, SIGNAL(gpioReadStateReceived(quint8)), this, SLOT(setUIGpioReadState(quint8)));
+    connect(Handler, SIGNAL(debuggingInfoReceived(QByteArray)), this, SLOT(setUIDebugInfo(QByteArray)));
+    connect(Handler, SIGNAL(buildInfoReceived(QByteArray)), this, SLOT(setUIBuildInfo(QByteArray)));
 
     item = _item;
 
@@ -148,6 +152,26 @@ void MainWindow::setUIGyroscope(qint16 gyro_x, qint16 gyro_y, qint16 gyro_z){
 void MainWindow::setUIGpioDirection(quint8 gpio_dir){
     if (item){
         item->setProperty("gpio_dir", gpio_dir);
+    }
+}
+void MainWindow::setUIGpioOut(quint8 gpio_out){
+    if (item){
+        item->setProperty("gpio_out", gpio_out);
+    }
+}
+void MainWindow::setUIGpioReadState(quint8 gpio_state){
+    if (item){
+        item->setProperty("gpio_state", gpio_state);
+    }
+}
+void MainWindow::setUIDebugInfo(QByteArray debug_str_data){
+    if (item){
+        item->setProperty("debug_str_data", debug_str_data);
+    }
+}
+void MainWindow::setUIBuildInfo(QByteArray build_info_data){
+    if (item){
+        item->setProperty("build_info_data", build_info_data);
     }
 }
 

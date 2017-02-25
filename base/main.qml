@@ -46,6 +46,10 @@ Item {
     property int gyro_y: 0
     property int gyro_z: 0
     property int gpio_dir: 0
+    property int gpio_out: 0
+    property int gpio_state: 0
+    property string debug_str_data: "NULL"
+    property string build_info_data: "NULL"
 
     property string colorSerialHandler: "white"
 

@@ -28,9 +28,9 @@ void config_rega(void);
 void config_regb(void);
 void mode(void);
 void retrieve(void);
-void read_x(void);
+int16_t read_x(void);
 void read_z(void);
-void read_y(void);
+int16_t read_y(void);
 
 void twi_init(void);
 void twi_start(void);

@@ -9,6 +9,7 @@
 #include "compass.h"
 #include "uart.h"
 #include "commgen.h"
+#include "math.h"
 
 //start condition transmitted
 #define TW START 0x08
@@ -34,9 +35,8 @@
 #define	Z_LSB 0x06
 #define	Y_MSB 0x07
 #define Y_LSB 0x08
+#define PI 3.14159
 
-uint8_t comp_addr = 0x00;
-uint8_t eepromAddress = 00; // the address in the HMC6352 EEPROM from which to request the value of the I2C Slave Address
 
 void comp_init(void) {
 	uart_enable(COMP_UART, 1000000, 1, 0);
@@ -46,10 +46,44 @@ void comp_init(void) {
 	mode();
 }
 
+ISR(TIMER4_COMPA_vect){
+	Data->compass_heading_valid = 0;
+}
+
 void retrieve(){
-	read_x();
+	int16_t x = read_x();
 	read_z();
-	read_y();
+	int16_t y = read_y();
+	int16_t heading, val, y1, x1;
+
+	/*if (y>0 && x>0){
+		val = (atan2(y,x)*(180.0/PI));
+		heading = val;
+	}
+	else if(y>0 && x<0){
+		x1 = abs(x);
+		val = (atan2(y,x1)*(180.0/PI));
+		heading = val;
+	}
+	else if(y<0 && x>0){
+		y1 = abs(y);
+		val = (atan2(y1,x)*(180.0/PI));
+		heading = val;
+	}
+	else if(y<0 && x<0){
+		x1 = abs(x);
+		y1 = abs(y);
+		val = (atan2(y1,x1)*(180.0/PI));
+		heading = val;
+	}
+	else {
+		heading = 180;
+	}*/
+	//double mean = y/x;
+	heading = atan2(y,x)*(180/PI);
+
+	Data->compass_heading = heading;
+	Data->compass_heading_valid = 1;
 }
 
 void config_rega()
@@ -70,12 +104,14 @@ void mode()
 	twi_writeto(MODE, mode);
 }
 
-void read_x()
+int16_t read_x()
 {
 	uint8_t xh = twi_readfr(X_MSB);
 	uint8_t xl = twi_readfr(X_LSB);
+	uint16_t headingx = xl | (xh << 8);
 
-	Data->mag_x = xl | (xh << 8);
+	Data->mag_x = headingx;
+	return headingx;
 }
 
 void read_z()
@@ -86,12 +122,14 @@ void read_z()
 	Data->mag_z = zl | (zh << 8);
 }
 
-void read_y()
+int16_t read_y()
 {
 	uint8_t yh = twi_readfr(Y_MSB);
 	uint8_t yl = twi_readfr(Y_LSB);
+	uint16_t headingy = yl | (yh << 8);
 
-	Data->mag_y = yl | (yh << 8);
+	Data->mag_y = headingy;
+	return headingy;
 }
 
 

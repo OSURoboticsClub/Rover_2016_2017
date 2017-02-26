@@ -67,7 +67,8 @@ public:
 
 public slots:
     void stop();
-
+signals:
+    void changeButtonColor(QString, bool);
 private:
     //void run();
     void eventLoop();

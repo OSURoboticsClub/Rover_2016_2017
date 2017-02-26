@@ -23,6 +23,7 @@ private:
     QTime runTime;
 signals:
     void update();
+    void changeButtonColor(QString,bool);
 
 signals:
     void updateAll();

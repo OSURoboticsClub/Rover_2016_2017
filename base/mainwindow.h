@@ -57,7 +57,9 @@ public slots:
     void setUIDebugInfo(QByteArray);
     void setUIBuildInfo(QByteArray);
 
-    void colorSerialHandler(QString);
+    void colorSerialHandler(QString, bool);
+    void colorControllerHandler(QString, bool);
+    void colorUpdater(QString, bool);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

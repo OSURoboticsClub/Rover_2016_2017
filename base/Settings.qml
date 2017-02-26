@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
+import QtQuick.Controls 1.4
 
 Item {
     anchors.fill: parent
@@ -7,6 +8,7 @@ Item {
         id: serialHandlerOn
         x: 8
         y: 8
+        width: 163
         height: 35
         text: qsTr("turn on SerialHandler")
         objectName: "serialHandlerOn"
@@ -19,6 +21,7 @@ Item {
         id: serialHandlerOff
         x: 8
         y: 41
+        width: 163
         height: 35
         text: qsTr("turn off SerialHandler")
         onClicked : {
@@ -30,6 +33,7 @@ Item {
         id: updaterOn
         x: 8
         y: 74
+        width: 163
         height: 35
         text: "turn on updater"
         onClicked : {
@@ -41,6 +45,7 @@ Item {
         id: updaterOff
         x: 8
         y: 105
+        width: 163
         height: 35
         text: "turn off updater"
         onClicked : {
@@ -72,8 +77,9 @@ Item {
 
     Button {
         id: allThreadsClose
-        x: 236
-        y: 93
+        x: 8
+        y: 249
+        width: 164
         height: 35
         text: qsTr("turn off all threads")
         onClicked : {
@@ -83,10 +89,50 @@ Item {
 
     Rectangle {
         id: serialHandlerIndicator
-        x: 156
+        x: 177
         y: 8
         width: 52
         height: 35
         color: root.colorSerialHandler;
+        BusyIndicator {
+            id: indicator1
+            width: 52
+            height: 35
+            //anchors.fill
+            running: root.activeSeriaHandler;
+        }
+    }
+
+    Rectangle {
+        id: controllerHandlerIndicator
+        x: 177
+        y: 140
+        width: 52
+        height: 35
+        color: root.colorControllerHandler;
+        BusyIndicator {
+            id: indicator2
+            x: 0
+            y: 0
+            width: 52
+            height: 35
+            //anchors.fill
+            running: root.activeControllerHandler;
+        }
+    }
+
+    Rectangle {
+        id: updaterIndicator
+        x: 178
+        y: 74
+        width: 51
+        height: 35
+        color: root.colorUpdater;
+        BusyIndicator {
+            id: indicator3
+            width: 51
+            height: 35
+            running: root.activeUpdater;
+        }
     }
 }

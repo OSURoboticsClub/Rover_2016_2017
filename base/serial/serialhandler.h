@@ -29,7 +29,7 @@ public:
     Packets *p() const {return m_packets;}
 
 signals:
-    void changeButtonColor(QString);
+    void changeButtonColor(QString, bool);
 
 public slots:
     void stop();

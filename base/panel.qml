@@ -257,103 +257,145 @@ Item {
         anchors.rightMargin: -136
     }
     */
-    ColumnLayout {
-        id: columnLayout1
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-        anchors.left: parent.left
+
+    Gauge {
+        id: leftMotor
+        x: 0
+        y: 36
+        width: parent.width * 0.5
+        height: parent.height * 0.3
+        scale: 1.0
+        antialiasing: true
+        maximumValue: 13
+        value: 5
+        visible: true
+    }
+
+    Gauge {
+        id: rightMotor
+        x: 100
+        y: 36
+        width: parent.width * 0.5
+        height: parent.height * 0.3
         anchors.leftMargin: 0
+        transformOrigin: Item.Center
+        antialiasing: true
+        anchors.left: leftMotor.right;
+        enabled: true
+        visible: true
+        value: 10
+        rotation: 0
+        maximumValue: 13
+        clip: false
+    }
+
+    Text {
+        id: rightMotorText
+        x: 164
+        text: qsTr("right motor")
         anchors.right: parent.right
-        anchors.rightMargin: 0
+        anchors.rightMargin: 8
+        anchors.top: parent.top
+        anchors.topMargin: 216
+        clip: false
+        horizontalAlignment: Text.AlignHCenter
+        font.pixelSize: 12
+    }
 
-        RowLayout {
-            id: rowLayout2
-            Layout.fillWidth: true
-
-
-            Gauge {
-                id: leftMotor
-                width: parent.width * 0.5
-                antialiasing: true
-                maximumValue: 13
-                value: 5
-                visible: true
-            }
-            Gauge {
-                id: rightMotor
-                width: parent.width * 0.5
-                antialiasing: true
-                enabled: true
-                visible: true
-                value: 10
-                rotation: 0
-                maximumValue: 13
-                clip: false
-            }
-        }
-        Text {
-            id: rightText
-            text: qsTr("Motors")
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 12
-        }
-        Gauge {
-            id: accelerometer
-            width: parent.width * .5
-            height: parent.height * .2
-            Layout.fillWidth: true
-            value: 63
-            maximumValue: 100
-        }
-        Text {
-            id: accelText
-            text: qsTr("Accelerometer")
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 12
-        }
-       Gauge {
-        id: voltometer
+    Gauge {
+        id: accelerometer
+        x: 0
+        y: 240
+        anchors.top: leftMotor.bottom;
         width: parent.width * .5
         height: parent.height * .2
+        anchors.topMargin: 20;
         Layout.fillWidth: true
-        scale: 1
-        value: 75
+        value: 63
         maximumValue: 100
-        }
-       Text {
-           id: voltText
-           width: 70
-           height: 15
-           text: qsTr("Voltometer")
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-           font.pixelSize: 12
-       }
-       Gauge {
-           id: gyro
+    }
 
-           width: parent.width * .5
-           height: parent.height * .2
-           Layout.fillWidth: true
-           value: 63
-           maximumValue: 100
-       }
-       Text {
-           id: gyroText
-           text: qsTr("Gyro")
-           horizontalAlignment: Text.AlignHCenter
-           font.pixelSize: 12
-       }
+    Text {
+        id: accelText
+        x: 16
+        y: 503
+        anchors.top: accelerometer.bottom;
+        text: qsTr("Accelerometer")
+        horizontalAlignment: Text.AlignHCenter
+        font.pixelSize: 12
+    }
+
     Text {
         id: cameraSelect
+        x: 19
+        y: 449
+        width: 101
+        height: 58
 
-        width: parent.width * .5
-        height: parent.height * .2
         text: qsTr("Camera 3")
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 20
     }
-   }
+
+    Text {
+        id: gyroText
+        x: 51
+        y: 552
+        text: qsTr("Gyro")
+        horizontalAlignment: Text.AlignHCenter
+        font.pixelSize: 12
+    }
+
+    Gauge {
+        id: gyro
+        x: 120
+        y: 464
+
+        width: parent.width * .5
+        height: parent.height * .2
+        Layout.fillWidth: true
+        value: 63
+        maximumValue: 100
+    }
+
+    Text {
+        id: voltText
+        x: 134
+        y: 356
+        width: 70
+        height: 15
+        text: qsTr("Voltometer")
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        font.pixelSize: 12
+    }
+
+
+    ColumnLayout {
+        id: columnLayout1
+        anchors.fill: parent
+    }
+    Gauge {
+        id: voltometer
+        x: 120
+        y: 236
+        width: parent.width * .5
+        height: parent.height * .2
+        Layout.fillWidth: true
+        anchors.top: rightMotor.bottom;
+        anchors.topMargin: 20;
+        scale: 1
+        value: 75
+        maximumValue: 100
+    }
+
+    Text {
+        id: leftMotorText
+        x: 61
+        y: 222
+        anchors.top: leftMotor.bottom;
+        text: qsTr("left motor")
+        anchors.topMargin: 0
+        font.pixelSize: 12
+    }
 }

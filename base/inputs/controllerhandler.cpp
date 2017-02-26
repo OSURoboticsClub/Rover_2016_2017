@@ -55,6 +55,7 @@ int ControllerHandler::controllerCount() {
 
 void ControllerHandler::eventLoop() {
     qDebug() << "entering ControllerHandler event loop";
+    emit changeButtonColor("#169d06", true);
     while(!m_stop) {
         if(m_controllerCount != controllerCount()) resetControllers();
         for(int i = 0; i < std::min(m_usableControllerCount, m_maxUsableControllers); i++) {
@@ -62,6 +63,7 @@ void ControllerHandler::eventLoop() {
         }
         msleep(100);
     }
+    emit changeButtonColor("#9d0606", false);
 }
 
 void ControllerHandler::resetControllers() {

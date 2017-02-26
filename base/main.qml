@@ -52,6 +52,11 @@ Item {
     property string build_info_data: "NULL"
 
     property string colorSerialHandler: "white"
+    property bool activeSeriaHandler: false
+    property string colorControllerHandler: "white"
+    property bool activeControllerHandler: false
+    property string colorUpdater: "white"
+    property bool activeUpdater: false
 
         Column {
             id: sidebarCol
@@ -59,6 +64,7 @@ Item {
             height: parent.height
             Loader {
                 id: sidebarLoader
+                anchors.fill: parent
                 source: "panel.qml"
             }
         }

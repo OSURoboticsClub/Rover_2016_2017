@@ -17,6 +17,7 @@ MainWindow::MainWindow(QObject *_item) :
     SerialHandler::instance()->connectDevice();
 
 
+
     connect(Handler, SIGNAL(batteryVoltageReceived(quint16)), this, SLOT(setUIVoltage(quint16)));
     connect(Handler, SIGNAL(driveMotorPowerReceived(qint8, qint8, qint8, qint8, qint8, qint8)), this, SLOT(setUIDriveMotorPower(qint8,qint8,qint8,qint8,qint8,qint8)));
     connect(Handler, SIGNAL(swerveDriveStateReceived(quint8)), this, SLOT(setUIDriveState(quint8)));
@@ -38,14 +39,17 @@ MainWindow::MainWindow(QObject *_item) :
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));
-    connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString)), this, SLOT(colorSerialHandler(QString)));
+    connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString, bool)), this, SLOT(colorSerialHandler(QString, bool)));
 
     connect(item, SIGNAL(_updaterOn()), m_updater, SLOT(start()));
     connect(item, SIGNAL(_updaterOff()), m_updater, SLOT(stop()));
+    connect(m_updater, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorUpdater(QString, bool)));
 
     connect(item, SIGNAL(_controllerHandlerOn()), m_inputs, SLOT(start()));
     connect(item, SIGNAL(_controllerHandlerOff()), m_inputs, SLOT(stop()));
+    connect(m_inputs, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorControllerHandler(QString, bool)));
 
+    //connect(item, SIGNAL(close()), this, SLOT(close()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
 
 
@@ -175,8 +179,21 @@ void MainWindow::setUIBuildInfo(QByteArray build_info_data){
     }
 }
 
-void MainWindow::colorSerialHandler(QString color){
+void MainWindow::colorSerialHandler(QString color, bool activeSeriaHandler){
     if (item){
         item->setProperty("colorSerialHandler", color);
+        item->setProperty("activeSeriaHandler", activeSeriaHandler);
+    }
+}
+void MainWindow::colorControllerHandler(QString color, bool activeControllerHandler){
+    if (item){
+        item->setProperty("colorControllerHandler", color);
+        item->setProperty("activeControllerHandler", activeControllerHandler);
+    }
+}
+void MainWindow::colorUpdater(QString color, bool activeUpdater){
+    if (item){
+        item->setProperty("colorUpdater", color);
+        item->setProperty("activeUpdater", activeUpdater);
     }
 }

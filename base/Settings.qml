@@ -77,8 +77,8 @@ Item {
 
     Button {
         id: allThreadsClose
-        x: 8
-        y: 249
+        x: 330
+        y: 8
         width: 164
         height: 35
         text: qsTr("turn off all threads")
@@ -133,6 +133,30 @@ Item {
             width: 51
             height: 35
             running: root.activeUpdater;
+        }
+    }
+
+    Button {
+        id: pauseThreads
+        x: 9
+        y: 231
+        width: 163
+        height: 35
+        text: qsTr("pause threads")
+        onClicked : {
+            root._pauseAllThreads();
+        }
+    }
+
+    Button {
+        id: resumeThreads
+        x: 9
+        y: 267
+        width: 163
+        height: 35
+        text: qsTr("resume threads")
+        onClicked : {
+            root._resumeAllThreads();
         }
     }
 }

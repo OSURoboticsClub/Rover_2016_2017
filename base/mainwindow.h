@@ -42,6 +42,9 @@ private:
 
 public slots:
     void close();
+    void pauseThreads();
+    void resumeThreads();
+
     void setUIVoltage(quint16);
     void setUIDriveMotorPower(qint8, qint8, qint8, qint8, qint8, qint8);
     void setUIDriveState(quint8);

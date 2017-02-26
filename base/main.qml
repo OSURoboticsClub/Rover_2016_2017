@@ -17,6 +17,8 @@ Item {
     signal _controllerHandlerOn()
     signal _controllerHandlerOff()
     signal _allThreadsClose()
+    signal _pauseAllThreads()
+    signal _resumeAllThreads()
 
 
     property int battery_voltage: 0

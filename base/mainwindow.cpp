@@ -50,6 +50,8 @@ MainWindow::MainWindow(QObject *_item) :
     connect(m_inputs, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorControllerHandler(QString, bool)));
 
     //connect(item, SIGNAL(close()), this, SLOT(close()));
+    connect(item, SIGNAL(_pauseAllThreads()), this, SLOT(pauseThreads()));
+    connect(item, SIGNAL(_resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
 
 
@@ -62,7 +64,7 @@ MainWindow::MainWindow(QObject *_item) :
 //would need to destruct in the close button as well
 MainWindow::~MainWindow()
 {
-
+    close();
 }
 
 
@@ -89,6 +91,16 @@ void MainWindow::close()
 
         qDebug() << "closed";
     }
+}
+void MainWindow::pauseThreads(){
+    SerialHandler::instance()->stop();
+    m_inputs->stop();
+    m_updater->stop();
+}
+void MainWindow::resumeThreads(){
+    SerialHandler::instance()->start();
+    m_inputs->start();
+    m_updater->start();
 }
 
 void MainWindow::setUIVoltage(quint16 battery_voltage){

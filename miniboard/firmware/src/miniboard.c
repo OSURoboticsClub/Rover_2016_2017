@@ -65,13 +65,10 @@ ISR(BADISR_vect){
 void init(void){
 	comm_init();
 	gps_init();
-<<<<<<< HEAD
 	comp_init();
 	//imu_init();
 	//set_callsign("asdf");
-=======
 	sbus_init();
->>>>>>> cfce5a55ae8189eaf3b2fa0f5388239745712d7e
 	sei();
 }
 

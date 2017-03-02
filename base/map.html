@@ -24,8 +24,13 @@
                     useOnlyCache: false
                 }
             ).addTo(map);
+            var marker = L.marker([38.4063, -110.792286]).addTo(map);
             L.control.scale().addTo(map);
             var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+
+           channel.objects.gps.coordsChanged.connect(function(coords){
+                marker.setLatLng(coords);
+                });
 
             });
 

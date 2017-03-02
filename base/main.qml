@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import QtWebChannel 1.0
 import QtQuick.Controls 1.4
 
 Item {
@@ -60,10 +61,13 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
-    Item {
+    QtObject {
         id: gps
         property var coords: [38.4036, -110.792286]
+        WebChannel.id: "gps"
+        onCoordsChanged: console.log("THIS")
     }
+
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

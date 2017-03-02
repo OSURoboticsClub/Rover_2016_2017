@@ -25,6 +25,8 @@ Item {
                 anchors.fill: parent
                 url: "map.html"
                 webChannel: WebChannel{
+                    //WebChannel.id: "channel"
+                    registeredObjects: [gps]
                 }
             }
         }

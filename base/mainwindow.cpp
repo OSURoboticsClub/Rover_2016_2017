@@ -53,7 +53,7 @@ MainWindow::MainWindow(QObject *_item) :
     connect(item, SIGNAL(_pauseAllThreads()), this, SLOT(pauseThreads()));
     connect(item, SIGNAL(_resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
-
+    connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
 
 
 
@@ -90,6 +90,8 @@ void MainWindow::close()
         delete threadarray;
 
         qDebug() << "closed";
+
+        item->deleteLater();
     }
 }
 void MainWindow::pauseThreads(){

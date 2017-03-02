@@ -60,6 +60,10 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
+    Item {
+        id: gps
+        property var coords: [38.4036, -110.792286]
+    }
         Column {
             id: sidebarCol
             width: 0.3 * parent.width

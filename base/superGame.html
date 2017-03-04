@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:6px solid red;
+    background-color: black;
+}
+
+p {
+	 font-family: Georgia,"Times New Roman",serif;
+	 font-size: 12px;
+	 font-weight: bold;
+	 color: #600;
+	 line-height: 22px;
+	 margin: 0;
+	 text-transform: uppercase;
+	 letter-spacing: 1px
+ }
+ 
+ h6 {
+	font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+	font-style: italic;
+	color: #424242;
+	font-size: 18px;
+ }
+</style>
+</head>
+<body onload="startGame()">
+<script id="myScript" src="./superGameScript.js"></script>
+<div style="text-align:center;width:480px;background:#33D0FF;border:6px solid gold">
+	<button onclick="movePiece.moveup()">UP</button><br><br>
+	<button onclick="movePiece.moveleft()">LEFT</button>
+	<button onclick="movePiece.moveright()">RIGHT</button><br><br>
+	<button onclick="movePiece.movedown()">DOWN</button><br><br>
+	<button onclick="movePiece.slowDown()">SLOW DOWN</button>
+	<button onclick="movePiece.speedUp()">SPEED UP</button><br><br>
+	<button onclick="movePiece.stop()">STOP</button>
+	<button onclick="movePiece.reset()">RESET</button>
+	<button onclick="movePiece.memeFeed()">FEED ON/OFF</button>
+</div>
+<h6>Game Feed:</h6>
+<div id="div1" style="width:480px;background:#f1f1f1;border:2px dotted black">
+	<p>Starting Game. Turn on and off console using button</p>
+
+</div>
+<div style="text-align:center;width:480px;">
+
+</div>
+
+
+</body>
+</html>

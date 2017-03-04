@@ -8,7 +8,7 @@
 
 #include "serial/serialhandler.h"
 
-
+#define Handler SerialHandler::instance()->p()
 
 class MiniBoardUpdater : public QThread
 {
@@ -18,14 +18,15 @@ public:
     int timeRunning();
 private:
     void run();
-    void updateAll();
+    void eventLoop();
     bool m_run = true;
     QTime runTime;
 signals:
     void update();
+    void changeButtonColor(QString,bool);
 
 signals:
-
+    void updateAll();
 public slots:
     void stop();
 };

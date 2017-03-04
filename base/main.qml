@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import QtWebChannel 1.0
 import QtQuick.Controls 1.4
 
 Item {
@@ -17,6 +18,8 @@ Item {
     signal _controllerHandlerOn()
     signal _controllerHandlerOff()
     signal _allThreadsClose()
+    signal _pauseAllThreads()
+    signal _resumeAllThreads()
 
 
     property int battery_voltage: 0
@@ -46,6 +49,25 @@ Item {
     property int gyro_y: 0
     property int gyro_z: 0
     property int gpio_dir: 0
+    property int gpio_out: 0
+    property int gpio_state: 0
+    property string debug_str_data: "NULL"
+    property string build_info_data: "NULL"
+
+    property string colorSerialHandler: "white"
+    property bool activeSeriaHandler: false
+    property string colorControllerHandler: "white"
+    property bool activeControllerHandler: false
+    property string colorUpdater: "white"
+    property bool activeUpdater: false
+
+    property double latitude: 0
+    property double longitude: 0
+    QtObject {
+        id: gps
+        property var coords: [root.latitude, root.longitude]
+        WebChannel.id: "gps"
+    }
 
         Column {
             id: sidebarCol
@@ -53,6 +75,7 @@ Item {
             height: parent.height
             Loader {
                 id: sidebarLoader
+                anchors.fill: parent
                 source: "panel.qml"
             }
         }

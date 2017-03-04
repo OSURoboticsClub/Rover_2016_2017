@@ -42,6 +42,9 @@ private:
 
 public slots:
     void close();
+    void pauseThreads();
+    void resumeThreads();
+
     void setUIVoltage(quint16);
     void setUIDriveMotorPower(qint8, qint8, qint8, qint8, qint8, qint8);
     void setUIDriveState(quint8);
@@ -52,6 +55,15 @@ public slots:
     void setUIMagnetometer(qint16, qint16, qint16);
     void setUIGyroscope(qint16, qint16, qint16);
     void setUIGpioDirection(quint8);
+    void setUIGpioOut(quint8);
+    void setUIGpioReadState(quint8);
+    void setUIGpsPosition(quint8, qint64, qint64, qint32);
+    void setUIDebugInfo(QByteArray);
+    void setUIBuildInfo(QByteArray);
+
+    void colorSerialHandler(QString, bool);
+    void colorControllerHandler(QString, bool);
+    void colorUpdater(QString, bool);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

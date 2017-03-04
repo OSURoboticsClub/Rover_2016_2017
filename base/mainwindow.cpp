@@ -17,6 +17,7 @@ MainWindow::MainWindow(QObject *_item) :
     SerialHandler::instance()->connectDevice();
 
 
+
     connect(Handler, SIGNAL(batteryVoltageReceived(quint16)), this, SLOT(setUIVoltage(quint16)));
     connect(Handler, SIGNAL(driveMotorPowerReceived(qint8, qint8, qint8, qint8, qint8, qint8)), this, SLOT(setUIDriveMotorPower(qint8,qint8,qint8,qint8,qint8,qint8)));
     connect(Handler, SIGNAL(swerveDriveStateReceived(quint8)), this, SLOT(setUIDriveState(quint8)));
@@ -27,19 +28,33 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(magnetometerReceived(qint16, qint16, qint16)), this, SLOT(setUIMagnetometer(qint16,qint16,qint16)));
     connect(Handler, SIGNAL(gyroscopeReceived(qint16, qint16, qint16)), this, SLOT(setUIGyroscope(qint16,qint16,qint16)));
     connect(Handler, SIGNAL(gpioDirectionReceived(quint8)), this, SLOT(setUIGpioDirection(quint8)));
-
+    connect(Handler, SIGNAL(gpioOutValueReceived(quint8)), this, SLOT(setUIGpioOut(quint8)));
+    connect(Handler, SIGNAL(gpioReadStateReceived(quint8)), this, SLOT(setUIGpioReadState(quint8)));
+    connect(Handler, SIGNAL(debuggingInfoReceived(QByteArray)), this, SLOT(setUIDebugInfo(QByteArray)));
+    connect(Handler, SIGNAL(buildInfoReceived(QByteArray)), this, SLOT(setUIBuildInfo(QByteArray)));
+    connect(Handler, SIGNAL(gpsPositionReceived(quint8, qint64, qint64, qint32)), this, SLOT(setUIGpsPosition(quint8, qint64, qint64, qint32)));
     item = _item;
+
+    //connect(item, SIGNAL(close), )
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));
+    connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString, bool)), this, SLOT(colorSerialHandler(QString, bool)));
 
     connect(item, SIGNAL(_updaterOn()), m_updater, SLOT(start()));
     connect(item, SIGNAL(_updaterOff()), m_updater, SLOT(stop()));
+    connect(m_updater, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorUpdater(QString, bool)));
 
     connect(item, SIGNAL(_controllerHandlerOn()), m_inputs, SLOT(start()));
     connect(item, SIGNAL(_controllerHandlerOff()), m_inputs, SLOT(stop()));
+    connect(m_inputs, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorControllerHandler(QString, bool)));
 
+    //connect(item, SIGNAL(close()), this, SLOT(close()));
+    connect(item, SIGNAL(_pauseAllThreads()), this, SLOT(pauseThreads()));
+    connect(item, SIGNAL(_resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
+    connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
+
 
 
     if (item)
@@ -49,7 +64,7 @@ MainWindow::MainWindow(QObject *_item) :
 //would need to destruct in the close button as well
 MainWindow::~MainWindow()
 {
-
+    close();
 }
 
 
@@ -75,7 +90,19 @@ void MainWindow::close()
         delete threadarray;
 
         qDebug() << "closed";
+
+        item->deleteLater();
     }
+}
+void MainWindow::pauseThreads(){
+    SerialHandler::instance()->stop();
+    m_inputs->stop();
+    m_updater->stop();
+}
+void MainWindow::resumeThreads(){
+    SerialHandler::instance()->start();
+    m_inputs->start();
+    m_updater->start();
 }
 
 void MainWindow::setUIVoltage(quint16 battery_voltage){
@@ -143,5 +170,54 @@ void MainWindow::setUIGyroscope(qint16 gyro_x, qint16 gyro_y, qint16 gyro_z){
 void MainWindow::setUIGpioDirection(quint8 gpio_dir){
     if (item){
         item->setProperty("gpio_dir", gpio_dir);
+    }
+}
+void MainWindow::setUIGpioOut(quint8 gpio_out){
+    if (item){
+        item->setProperty("gpio_out", gpio_out);
+    }
+}
+void MainWindow::setUIGpioReadState(quint8 gpio_state){
+    if (item){
+        item->setProperty("gpio_state", gpio_state);
+    }
+}
+
+void MainWindow::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude)
+{
+    if(item && (gps_pos_valid != 0)){
+        // TODO: actual conversions
+        item->setProperty("latitude", double(latitude));
+        item->setProperty("longitude", double(longitude));
+    }
+}
+
+void MainWindow::setUIDebugInfo(QByteArray debug_str_data){
+    if (item){
+        item->setProperty("debug_str_data", debug_str_data);
+    }
+}
+void MainWindow::setUIBuildInfo(QByteArray build_info_data){
+    if (item){
+        item->setProperty("build_info_data", build_info_data);
+    }
+}
+
+void MainWindow::colorSerialHandler(QString color, bool activeSeriaHandler){
+    if (item){
+        item->setProperty("colorSerialHandler", color);
+        item->setProperty("activeSeriaHandler", activeSeriaHandler);
+    }
+}
+void MainWindow::colorControllerHandler(QString color, bool activeControllerHandler){
+    if (item){
+        item->setProperty("colorControllerHandler", color);
+        item->setProperty("activeControllerHandler", activeControllerHandler);
+    }
+}
+void MainWindow::colorUpdater(QString color, bool activeUpdater){
+    if (item){
+        item->setProperty("colorUpdater", color);
+        item->setProperty("activeUpdater", activeUpdater);
     }
 }

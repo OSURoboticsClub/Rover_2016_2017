@@ -32,7 +32,12 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(gpioReadStateReceived(quint8)), this, SLOT(setUIGpioReadState(quint8)));
     connect(Handler, SIGNAL(debuggingInfoReceived(QByteArray)), this, SLOT(setUIDebugInfo(QByteArray)));
     connect(Handler, SIGNAL(buildInfoReceived(QByteArray)), this, SLOT(setUIBuildInfo(QByteArray)));
+<<<<<<< HEAD
+    connect(Handler, SIGNAL(gpsPositionReceived(quint8,qint64,qint64,qint32)), this, SLOT(setUIGpsPos(quint8,qint64,qint64,qint32)));
+
+=======
     connect(Handler, SIGNAL(gpsPositionReceived(quint8, qint64, qint64, qint32)), this, SLOT(setUIGpsPosition(quint8, qint64, qint64, qint32)));
+>>>>>>> 642786b74efbff35a71e6632a72828e3b09881c0
     item = _item;
 
     //connect(item, SIGNAL(close), )
@@ -54,8 +59,6 @@ MainWindow::MainWindow(QObject *_item) :
     connect(item, SIGNAL(_resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
     connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
-
-
 
     if (item)
         item->setProperty("battery_voltage", 2017);
@@ -200,6 +203,14 @@ void MainWindow::setUIDebugInfo(QByteArray debug_str_data){
 void MainWindow::setUIBuildInfo(QByteArray build_info_data){
     if (item){
         item->setProperty("build_info_data", build_info_data);
+    }
+}
+void MainWindow::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude){
+    if(item){
+        item->setProperty("gps_pos_valid",gps_pos_valid);
+        item->setProperty("latitude", latitude);
+        item->setProperty("longitude", longitude);
+        item->setProperty("altitude", altitude);
     }
 }
 

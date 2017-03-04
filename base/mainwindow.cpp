@@ -32,7 +32,7 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(gpioReadStateReceived(quint8)), this, SLOT(setUIGpioReadState(quint8)));
     connect(Handler, SIGNAL(debuggingInfoReceived(QByteArray)), this, SLOT(setUIDebugInfo(QByteArray)));
     connect(Handler, SIGNAL(buildInfoReceived(QByteArray)), this, SLOT(setUIBuildInfo(QByteArray)));
-
+    connect(Handler, SIGNAL(gpsPositionReceived(quint8, qint64, qint64, qint32)), this, SLOT(setUIGpsPosition(quint8, qint64, qint64, qint32)));
     item = _item;
 
     //connect(item, SIGNAL(close), )
@@ -182,6 +182,16 @@ void MainWindow::setUIGpioReadState(quint8 gpio_state){
         item->setProperty("gpio_state", gpio_state);
     }
 }
+
+void MainWindow::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude)
+{
+    if(item && (gps_pos_valid != 0)){
+        // TODO: actual conversions
+        item->setProperty("latitude", double(latitude));
+        item->setProperty("longitude", double(longitude));
+    }
+}
+
 void MainWindow::setUIDebugInfo(QByteArray debug_str_data){
     if (item){
         item->setProperty("debug_str_data", debug_str_data);

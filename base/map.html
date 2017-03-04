@@ -24,12 +24,16 @@
                     useOnlyCache: false
                 }
             ).addTo(map);
-            var marker = L.marker([38.4063, -110.792286]).addTo(map);
+
+
             L.control.scale().addTo(map);
             var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+            console.warn(channel.objects.gps.coords);
+            var marker = L.marker(channel.objects.gps.coords).addTo(map);
+            channel.objects.gps.coordsChanged.connect(function(){
+                // console.warn(channel.objects.gps.coords);
+                marker.setLatLng(channel.objects.gps.coords);
 
-           channel.objects.gps.coordsChanged.connect(function(coords){
-                marker.setLatLng(coords);
                 });
 
             });

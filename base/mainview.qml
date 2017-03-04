@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
-import QtWebEngine 1.3
 //import QtWebEngine 1.3
+import QtWebEngine 1.3
 import QtQuick.Layouts 1.3
 import QtWebChannel 1.0
 

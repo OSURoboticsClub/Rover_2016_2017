@@ -61,11 +61,12 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
+    property double latitude: 0
+    property double longitude: 0
     QtObject {
         id: gps
-        property var coords: [38.4036, -110.792286]
+        property var coords: [root.latitude, root.longitude]
         WebChannel.id: "gps"
-        onCoordsChanged: console.log("THIS")
     }
 
         Column {

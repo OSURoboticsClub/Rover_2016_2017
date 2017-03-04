@@ -57,6 +57,7 @@ public slots:
     void setUIGpioDirection(quint8);
     void setUIGpioOut(quint8);
     void setUIGpioReadState(quint8);
+    void setUIGpsPosition(quint8, qint64, qint64, qint32);
     void setUIDebugInfo(QByteArray);
     void setUIBuildInfo(QByteArray);
     void setUIGpsPos (quint8,qint64,qint64,qint32);

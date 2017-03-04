@@ -159,4 +159,16 @@ Item {
             root._resumeAllThreads();
         }
     }
+
+    Button {
+        id: button
+        x: 330
+        y: 62
+        text: qsTr("Button")
+        onClicked: {
+            root.latitude = 38.4063
+            root.longitude = -110.792286
+            console.log(gps.coords)
+        }
+    }
 }

@@ -5,13 +5,15 @@
         <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
         <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
         <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
-
+        <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
 
     </head>
 
     <body style="height: 100%; width: 100%;">
         <div id="mapid" style="height: 100%; width: 100%"></div>
         <script>
+
+
             var map = L.map('mapid').setView([38.4063, -110.792286], 17);
             L.tileLayer.wms(
                 "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
@@ -21,10 +23,21 @@
                     crossOrigin: true,
                     useOnlyCache: false
                 }
-            ).addTo(map)
+            ).addTo(map);
 
 
             L.control.scale().addTo(map);
+            var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+            console.warn(channel.objects.gps.coords);
+            var marker = L.marker(channel.objects.gps.coords).addTo(map);
+            channel.objects.gps.coordsChanged.connect(function(){
+                // console.warn(channel.objects.gps.coords);
+                marker.setLatLng(channel.objects.gps.coords);
+
+                });
+
+            });
+
         </script>
     </body>
 </html>

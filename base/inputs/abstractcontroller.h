@@ -25,9 +25,13 @@ protected:
     virtual void emitAxisChanges(int axisIndex);
     virtual void emitButtonChanges(int buttonIndex);
     void sendArmMotorPower(double m1, double m2, double m3, double m4, double m5);
+    void sendDriveMotorPower(double l, double r);
+    void sendPauseState(double p);
+    void sendSwerveDriveState(double s);
+    void sendSelectCamera(bool i);
 
 
-    int m_id;
+    int m_id,m_camera_state = 1;
     float m_axisTolerance;
     int mode = 0;
 

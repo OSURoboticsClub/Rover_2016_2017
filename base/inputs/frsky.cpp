@@ -39,7 +39,6 @@ void FrSky::emitButtonChanges(int buttonIndex){
         //sendPause();
     }
     else if(buttonIndex == 1){ //SE - change mode
-
         mode = static_cast<int>(js::isButtonPressed(m_id, 1));
     }
 

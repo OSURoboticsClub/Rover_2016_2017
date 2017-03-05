@@ -4,50 +4,25 @@
 #include <cmath>
 #include <algorithm>
 #include <QDebug>
+#include <fcntl.h>
+#include <unistd.h>
 
-
-AbstractController::AbstractController(int id, QObject *parent)
+AbstractController::AbstractController(QFile *file, QObject *parent)
     : QObject(parent),
-      m_id(id),
+      m_file(file),
       m_axisTolerance(0)
 {
-    m_currentState = new JoystickState();
-    mode = static_cast<int>(js::isButtonPressed(m_id, 1));
-}
-
-AbstractController::JoystickState::JoystickState()
-{
-    std::fill(axes, axes + js::AxisCount, 0.f);
-    std::fill(buttons, buttons + js::ButtonCount, false);
+    // m_mode = static_cast<int>(js::isButtonPressed(m_id, 1));
 }
 
 AbstractController::~AbstractController()
 {
-    delete m_currentState;
 }
 
 void AbstractController::emitChanges()
 {
-    for(unsigned int i = 0; i < js::AxisCount; i++) {
-        float axisPos = js::getAxisPosition(m_id, static_cast<js::Axis>(i));
-        if(std::abs(axisPos - m_currentState->axes[i]) > m_axisTolerance) {
-            qDebug() << "axis changed: " << i;
-            emitAxisChanges(i);
-        }
-        m_currentState->axes[i] = axisPos;
-    }
-
-    for(unsigned int j = 0; j < js::ButtonCount; j++) {
-        bool buttonPressed = js::isButtonPressed(m_id, j);
-        if(buttonPressed != m_currentState->buttons[j]) {
-            //emit ButtonChanges(j, buttonPressed);
-            emitButtonChanges(j);
-            qDebug() <<"button is changed"<< j;
-
-        }
-        m_currentState->buttons[j] = buttonPressed;
-    }
-
+    //m_file->readData()
+    read(m_file->handle(), &m_jse, sizeof(m_jse));
 }
 
 void AbstractController::emitAxisChanges(int axisIndex)

@@ -11,7 +11,6 @@
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
 #include "inputs/frsky.h"
-#include "inputs/ps3.h"
 
 
 /*
@@ -46,10 +45,7 @@ class ControllerHandler : public QThread
 public:
     explicit ControllerHandler(QObject *parent = 0);
     ~ControllerHandler();
-    /*
-     * Counts the total number of controllers connected to the system.
-     */
-    int controllerCount();
+
     /*
      * Rebuilds the list of usable controllers. Each connected controller is
      * identified by an id, and the corrsponding controller class, if
@@ -57,7 +53,7 @@ public:
      * correspond to any controller class, then the controller is not added to
      * the list.
      */
-    void resetControllers();
+    void setControllers();
     /*
      * Identifies controllers and preforms any required setup before entering
      * the event loop. This is the only required method to use when starting
@@ -78,18 +74,6 @@ private:
      */
     QList<ControllerPointer> *m_controllers;
     bool m_stop;
-    /* The raw number of controllers that have been identified on the system. */
-    int m_controllerCount;
-    /* The number of controllers that the class can recognize (i.e. have a
-     * product id that corresponds to a controller class).
-     */
-    int m_usableControllerCount;
-    /*
-     * The maximum amount of controllers that the class can use. This value
-     * corresponds to the number of roles that can be assigned to a controller.
-     */
-    int m_maxUsableControllers = 2;
-
 };
 
 #endif // CONTROLLERHANDLER_H

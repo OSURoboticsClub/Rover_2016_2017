@@ -2,7 +2,9 @@
 
 #include <QDebug>
 #include <algorithm>
+#include <QString>
 #include "serial/serialhandler.h"
+#include <linux/joystick.h>
 
 /* TO Be used for updating the controllers and handling. The core functionality
  * should be moved to the AbstractController Class. The AbstractController class
@@ -32,7 +34,7 @@ ControllerHandler::~ControllerHandler()
 
 void ControllerHandler::run()
 {
-    resetControllers();
+    setControllers();
     eventLoop();
     m_stop = false;
     qDebug() << "exciting controller handler";
@@ -44,21 +46,14 @@ void ControllerHandler::stop()
     m_stop = true;
 }
 
-int ControllerHandler::controllerCount() {
-    int count = 0;
-    sf::Joystick::update();
-    for(unsigned int i = 0; i < sf::Joystick::Count; i++) {
-        if(sf::Joystick::isConnected(i)) count++;
-    }
-    return count;
-}
 
-void ControllerHandler::eventLoop() {
+void ControllerHandler::eventLoop()
+{
     qDebug() << "entering ControllerHandler event loop";
     emit changeButtonColor("#169d06", true);
     while(!m_stop) {
-        if(m_controllerCount != controllerCount()) resetControllers();
-        for(int i = 0; i < std::min(m_usableControllerCount, m_maxUsableControllers); i++) {
+
+        for(int i = 0; i < m_controllers->size(); i++) {
             (*m_controllers)[i]->emitChanges();
         }
         msleep(100);
@@ -66,21 +61,20 @@ void ControllerHandler::eventLoop() {
     emit changeButtonColor("#9d0606", false);
 }
 
-void ControllerHandler::resetControllers() {
-    qDebug() << "resetting controllers";
-    m_controllers = new QList<ControllerPointer>();
-    m_controllerCount = controllerCount();
-    for(int i = 0; i < m_controllerCount; i++) {
-        if(sf::Joystick::isConnected(i)) {
-            sf::Joystick::Identification id = sf::Joystick::getIdentification(i);
-            qDebug() << "identified joystick with product id: " << id.productId;
-            if(id.productId == 1025) {
-                m_controllers->push_back(ControllerPointer (new XboxController(i)));
-            } else if(id.productId == 22288) {
-                m_controllers->push_back(ControllerPointer (new FrSky(i)));
+void ControllerHandler::setControllers() {
+    qDebug() << "setting controllers";
+    m_controllers->clear();
+    for(int i = 0; i < 32; i++){
+        QString fname = QString("/dev/input/js%1").arg(i);
+        QFile file(fname);
+        if(file.open(QIODevice::ReadOnly)){
+            char c_name[128];
+            ioctl(file.handle(), JSIOCGNAME(sizeof(c_name)), c_name);
+            QString name = c_name;
+            if(name.startsWith("FrSky")){
+                m_controllers->push_back(ControllerPointer (new FrSky(&file)));
             }
         }
-    }
-    m_usableControllerCount = m_controllers->size();
+      }
 
 }

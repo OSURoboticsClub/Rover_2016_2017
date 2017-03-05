@@ -3,13 +3,13 @@
 
 
 #include "abstractcontroller.h"
-
+#include <QFile>
 
 class XboxController : public AbstractController
 {
     Q_OBJECT
 public:
-    explicit XboxController(int id, QObject *parent = 0);
+    explicit XboxController(QFile *file, QObject *parent = 0);
     ~XboxController();
 
 signals:

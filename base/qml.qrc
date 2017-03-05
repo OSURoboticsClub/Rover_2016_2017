@@ -9,5 +9,6 @@
         <file>superGame.html</file>
         <file>superGameScript.js</file>
         <file>rawValues.qml</file>
+        <file>leaflet.rotatedMarker.js</file>
     </qresource>
 </RCC>

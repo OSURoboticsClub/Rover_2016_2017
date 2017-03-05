@@ -8,7 +8,7 @@ class FrSky : public AbstractController
 {
     Q_OBJECT
 public:
-    explicit FrSky(int id, QObject *parent = 0);
+    explicit FrSky(QFile *file, QObject *parent = 0);
     ~FrSky();
 
 signals:

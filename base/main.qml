@@ -53,6 +53,13 @@ Item {
     property int gpio_state: 0
     property string debug_str_data: "NULL"
     property string build_info_data: "NULL"
+    property int gps_pos_valid: 0
+    property double altitude: 0
+    property double latitude: 0 //38.4063
+    property double longitude: 0 //-110.792286
+    property int gps_track_valid: 0
+    property int gps_heading: 0
+    property int gps_speed: 0
 
     property string colorSerialHandler: "white"
     property bool activeSeriaHandler: false
@@ -61,8 +68,7 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
-    property double latitude: 0
-    property double longitude: 0
+
     QtObject {
         id: gps
         property var coords: [root.latitude, root.longitude]

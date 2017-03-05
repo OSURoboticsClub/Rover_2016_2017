@@ -32,12 +32,9 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(gpioReadStateReceived(quint8)), this, SLOT(setUIGpioReadState(quint8)));
     connect(Handler, SIGNAL(debuggingInfoReceived(QByteArray)), this, SLOT(setUIDebugInfo(QByteArray)));
     connect(Handler, SIGNAL(buildInfoReceived(QByteArray)), this, SLOT(setUIBuildInfo(QByteArray)));
-<<<<<<< HEAD
     connect(Handler, SIGNAL(gpsPositionReceived(quint8,qint64,qint64,qint32)), this, SLOT(setUIGpsPos(quint8,qint64,qint64,qint32)));
+    connect(Handler, SIGNAL(gpsTrackReceived(quint8 , qint16 , quint16)), this, SLOT(setUIGpsTrack(quint8,qint16,quint16)));
 
-=======
-    connect(Handler, SIGNAL(gpsPositionReceived(quint8, qint64, qint64, qint32)), this, SLOT(setUIGpsPosition(quint8, qint64, qint64, qint32)));
->>>>>>> 642786b74efbff35a71e6632a72828e3b09881c0
     item = _item;
 
     //connect(item, SIGNAL(close), )
@@ -211,6 +208,13 @@ void MainWindow::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longi
         item->setProperty("latitude", latitude);
         item->setProperty("longitude", longitude);
         item->setProperty("altitude", altitude);
+    }
+}
+void MainWindow::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 gps_speed){
+    if (item){
+        item->setProperty("gps_track_valid", gps_track_valid);
+        item->setProperty("gps_heading", gps_heading);
+        item->setProperty("gps_speed", gps_speed);
     }
 }
 

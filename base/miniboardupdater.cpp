@@ -32,7 +32,7 @@ void MiniBoardUpdater::eventLoop()
         Handler->readSelectCamera();
         Handler->readCallsign();
         Handler->readGpsPosition();
-        //Handler->readGpsTrack();
+        Handler->readGpsTrack();
         Handler->readMagnetometer();
         //Handler->readAccelerometer();
         Handler->readGyroscope();

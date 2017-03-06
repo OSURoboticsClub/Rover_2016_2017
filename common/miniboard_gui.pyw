@@ -21,7 +21,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Add big pause/unpause buttons
 #TODO: Fix issue with spinbox that prevents typing 0 or -
 
-SerialPortPath = "COM4"
+SerialPortPath = "/dev/ttyUSB0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
@@ -284,8 +284,8 @@ def setup(window, spec_table, io):
 			vl = QVBoxLayout()
 			if a[0] == "*":
 				widget = QLineEdit()
-			elif a[0] == "u64" or "i64":
-				widget = QSpinBox()
+			elif a[0] == "u64" or a[0] == "i64":
+				widget = BigIntSpinBox()
 				widget.setMinimum(argtype_minval(a[0]))
 				widget.setMaximum(argtype_maxval(a[0]))
 				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
@@ -294,7 +294,10 @@ def setup(window, spec_table, io):
 				widget.setMinimum(argtype_minval(a[0]))
 				widget.setMaximum(argtype_maxval(a[0]))
 				widget.setMinimumSize(QSize(argtype_minwidth(a[0]), 0))
-				widget.setValue(r["default"][i])
+				if len(r["default"]) == 0:
+					widget.setValue(0)
+				else:
+					widget.setValue(int(r["default"][i]))
 			if a[2] or "w" not in r["rw"]:
 				widget.setEnabled(False)
 			control_widgets.append(widget)

@@ -27,7 +27,7 @@ void comp_init(void);
 void config_rega(void);
 void config_regb(void);
 void mode(void);
-void retrieve(void);
+void compass_retrieve(void);
 int16_t read_x(void);
 void read_z(void);
 int16_t read_y(void);

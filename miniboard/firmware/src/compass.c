@@ -10,6 +10,7 @@
 #include "uart.h"
 #include "commgen.h"
 #include "math.h"
+#include <util/atomic.h>
 
 //start condition transmitted
 #define TW START 0x08
@@ -58,7 +59,7 @@ ISR(TIMER2_COMPA_vect){
 	Data->compass_heading_valid = 0;
 }
 
-void retrieve(){
+void compass_retrieve(){
 	int16_t x = read_x();
 	read_z();
 	int16_t y = read_y();
@@ -68,9 +69,10 @@ void retrieve(){
 	if(heading < 0){
 		heading = heading + 360;
 	}
-
-	Data->compass_heading = heading;
-	Data->compass_heading_valid = 1;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+		Data->compass_heading = heading;
+		Data->compass_heading_valid = 1;
+	}
 	start_comp_valid_timer();
 }
 

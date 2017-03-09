@@ -66,7 +66,7 @@ void init(void){
 	comm_init();
 	gps_init();
 	comp_init();
-	//imu_init();
+	imu_init();
 	//set_callsign("asdf");
 	sbus_init();
 	sei();
@@ -172,16 +172,10 @@ void miniboard_main(void){
 		}
 		
 		/* Compass */
-		retrieve();
+		compass_retrieve();
 		
 		/* IMU */
-// 		int16_t x, y, z;
-// 		imu_accel(&x, &y, &z);
-// 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-// 			Data->accel_x = x;
-// 			Data->accel_y = y;
-// 			Data->accel_z = z;
-// 		}
+ 		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);
 		
 		/* GPIO */
 		gpio_set_state(Data->gpio_dir);

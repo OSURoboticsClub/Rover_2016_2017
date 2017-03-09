@@ -53,10 +53,9 @@ static void spi_cs_mag(uint8_t state){
 static void spi_tx(const uint8_t *data, uint16_t count){
 	for(uint16_t i=0;i<count;i++){
 		SPDR = data[i];
-		//while(!(SPSR & _BV(SPIF))){
-		// 		/* Wait for transaction to complete. */
-		//}
-		_delay_ms(1);
+		while(!(SPSR & _BV(SPIF))){
+				/* Wait for transaction to complete. */
+		}
 	}
 
 }
@@ -64,10 +63,9 @@ static void spi_tx(const uint8_t *data, uint16_t count){
 static void spi_rx(uint8_t *data, uint16_t count){
 	for(uint16_t i=0;i<count;i++){
 		SPDR = 0;
-// 		while(!(SPSR & _BV(SPIF))){
-// 			/* Wait for transaction to complete. */
-// 		}
-		_delay_ms(1);
+		while(!(SPSR & _BV(SPIF))){
+			/* Wait for transaction to complete. */
+		}
 		data[i] = SPDR;
 	}
 }
@@ -85,17 +83,21 @@ static void spi_init(void){
 
 static void read_reg(void (*csfunc)(uint8_t), uint8_t reg, uint8_t *data, uint16_t count){
 	csfunc(0);
-	reg &= 0x7F;
+	_delay_us(1);
+	reg |= 0x80;
 	spi_tx(&reg, 1);
 	spi_rx(data, count);
+	_delay_us(1);
 	csfunc(1);
 }
 
 static void write_reg(void (*csfunc)(uint8_t), uint8_t reg, uint8_t *data, uint16_t count){
 	csfunc(0);
-	reg |= 0x80;
+	_delay_us(1);
+	reg &= 0x7F;
 	spi_tx(&reg, 1);
 	spi_tx(data, count);
+	_delay_us(1);
 	csfunc(1);
 }
 /* Setup the IMU. */

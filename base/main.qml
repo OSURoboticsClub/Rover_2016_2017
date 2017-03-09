@@ -6,7 +6,7 @@ import QtQuick.Controls 1.4
 
 Item {
     id: root
-    width: 800
+    width: 1100
     height: 600
 
 
@@ -75,48 +75,65 @@ Item {
         WebChannel.id: "gps"
     }
 
-        Column {
-            id: sidebarCol
-            width: 0.3 * parent.width
+    Column {
+        id: sidebarCol
+        width: 0.3 * parent.width
+        height: parent.height
+        Loader {
+            id: sidebarLoader
+            anchors.fill: parent
+            source: "panel.qml"
+        }
+    }
+
+    Column {
+        id: video
+        x: 800
+        y: 0
+        anchors.left: mainCol.right
+        anchors.right: parent.right
+        width: .3 *parent.width
+        height: parent.height
+        Loader {
+            id: videoLoader
+            width: parent.width
             height: parent.height
+            source: "video.qml"
+        }
+    }
+
+    Column {
+        id: mainCol
+        anchors.left: sidebarCol.right
+        anchors.leftMargin: 0
+        anchors.right: video.left
+        anchors.rightMargin: 0
+        height: parent.height
+
+        Row {
+            id: contentRow
+            width: parent.width
+            height: parent.height * 0.8
             Loader {
-                id: sidebarLoader
-                anchors.fill: parent
-                source: "panel.qml"
+                id: contentLoader
+                width: parent.width
+                height: parent.height
+                source: "mainview.qml"
             }
         }
 
-        Column {
-            id: mainCol
-            anchors.left: sidebarCol.right
-            anchors.leftMargin: 0
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            height: parent.height
-
-            Row {
-                id: contentRow
+        Row {
+            id: consoleRow
+            width: parent.width
+            height: parent.height * 0.2
+            TextArea {
+                id: logger
                 width: parent.width
-                height: parent.height * 0.8
-                Loader {
-                    id: contentLoader
-                    width: parent.width
-                    height: parent.height
-                    source: "mainview.qml"
-                }
-            }
-
-            Row {
-                id: consoleRow
-                width: parent.width
-                height: parent.height * 0.2
-                TextArea {
-                    id: logger
-                    width: parent.width
-                    height: parent.height
-                    readOnly: true
-                }
+                height: parent.height
+                readOnly: true
             }
         }
     }
+
+}
 

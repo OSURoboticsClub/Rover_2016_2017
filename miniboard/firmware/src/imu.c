@@ -100,27 +100,33 @@ static void write_reg(void (*csfunc)(uint8_t), uint8_t reg, uint8_t *data, uint1
 	_delay_us(1);
 	csfunc(1);
 }
+
+static void write_reg_byte(void (*csfunc)(uint8_t), uint8_t reg, uint8_t data){
+	write_reg(csfunc, reg, &data, 1);
+}
+
 /* Setup the IMU. */
 void imu_init(void){
 	spi_init();
-// 	bw = 15Hz 0x9 (ACC 0x010)
-// 	range = 4G 0x5 (ACC 0x0F)
+	/* Accelerometer config */
+	write_reg_byte(spi_cs_accel, 0x0F, 5); /* 4G range */
+	write_reg_byte(spi_cs_accel, 0x10, 9); /* 15Hz bandwidth */
 }
 
 /* Get acceleration values.
  * TODO: units. */
 void imu_accel(volatile int16_t *ax, volatile int16_t *ay, volatile int16_t *az){
-	int16_t ax_val = 0;
-	int16_t ay_val = 0;
-	int16_t az_val = 0;
+	union {
+		uint8_t u[6];
+		int16_t i[3];
+	} buf;
 	
-	uint8_t r;
-	read_reg(spi_cs_accel, 0, &r, 1);
+	read_reg(spi_cs_accel, 0x02, buf.u, 6);
 	
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		*ax = ax_val;
-		*ay = ay_val;
-		*az = az_val;
+		*ax = buf.i[0];
+		*ay = buf.i[1];
+		*az = buf.i[2];
 	}
 }
 

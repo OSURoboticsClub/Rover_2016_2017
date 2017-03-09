@@ -132,9 +132,20 @@ void imu_accel(volatile int16_t *ax, volatile int16_t *ay, volatile int16_t *az)
 
 /* Get rotation rate values.
  * TODO: units. */
-// void imu_gyro(int16_t *gx, int16_t *gy, int16_t *gz){
-// 	
-// }
+void imu_gyro(volatile int16_t *gx, volatile int16_t *gy, volatile int16_t *gz){
+	union {
+		uint8_t u[6];
+		int16_t i[3];
+	} buf;
+	
+	read_reg(spi_cs_gyro, 0x02, buf.u, 6);
+	
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+		*gx = buf.i[0];
+		*gy = buf.i[1];
+		*gz = buf.i[2];
+	}
+}
 
 /* Get magnetometer values. */
 // void imu_mag(int16_t *mx, int16_t *my, int16_t *mz){

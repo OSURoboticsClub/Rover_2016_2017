@@ -176,6 +176,7 @@ void miniboard_main(void){
 		
 		/* IMU */
  		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);
+		imu_gyro(&Data->gyro_x, &Data->gyro_y, &Data->gyro_z);
 		
 		/* GPIO */
 		gpio_set_state(Data->gpio_dir);

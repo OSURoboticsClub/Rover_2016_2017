@@ -9,9 +9,9 @@ Item {
     property int heightSpinStart: 75
     property int draggerStartX: 146
     property int draggerStartY: 198
-    property int moddedX: videoView.draggerStartX
-    property int moddedY: videoView.draggerStartY
     property string draggerColor: "red"
+    property int modWidth: 80
+    property int modHeight: 80
 
     //    Rectangle {
     //        x: 247
@@ -38,13 +38,23 @@ Item {
         // stops instead of onDragStarted/onDragFinished, since
         // those will neer be called if we don't use Drag.active
         onDragActiveChanged: {
+
             if (dragActive) {
                 videoView.draggerColor = "blue";
+                if ((dragger.x - videoView.draggerStartX) != 0){
+                    right.width = 80 + (.2 * (dragger.x - videoView.draggerStartX));
+                }
+                if ((dragger.y - videoView.draggerStartY) != 0){
+                    right.height = 80 + (.2 * (dragger.y - videoView.draggerStartY));
+                }
             } else {
                 videoView.draggerColor = "red";
                 dragger.x = draggerStartX
                 dragger.y = draggerStartY
             }
+
+
+
         }
 
         Drag.dragType: Drag.Automatic
@@ -64,10 +74,8 @@ Item {
         id: right
         x: 232
         y: 175
-        property int rightWidthMod: (.2 * (dragger.x- videoView.draggerStartX))
-        property int rightHeightMod: (.2 * (dragger.y - videoView.draggerStartY))
-        width: right.rightWidthMod + widthSpinStart
-        height: right.rightHeightMod + heightSpinStart
+        width: modWidth
+        height: modHeight
         color: videoView.draggerColor
     }
 
@@ -75,8 +83,8 @@ Item {
         id: left
         x: 39
         y: 175
-        width: widthSpinStart + (.2 * (videoView.moddedX - videoView.draggerStartX))
-        height: heightSpinStart + (.2 * (videoView.moddedY - videoView.draggerStartY))
+        width: widthSpinStart + (.2 * (dragger.x - videoView.draggerStartX))
+        height: heightSpinStart + (.2 * (dragger.y - videoView.draggerStartY))
         color: videoView.draggerColor
     }
 
@@ -84,16 +92,16 @@ Item {
         id: bottom
         x: 140
         y: 280
-        width: widthSpinStart + (.2 * (videoView.moddedX- videoView.draggerStartX))
-        height: heightSpinStart + (.2 * (videoView.moddedY - videoView.draggerStartY))
+        width: widthSpinStart + (.2 * (dragger.x - videoView.draggerStartX))
+        height: heightSpinStart + (.2 * (dragger.y - videoView.draggerStartY))
         color: videoView.draggerColor
     }
 
     Rectangle {
         x: 131
         y: 74
-        width: widthSpinStart + (.2 * (videoView.moddedX - videoView.draggerStartX))
-        height: heightSpinStart + (.2 * (videoView.moddedY - videoView.draggerStartY))
+        width: widthSpinStart + (.2 * (dragger.x - videoView.draggerStartX))
+        height: heightSpinStart + (.2 * (dragger.y - videoView.draggerStartY))
         color: videoView.draggerColor
 
     }

@@ -41,7 +41,7 @@ MainWindow::MainWindow(QObject *_item) :
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));
-    connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString, bool)), this, SLOT(colorSerialHandler(QString, bool)));
+    // connect(SerialHandler::instance(), SIGNAL(changeButtonColor(QString, bool)), this, SLOT(colorSerialHandler(QString, bool)));
 
     connect(item, SIGNAL(_updaterOn()), m_updater, SLOT(start()));
     connect(item, SIGNAL(_updaterOff()), m_updater, SLOT(stop()));
@@ -55,7 +55,7 @@ MainWindow::MainWindow(QObject *_item) :
     connect(item, SIGNAL(_pauseAllThreads()), this, SLOT(pauseThreads()));
     connect(item, SIGNAL(_resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
-    connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
+    //connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
 
     if (item)
         item->setProperty("battery_voltage", 2017);

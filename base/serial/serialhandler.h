@@ -34,6 +34,7 @@ signals:
 public slots:
     void stop();
     void connectDevice();
+    void queryStatus();
 
 private:
     Packets *m_packets;

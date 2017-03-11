@@ -52,7 +52,7 @@ void AbstractController::emitButtonChanges(int buttonIndex)
 
 
 void AbstractController::sendArmMotorPower(double motor1, double motor2, double motor3, double motor4, double motor5){
-    double conversionFactor = 1.27;
+    double conversionFactor = 1.27;  //positive or negative tbd
     int8_t arm_motor_1 = static_cast<int8_t>(motor1 * conversionFactor);
     int8_t arm_motor_2 = static_cast<int8_t>(motor2 * conversionFactor);
     int8_t arm_motor_3 = static_cast<int8_t>(motor3 * conversionFactor);
@@ -61,3 +61,56 @@ void AbstractController::sendArmMotorPower(double motor1, double motor2, double 
     SerialHandler::instance()->p()->writeArmMotors(arm_motor_1, arm_motor_2, arm_motor_3, arm_motor_4, arm_motor_5);
 }
 
+void AbstractController::sendDriveMotorPower(double left, double right){
+    double conversionFactor = 1.27;  //positive or negative tbd
+    int8_t l_f_drive = static_cast<int8_t>(left * conversionFactor);
+    int8_t l_m_drive = static_cast<int8_t>(left * conversionFactor);
+    int8_t l_b_drive = static_cast<int8_t>(left * conversionFactor);
+    int8_t r_f_drive = static_cast<int8_t>(right * conversionFactor);
+    int8_t r_m_drive = static_cast<int8_t>(right * conversionFactor);
+    int8_t r_b_drive = static_cast<int8_t>(right * conversionFactor);
+    SerialHandler::instance()->p()->writeDriveMotorPower(l_f_drive, l_m_drive, l_b_drive, r_f_drive, r_m_drive, r_b_drive);
+}
+
+void AbstractController::sendSwerveDriveState(double swerveValue){
+    double conversionFactor = 1; //set depending on controller mapping of switch
+    uint8_t swerve_state = static_cast<uint8_t>(swerveValue * conversionFactor);
+    SerialHandler::instance()->p()->writeSwerveDriveState(swerve_state);
+}
+
+void AbstractController::sendPauseState(double pauseValue){
+    double conversionFactor = 1;  // change depending on controller mapping of switch
+    uint8_t pauseState =  static_cast<uint8_t>(pauseValue * conversionFactor);
+    SerialHandler::instance()->p()->writePause(pauseState);
+}
+
+void AbstractController::sendSelectCamera(bool increment){
+    //Increments up if true, and down if false.
+    //Loops around to other end if necessary.
+    if(increment){
+        if(m_camera_state < 6)
+            m_camera_state++;
+        else
+            m_camera_state = 1;
+    }
+    else{
+        if(m_camera_state > 1)
+            m_camera_state--;
+        else
+            m_camera_state = 6;
+
+    }
+    //option without looping around
+    /*
+    if(increment && m_camera_state < 6)
+        m_camera_state++;
+    else if(!increment && m_camera_state > 1)
+        m_camera_state--;
+    */
+    uint8_t selected_camera = static_cast<uint8_t>(m_camera_state);
+    SerialHandler::instance()->p()->writeSelectCamera(selected_camera);
+}
+
+//sendCameraCommand
+//sendServo?
+//sendCallsign?

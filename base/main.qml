@@ -6,7 +6,7 @@ import QtQuick.Controls 1.4
 
 Item {
     id: root
-    width: 800
+    width: 1100
     height: 600
 
 
@@ -53,6 +53,13 @@ Item {
     property int gpio_state: 0
     property string debug_str_data: "NULL"
     property string build_info_data: "NULL"
+    property int gps_pos_valid: 0
+    property double altitude: 0
+    property double latitude: 0 //38.4063
+    property double longitude: 0 //-110.792286
+    property int gps_track_valid: 0
+    property int gps_heading: 0
+    property int gps_speed: 0
 
     property string colorSerialHandler: "white"
     property bool activeSeriaHandler: false
@@ -61,56 +68,72 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
-    property double latitude: 0
-    property double longitude: 0
+
     QtObject {
         id: gps
         property var coords: [root.latitude, root.longitude]
         WebChannel.id: "gps"
     }
 
-        Column {
-            id: sidebarCol
-            width: 0.3 * parent.width
+    Column {
+        id: sidebarCol
+        width: 0.3 * parent.width
+        height: parent.height
+        Loader {
+            id: sidebarLoader
+            anchors.fill: parent
+            source: "panel.qml"
+        }
+    }
+
+    Column {
+        id: video
+        x: 800
+        y: 0
+        anchors.left: mainCol.right
+        anchors.right: parent.right
+        width: .3 *parent.width
+        height: parent.height
+        Loader {
+            id: videoLoader
+            width: parent.width
             height: parent.height
+            source: "video.qml"
+        }
+    }
+
+    Column {
+        id: mainCol
+        anchors.left: sidebarCol.right
+        anchors.leftMargin: 0
+        anchors.right: video.left
+        anchors.rightMargin: 0
+        height: parent.height
+
+        Row {
+            id: contentRow
+            width: parent.width
+            height: parent.height * 0.8
             Loader {
-                id: sidebarLoader
-                anchors.fill: parent
-                source: "panel.qml"
+                id: contentLoader
+                width: parent.width
+                height: parent.height
+                source: "mainview.qml"
             }
         }
 
-        Column {
-            id: mainCol
-            anchors.left: sidebarCol.right
-            anchors.leftMargin: 0
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            height: parent.height
-
-            Row {
-                id: contentRow
+        Row {
+            id: consoleRow
+            width: parent.width
+            height: parent.height * 0.2
+            TextArea {
+                id: logger
                 width: parent.width
-                height: parent.height * 0.8
-                Loader {
-                    id: contentLoader
-                    width: parent.width
-                    height: parent.height
-                    source: "mainview.qml"
-                }
-            }
-
-            Row {
-                id: consoleRow
-                width: parent.width
-                height: parent.height * 0.2
-                TextArea {
-                    id: logger
-                    width: parent.width
-                    height: parent.height
-                    readOnly: true
-                }
+                height: parent.height
+                readOnly: true
             }
         }
     }
+
+}
 

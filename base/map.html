@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html style="height: 100%; width: 100%;">
+<html style="height: 90%; width: 100%;">
     <head>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
         <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
         <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
         <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        <script src="leaflet.rotatedMarker.js"></script>
 
     </head>
 
     <body style="height: 100%; width: 100%;">
         <div id="mapid" style="height: 100%; width: 100%"></div>
-        <!--<form> <input type="text" name="firstname"><br> -->
-        <script>
 
+        <script id="script1">
 
-            var map = L.map('mapid').setView([38.4063, -110.792286], 17);
+            var lat = 38.4063;
+            var long = -110.792286;
+            var clickPopup = L.popup();
+            var map = L.map('mapid').setView([lat, long], 17);
             L.tileLayer.wms(
                 "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
                 {
@@ -38,7 +41,30 @@
                 });
 
             });
+            var polygon = L.polygon([
+                [38.4063, -110.7],
+                [38.4063, -110.8],
+                [38.4063, -110.9]
+            ]).addTo(map);
+            function changeText() {
+                x = document.getElementById("_lat");
+                y = document.getElementById("_long");
+                var marker = L.marker([x.value, y.value], {
+                    rotationAngle: 60
+                }).addTo(map);
+                marker.bindPopup("Lat: " + x.value + "</br>Long: " + y.value);
+            };
+            function checkCoordWithClick(e) {
+                clickPopup.setLatLng(e.latlng);
+                clickPopup.setContent(e.latlng.toString());
+                clickPopup.openOn(map);
+
+            };
+            map.on('click', checkCoordWithClick);
 
         </script>
+        <input type="text" id="_lat" value="38.4063">
+        <input type="text" id="_long" value="-110.792286">
+        <button onClick="changeText()">Add WayPoint</button>
     </body>
 </html>

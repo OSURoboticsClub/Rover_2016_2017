@@ -40,6 +40,7 @@ void FrSky::emitButtonChanges(int buttonIndex){
     }
     else if(buttonIndex == 1){ //SE - change mode
         m_mode = m_currentState->buttons[1];
+
     }
 
     if(m_mode == 0){

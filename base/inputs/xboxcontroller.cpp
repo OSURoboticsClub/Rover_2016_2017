@@ -1,8 +1,8 @@
 #include "xboxcontroller.h"
 
 
-XboxController::XboxController(int id, QObject *parent)
-    : AbstractController(id, parent)
+XboxController::XboxController(QFile *file, QObject *parent)
+    : AbstractController(file, parent)
 {
 }
 

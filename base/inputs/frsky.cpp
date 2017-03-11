@@ -1,8 +1,8 @@
 #include "frsky.h"
 
 
-FrSky::FrSky(int id, QObject *parent)
-    : AbstractController(id, parent)
+FrSky::FrSky(QFile *file, QObject *parent)
+    : AbstractController(file, parent)
 {
 }
 
@@ -13,18 +13,18 @@ FrSky::~FrSky()
 
 
 void FrSky::emitAxisChanges(int axisIndex){
-    if(mode == 0){
+    if(m_mode == 0){
         if(axisIndex == 0 || axisIndex == 1) { //left and right y - drive motor power
             //sendDriveMotorPower(js::getAxisPosition(m_id, static_cast<js::Axis>(0)), js::getAxisPosition(m_id, static_cast<js::Axis>(1)));
         }
     }
-     else if (mode == 1) {
+     else if (m_mode == 1) {
         if(axisIndex == 0 || axisIndex == 1 || axisIndex == 2 || axisIndex == 3 || axisIndex == 5){
-            double m1 = js::getAxisPosition(m_id, static_cast<js::Axis>(0));
-            double m2 = js::getAxisPosition(m_id, static_cast<js::Axis>(1));
-            double m3 = js::getAxisPosition(m_id, static_cast<js::Axis>(2));
-            double m4 = js::getAxisPosition(m_id, static_cast<js::Axis>(3));
-            double m5 = js::getAxisPosition(m_id, static_cast<js::Axis>(5));
+            double m1 = m_currentState->axes[0];
+            double m2 = m_currentState->axes[1];
+            double m3 = m_currentState->axes[2];
+            double m4 = m_currentState->axes[3];
+            double m5 = m_currentState->axes[4];
             sendArmMotorPower(m1, m2, m3, m4, m5);
         }
         else if(axisIndex == 4){
@@ -39,11 +39,11 @@ void FrSky::emitButtonChanges(int buttonIndex){
         //sendPause();
     }
     else if(buttonIndex == 1){ //SE - change mode
+        m_mode = m_currentState->buttons[1];
 
-        mode = static_cast<int>(js::isButtonPressed(m_id, 1));
     }
 
-    if(mode == 0){
+    if(m_mode == 0){
         if(buttonIndex == 2){ //SG - zero radius mode
             //set zero radius mode
         }

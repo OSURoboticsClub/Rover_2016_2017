@@ -31,8 +31,8 @@ void MiniBoardUpdater::eventLoop()
         Handler->readPotentiometers();
         Handler->readSelectCamera();
         Handler->readCallsign();
-        //Handler->readGpsPosition();
-        //Handler->readGpsTrack();
+        Handler->readGpsPosition();
+        Handler->readGpsTrack();
         Handler->readMagnetometer();
         //Handler->readAccelerometer();
         Handler->readGyroscope();

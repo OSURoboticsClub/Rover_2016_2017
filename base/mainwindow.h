@@ -60,6 +60,8 @@ public slots:
     void setUIGpsPosition(quint8, qint64, qint64, qint32);
     void setUIDebugInfo(QByteArray);
     void setUIBuildInfo(QByteArray);
+    void setUIGpsPos (quint8,qint64,qint64,qint32);
+    void setUIGpsTrack(quint8 , qint16 , quint16);
 
     void colorSerialHandler(QString, bool);
     void colorControllerHandler(QString, bool);

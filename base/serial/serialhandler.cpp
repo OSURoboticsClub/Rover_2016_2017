@@ -129,7 +129,7 @@ void SerialHandler::queryStatus()
     p()->readArmMotors();
     p()->readPotentiometers();
     p()->readSelectCamera();
-    p()->readCallsign();
+    //p()->readCallsign();
     p()->readGpsPosition();
     p()->readGpsTrack();
     p()->readMagnetometer();
@@ -139,7 +139,7 @@ void SerialHandler::queryStatus()
     p()->readGpioDirection();
     p()->readGpioOutValue();
     p()->readGpioReadState();
-    p()->readDebuggingInfo();
-    p()->readBuildInfo();
+    //p()->readDebuggingInfo();
+    //p()->readBuildInfo();
     qDebug() << "Done Pulling";
 }

@@ -401,9 +401,9 @@ class BasePackets(object):
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
-            string += "\tqDebug() << \"THERE\";\n"
+
             string += self._crc_calculation(packet)
-            string += "\tqDebug() << \"THERE\";\n"
+
             string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
@@ -452,8 +452,9 @@ class BasePackets(object):
             string += ws + "\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
                     self._params["crc"],
                     arg[1],
-                    self._expand_argument(arg[0]),
+                    arg[1],
             )
+            string += ws + '\tqDebug() << "Sizes: " << "%s" << sizeof(%s);\n' % (arg[1], arg[1])
         return string
 
     def read_slots_source(self, line=None):

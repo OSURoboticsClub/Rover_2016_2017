@@ -4,6 +4,7 @@ import QtQuick.Controls 1.4
 
 Item {
     anchors.fill: parent
+    property double startTime: 30
     Button {
         id: serialHandlerOn
         x: 8
@@ -180,4 +181,33 @@ Item {
         }
     }
 
+    TextInput {
+                id: time
+                font.pixelSize: 30
+                text: "--"
+                x: 200
+                y: 267
+            }
+    Text {
+                id: sec
+                font.pixelSize: 30
+                text: "Seconds"
+                x: 250
+                y: 267
+            }
+
+    Timer{
+        id: countdownTimer
+        interval: 1000
+        running: time.text > 0
+        repeat: true
+        onTriggered: {
+            time.text = --time.text
+            if (time.text == 0){
+                time.text = "--"
+            }
+
+        }
+
+    }
 }

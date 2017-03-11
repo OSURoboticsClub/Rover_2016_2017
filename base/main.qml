@@ -85,7 +85,7 @@ Item {
             source: "panel.qml"
         }
     }
-
+    /*
     Column {
         id: video
         x: 800
@@ -101,13 +101,15 @@ Item {
             source: "video.qml"
         }
     }
+    */
 
     Column {
         id: mainCol
         anchors.left: sidebarCol.right
         anchors.leftMargin: 0
-        anchors.right: video.left
+
         anchors.rightMargin: 0
+        width:  0.7 * parent.width
         height: parent.height
 
         Row {
@@ -121,6 +123,7 @@ Item {
                 source: "mainview.qml"
             }
         }
+
 
         Row {
             id: consoleRow

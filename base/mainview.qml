@@ -7,8 +7,8 @@ import QtWebChannel 1.0
 
 Item {
     id: mainView
-    //width: parent.width
-    //height: parent.height
+    width: parent.width
+    height: parent.height
     property int j: 1
 
     TabView {

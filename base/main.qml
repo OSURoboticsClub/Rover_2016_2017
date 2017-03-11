@@ -68,6 +68,8 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
+    //delete later: testing progress bar
+    property double testVoltProgressBar: 20
 
     QtObject {
         id: gps

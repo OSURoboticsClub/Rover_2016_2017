@@ -159,4 +159,25 @@ Item {
             console.log(gps.coords)
         }
     }
+
+    Button {
+        id: upVolt
+        x: 26
+        y: 385
+        text: qsTr("upVolt")
+        onClicked: {
+            root.testVoltProgressBar += .3;
+        }
+    }
+
+    Button {
+        id: downVolt
+        x: 149
+        y: 385
+        text: qsTr("downVolt")
+        onClicked: {
+            root.testVoltProgressBar -= .3;
+        }
+    }
+
 }

@@ -25,6 +25,13 @@ protected:
 
     QFile *m_file;
     struct js_event m_jse;
+
+    struct JoystickState {
+        JoystickState();
+        float axes[8];
+        bool  buttons[32];
+    };
+    JoystickState *m_currentState;
     float m_axisTolerance;
     int m_mode = 0;
 

@@ -19,10 +19,25 @@ AbstractController::~AbstractController()
 {
 }
 
+AbstractController::JoystickState::JoystickState()
+{
+    std::fill(axes, axes + 8, 0.f);
+    std::fill(buttons, buttons + 32, false);
+}
+
+
 void AbstractController::emitChanges()
 {
     //m_file->readData()
-    read(m_file->handle(), &m_jse, sizeof(m_jse));
+    if(read(m_file->handle(), &m_jse, sizeof(m_jse)) > 0){
+        if(m_jse.type == JS_EVENT_AXIS){
+            m_currentState->axes[m_jse.number] = m_jse.value;
+            emitAxisChanges(m_jse.value);
+        } else if(m_jse.type == JS_EVENT_BUTTON){
+            m_currentState->buttons[m_jse.number] = m_jse.value;
+            emitButtonChanges(m_jse.value);
+        }
+    }
 }
 
 void AbstractController::emitAxisChanges(int axisIndex)

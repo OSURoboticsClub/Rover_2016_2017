@@ -11,5 +11,6 @@
         <file>rawValues.qml</file>
         <file>leaflet.rotatedMarker.js</file>
         <file>video.qml</file>
+        <file>snazzyCircle.png</file>
     </qresource>
 </RCC>

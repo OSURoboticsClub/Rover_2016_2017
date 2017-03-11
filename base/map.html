@@ -68,7 +68,7 @@
             };
             function checkCoordWithClick(e) {
                 clickPopup.setLatLng(e.latlng);
-                clickPopup.setContent(e.latlng.toString());
+                clickPopup.setContent("Click Coord:</br>" + e.latlng.toString());
                 clickPopup.openOn(map);
 
             };

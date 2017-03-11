@@ -31,6 +31,7 @@ protected:
     struct js_event m_jse;
     int m_id;
     int m_camera_state = 1;
+
     float m_axisTolerance;
 
     struct JoystickState {

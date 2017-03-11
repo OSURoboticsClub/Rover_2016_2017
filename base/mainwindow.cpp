@@ -35,7 +35,6 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(gpsPositionReceived(quint8, qint64, qint64, qint32)), this, SLOT(setUIGpsPosition(quint8, qint64, qint64, qint32)));
     connect(Handler, SIGNAL(gpsTrackReceived(quint8 , qint16 , quint16)), this, SLOT(setUIGpsTrack(quint8,qint16,quint16)));
 
-
     item = _item;
 
     //connect(item, SIGNAL(close), )

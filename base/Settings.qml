@@ -75,18 +75,6 @@ Item {
         }
     }
 
-    Button {
-        id: allThreadsClose
-        x: 330
-        y: 8
-        width: 164
-        height: 35
-        text: qsTr("turn off all threads")
-        onClicked : {
-            root._allThreadsClose();
-        }
-    }
-
     Rectangle {
         id: serialHandlerIndicator
         x: 177
@@ -162,8 +150,8 @@ Item {
 
     Button {
         id: button
-        x: 330
-        y: 62
+        x: 249
+        y: 15
         text: qsTr("Button")
         onClicked: {
             root.latitude = 38.4063
@@ -171,4 +159,25 @@ Item {
             console.log(gps.coords)
         }
     }
+
+    Button {
+        id: upVolt
+        x: 26
+        y: 385
+        text: qsTr("upVolt")
+        onClicked: {
+            root.testVoltProgressBar += .3;
+        }
+    }
+
+    Button {
+        id: downVolt
+        x: 149
+        y: 385
+        text: qsTr("downVolt")
+        onClicked: {
+            root.testVoltProgressBar -= .3;
+        }
+    }
+
 }

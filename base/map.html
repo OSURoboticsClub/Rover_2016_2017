@@ -41,12 +41,21 @@
                 });
 
             });
+            var snazzyCircle = L.icon({
+                iconUrl: 'snazzyCircle.png',
+                iconSize: [25,25],
+                iconAnchor: [12.5,12.5],
+                popupAnchor: [0,-13]
+
+            });
+
 
             function changeText() {
                 x = document.getElementById("_lat");
                 y = document.getElementById("_long");
                 var marker = L.marker([x.value, y.value], {
-                    rotationAngle: 60
+                    rotationAngle: 60,
+                    icon: snazzyCircle
                 }).addTo(map);
                 marker.bindPopup("Lat: " + x.value + "</br>Long: " + y.value);
             };

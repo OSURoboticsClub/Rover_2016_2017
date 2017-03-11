@@ -185,28 +185,46 @@ Item {
                 id: time
                 font.pixelSize: 30
                 text: "--"
-                x: 200
+                x: 255
                 y: 267
             }
-    Text {
-                id: sec
+    TextInput {
+                id: mins
                 font.pixelSize: 30
-                text: "Seconds"
-                x: 250
+                text: "--"
+                x: 210
                 y: 267
             }
-
+    TextInput {
+                id: hours
+                font.pixelSize: 30
+                text: "--"
+                x: 175
+                y: 267
+            }
     Timer{
         id: countdownTimer
         interval: 1000
-        running: time.text > 0
+        running: time.text > 0 || mins.text > 0 || hours.text > 0
         repeat: true
         onTriggered: {
-            time.text = --time.text
-            if (time.text == 0){
+            if (time.text == 0 && (mins.text == 0 || mins.text == "--") && (hours.text == 0|| hours.text == "--")){
+                mins.text = "--"
                 time.text = "--"
+                hours.text = "--"
             }
-
+            else if (time.text == 0 && mins.text == 0){
+                hours.text = --hours.text
+                time.text = "59"
+                mins.text = "59"
+            }
+            else if (time.text == 0){
+                mins.text = --mins.text
+                time.text = "59"
+            }
+            else{
+                time.text = --time.text
+            }
         }
 
     }

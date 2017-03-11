@@ -19,6 +19,13 @@
             var long = -110.792286;
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
+            var _wayPointNumber = 0;
+            function getWayPointNumber() {
+                if (!document.getElementById("_wayPointName").value)
+                    return _wayPointNumber;
+                else
+                    return document.getElementById("_wayPointName").value;
+            }
             L.tileLayer.wms(
                 "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
                 {
@@ -50,13 +57,14 @@
             });
 
             function changeText() {
+                _wayPointNumber++;
                 x = document.getElementById("_lat");
                 y = document.getElementById("_long");
                 var marker = L.marker([x.value, y.value], {
                     rotationAngle: 60,
                     icon: snazzyCircle
                 }).addTo(map);
-                marker.bindPopup("Lat: " + x.value + "</br>Long: " + y.value);
+                marker.bindPopup("Way Point: " + getWayPointNumber() + "</br>Lat: " + x.value + "</br>Long: " + y.value);
             };
             function checkCoordWithClick(e) {
                 clickPopup.setLatLng(e.latlng);
@@ -69,6 +77,7 @@
         </script>
         <input type="text" id="_lat" value="38.4063">
         <input type="text" id="_long" value="-110.792286">
+        <input type="text" id="_wayPointName" value="">
         <button onClick="changeText()">Add WayPoint</button>
     </body>
 </html>

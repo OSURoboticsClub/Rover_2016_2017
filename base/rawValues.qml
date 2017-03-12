@@ -93,6 +93,21 @@ Item {
             text: qsTr("Build info: " + root.build_info_data)
             font.pixelSize: 15
         }
+        Text {
+            id: latitude
+            text: qsTr("Latitude: " + root.latitude)
+            font.pixelSize: 15
+        }
+        Text {
+            id:longitude
+            text: qsTr("Longitude: " + root.longitude)
+            font.pixelSize: 15
+        }
+        Text {
+            id:gps_heading
+            text: qsTr("Heading: " + root.gps_heading)
+            font.pixelSize: 15
+        }
     }
 
     Column {

@@ -45,12 +45,18 @@ void AbstractController::emitChanges()
 
 void AbstractController::sendArmMotorPower(qint16 motor1, qint16 motor2, qint16 motor3, qint16 motor4, qint16 motor5){
     quint8 conversionFactor = 255;   //positive or negative tbd
-    int8_t arm_motor_1 = static_cast<int8_t>(motor1 / conversionFactor);
-    int8_t arm_motor_2 = static_cast<int8_t>(motor2 / conversionFactor);
-    int8_t arm_motor_3 = static_cast<int8_t>(motor3 / conversionFactor);
-    int8_t arm_motor_4 = static_cast<int8_t>(motor4 / conversionFactor);
-    int8_t arm_motor_5 = static_cast<int8_t>(motor5 / conversionFactor);
-    SerialHandler::instance()->p()->writeArmMotors(arm_motor_1, arm_motor_2, arm_motor_3, arm_motor_4, arm_motor_5);
+    int8_t m1 = static_cast<int8_t>(motor1 / conversionFactor);
+    int8_t m2 = static_cast<int8_t>(motor2 / conversionFactor);
+    int8_t m3 = static_cast<int8_t>(motor3 / conversionFactor);
+    int8_t m4 = static_cast<int8_t>(motor4 / conversionFactor);
+    int8_t m5 = static_cast<int8_t>(motor5 / conversionFactor);
+
+    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeArmMotors",
+                              Q_ARG( signed char, m1 ),
+                              Q_ARG( signed char, m2 ),
+                              Q_ARG( signed char, m3 ),
+                              Q_ARG( signed char, m4 ),
+                              Q_ARG( signed char, m5 ));
 }
 
 void AbstractController::sendDriveMotorPower(qint16 left, qint16 right){

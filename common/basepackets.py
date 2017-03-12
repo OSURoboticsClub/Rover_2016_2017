@@ -380,7 +380,7 @@ class BasePackets(object):
                 self._params["crc"],
             )
             string += ws + "\tif(_crc == _read_crc) {\n"
-            string += ws + '\t\tqDebug() << "parsed a packet";\n'
+            string += ws + '\t\tqDebug() << "Confirmed packet reception.";\n'
             string += ws + "\t}\n"
             # TODO: don't do anything yet, but to be added
             # TODO: like a qDebug statement

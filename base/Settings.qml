@@ -149,15 +149,17 @@ Item {
     }
 
     Button {
-        id: button
+        id: setRoverPos
+        text: qsTr("change rover coords")
         x: 249
         y: 15
-        text: qsTr("Button")
         onClicked: {
             root.latitude = 38.4063
             root.longitude = -110.792286
+            root.gps_heading = 60
             console.log(gps.coords)
         }
+
     }
 
     Button {

@@ -20,6 +20,7 @@
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
             var _wayPointNumber = 0;
+
             function getWayPointNumber() {
                 if (!document.getElementById("_wayPointName").value)
                     return _wayPointNumber;
@@ -36,18 +37,6 @@
                 }
             ).addTo(map);
 
-
-            L.control.scale().addTo(map);
-            var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-            console.warn(channel.objects.gps.coords);
-            var marker = L.marker(channel.objects.gps.coords).addTo(map);
-            channel.objects.gps.coordsChanged.connect(function(){
-                // console.warn(channel.objects.gps.coords);
-                marker.setLatLng(channel.objects.gps.coords);
-
-                });
-
-            });
             var snazzyCircle = L.icon({
                 iconUrl: 'snazzyCircle.png',
                 iconSize: [25,25],
@@ -56,16 +45,45 @@
 
             });
 
+            L.control.scale().addTo(map);
+            var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+            console.warn(channel.objects.gps.coords);
+            var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
+                rotationAngle: channel.objects.gps.coords[2],
+                icon: snazzyCircle
+            }).addTo(map);
+            channel.objects.gps.coordsChanged.connect(function(){
+                // console.warn(channel.objects.gps.coords);
+                marker.setLatLng(channel.objects.gps.coords);
+
+                });
+
+            });
+
+            var markers = new L.Layer();
+            var lines = new L.Layer();
+
+            function deleteMarkers() {
+                map.removeLayer(markers);
+                map.removeLayer(lines);
+            }
 
             function changeText() {
                 _wayPointNumber++;
                 x = document.getElementById("_lat");
                 y = document.getElementById("_long");
                 var marker = L.marker([x.value, y.value], {
-                    rotationAngle: 60,
-                    icon: snazzyCircle
+
                 }).addTo(map);
-                marker.bindPopup("Way Point: " + getWayPointNumber() + "</br>Lat: " + x.value + "</br>Long: " + y.value);
+
+                marker.bindPopup("Way Point: " + getWayPointNumber() + "</br>Lat: " + x.value + "</br>Long: " + y.value + "</br>Distance from rover: [" + (x.value - channel.objects.gps.coords[0]) + ", " + (y.value - channel.objects.gps.coords[1]));
+                var polygon = L.polygon([
+                    [x.value, y.value],
+                    [38.4063, -110.792286]
+                ]).addTo(map);
+                lines.addLayer(polygon);
+                markers.addLayer(marker);
+
             };
             function checkCoordWithClick(e) {
                 clickPopup.setLatLng(e.latlng);
@@ -79,6 +97,7 @@
         <input type="text" id="_lat" value="38.4063">
         <input type="text" id="_long" value="-110.792286">
         <input type="text" id="_wayPointName" value="">
+        <button onClick="deleteMarkers()">Delete All Waypoints</button>
         <button onClick="changeText()">Add WayPoint</button>
     </body>
 </html>

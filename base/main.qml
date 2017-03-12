@@ -20,6 +20,7 @@ Item {
     signal _allThreadsClose()
     signal _pauseAllThreads()
     signal _resumeAllThreads()
+    signal _updateRoverPosistion()
 
 
     property int battery_voltage: 0
@@ -57,6 +58,7 @@ Item {
     property double altitude: 0
     property double latitude: 0 //38.4063
     property double longitude: 0 //-110.792286
+
     property int gps_track_valid: 0
     property int gps_heading: 0
     property int gps_speed: 0
@@ -73,9 +75,19 @@ Item {
 
     QtObject {
         id: gps
-        property var coords: [root.latitude, root.longitude]
+        property var coords: [root.latitude, root.longitude, root.gps_heading]
         WebChannel.id: "gps"
     }
+    Timer {
+        interval: 250; running: true; repeat: true
+        onTriggered: {
+            root.latitude = 38.4063
+            root.longitude = -110.792286
+            root.gps_heading = 60
+            console.log(gps.coords)
+        }
+    }
+
 
     Column {
         id: sidebarCol

@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <avr/io.h>
 
 
 #define SOILPROBE_UART 0
@@ -50,7 +51,7 @@ struct soilprobe_cmd {
 
 struct soilprobe_resp {
 	uint8_t addr[3];  // Probe address
-	uint8_t data[100];  // The body of the response (minus CRLF)
+	uint8_t data[101];  // The body of the response (minus CRLF)
 	uint8_t datasize;  // The size of the data in "data"
 };
 
@@ -114,5 +115,6 @@ void soilprobe_take_reading(void);
   *
   * set - The set of readings for the probe to transmit (see manual)
   * readingsbuf (out) - Buffer of chars representing the readings (variable
-  *                     length for each different readings set) */
-void soilprobe_get_reading(uint8_t set, float *readingsbuf);
+  *                     length for each different readings set, though 100
+  *                     bytes is a safe estimate) */
+void soilprobe_get_reading(uint8_t set, uint8_t *readingsbuf);

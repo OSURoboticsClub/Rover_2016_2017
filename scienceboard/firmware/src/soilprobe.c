@@ -6,9 +6,12 @@
  */
 
 #include <alloca.h>
+#include <stdlib.h>
 #include <string.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
+#include "uart.h"
+
 #include "soilprobe.h"
 
 
@@ -217,7 +220,7 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp) {
 		// Check for CRLF packet ending (Useful for variable length "Transmit
 		// Reading" packet type)
 		if (respsofar >= 2
-		 && strncmp((const char *) &(respbuf[respsofar - 2]), "\x0D\x0A", 2)) {
+		 && memcmp(&(respbuf[respsofar - 2]), "\x0D\x0A", 2)) {
 			break;
 		}
 
@@ -236,6 +239,7 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp) {
 
 		if (respend != NULL) {  // CRLF was found, data is valid
 			resp->datasize = respend - &(respbuf[RESP_DATA_OFF]);
+			resp->data[resp->datasize] = '\0';
 		} else {  // No CRLF found, data invalid
 			resp->datasize = 0;
 		}
@@ -243,4 +247,123 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp) {
 		resp->data[0] = '\0';
 		resp->datasize = 0;
 	}
+}
+
+
+uint32_t soilprobe_get_serial(void) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_SERIAL;
+	cmd.type = CMD_TYPE_QUERY;
+
+	soilprobe_cmd(&cmd, &resp);
+
+	return strtoul((const char *) resp.data, NULL, 10);
+}
+
+
+void soilprobe_get_firmware_version(uint8_t *versionbuf) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_FIRMWARE_VER;
+	cmd.type = CMD_TYPE_QUERY;
+
+	soilprobe_cmd(&cmd, &resp);
+
+	memcpy(versionbuf, resp.data, 4);
+}
+
+
+void soilprobe_get_address(uint8_t *addrbuf) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_ADDR;
+	cmd.type = CMD_TYPE_QUERY;
+
+	soilprobe_cmd(&cmd, &resp);
+
+	memcpy(addrbuf, resp.data, 3);
+}
+
+
+void soilprobe_set_address(uint32_t serial, uint8_t *newaddrbuf) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	uint8_t serialbuf[9];
+
+	// Prevent buffer overflow in ultoa function
+	if (serial > 99999999)
+		serial = 99999999;
+
+	ultoa(serial, (char *) serialbuf, 10);
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_ADDR;
+	cmd.type = CMD_TYPE_ASSIGN;
+	memcpy(cmd.arg, serialbuf, 8);
+	memcpy(&(cmd.arg[8]), newaddrbuf, 3);
+	cmd.argsize = 11;
+
+	soilprobe_cmd(&cmd, &resp);
+}
+
+
+uint8_t soilprobe_get_soil_type(void) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_SOIL_TYPE;
+	cmd.type = CMD_TYPE_QUERY;
+
+	soilprobe_cmd(&cmd, &resp);
+
+	return resp.data[0];
+}
+
+
+void soilprobe_set_soil_type(uint8_t soiltype) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_SOIL_TYPE;
+	cmd.type = CMD_TYPE_ASSIGN;
+	cmd.arg[0] = soiltype;
+	cmd.argsize = 1;
+
+	soilprobe_cmd(&cmd, &resp);
+}
+
+
+void soilprobe_take_reading(void) {
+	struct soilprobe_cmd cmd;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_TAKE_READING;
+	cmd.type = CMD_TYPE_EXECUTE;
+
+	soilprobe_cmd(&cmd, NULL);
+}
+
+
+void soilprobe_get_reading(uint8_t set, uint8_t *readingsbuf) {
+	struct soilprobe_cmd cmd;
+	struct soilprobe_resp resp;
+
+	memcpy(cmd.addr, SOILPROBE_ADDR, 3);
+	cmd.cmd = CMD_NAME_GET_READING;
+	cmd.type = CMD_TYPE_EXECUTE;
+	cmd.reading_set = set;
+
+	soilprobe_cmd(&cmd, &resp);
+
+	memcpy(readingsbuf, resp.data, resp.datasize);
 }

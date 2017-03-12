@@ -25,8 +25,6 @@ signals:
     void update();
     void changeButtonColor(QString,bool);
 
-signals:
-    void updateAll();
 public slots:
     void stop();
 };

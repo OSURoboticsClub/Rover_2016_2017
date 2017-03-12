@@ -18,13 +18,13 @@ signals:
 
 
 protected:
-    virtual void emitAxisChanges(int axisIndex);
-    virtual void emitButtonChanges(int buttonIndex);
-    void sendArmMotorPower(double m1, double m2, double m3, double m4, double m5);
-    void sendDriveMotorPower(double l, double r);
-    void sendPauseState(double p);
-    void sendSwerveDriveState(double s);
-    void sendSelectCamera(bool i);
+    virtual void emitAxisChanges(quint8 axisIndex) = 0;
+    virtual void emitButtonChanges(quint8 buttonIndex) = 0;
+    void sendArmMotorPower(qint16 m1, qint16 m2, qint16 m3, qint16 m4, qint16 m5);
+    void sendDriveMotorPower(qint16 l, qint16 r);
+    void sendPauseState(qint16 p);
+    void sendSwerveDriveState(qint16 s);
+    void sendSelectCamera(qint16 i);
 
 
     QFile *m_file;
@@ -36,8 +36,8 @@ protected:
 
     struct JoystickState {
         JoystickState();
-        float axes[8];
-        bool  buttons[32];
+        qint16 axes[8];
+        qint16 buttons[32];
     };
     JoystickState *m_currentState;
 

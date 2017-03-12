@@ -326,12 +326,16 @@ class BasePackets(object):
                     string += ws + "\t%s >> %s;\n" % (
                         self._params["datastream"], arg[1]
                     )
+                    string += ws + '\tqDebug("argument: %s; value: %i",' + '"%s", %s);\n' % (
+                        arg[1], arg[1]
+                    )
+                    
                 string += self._crc_calculation(packet, ws=ws, write=True)
 
                 # TODO: checking against crc (high priority)
                 # then emit
                 string += ws + "\tif(_crc == _read_crc) {\n"
-                string += ws + '\t\tqDebug() << "parsed a packet";\n'
+                string += ws + '\t\tqDebug() << "CRC check successful.";\n'
                 string += ws + "\t\temit " + self._signal_name(packet) + "("
                 string += "".join(map(lambda x: x[1] + ", ",
                                       packet["argument"])).strip(" ,")
@@ -396,19 +400,18 @@ class BasePackets(object):
                 self._camelcase(packet["name"]),
                 self._argument_proto(packet),
             ))
-            string += '\tqDebug() << "writing a packet";\n'
+            string += '\tqDebug() << "Beginning packet write.";\n'
             string += "\tquint8 _packetType = static_cast<quint8>(%s::%s);\n" % (
                     self._params["types_enum"],
                     self._uppercase_name(packet),
             )
-            string += "\tqDebug() << \"THERE\";\n"
+
             string += self._crc_calculation(packet)
-            string += "\tqDebug() << \"THERE\";\n"
+
             string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
-            string += "\tqDebug() << \"HERE\";\n"
             if self._packet_size(packet) is not None:
                 string += "\t%s << (quint8)%s;\n" % (
                     self._params["datastream"],
@@ -425,8 +428,14 @@ class BasePackets(object):
             )
             if self._packet_size(packet) is not None:
                 for arg in packet["argument"]:
+                    string += '\tqDebug("writing: %s; value: %i",' + '"%s", %s);\n' % (
+                        arg[1], arg[1]
+                    )
                     string += "\t%s << %s;\n" % (
                         self._params["datastream"], arg[1]
+                    )
+                    string += '\tqDebug() << "argument:" << "%s" << "; value:"  << %s;\n' % (
+                        arg[1], arg[1]
                     )
             else:
                 string += "\t%s.writeRawData(%s.constData(), %s.size());\n" % (
@@ -452,7 +461,7 @@ class BasePackets(object):
             string += ws + "\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
                     self._params["crc"],
                     arg[1],
-                    self._expand_argument(arg[0]),
+                    arg[1], # TODO: fix this, unworking for variable size packets
             )
         return string
 
@@ -465,7 +474,7 @@ class BasePackets(object):
                 self._params["class"],
                 self._camelcase(packet["name"]),
             )
-            string += '\tqDebug() << "writing a packet";\n'
+            string += '\tqDebug() << "Beginning packet write.";\n'
             string += ("\tquint8 _packetType = static_cast<quint8>(%s::%s) "
                 "| 0x80;\n") % (
                     self._params["types_enum"],
@@ -473,12 +482,11 @@ class BasePackets(object):
             )
             
             string += self._crc_calculation(packet, write=False)
-            string += "\tqDebug() << \"THERE\";\n"
             string += "\t%s << (quint8)%s;\n" % (
                 self._params["datastream"],
                 self._params["start_byte"],
             )
-            string += "\tqDebug() << \"HERE\";\n"
+
             string += "\t%s << (quint8)3;\n" % self._params["datastream"]
             string += "\t%s << _crc;\n" % self._params["datastream"]
             string += "\t%s << _packetType;\n" % (

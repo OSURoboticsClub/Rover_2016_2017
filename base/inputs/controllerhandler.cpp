@@ -21,7 +21,8 @@
 
 ControllerHandler::ControllerHandler(QObject *parent)
     : QThread(parent),
-      m_stop(false)
+      m_stop(false),
+      m_controllers(new QList<ControllerPointer>())
 {
 
 }
@@ -66,13 +67,13 @@ void ControllerHandler::setControllers() {
     m_controllers->clear();
     for(int i = 0; i < 32; i++){
         QString fname = QString("/dev/input/js%1").arg(i);
-        QFile file(fname);
-        if(file.open(QIODevice::ReadOnly)){
+        QFile *file = new QFile(fname);
+        if(file->open(QIODevice::ReadOnly)){
             char c_name[128];
-            ioctl(file.handle(), JSIOCGNAME(sizeof(c_name)), c_name);
+            ioctl(file->handle(), JSIOCGNAME(sizeof(c_name)), c_name);
             QString name = c_name;
             if(name.startsWith("FrSky")){
-                m_controllers->push_back(ControllerPointer (new FrSky(&file)));
+                m_controllers->push_back(ControllerPointer (new FrSky(file)));
             }
         }
       }

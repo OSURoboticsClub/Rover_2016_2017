@@ -45,31 +45,24 @@ void SerialHandler::eventLoop()
 {
     emit changeButtonColor("#169d06", true);
     while (m_run){
-        //qDebug() << m_packets->device()->bytesAvailable();
         if(m_packets->device()->bytesAvailable() >= 2) {
-            qDebug() << "read some bytes";
+
             quint8 start, size;
             *m_packets->datastream() >> start;
-
-            qDebug() << start;
             if(start != 0x01) continue;
-            qDebug() << "sucessfully read start byte";
+            qDebug() << "Successfully read start byte.";
             *m_packets->datastream() >> size;
-            qDebug() << size;
             if(size < 3) continue;
-            qDebug() << "read size of: " << size;
-            qDebug() << "about to parse packet";
+            qDebug() << "Read Packet size of: " << size;
             while(m_packets->device()->bytesAvailable() < size) {
                 msleep(50);
             }
             m_packets->parsePacket(size);
-            /* readData.append(m_packets->device()->readAll()); */
-            //qDebug() << readData.toHex();
-
+            qDebug() << "--------------------";
         }
         msleep(100);
     }
-    qDebug() << "exciting serial read";
+    qDebug() << "exiting serial read";
     emit changeButtonColor("#9d0606", false);
 }
 
@@ -120,4 +113,26 @@ SerialHandler::SerialHandler(QObject *parent)
     m_run = true;
 }
 
-
+void SerialHandler::queryStatus()
+{
+    qDebug() << "Pulling Reads";
+    p()->readBatteryVoltage();
+    p()->readDriveMotorPower();
+    p()->readSwerveDriveState();
+    p()->readArmMotors();
+    p()->readPotentiometers();
+    p()->readSelectCamera();
+    //p()->readCallsign();
+    p()->readGpsPosition();
+    p()->readGpsTrack();
+    p()->readMagnetometer();
+    //Handler->readAccelerometer();
+    p()->readGyroscope();
+    //Handler->readCompassHeading();
+    p()->readGpioDirection();
+    p()->readGpioOutValue();
+    p()->readGpioReadState();
+    //p()->readDebuggingInfo();
+    //p()->readBuildInfo();
+    qDebug() << "Done Pulling";
+}

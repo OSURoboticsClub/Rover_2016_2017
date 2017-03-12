@@ -10,7 +10,7 @@ CC:=avr-gcc
 OBJCOPY:=avr-objcopy
 AVRDUDE:=avrdude
 CFLAGS:= -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wextra -Wall -Wstrict-prototypes -std=gnu99
-LIBS:=
+LIBS:= -lm
 
 
 # Output filename, without extension
@@ -18,7 +18,7 @@ OUTFILE:=../build/scienceboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=soilprobe.o
+OBJFILES:=soilprobe.o uart.o
 # Main file
 FILE:=sciboard.c
 

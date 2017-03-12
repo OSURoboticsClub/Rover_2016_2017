@@ -19,7 +19,7 @@ void MiniBoardUpdater::run()
 
 void MiniBoardUpdater::eventLoop()
 {
-    //emit changeButtonColor("#169d06", true);
+    emit changeButtonColor("#169d06", true);
     while(m_run){
         //emit update();
         //if runtime has gone 1000 ms more

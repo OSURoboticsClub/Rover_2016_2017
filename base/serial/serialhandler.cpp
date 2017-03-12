@@ -43,34 +43,27 @@ void SerialHandler::run()
 
 void SerialHandler::eventLoop()
 {
-    //emit changeButtonColor("#169d06", true);
+    emit changeButtonColor("#169d06", true);
     while (m_run){
-        //qDebug() << m_packets->device()->bytesAvailable();
         if(m_packets->device()->bytesAvailable() >= 2) {
-            qDebug() << "read some bytes";
+
             quint8 start, size;
             *m_packets->datastream() >> start;
-
-            qDebug() << start;
             if(start != 0x01) continue;
-            qDebug() << "sucessfully read start byte";
+            qDebug() << "Successfully read start byte.";
             *m_packets->datastream() >> size;
-            qDebug() << size;
             if(size < 3) continue;
-            qDebug() << "read size of: " << size;
-            qDebug() << "about to parse packet";
+            qDebug() << "Read Packet size of: " << size;
             while(m_packets->device()->bytesAvailable() < size) {
                 msleep(50);
             }
             m_packets->parsePacket(size);
-            /* readData.append(m_packets->device()->readAll()); */
-            //qDebug() << readData.toHex();
-
+            qDebug() << "--------------------";
         }
         msleep(100);
     }
-    qDebug() << "exciting serial read";
-    //emit changeButtonColor("#9d0606", false);
+    qDebug() << "exiting serial read";
+    emit changeButtonColor("#9d0606", false);
 }
 
 void SerialHandler::stop() {

@@ -14,8 +14,8 @@ public:
 signals:
 
 protected:
-    void emitAxisChanges(int);
-    void emitButtonChanges(int);
+    void emitAxisChanges(quint8) Q_DECL_OVERRIDE;
+    void emitButtonChanges(quint8) Q_DECL_OVERRIDE;
 
 };
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="height: 90%; width: 100%;">
+<html style="height: 100%; width: 100%;">
     <head>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
@@ -10,13 +10,20 @@
 
     </head>
 
-    <body style="height: 100%; width: 100%;">
+    <body style="height: 85%; width: 100%;">
         <div id="mapid" style="height: 100%; width: 100%"></div>
 
         <script id="script1">
 
             var lat = 38.4063;
             var long = -110.792286;
+
+            var roverLat = 0;
+            var roverLong = 0;
+            var roverRotation = 0;
+
+            var wayPointLatLong;
+
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
             var _wayPointNumber = 0;
@@ -47,49 +54,68 @@
 
             L.control.scale().addTo(map);
             var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-            console.warn(channel.objects.gps.coords);
-            var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
-                rotationAngle: channel.objects.gps.coords[2],
-                icon: snazzyCircle
-            }).addTo(map);
-            channel.objects.gps.coordsChanged.connect(function(){
-                // console.warn(channel.objects.gps.coords);
-                marker.setLatLng(channel.objects.gps.coords);
 
-                });
+                var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
+                    rotationAngle: channel.objects.gps.coords[2],
+                    icon: snazzyCircle
+                }).addTo(map);
+
+                roverLat = channel.objects.gps.coords[0];
+                roverLong = channel.objects.gps.coords[1];
+                roverRotation = channel.objects.gps.coords[2];
+
+                marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
+
 
             });
 
-            var markers = new L.Layer();
-            var lines = new L.Layer();
+            var markers = new L.FeatureGroup();
+            var lines = new L.FeatureGroup();
 
             function deleteMarkers() {
-                map.removeLayer(markers);
-                map.removeLayer(lines);
+                markers.clearLayers();
+                lines.clearLayers();
             }
 
-            function changeText() {
+            function changeText(clickAble ) {
                 _wayPointNumber++;
-                x = document.getElementById("_lat");
-                y = document.getElementById("_long");
-                var marker = L.marker([x.value, y.value], {
 
-                }).addTo(map);
+                var x = document.getElementById("_lat").value;
+                var y = document.getElementById("_long").value;
+                var marker;
+                var poly;
+                if (clickAble){
+                    marker = L.marker(wayPointLatLong, {
 
-                marker.bindPopup("Way Point: " + getWayPointNumber() + "</br>Lat: " + x.value + "</br>Long: " + y.value + "</br>Distance from rover: [" + (x.value - channel.objects.gps.coords[0]) + ", " + (y.value - channel.objects.gps.coords[1]));
-                var polygon = L.polygon([
-                    [x.value, y.value],
-                    [38.4063, -110.792286]
-                ]).addTo(map);
-                lines.addLayer(polygon);
+                    });
+                    marker.bindPopup("Waypoint: " + _wayPointNumber + "</br"> + wayPointLatLong.toString());
+                    poly = L.polygon([
+                        wayPointLatLong,
+                        [roverLat, roverLong]
+                    ]);
+                }
+                else {
+                    marker = L.marker([x,y], {
+
+                    });
+                    marker.bindPopup("Waypoint: " + _wayPointNumber + "</br"> + "LatLng(" + x + ", " + y + ")");
+                    poly = L.polygon([
+                        [x, y],
+                        [roverLat, roverLong]
+                    ]);
+                }
+
+                lines.addLayer(poly);
                 markers.addLayer(marker);
-
+                map.addLayer(markers);
+                map.addLayer(lines);
             };
             function checkCoordWithClick(e) {
                 clickPopup.setLatLng(e.latlng);
-                clickPopup.setContent("Click Coord:</br>" + e.latlng.toString());
+                clickPopup.setContent("Clicked Waypoint:</br>" + e.latlng.toString());
                 clickPopup.openOn(map);
 
+                wayPointLatLong = e.latlng;
             };
             map.on('click', checkCoordWithClick);
 
@@ -98,6 +124,7 @@
         <input type="text" id="_long" value="-110.792286">
         <input type="text" id="_wayPointName" value="">
         <button onClick="deleteMarkers()">Delete All Waypoints</button>
-        <button onClick="changeText()">Add WayPoint</button>
+        <button onClick="changeText(false)">Add WayPoint</button>
+        <button onClick="changeText(true)">Add From Clickable</button>
     </body>
 </html>

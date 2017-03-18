@@ -21,6 +21,7 @@ Item {
     signal _pauseAllThreads()
     signal _resumeAllThreads()
     signal _updateRoverPosistion()
+    signal _roverPosTrigger()
 
 
     property int battery_voltage: 0
@@ -56,8 +57,8 @@ Item {
     property string build_info_data: "NULL"
     property int gps_pos_valid: 0
     property double altitude: 0
-    property double latitude: 0 //38.4063
-    property double longitude: 0 //-110.792286
+    property double latitude: 38.4063
+    property double longitude: -110.792286
 
     property int gps_track_valid: 0
     property int gps_heading: 0
@@ -75,16 +76,19 @@ Item {
 
     QtObject {
         id: gps
+        signal _pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
         WebChannel.id: "gps"
+        on_PushRoverCoords: {
+            coords = [root.latitude, root.longitude, root.gps_heading];
+            //console.log(gps.coords);
+        }
     }
+
     Timer {
-        interval: 250; running: true; repeat: true
+        interval: 500; running: true; repeat: true
         onTriggered: {
-            root.latitude = 38.4063
-            root.longitude = -110.792286
-            root.gps_heading = 60
-            //console.log(gps.coords)
+            gps._pushRoverCoords();
         }
     }
 

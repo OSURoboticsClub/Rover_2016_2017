@@ -18,11 +18,18 @@
             var lat = 38.4063;
             var long = -110.792286;
 
+
             var roverLat = 0;
             var roverLong = 0;
             var roverRotation = 0;
 
+            var wayPoints = [];
+            var rov_marker = new L.FeatureGroup();
+            var markers = new L.FeatureGroup();
+            var lines = new L.FeatureGroup();
+
             var wayPointLatLong;
+            var clickCoords;
 
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
@@ -34,13 +41,14 @@
                 else
                     return document.getElementById("_wayPointName").value;
             }
+
             L.tileLayer.wms(
                 "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
                 {
                     layers: "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
                     useCache: true,
                     crossOrigin: true,
-                    useOnlyCache: true
+                    useOnlyCache: false
                 }
             ).addTo(map);
 
@@ -53,71 +61,106 @@
             });
 
             L.control.scale().addTo(map);
-            var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-
-                var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
-                    rotationAngle: channel.objects.gps.coords[2],
-                    icon: snazzyCircle
-                }).addTo(map);
-
-                roverLat = channel.objects.gps.coords[0];
-                roverLong = channel.objects.gps.coords[1];
-                roverRotation = channel.objects.gps.coords[2];
-
-                marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
-
-
-            });
-
-            var markers = new L.FeatureGroup();
-            var lines = new L.FeatureGroup();
 
             function deleteMarkers() {
                 markers.clearLayers();
                 lines.clearLayers();
             }
 
-            function changeText(clickAble ) {
-                _wayPointNumber++;
-
-                var x = document.getElementById("_lat").value;
-                var y = document.getElementById("_long").value;
+            function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
                 var marker;
                 var poly;
+                var x;
+                var y;
+                if (!lat && !long){
+                    x = document.getElementById("_lat").value;
+                    y = document.getElementById("_long").value;
+                }
+                else {
+                    x = lat;
+                    y = long;
+                }
+
                 if (clickAble){
                     marker = L.marker(wayPointLatLong, {
 
                     });
-                    marker.bindPopup("Waypoint: " + _wayPointNumber + "</br"> + wayPointLatLong.toString());
+                    marker.bindPopup("Waypoint: " + name + "</br"> + wayPointLatLong.toString());
                     poly = L.polygon([
                         wayPointLatLong,
                         [roverLat, roverLong]
                     ]);
+                    wayPoints.push([lines, [wayPointLatLong[0],wayPointLatLong[1]], name]);
+
                 }
                 else {
                     marker = L.marker([x,y], {
 
                     });
-                    marker.bindPopup("Waypoint: " + _wayPointNumber + "</br"> + "LatLng(" + x + ", " + y + ")");
+                    marker.bindPopup("Waypoint: " + name + "</br"> + "LatLng(" + x + ", " + y + ")");
                     poly = L.polygon([
                         [x, y],
                         [roverLat, roverLong]
                     ]);
+                    wayPoints.push([lines, [x, y], name]);
                 }
 
                 lines.addLayer(poly);
                 markers.addLayer(marker);
                 map.addLayer(markers);
                 map.addLayer(lines);
+
+
+            }
+
+            function changeText(clickAble ) {
+                _wayPointNumber++;
+                var name;
+                placeWayPoint(_wayPointNumber, clickAble);
             };
+
+
             function checkCoordWithClick(e) {
                 clickPopup.setLatLng(e.latlng);
                 clickPopup.setContent("Clicked Waypoint:</br>" + e.latlng.toString());
                 clickPopup.openOn(map);
-
+                clickCoords = e.latlng;
                 wayPointLatLong = e.latlng;
             };
             map.on('click', checkCoordWithClick);
+            var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
+                var marker;
+                console.log("marker made");
+                channel.objects.gps._pushRoverCoords.connect(function(){
+
+                    marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
+                        rotationAngle: channel.objects.gps.coords[2],
+                        icon: snazzyCircle
+                    });
+
+                    rov_marker.clearLayers();
+                    lines.clearLayers();
+
+                    roverLat = channel.objects.gps.coords[0];
+                    roverLong = channel.objects.gps.coords[1];
+                    roverRotation = channel.objects.gps.coords[2];
+
+                    var length = wayPoints.length;
+                    for (var i = 0;i < length;i++){
+                        poly = L.polygon([
+                            wayPoints[i][1],
+                            [roverLat, roverLong]
+                        ]);
+                        lines.addLayer(poly);
+                        map.addLayer(lines);
+                        wayPoints[i][0] = lines;
+                    }
+
+                    marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
+                    rov_marker.addLayer(marker);
+                    map.addLayer(rov_marker);
+                 });
+            });
 
         </script>
         <input type="text" id="_lat" value="38.4063">

@@ -154,8 +154,8 @@ Item {
         x: 249
         y: 15
         onClicked: {
-            root.latitude = 38.4063
-            root.longitude = -110.792286
+            root.latitude = 38.41
+            root.longitude = -110.9
             root.gps_heading = 60
             console.log(gps.coords)
         }

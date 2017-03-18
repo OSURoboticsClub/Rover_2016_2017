@@ -75,15 +75,17 @@ void AbstractController::sendDriveMotorPower(qint16 left, qint16 right){
 
 void AbstractController::sendSwerveDriveState(qint16 swerveValue){
     uint8_t swerve_state = static_cast<uint8_t>(swerveValue);
+    qDebug("%i",swerve_state);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSwerveDriveState",
-                              Q_ARG( signed char, swerve_state ));
+                              Q_ARG( unsigned char, swerve_state ));
 }
 
 void AbstractController::sendPauseState(qint16 pauseValue){
     double conversionFactor = 1;  // change depending on controller mapping of switch
     uint8_t pauseState =  static_cast<uint8_t>(pauseValue * conversionFactor);
+    qDebug("Send Pause: %i",pauseState);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePause",
-                              Q_ARG( signed char, pauseState ));
+                              Q_ARG( unsigned char, pauseState ));
 }
 
 void AbstractController::sendSelectCamera(qint16 increment){

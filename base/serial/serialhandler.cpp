@@ -122,7 +122,7 @@ void SerialHandler::queryStatus()
     p()->readArmMotors();
     p()->readPotentiometers();
     p()->readSelectCamera();
-    //p()->readCallsign();
+    p()->readCallsign();
     p()->readGpsPosition();
     p()->readGpsTrack();
     p()->readMagnetometer();

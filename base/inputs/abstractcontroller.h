@@ -32,6 +32,7 @@ protected:
     int m_id;
     int m_camera_state = 1;
     int m_mode = 0;
+    bool swerveStateON = false;
     float m_axisTolerance;
 
     struct JoystickState {

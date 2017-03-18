@@ -81,10 +81,10 @@ Item {
     Timer {
         interval: 250; running: true; repeat: true
         onTriggered: {
-//            root.latitude = 38.4063
-//            root.longitude = -110.792286
-//            root.gps_heading = 60
-            console.log(gps.coords)
+            root.latitude = 38.4063
+            root.longitude = -110.792286
+            root.gps_heading = 60
+            //console.log(gps.coords)
         }
     }
 

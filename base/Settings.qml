@@ -4,6 +4,7 @@ import QtQuick.Controls 1.4
 
 Item {
     anchors.fill: parent
+    property double startTime: 30
     Button {
         id: serialHandlerOn
         x: 8
@@ -181,5 +182,4 @@ Item {
             root.testVoltProgressBar -= .3;
         }
     }
-
 }

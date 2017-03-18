@@ -186,7 +186,10 @@ void MainWindow::setUIGpioReadState(quint8 gpio_state){
 void MainWindow::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude)
 {
     if(item && (gps_pos_valid != 0)){
-        // TODO: actual conversions
+        latitude = latitude / 1000000;
+        latitude = latitude / 60;
+        longitude = longitude / 1000000;
+        longitude = longitude / 60;
         item->setProperty("latitude", double(latitude));
         item->setProperty("longitude", double(longitude));
     }

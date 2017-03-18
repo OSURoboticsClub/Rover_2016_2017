@@ -358,6 +358,10 @@ class BasePackets(object):
                 string += ws + "\t_crc = %s(&_byte_array, size, _crc);\n" % (
                     self._params["crc"]
                 )
+                string += ws + '\tqDebug() << "argument: %s; value: "' % (
+                    packet["argument"][-1][1]
+                )
+                string += " << _byte_array;\n"
                 string += ws + "\tif(_crc == _read_crc) {\n"
                 string += ws + "\t\temit %s(_byte_array);\n" % (
                     self._signal_name(packet)
@@ -456,12 +460,19 @@ class BasePackets(object):
         )
         if not write:
             return string
-
-        for arg in packet["argument"]:
-            string += ws + "\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
+            
+        if self._packet_size(packet) is not None:
+            for arg in packet["argument"]:
+                string += ws + "\t_crc = %s(&%s, sizeof(%s), _crc);\n" % (
                     self._params["crc"],
                     arg[1],
                     arg[1], # TODO: fix this, unworking for variable size packets
+                )
+        else:
+            string += ws + "\t_crc = %s(&%s, %s.size(), _crc);\n" % (
+                self._params["crc"],
+                packet["argument"][-1][1],
+                packet["argument"][-1][1],
             )
         return string
 

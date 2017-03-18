@@ -65,6 +65,7 @@
             function deleteMarkers() {
                 markers.clearLayers();
                 lines.clearLayers();
+                wayPoints = [];
             }
 
             function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
@@ -80,7 +81,7 @@
                     x = lat;
                     y = long;
                 }
-
+                //use clicked way point
                 if (clickAble){
                     marker = L.marker(wayPointLatLong, {
 
@@ -90,19 +91,20 @@
                         wayPointLatLong,
                         [roverLat, roverLong]
                     ]);
-                    wayPoints.push([lines, [wayPointLatLong[0],wayPointLatLong[1]], name]);
+                    wayPoints.push([lines, wayPointLatLong, "name"]);
 
                 }
+                //use manual entry
                 else {
                     marker = L.marker([x,y], {
 
                     });
-                    marker.bindPopup("Waypoint: " + name + "</br"> + "LatLng(" + x + ", " + y + ")");
+                    marker.bindPopup("Waypoint: " + name + "</br"> + L.latLng(x, y).toString());
                     poly = L.polygon([
-                        [x, y],
+                        L.latLng(x,y),
                         [roverLat, roverLong]
                     ]);
-                    wayPoints.push([lines, [x, y], name]);
+                    wayPoints.push([lines, L.latLng(x, y), "name"]);
                 }
 
                 lines.addLayer(poly);

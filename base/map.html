@@ -30,6 +30,7 @@
 
             var wayPointLatLong;
             var clickCoords;
+            var wayPointClickCoords;
 
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
@@ -86,11 +87,14 @@
                     marker = L.marker(wayPointLatLong, {
 
                     });
-                    marker.bindPopup("Waypoint: " + name + "</br"> + wayPointLatLong.toString());
+                    marker.bindPopup("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
                     poly = L.polygon([
                         wayPointLatLong,
                         [roverLat, roverLong]
                     ]);
+                    marker.on("click", function () {
+                        wayPointClickCoords = wayPointLatLong;
+                    });
                     wayPoints.push([lines, wayPointLatLong, "name"]);
 
                 }
@@ -99,11 +103,14 @@
                     marker = L.marker([x,y], {
 
                     });
-                    marker.bindPopup("Waypoint: " + name + "</br"> + L.latLng(x, y).toString());
+                    marker.bindPopup("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
                     poly = L.polygon([
                         L.latLng(x,y),
                         [roverLat, roverLong]
                     ]);
+                    marker.on("click", function () {
+                        wayPointClickCoords = L.latLng(x, y);
+                    });
                     wayPoints.push([lines, L.latLng(x, y), "name"]);
                 }
 
@@ -164,6 +171,17 @@
                  });
             });
 
+           /* function deleteClicked(){
+                var temp = wayPoints;
+                length = wayPoints.length;
+                for (var i = 0;i < length;length++){
+                    if (wayPoints[i][1] == wayPointClickCoords) {
+
+                        wayPoints[i] = 0;
+                    }
+                }
+            };*/
+
         </script>
         <input type="text" id="_lat" value="38.4063">
         <input type="text" id="_long" value="-110.792286">
@@ -171,5 +189,6 @@
         <button onClick="deleteMarkers()">Delete All Waypoints</button>
         <button onClick="changeText(false)">Add WayPoint</button>
         <button onClick="changeText(true)">Add From Clickable</button>
+        <button onClick="deleteClicked()">Delete Clicked</button>
     </body>
 </html>

@@ -183,6 +183,7 @@ void miniboard_main(void){
 		gpio_set_out(Data->gpio_out);
 		Data->gpio_state = gpio_get_state();
 		
+		/* Blink LED. */
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 		//TODO: Take this out?

@@ -111,7 +111,7 @@ static uint8_t extract_lat(const uint8_t *field, int64_t *result){
 	}
 	dbuf[2] = '\0';
 	mbuf[mb] = '\0';
-	*result = (atoi(dbuf) * 60 * 100000) + atoi(mbuf);
+	*result = (atol(dbuf) * 60 * 100000) + atol(mbuf);
 	return 0;
 }
 
@@ -156,7 +156,7 @@ static uint8_t extract_long(const uint8_t *field, int64_t *result){
 	}
 	dbuf[3] = '\0';
 	mbuf[mb] = '\0';
-	*result = (atoi(dbuf) * 60 * 100000) + atoi(mbuf);
+	*result = (atol(dbuf) * 60 * 100000) + atol(mbuf);
 	return 0;
 }
 
@@ -191,14 +191,14 @@ static uint8_t extract_decimal(const uint8_t *field, int32_t *whole_result, uint
 		char dbuf[dlen + 1];
 		memcpy(dbuf, field + wlen + 1, dlen);
 		dbuf[dlen] = '\0';
-		*whole_result = atoi(wbuf);
-		*fractional_result = atoi(dbuf);
+		*whole_result = atol(wbuf);
+		*fractional_result = atol(dbuf);
 		*fractional_digits = dlen;
 	} else {
 		/* No fractional part. */
 		char wbuf[flen + 1];
 		memcpy(wbuf, field, flen);
-		*whole_result = atoi(wbuf);
+		*whole_result = atol(wbuf);
 		*fractional_result = 0;
 		*fractional_digits = 0;
 	}
@@ -250,7 +250,7 @@ static void handle_gga(uint8_t *buf, uint8_t size){
 	uint8_t ftable[15];
 	if(14 != parse_table(buf, size, ftable, 15))return;
 	
-	if(extract_lat(buf + ftable[2], &latitude))return;
+ 	if(extract_lat(buf + ftable[2], &latitude))return;
 	if(*(buf + ftable[3]) != 'N' && *(buf + ftable[3]) != 'S')return;
 	if(*(buf + ftable[3]) == 'S')latitude = -latitude;
 	
@@ -261,7 +261,7 @@ static void handle_gga(uint8_t *buf, uint8_t size){
 	if(*(buf + ftable[6]) == '0')return; /* No fix. */
 	
 	if(extract_decimal_precision(buf + ftable[9], 1, &altitude))return;
-	Data->latitude = latitude;
+ 	Data->latitude = latitude;
 	Data->longitude = longitude;
 	Data->altitude = altitude;
 	Data->gps_pos_valid = 1;

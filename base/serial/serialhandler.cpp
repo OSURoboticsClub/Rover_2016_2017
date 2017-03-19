@@ -122,13 +122,13 @@ void SerialHandler::queryStatus()
     p()->readArmMotors();
     p()->readPotentiometers();
     p()->readSelectCamera();
-    p()->readCallsign();
+    //p()->readCallsign();
     p()->readGpsPosition();
     p()->readGpsTrack();
     p()->readMagnetometer();
-    //Handler->readAccelerometer();
+    p()->readAccelerometer();
     p()->readGyroscope();
-    //Handler->readCompassHeading();
+    p()->readCompassHeading();
     p()->readGpioDirection();
     p()->readGpioOutValue();
     p()->readGpioReadState();

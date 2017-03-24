@@ -24,13 +24,11 @@
             var roverRotation = 0;
 
             var wayPoints = [];
-            var rov_marker = new L.FeatureGroup();
-            var markers = new L.FeatureGroup();
-            var lines = new L.FeatureGroup();
+            var rov_marker;
 
             var wayPointLatLong;
             var clickCoords;
-            var wayPointClickCoords;
+			var wayPointName;
 
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
@@ -66,9 +64,13 @@
 
             L.control.scale().addTo(map);
 
-            function deleteMarkers() {
-                markers.clearLayers();
-                lines.clearLayers();
+            function deleteMarkers(lines = true, markers = true) {
+                for (var i = 0;i < wayPoints.length;i++){
+					if (lines)
+                        map.removeLayer(wayPoints[i][1]);
+					if (markers)	
+                        map.removeLayer(wayPoints[i][2]);
+				}
                 wayPoints = [];
             }
 
@@ -89,45 +91,46 @@
                 if (clickAble){
                     marker = L.marker(wayPointLatLong, {
 
-                    });
+                    }).addTo(map);
                     marker.bindPopup("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
                     poly = L.polygon([
                         wayPointLatLong,
                         [roverLat, roverLong]
-                    ]);
-                    marker.on("click", function () {
-                        wayPointClickCoords = wayPointLatLong;
+                    ]).addTo(map);
+					wayPoints.push({
+						name: name,
+						line: poly,
+						marker: marker,
+						latLng: wayPointLatLong
+					});
+					marker.on("click", function () {
+                        wayPointName = name;
                     });
-                    wayPoints.push([lines, wayPointLatLong, "name"]);
-
                 }
                 //use manual entry
                 else {
                     marker = L.marker([x,y], {
 
-                    });
+                    }).addTo(map);
                     marker.bindPopup("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
                     poly = L.polygon([
                         L.latLng(x,y),
                         [roverLat, roverLong]
-                    ]);
-                    marker.on("click", function () {
-                        wayPointClickCoords = L.latLng(x, y);
+                    ]).addTo(map);                   
+                    wayPoints.push({
+						name: name,
+						line: poly,
+						marker: marker,
+						latLng: L.latLng(x, y)
+					});
+					marker.on("click", function () {
+                        wayPointName = name;
                     });
-                    wayPoints.push([lines, L.latLng(x, y), "name"]);
-                }
-
-                lines.addLayer(poly);
-                markers.addLayer(marker);
-                map.addLayer(markers);
-                map.addLayer(lines);
-
-
+				}
             }
 
             function changeText(clickAble ) {
                 _wayPointNumber++;
-                var name;
                 placeWayPoint(_wayPointNumber, clickAble);
             };
 
@@ -141,36 +144,31 @@
             };
             map.on('click', checkCoordWithClick);
             var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
-                var marker;
                 console.log("marker made");
                 channel.objects.gps._pushRoverCoords.connect(function(){
-
-                    marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
+					
+                    if (rov_marker)
+                        map.removeLayer(rov_marker);
+                    
+                    var rov_marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
                         rotationAngle: channel.objects.gps.coords[2],
                         icon: snazzyCircle
-                    });
-
-                    rov_marker.clearLayers();
-                    lines.clearLayers();
-
+                    }).addTo(map);
+                    
+                    rov_marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
+                    
                     roverLat = channel.objects.gps.coords[0];
                     roverLong = channel.objects.gps.coords[1];
                     roverRotation = channel.objects.gps.coords[2];
 
-                    var length = wayPoints.length;
-                    for (var i = 0;i < length;i++){
-                        poly = L.polygon([
-                            wayPoints[i][1],
+                    for (var i = 0;i < wayPoints.length;i++){
+						map.removeLayer(wayPoints[i][1]);
+                        var poly = L.polygon([
+                            wayPoints[i][3],
                             [roverLat, roverLong]
-                        ]);
-                        lines.addLayer(poly);
-                        map.addLayer(lines);
-                        wayPoints[i][0] = lines;
-                    }
-
-                    marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
-                    rov_marker.addLayer(marker);
-                    map.addLayer(rov_marker);
+                        ]).addTo(map);
+                        wayPoints[i][1] = poly;
+                    }                                                       
                  });
             });
 

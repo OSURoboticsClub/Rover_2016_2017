@@ -6,6 +6,9 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles 1.4
 
 import QtQuick.Templates 2.0
+import QtQuick.Controls 1.1
+import QtQuick.Controls 1.0
+import QtQuick.Controls 1.4
 
 
 Item {
@@ -138,8 +141,9 @@ Item {
         border.width: 5
         border.color: "black"
 
-        property double timeElapsed: 30000
+        property int timeElapsed: 99000
         property variant timeText: [0,0,0]
+        property bool timerOn: false
 
         function convertTime(time) {
             var hours = 0;
@@ -149,7 +153,7 @@ Item {
                 hours++;
                 time -= 3600000;
             }
-            while (minutes > 60000){
+            while (time > 60000){
                 minutes++;
                 time -= 60000;
             }
@@ -178,17 +182,19 @@ Item {
         function setTime() {
             hours2.text = countDownTimer.timeText[0];
             minutes2.text = countDownTimer.timeText[1];
-            seconds2.text = countDownTimer.timeText[0];
+            seconds2.text = countDownTimer.timeText[2];
         }
 
 
 
         Timer {
+            id: localTimer
             interval: 500
-            running: true
+            running: false
             repeat: true
             onTriggered: {
                 countDownTimer.timeElapsed += 500;
+                countDownTimer.convertTime(countDownTimer.timeElapsed);
                 countDownTimer.setTime();
             }
         }
@@ -248,6 +254,42 @@ Item {
                 y: 0
                 text: qsTr(":")
                 font.pixelSize: 36
+            }
+        }
+
+        Button {
+            id: pauseTime
+            x: 8
+            y: 90
+            width: 184
+            height: 28
+            text: qsTr("pause")
+            onClicked : {
+                localTimer.running = false;
+            }
+        }
+
+        Button {
+            id: setTime
+            x: 8
+            y: 56
+            width: 184
+            height: 28
+            text: qsTr("set time")
+            onClicked : {
+                countDownTimer.grabTime();
+            }
+        }
+
+        Button {
+            id: startTime
+            x: 8
+            y: 124
+            width: 184
+            height: 28
+            text: qsTr("start")
+            onClicked : {
+                localTimer.running = true;
             }
         }
 

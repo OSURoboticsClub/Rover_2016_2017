@@ -97,12 +97,12 @@
                         wayPointLatLong,
                         [roverLat, roverLong]
                     ]).addTo(map);
-					wayPoints.push({
-						name: name,
-						line: poly,
-						marker: marker,
-						latLng: wayPointLatLong
-					});
+					wayPoints.push([
+						name,
+						poly,
+						marker,
+						wayPointLatLong
+					]);
 					marker.on("click", function () {
                         wayPointName = name;
                     });
@@ -117,12 +117,12 @@
                         L.latLng(x,y),
                         [roverLat, roverLong]
                     ]).addTo(map);                   
-                    wayPoints.push({
-						name: name,
-						line: poly,
-						marker: marker,
-						latLng: L.latLng(x, y)
-					});
+                    wayPoints.push([
+						name,
+						poly,
+						marker,
+						wayPointLatLong
+					]);
 					marker.on("click", function () {
                         wayPointName = name;
                     });
@@ -162,7 +162,8 @@
                     roverRotation = channel.objects.gps.coords[2];
 
                     for (var i = 0;i < wayPoints.length;i++){
-						map.removeLayer(wayPoints[i][1]);
+                        if (wayPoints[i][1])
+						    map.removeLayer(wayPoints[i][1]);
                         var poly = L.polygon([
                             wayPoints[i][3],
                             [roverLat, roverLong]

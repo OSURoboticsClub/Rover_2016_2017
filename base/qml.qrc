@@ -1,17 +1,20 @@
 <RCC>
     <qresource prefix="/">
-        <file>panel.qml</file>
-        <file>button1.qml</file>
         <file>main.qml</file>
-        <file>mainview.qml</file>
-        <file>map.html</file>
-        <file>Settings.qml</file>
-        <file>superGame.html</file>
-        <file>superGameScript.js</file>
-        <file>rawValues.qml</file>
-        <file>leaflet.rotatedMarker.js</file>
-        <file>video.qml</file>
-        <file>snazzyCircle.png</file>
-        <file>countDownTimer.qml</file>
+        <file>UI_source/button1.qml</file>
+        <file>UI_source/countDownTimer.qml</file>
+        <file>UI_source/leaflet.rotatedMarker.js</file>
+        <file>UI_source/mainview.qml</file>
+        <file>UI_source/map.html</file>
+        <file>UI_source/map.qml</file>
+        <file>UI_source/panel.qml</file>
+        <file>UI_source/rawValues.qml</file>
+        <file>UI_source/Settings.qml</file>
+        <file>UI_source/SettingsForm.ui.qml</file>
+        <file>UI_source/snazzyArrow.png</file>
+        <file>UI_source/snazzyCircle.png</file>
+        <file>UI_source/superGame.html</file>
+        <file>UI_source/superGameScript.js</file>
+        <file>UI_source/video.qml</file>
     </qresource>
 </RCC>

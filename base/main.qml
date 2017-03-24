@@ -101,7 +101,7 @@ Item {
         Loader {
             id: sidebarLoader
             anchors.fill: parent
-            source: "panel.qml"
+            source: "UI_source/panel.qml"
         }
     }
     /*
@@ -139,7 +139,7 @@ Item {
                 id: contentLoader
                 width: parent.width
                 height: parent.height
-                source: "mainview.qml"
+                source: "UI_source/mainview.qml"
             }
         }
 

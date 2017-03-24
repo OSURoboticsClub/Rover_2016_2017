@@ -141,9 +141,10 @@ Item {
         border.width: 5
         border.color: "black"
 
-        property int timeElapsed: 99000
+        property int timeElapsed: 0
         property variant timeText: [0,0,0]
         property bool timerOn: false
+        property int currentTime: 0
 
         function convertTime(time) {
             var hours = 0;
@@ -167,15 +168,16 @@ Item {
         }
 
         function grabTime() {
-            var hours = parseInt(hours2.text);
-            var minutes = parseInt(minutes2.text);
-            var seconds = parseInt(seconds2.text);
+            var hours = Number(hours2.text);
+            var minutes = Number(minutes2.text);
+            var seconds = Number(seconds2.text);
 
             var time = 0;
             time += (3600000 * hours);
             time += (60000 * minutes);
             time += (1000 * seconds);
 
+            countDownTimer.currentTime = time;
             convertTime(time);
         }
 
@@ -194,8 +196,15 @@ Item {
             repeat: true
             onTriggered: {
                 countDownTimer.timeElapsed += 500;
-                countDownTimer.convertTime(countDownTimer.timeElapsed);
-                countDownTimer.setTime();
+                if (countDownTimer.currentTime > countDownTimer.timeElapsed) {
+                    countDownTimer.convertTime(countDownTimer.currentTime - countDownTimer.timeElapsed);
+                    countDownTimer.setTime();
+                }
+                else {
+                    hours2.text = "---";
+                    minutes2.text = "---";
+                    seconds2.text = "---";
+                }
             }
         }
 
@@ -291,6 +300,23 @@ Item {
             onClicked : {
                 localTimer.running = true;
             }
+        }
+
+        Button {
+            id: reset
+            x: 8
+            y: 158
+            width: 184
+            height: 28
+            text: qsTr("reset")
+            onClicked: {
+                hours2.text = "";
+                minutes2.text = "";
+                seconds2.text = "";
+                localTimer.running = false;
+                countDownTimer.timeElapsed = 0;
+            }
+
         }
 
 

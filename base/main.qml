@@ -60,6 +60,7 @@ Item {
     property double latitude: 38.4063
     property double longitude: -110.792286
 
+
     property int gps_track_valid: 0
     property int gps_heading: 0
     property int gps_speed: 0

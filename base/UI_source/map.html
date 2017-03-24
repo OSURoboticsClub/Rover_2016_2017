@@ -24,7 +24,7 @@
             var roverRotation = 0;
 
             var wayPoints = [];
-            var rov_marker;
+            var rov_marker = new L.FeatureGroup();
 
             var wayPointLatLong;
             var clickCoords;
@@ -66,9 +66,9 @@
 
             function deleteMarkers(lines = true, markers = true) {
                 for (var i = 0;i < wayPoints.length;i++){
-					if (lines)
+					if (lines && wayPoints[i])
                         map.removeLayer(wayPoints[i][1]);
-					if (markers)	
+					if (markers && wayPoints[i])	
                         map.removeLayer(wayPoints[i][2]);
 				}
                 wayPoints = [];
@@ -97,12 +97,13 @@
                         wayPointLatLong,
                         [roverLat, roverLong]
                     ]).addTo(map);
-					wayPoints.push([
+					var newMarker = [
 						name,
 						poly,
 						marker,
 						wayPointLatLong
-					]);
+					];
+                    wayPoints.push(newMarker);
 					marker.on("click", function () {
                         wayPointName = name;
                     });
@@ -117,12 +118,13 @@
                         L.latLng(x,y),
                         [roverLat, roverLong]
                     ]).addTo(map);                   
-                    wayPoints.push([
+                    var newMarker = [
 						name,
 						poly,
 						marker,
-						wayPointLatLong
-					]);
+						L.latLng(x,y)
+					];
+                    wayPoints.push(newMarker);
 					marker.on("click", function () {
                         wayPointName = name;
                     });
@@ -147,13 +149,12 @@
                 console.log("marker made");
                 channel.objects.gps._pushRoverCoords.connect(function(){
 					
-                    if (rov_marker)
-                        map.removeLayer(rov_marker);
-                    
-                    var rov_marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
+                    var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
                         rotationAngle: channel.objects.gps.coords[2],
                         icon: snazzyCircle
-                    }).addTo(map);
+                    });
+                    
+                    rov_marker.clearLayers();
                     
                     rov_marker.bindPopup("Rover:</br>" + "LatLng(" + roverLat + ", " + roverLong + ")");
                     
@@ -162,27 +163,33 @@
                     roverRotation = channel.objects.gps.coords[2];
 
                     for (var i = 0;i < wayPoints.length;i++){
-                        if (wayPoints[i][1])
-						    map.removeLayer(wayPoints[i][1]);
-                        var poly = L.polygon([
-                            wayPoints[i][3],
-                            [roverLat, roverLong]
-                        ]).addTo(map);
-                        wayPoints[i][1] = poly;
-                    }                                                       
+                        if (wayPoints[i]) {
+                            if (wayPoints[i][1])
+                                map.removeLayer(wayPoints[i][1]);
+                            var poly = L.polygon([
+                                wayPoints[i][3],
+                                [roverLat, roverLong]
+                            ]).addTo(map);
+                            wayPoints[i][1] = poly;
+                        }  
+                    }
+                    rov_marker.addLayer(marker);
+                    map.addLayer(rov_marker);
                  });
             });
 
-           /* function deleteClicked(){
-                var temp = wayPoints;
-                length = wayPoints.length;
-                for (var i = 0;i < length;length++){
-                    if (wayPoints[i][1] == wayPointClickCoords) {
-
+           function deleteClicked(){
+                var idx;
+                for (var i = 0;i < wayPoints.length;i++){
+                    if (wayPoints[i][0] == wayPointName) {
+                        map.removeLayer(wayPoints[i][1]);
+                        map.removeLayer(wayPoints[i][2]);
                         wayPoints[i] = 0;
+                        idx = i;
+                        break;
                     }
                 }
-            };*/
+            };
 
         </script>
         <input type="text" id="_lat" value="38.4063">

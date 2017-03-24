@@ -162,6 +162,18 @@ Item {
         }
 
     }
+    Button {
+        id: setRoverPosAgain
+        text: qsTr("change rover coords again")
+        x: 400
+        y: 15
+        onClicked: {
+            root.latitude = 38.42
+            root.longitude = -110.91
+            root.gps_heading = 270
+            console.log(gps.coords)
+        }
+    }
 
     Button {
         id: upVolt

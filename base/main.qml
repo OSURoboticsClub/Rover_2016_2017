@@ -57,8 +57,8 @@ Item {
     property string build_info_data: "NULL"
     property int gps_pos_valid: 0
     property double altitude: 0
-    property double latitude: 38.4063
-    property double longitude: -110.792286
+    property double latitude: 0
+    property double longitude: 0
 
 
     property int gps_track_valid: 0

@@ -16,5 +16,6 @@
         <file>UI_source/superGame.html</file>
         <file>UI_source/superGameScript.js</file>
         <file>UI_source/video.qml</file>
+        <file>UI_source/beaverLogoColon.png</file>
     </qresource>
 </RCC>

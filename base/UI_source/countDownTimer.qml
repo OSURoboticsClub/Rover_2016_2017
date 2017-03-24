@@ -129,6 +129,23 @@ Rectangle {
 
         }
 
+        Image {
+            id: colonLeft
+            x: 60
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
+        }
+        Image {
+            id: colonRight
+            x: 129
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
+        }
+        /*
         Text {
             id: colonLeft
             x: 60
@@ -143,6 +160,7 @@ Rectangle {
             text: qsTr(":")
             font.pixelSize: 36
         }
+        */
     }
 
     Button {

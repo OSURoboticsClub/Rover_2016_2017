@@ -12,5 +12,6 @@
         <file>leaflet.rotatedMarker.js</file>
         <file>video.qml</file>
         <file>snazzyCircle.png</file>
+        <file>countDownTimer.qml</file>
     </qresource>
 </RCC>

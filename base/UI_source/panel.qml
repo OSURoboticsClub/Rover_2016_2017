@@ -97,6 +97,15 @@ Item {
             source: "countDownTimer.qml"
         }
     }
+
+    Image {
+        id: rectangle1
+        x: 0
+        y: 501
+        width: parent.width
+        height: 91
+        source: "osurclogo.png"
+    }
 }
 
 //    TextInput {

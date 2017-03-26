@@ -1,8 +1,6 @@
 #ifndef XBOXCONTROLLER_H
 #define XBOXCONTROLLER_H
 
-#include <QFile>
-
 #include "abstractcontroller.h"
 
 
@@ -16,8 +14,9 @@ public:
 signals:
 
 protected:
-    void emitAxisChanges(int axisIndex) Q_DECL_OVERRIDE;
-    void emitButtonChanges(int buttonIndex) Q_DECL_OVERRIDE;
+    // TODO: override
+    void emitAxisChanges(int axisIndex);
+    void emitButtonChanges(int buttonIndex);
 };
 
 #endif // XBOXCONTROLLER_H

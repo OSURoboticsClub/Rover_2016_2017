@@ -66,7 +66,7 @@ Item {
     property int gps_speed: 0
 
     property string colorSerialHandler: "white"
-    property bool activeSeriaHandler: false
+    property bool activeSerialHandler: false
     property string colorControllerHandler: "white"
     property bool activeControllerHandler: false
     property string colorUpdater: "white"
@@ -98,11 +98,7 @@ Item {
         id: sidebarCol
         width: 0.3 * parent.width
         height: parent.height
-        Loader {
-            id: sidebarLoader
-            anchors.fill: parent
-            source: "qrc:/qml/panel.qml"
-        }
+        SidebarPanel{}
     }
 
     Column {
@@ -118,13 +114,7 @@ Item {
             id: contentRow
             width: parent.width
             height: parent.height * 0.8
-            // TODO: remove loader
-            Loader {
-                id: contentLoader
-                width: parent.width
-                height: parent.height
-                source: "qrc:/qml/mainview.qml"
-            }
+            MainPanel{}
         }
 
 

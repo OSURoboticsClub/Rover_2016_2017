@@ -1,18 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/countDownTimer.qml</file>
-        <file>qml/mainview.qml</file>
-        <file>qml/map.qml</file>
-        <file>qml/panel.qml</file>
-        <file>qml/rawValues.qml</file>
-        <file>qml/Settings.qml</file>
-        <file>qml/SettingsForm.ui.qml</file>
+        <file>qml/Timer.qml</file>
+        <file>qml/SidebarPanel.qml</file>
+        <file>qml/MainPanel.qml</file>
+        <file>qml/DataView.qml</file>
+        <file>qml/SettingsView.qml</file>
         <file>img/snazzyCircle.png</file>
         <file>web/map.html</file>
         <file>web/leaflet.rotatedMarker.js</file>
-        <file>img/beaverLogoColon.png</file>
-        <file>img/osurclogo.png</file>
+        <file>img/osurc-logo.png</file>
         <file>web/map.js</file>
     </qresource>
 </RCC>

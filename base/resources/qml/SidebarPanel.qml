@@ -12,8 +12,7 @@ import QtQuick.Controls 1.4
 
 
 Item {
-    property int t
-    id: item1
+    id: sidebarPanel
     width: 200
     height: 600
 
@@ -84,19 +83,8 @@ Item {
         id: columnLayout1
         anchors.fill: parent
     }
-
-    Item {
-        id: timerBackwards
-        x: 0
-        y: 300
-        width: 200
-        height: 200
-        Loader {
-            id: thisTimer
-            anchors.fill: parent
-            source: "countDownTimer.qml"
-        }
-    }
+    
+    Timer{id: timer}
 
     Image {
         id: rectangle1
@@ -104,55 +92,7 @@ Item {
         y: 501
         width: parent.width
         height: 91
-        source: "osurclogo.png"
+        source: "qrc:/img/osurc-logo.png"
     }
 }
-
-//    TextInput {
-//        id: time
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 255
-//        y: 267
-//    }
-//    TextInput {
-//        id: mins
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 210
-//        y: 267
-//    }
-//    TextInput {
-//        id: hours
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 175
-//        y: 267
-//    }
-//    Timer{
-//        id: countdownTimer
-//        interval: 1000
-//        running: time.text > 0 || mins.text > 0 || hours.text > 0
-//        repeat: true
-//        onTriggered: {
-//            if (time.text == 0 && (mins.text == 0 || mins.text == "--") && (hours.text == 0|| hours.text == "--")){
-//                mins.text = "--"
-//                time.text = "--"
-//                hours.text = "--"
-//            }
-//            else if (time.text == 0 && mins.text == 0){
-//                hours.text = --hours.text
-//                time.text = "59"
-//                mins.text = "59"
-//            }
-//            else if (time.text == 0){
-//                mins.text = --mins.text
-//                time.text = "59"
-//            }
-//            else{
-//                time.text = --time.text
-//            }
-//        }
-
-//    }
 

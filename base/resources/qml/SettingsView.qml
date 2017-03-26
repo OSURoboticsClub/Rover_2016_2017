@@ -14,7 +14,7 @@ Item {
         text: qsTr("turn on SerialHandler")
         objectName: "serialHandlerOn"
         onClicked : {
-            root._serialHandlerOn();
+            root.serialHandlerOn();
         }
     }
 
@@ -26,7 +26,7 @@ Item {
         height: 35
         text: qsTr("turn off SerialHandler")
         onClicked : {
-            root._serialHandlerOff();
+            root.serialHandlerOff();
         }
     }
 
@@ -38,7 +38,7 @@ Item {
         height: 35
         text: "turn on updater"
         onClicked : {
-            root._updaterOn();
+            root.updaterOn();
         }
     }
 
@@ -50,7 +50,7 @@ Item {
         height: 35
         text: "turn off updater"
         onClicked : {
-            root._updaterOff();
+            root.updaterOff();
         }
     }
 
@@ -61,7 +61,7 @@ Item {
         height: 35
         text: qsTr("turn on controller handler")
         onClicked : {
-            root._controllerHandlerOn();
+            root.controllerHandlerOn();
         }
     }
 
@@ -72,7 +72,7 @@ Item {
         height: 35
         text: qsTr("turn off controller handler")
         onClicked : {
-            root._controllerHandlerOff();
+            root.controllerHandlerOff();
         }
     }
 
@@ -133,7 +133,7 @@ Item {
         height: 35
         text: qsTr("pause threads")
         onClicked : {
-            root._pauseAllThreads();
+            root_pauseAllThreads();
         }
     }
 
@@ -145,7 +145,7 @@ Item {
         height: 35
         text: qsTr("resume threads")
         onClicked : {
-            root._resumeAllThreads();
+            root.resumeAllThreads();
         }
     }
 

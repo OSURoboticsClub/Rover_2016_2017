@@ -11,9 +11,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Controls 1.4
 
 Rectangle {
-    id: countDownTimer
-    x: 0
-    y: 0
+    id: timer
     width: 200
     height: 200
     border.width: 5
@@ -40,9 +38,9 @@ Rectangle {
             seconds++;
             time -= 1000;
         }
-        countDownTimer.timeText[0] = hours;
-        countDownTimer.timeText[1] = minutes;
-        countDownTimer.timeText[2] = seconds;
+        timer.timeText[0] = hours;
+        timer.timeText[1] = minutes;
+        timer.timeText[2] = seconds;
     }
 
     function grabTime() {
@@ -55,14 +53,14 @@ Rectangle {
         time += (60000 * minutes);
         time += (1000 * seconds);
 
-        countDownTimer.startTime = time;
+        timer.startTime = time;
         convertTime(time);
     }
 
     function setTime() {
-        hours2.text = countDownTimer.timeText[0];
-        minutes2.text = countDownTimer.timeText[1];
-        seconds2.text = countDownTimer.timeText[2];
+        hours2.text = timer.timeText[0];
+        minutes2.text = timer.timeText[1];
+        seconds2.text = timer.timeText[2];
     }
 
 
@@ -73,10 +71,10 @@ Rectangle {
         running: false
         repeat: true
         onTriggered: {
-            countDownTimer.timeElapsed += 200;
-            if ((countDownTimer.startTime - countDownTimer.timeElapsed) > 0) {
-                countDownTimer.convertTime((countDownTimer.startTime - countDownTimer.timeElapsed));
-                countDownTimer.setTime();
+            timer.timeElapsed += 200;
+            if ((timer.startTime - timer.timeElapsed) > 0) {
+                timer.convertTime((timer.startTime - timer.timeElapsed));
+                timer.setTime();
             }
             else {
                 hours2.text = "---";
@@ -129,38 +127,6 @@ Rectangle {
 
         }
 
-        Image {
-            id: colonLeft
-            x: 60
-            y: 3
-            width: 10
-            height: 45
-            source: "beaverLogoColon.png"
-        }
-        Image {
-            id: colonRight
-            x: 129
-            y: 3
-            width: 10
-            height: 45
-            source: "beaverLogoColon.png"
-        }
-        /*
-        Text {
-            id: colonLeft
-            x: 60
-            y: 0
-            text: qsTr(":")
-            font.pixelSize: 36
-        }
-        Text {
-            id: colonRight
-            x: 129
-            y: 0
-            text: qsTr(":")
-            font.pixelSize: 36
-        }
-        */
     }
 
     Button {
@@ -183,8 +149,8 @@ Rectangle {
         height: 28
         text: qsTr("set time")
         onClicked : {
-            countDownTimer.grabTime();
-            countDownTimer.setTime();
+            timer.grabTime();
+            timer.setTime();
         }
     }
 
@@ -208,8 +174,8 @@ Rectangle {
         height: 28
         text: qsTr("reset")
         onClicked: {
-            countDownTimer.timeElapsed = 0;
-            countDownTimer.startTime = 0;
+            timer.timeElapsed = 0;
+            timer.startTime = 0;
             hours2.text = "";
             minutes2.text = "";
             seconds2.text = "";
@@ -218,7 +184,4 @@ Rectangle {
         }
 
     }
-
-
-
 }

@@ -11,17 +11,17 @@ Item {
 
 
 
-    signal _serialHandlerOn()
-    signal _serialHandlerOff()
-    signal _updaterOn()
-    signal _updaterOff()
-    signal _controllerHandlerOn()
-    signal _controllerHandlerOff()
-    signal _allThreadsClose()
-    signal _pauseAllThreads()
-    signal _resumeAllThreads()
-    signal _updateRoverPosistion()
-    signal _roverPosTrigger()
+    signal serialHandlerOn()
+    signal serialHandlerOff()
+    signal updaterOn()
+    signal updaterOff()
+    signal controllerHandlerOn()
+    signal controllerHandlerOff()
+    signal allThreadsClose()
+    signal pauseAllThreads()
+    signal resumeAllThreads()
+    signal updateRoverPosistion()
+    signal roverPosTrigger()
 
 
     property int battery_voltage: 0
@@ -77,10 +77,10 @@ Item {
 
     QtObject {
         id: gps
-        signal _pushRoverCoords;
+        signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
         WebChannel.id: "gps"
-        on_PushRoverCoords: {
+        onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
             //console.log(gps.coords);
         }
@@ -89,7 +89,7 @@ Item {
     Timer {
         interval: 500; running: true; repeat: true
         onTriggered: {
-            gps._pushRoverCoords();
+            gps.pushRoverCoords();
         }
     }
 

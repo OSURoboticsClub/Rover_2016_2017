@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     //w.show();
     view.show();
 
-    QObject *object = view.rootObject();
-    Backend b(object);
+    QObject *rootView = view.rootObject();
+    Backend b(rootView);
 
     //   qDebug() << "main";
 

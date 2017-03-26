@@ -24,7 +24,7 @@ public:
     void setBuffer(QByteArray *a);
     QIODevice *device();
 
-    Packets *p() const {return m_packets;}
+    Packets *p() {return m_packets;}
 
 signals:
     void changeButtonColor(QString, bool);

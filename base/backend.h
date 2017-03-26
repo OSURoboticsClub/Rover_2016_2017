@@ -13,15 +13,15 @@ class Backend : public QObject
     Q_OBJECT
 
 public:
-    Backend(QObject *);
+    Backend(QObject *view);
 
     ~Backend();
 
 private:
 
-    QObject *item;
+    QObject *m_view;
 
-    ThreadArray *threadarray;
+    ThreadArray *m_threadarray;
 
     bool m_closing = false;
 
@@ -54,7 +54,6 @@ public slots:
     void colorSerialHandler(QString, bool);
     void colorControllerHandler(QString, bool);
     void colorUpdater(QString, bool);
-    //batteryVoltageReceived(battery_voltage)
 
 private slots:
 
@@ -64,4 +63,4 @@ signals:
 
 };
 
-#endif // Backend_H
+#endif // BACKEND_H

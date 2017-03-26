@@ -13,8 +13,8 @@
 
 #include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
-#include "threadarray.h"
-#include "miniboardupdater.h"
+#include "threading/threadarray.h"
+#include "serial/miniboardupdater.h"
 
 #define Handler SerialHandler::instance()->p()
 

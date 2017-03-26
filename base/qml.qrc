@@ -1,22 +1,17 @@
 <RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>UI_source/button1.qml</file>
-        <file>UI_source/countDownTimer.qml</file>
-        <file>UI_source/leaflet.rotatedMarker.js</file>
-        <file>UI_source/mainview.qml</file>
-        <file>UI_source/map.html</file>
-        <file>UI_source/map.qml</file>
-        <file>UI_source/panel.qml</file>
-        <file>UI_source/rawValues.qml</file>
-        <file>UI_source/Settings.qml</file>
-        <file>UI_source/SettingsForm.ui.qml</file>
-        <file>UI_source/snazzyArrow.png</file>
-        <file>UI_source/snazzyCircle.png</file>
-        <file>UI_source/superGame.html</file>
-        <file>UI_source/superGameScript.js</file>
-        <file>UI_source/video.qml</file>
-        <file>UI_source/beaverLogoColon.png</file>
-        <file>UI_source/osurclogo.png</file>
+    <qresource prefix="/Rover2017">
+        <file>resources/qml/main.qml</file>
+        <file>resources/qml/countDownTimer.qml</file>
+        <file>resources/qml/mainview.qml</file>
+        <file>resources/qml/map.qml</file>
+        <file>resources/qml/panel.qml</file>
+        <file>resources/qml/rawValues.qml</file>
+        <file>resources/qml/Settings.qml</file>
+        <file>resources/qml/SettingsForm.ui.qml</file>
+        <file>resources/img/snazzyCircle.png</file>
+        <file>resources/web/map.html</file>
+        <file>resources/web/leaflet.rotatedMarker.js</file>
+        <file>resources/img/beaverLogoColon.png</file>
+        <file>resources/img/osurclogo.png</file>
     </qresource>
 </RCC>

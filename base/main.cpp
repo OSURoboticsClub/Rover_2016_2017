@@ -3,7 +3,7 @@
 #include <QtWebEngine>
 
 #include "messagehandler.h"
-#include "mainwindow.h"
+#include "backend.h"
 
 #define SerialHandlerInstance Singleton<SerialHandler>::instance()
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     QtWebEngine::initialize();
 
     QQuickView view;
-    view.setSource(QUrl("qrc:/main.qml"));
+    view.setSource(QUrl("qrc:/qml/main.qml"));
     view.setResizeMode(QQuickView::SizeRootObjectToView);
 
 //    QObject *item = view.rootObject();
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     view.show();
 
     QObject *object = view.rootObject();
-    MainWindow w(object);
+    Backend b(object);
 
     //   qDebug() << "main";
 

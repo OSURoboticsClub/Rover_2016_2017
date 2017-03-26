@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "backend.h"
 
 
 #include <QDebug>
@@ -7,7 +7,7 @@
 #define Handler SerialHandler::instance()->p()
 
 
-MainWindow::MainWindow(QObject *_item) :
+Backend::Backend(QObject *_item) :
     m_inputs(new ControllerHandler),
     m_updater(new MiniBoardUpdater)
 {
@@ -62,7 +62,7 @@ MainWindow::MainWindow(QObject *_item) :
 }
 
 //would need to destruct in the close button as well
-MainWindow::~MainWindow()
+Backend::~Backend()
 {
     close();
 }
@@ -79,7 +79,7 @@ MainWindow::~MainWindow()
 
 
 
-void MainWindow::close()
+void Backend::close()
 {
 
     qDebug() << "start close";
@@ -94,23 +94,23 @@ void MainWindow::close()
         item->deleteLater();
     }
 }
-void MainWindow::pauseThreads(){
+void Backend::pauseThreads(){
     SerialHandler::instance()->stop();
     m_inputs->stop();
     m_updater->stop();
 }
-void MainWindow::resumeThreads(){
+void Backend::resumeThreads(){
     SerialHandler::instance()->start();
     m_inputs->start();
     m_updater->start();
 }
 
-void MainWindow::setUIVoltage(quint16 battery_voltage){
+void Backend::setUIVoltage(quint16 battery_voltage){
     //QObject *rect = item->findChild<QObject*>("window");
     if (item)
         item->setProperty("battery_voltage", battery_voltage);
 }
-void MainWindow::setUIDriveMotorPower(qint8 l_f_drive, qint8 l_m_drive, qint8 l_b_drive, qint8 r_f_drive, qint8 r_m_drive, qint8 r_b_drive){
+void Backend::setUIDriveMotorPower(qint8 l_f_drive, qint8 l_m_drive, qint8 l_b_drive, qint8 r_f_drive, qint8 r_m_drive, qint8 r_b_drive){
     if (item){
         item->setProperty("l_f_drive", l_f_drive);
         item->setProperty("l_m_drive", l_m_drive);
@@ -120,12 +120,12 @@ void MainWindow::setUIDriveMotorPower(qint8 l_f_drive, qint8 l_m_drive, qint8 l_
         item->setProperty("r_b_drive", r_b_drive);
     }
 }
-void MainWindow::setUIDriveState(quint8 swerve_state){
+void Backend::setUIDriveState(quint8 swerve_state){
     if (item){
         item->setProperty("swerve_state", swerve_state);
     }
 }
-void MainWindow::setUIArmMotor(qint8 arm_motor_1, qint8 arm_motor_2, qint8 arm_motor_3, qint8 arm_motor_4, qint8 arm_motor_5){
+void Backend::setUIArmMotor(qint8 arm_motor_1, qint8 arm_motor_2, qint8 arm_motor_3, qint8 arm_motor_4, qint8 arm_motor_5){
     if (item){
         item->setProperty("arm_motor_1", arm_motor_1);
         item->setProperty("arm_motor_2", arm_motor_2);
@@ -134,12 +134,12 @@ void MainWindow::setUIArmMotor(qint8 arm_motor_1, qint8 arm_motor_2, qint8 arm_m
         item->setProperty("arm_motor_5", arm_motor_5);
     }
 }
-void MainWindow::setUICameraSelected(quint8 selected_camera){
+void Backend::setUICameraSelected(quint8 selected_camera){
     if (item){
         item->setProperty("selected_camera", selected_camera);
     }
 }
-void MainWindow::setUIPotentiometers(quint8 pot_1, quint8 pot_2, quint8 pot_3, quint8 pot_4, quint8 pot_5){
+void Backend::setUIPotentiometers(quint8 pot_1, quint8 pot_2, quint8 pot_3, quint8 pot_4, quint8 pot_5){
     if (item){
         item->setProperty("pot_1", pot_1);
         item->setProperty("pot_2", pot_2);
@@ -148,42 +148,42 @@ void MainWindow::setUIPotentiometers(quint8 pot_1, quint8 pot_2, quint8 pot_3, q
         item->setProperty("pot_5", pot_5);
     }
 }
-void MainWindow::setUICallSign(QByteArray callsign_data){
+void Backend::setUICallSign(QByteArray callsign_data){
     if (item){
         item->setProperty("callsign_data", callsign_data);
     }
 }
-void MainWindow::setUIMagnetometer(qint16 mag_x, qint16 mag_y, qint16 mag_z){
+void Backend::setUIMagnetometer(qint16 mag_x, qint16 mag_y, qint16 mag_z){
     if (item){
         item->setProperty("mag_x", mag_x);
         item->setProperty("mag_y", mag_y);
         item->setProperty("mag_z", mag_z);
     }
 }
-void MainWindow::setUIGyroscope(qint16 gyro_x, qint16 gyro_y, qint16 gyro_z){
+void Backend::setUIGyroscope(qint16 gyro_x, qint16 gyro_y, qint16 gyro_z){
     if (item){
         item->setProperty("gyro_x", gyro_x);
         item->setProperty("gyro_y", gyro_y);
         item->setProperty("gyro_z", gyro_z);
     }
 }
-void MainWindow::setUIGpioDirection(quint8 gpio_dir){
+void Backend::setUIGpioDirection(quint8 gpio_dir){
     if (item){
         item->setProperty("gpio_dir", gpio_dir);
     }
 }
-void MainWindow::setUIGpioOut(quint8 gpio_out){
+void Backend::setUIGpioOut(quint8 gpio_out){
     if (item){
         item->setProperty("gpio_out", gpio_out);
     }
 }
-void MainWindow::setUIGpioReadState(quint8 gpio_state){
+void Backend::setUIGpioReadState(quint8 gpio_state){
     if (item){
         item->setProperty("gpio_state", gpio_state);
     }
 }
 
-void MainWindow::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude)
+void Backend::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude)
 {
     if(item && (gps_pos_valid != 0)){
         double lat = static_cast<double>(latitude) / (100000.0 * 60.0);
@@ -194,17 +194,17 @@ void MainWindow::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 
     }
 }
 
-void MainWindow::setUIDebugInfo(QByteArray debug_str_data){
+void Backend::setUIDebugInfo(QByteArray debug_str_data){
     if (item){
         item->setProperty("debug_str_data", debug_str_data);
     }
 }
-void MainWindow::setUIBuildInfo(QByteArray build_info_data){
+void Backend::setUIBuildInfo(QByteArray build_info_data){
     if (item){
         item->setProperty("build_info_data", build_info_data);
     }
 }
-void MainWindow::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude){
+void Backend::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude){
     if(item){
         item->setProperty("gps_pos_valid",gps_pos_valid);
         item->setProperty("latitude", latitude);
@@ -212,7 +212,7 @@ void MainWindow::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longi
         item->setProperty("altitude", altitude);
     }
 }
-void MainWindow::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 gps_speed){
+void Backend::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 gps_speed){
     if (item){
         item->setProperty("gps_track_valid", gps_track_valid);
         item->setProperty("gps_heading", gps_heading);
@@ -220,19 +220,19 @@ void MainWindow::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint
     }
 }
 
-void MainWindow::colorSerialHandler(QString color, bool activeSeriaHandler){
+void Backend::colorSerialHandler(QString color, bool activeSeriaHandler){
     if (item){
         item->setProperty("colorSerialHandler", color);
         item->setProperty("activeSeriaHandler", activeSeriaHandler);
     }
 }
-void MainWindow::colorControllerHandler(QString color, bool activeControllerHandler){
+void Backend::colorControllerHandler(QString color, bool activeControllerHandler){
     if (item){
         item->setProperty("colorControllerHandler", color);
         item->setProperty("activeControllerHandler", activeControllerHandler);
     }
 }
-void MainWindow::colorUpdater(QString color, bool activeUpdater){
+void Backend::colorUpdater(QString color, bool activeUpdater){
     if (item){
         item->setProperty("colorUpdater", color);
         item->setProperty("activeUpdater", activeUpdater);

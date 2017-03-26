@@ -101,26 +101,9 @@ Item {
         Loader {
             id: sidebarLoader
             anchors.fill: parent
-            source: "UI_source/panel.qml"
+            source: "qrc:/qml/panel.qml"
         }
     }
-    /*
-    Column {
-        id: video
-        x: 800
-        y: 0
-        anchors.left: mainCol.right
-        anchors.right: parent.right
-        width: .3 *parent.width
-        height: parent.height
-        Loader {
-            id: videoLoader
-            width: parent.width
-            height: parent.height
-            source: "video.qml"
-        }
-    }
-    */
 
     Column {
         id: mainCol
@@ -135,11 +118,12 @@ Item {
             id: contentRow
             width: parent.width
             height: parent.height * 0.8
+            // TODO: remove loader
             Loader {
                 id: contentLoader
                 width: parent.width
                 height: parent.height
-                source: "UI_source/mainview.qml"
+                source: "qrc:/qml/mainview.qml"
             }
         }
 

@@ -6,7 +6,7 @@ include_directories("${CMAKE_BINARY_DIR}/common/")
 # Set project sources
 set(SOURCES
    main.cpp
-   mainwindow.cpp
+   backend.cpp
    serial/serialhandler.cpp
 
    threading/threadarray.cpp
@@ -20,7 +20,7 @@ set(SOURCES
 )
 
 set(HEADERS
-    mainwindow.h
+    backend.h
     messagehandler.h
     serial/serialhandler.h
     serial/call_once.h
@@ -39,7 +39,7 @@ set(HEADERS
 
 # Set any resource files
 set(RESOURCES
-    qml.qrc
+    resources/qml.qrc
 )
 
 

@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef BACKEND_H
+#define BACKEND_H
 
 #include <QObject>
 
@@ -8,14 +8,14 @@
 #include "serial/miniboardupdater.h"
 
 
-class MainWindow : public QObject
+class Backend : public QObject
 {
     Q_OBJECT
 
 public:
-    MainWindow(QObject *);
+    Backend(QObject *);
 
-    ~MainWindow();
+    ~Backend();
 
 private:
 
@@ -64,4 +64,4 @@ signals:
 
 };
 
-#endif // MAINWINDOW_H
+#endif // Backend_H

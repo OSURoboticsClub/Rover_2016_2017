@@ -1,22 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QVector2D>
-#include <QVector>
-#include <QMainWindow>
-#include <QSerialPort>
-#include <QDebug>
-#include <QQuickWidget>
-#include <QThread>
-#include <QQuickView>
-#include <QTime>
+#include <QObject>
 
-#include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
 #include "threading/threadarray.h"
 #include "serial/miniboardupdater.h"
 
-#define Handler SerialHandler::instance()->p()
 
 class MainWindow : public QObject
 {
@@ -32,8 +22,6 @@ private:
     QObject *item;
 
     ThreadArray *threadarray;
-
-    QSerialPort output;
 
     bool m_closing = false;
 

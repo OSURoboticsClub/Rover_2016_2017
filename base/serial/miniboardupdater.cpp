@@ -1,5 +1,8 @@
 #include "miniboardupdater.h"
 
+#include <QDebug>
+
+
 MiniBoardUpdater::MiniBoardUpdater(QObject *parent)
     : QThread(parent)
 {

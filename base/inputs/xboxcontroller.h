@@ -1,9 +1,10 @@
 #ifndef XBOXCONTROLLER_H
 #define XBOXCONTROLLER_H
 
+#include <QFile>
 
 #include "abstractcontroller.h"
-#include <QFile>
+
 
 class XboxController : public AbstractController
 {

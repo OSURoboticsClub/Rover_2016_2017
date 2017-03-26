@@ -1,9 +1,11 @@
 #ifndef ABSTRACTCONTROLLER_H
 #define ABSTRACTCONTROLLER_H
 
+#include <linux/joystick.h>
+
 #include <QObject>
 #include <QFile>
-#include <linux/joystick.h>
+
 
 class AbstractController : public QObject
 {

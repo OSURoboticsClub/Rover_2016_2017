@@ -4,11 +4,8 @@
 #include <QObject>
 #include <QThread>
 #include <QTime>
-#include <QDebug>
 
 #include "serial/serialhandler.h"
-
-#define Handler SerialHandler::instance()->p()
 
 class MiniBoardUpdater : public QThread
 {

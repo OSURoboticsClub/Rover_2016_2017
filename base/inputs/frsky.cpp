@@ -1,5 +1,5 @@
 #include "frsky.h"
-#include <QDebug>
+
 
 FrSky::FrSky(QFile *file, QObject *parent)
     : AbstractController(file, parent)

@@ -3,10 +3,8 @@
 
 #include <QObject>
 #include <QThread>
-#include <QDebug>
 #include <QIODevice>
 #include <QtSerialPort/QSerialPort>
-
 
 #include <packets.h>
 // http://stackoverflow.com/questions/15103599/qt-serial-port-reading-data-consistently

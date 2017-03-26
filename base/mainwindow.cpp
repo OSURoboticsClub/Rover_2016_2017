@@ -2,7 +2,9 @@
 
 
 #include <QDebug>
-#include <QBuffer>
+
+#include "serial/serialhandler.h"
+#define Handler SerialHandler::instance()->p()
 
 
 MainWindow::MainWindow(QObject *_item) :
@@ -36,8 +38,6 @@ MainWindow::MainWindow(QObject *_item) :
     connect(Handler, SIGNAL(gpsTrackReceived(quint8 , qint16 , quint16)), this, SLOT(setUIGpsTrack(quint8,qint16,quint16)));
 
     item = _item;
-
-    //connect(item, SIGNAL(close), )
 
     connect(item, SIGNAL(_serialHandlerOn()), SerialHandler::instance(), SLOT(start()));
     connect(item, SIGNAL(_serialHandlerOff()), SerialHandler::instance(), SLOT(stop()));

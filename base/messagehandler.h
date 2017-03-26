@@ -1,17 +1,7 @@
 #ifndef MESSAGEHANDLER_H
 #define MESSAGEHANDLER_H
 
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QtSerialPort/QSerialPort>
-#include <QApplication>
-#include <QtQuickWidgets/QQuickWidget>
 #include <QTextStream>
-
-#include "mainwindow.h"
-#include "serial/serialhandler.h"
-
-
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {

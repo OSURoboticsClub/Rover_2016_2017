@@ -5,11 +5,13 @@
  * emit signals when a packet is recieved.
  **/
 
-
 #include "serial/serialhandler.h"
-#include "serial/singleton.h"
+
 #include <QSerialPortInfo>
 #include <QBuffer>
+#include <QDebug>
+
+#include "serial/singleton.h"
 
 
 SerialHandler* SerialHandler::createInstance()

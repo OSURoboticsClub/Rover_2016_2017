@@ -1,10 +1,10 @@
 #ifndef THREADARRAY_H
 #define THREADARRAY_H
 
-#include <QDebug>
 #include <QObject>
 #include <QThread>
 #include <QTime>
+
 #include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
 

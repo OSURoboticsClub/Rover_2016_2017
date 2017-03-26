@@ -1,17 +1,9 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QtSerialPort/QSerialPort>
 #include <QApplication>
-#include <QtQuickWidgets/QQuickWidget>
-#include <QTextStream>
-#include <QQuickView>
-#include <QQmlContext>
-#include <QQuickItem>
+#include <QQmlApplicationEngine>
 #include <QtWebEngine>
 
 #include "messagehandler.h"
 #include "mainwindow.h"
-#include "serial/serialhandler.h"
 
 #define SerialHandlerInstance Singleton<SerialHandler>::instance()
 

@@ -1,11 +1,13 @@
 #include "abstractcontroller.h"
-#include "xboxcontroller.h"
-#include "serial/serialhandler.h"
-#include <cmath>
+
+#include <unistd.h>
+
 #include <algorithm>
 #include <QDebug>
-#include <fcntl.h>
-#include <unistd.h>
+
+#include "xboxcontroller.h"
+#include "serial/serialhandler.h"
+
 
 AbstractController::AbstractController(QFile *file, QObject *parent)
     : QObject(parent),

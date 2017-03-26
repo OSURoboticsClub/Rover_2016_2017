@@ -1,12 +1,10 @@
 #ifndef CONTROLLERHANDLER_H
 #define CONTROLLERHANDLER_H
 
-
 #include <QObject>
 #include <QList>
 #include <QSharedPointer>
 #include <QThread>
-#include <QDebug>
 
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"

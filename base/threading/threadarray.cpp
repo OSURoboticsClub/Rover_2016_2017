@@ -1,5 +1,7 @@
 #include "threadarray.h"
 
+#include <QDebug>
+
 ThreadArray::ThreadArray(){
     numThreads = 0;
     clearing = false;

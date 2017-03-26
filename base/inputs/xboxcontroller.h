@@ -16,8 +16,8 @@ public:
 signals:
 
 protected:
-    void emitAxisChanges(int axisIndex);
-    void emitButtonChanges(int buttonIndex);
+    void emitAxisChanges(int axisIndex) Q_DECL_OVERRIDE;
+    void emitButtonChanges(int buttonIndex) Q_DECL_OVERRIDE;
 };
 
 #endif // XBOXCONTROLLER_H

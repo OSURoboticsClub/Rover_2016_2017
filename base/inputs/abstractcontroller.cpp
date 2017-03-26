@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <QDebug>
 
-#include "xboxcontroller.h"
 #include "serial/serialhandler.h"
 
 

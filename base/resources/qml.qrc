@@ -13,5 +13,6 @@
         <file>web/leaflet.rotatedMarker.js</file>
         <file>img/beaverLogoColon.png</file>
         <file>img/osurclogo.png</file>
+        <file>web/map.js</file>
     </qresource>
 </RCC>

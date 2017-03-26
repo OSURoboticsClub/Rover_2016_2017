@@ -1,10 +1,12 @@
 #include "controllerhandler.h"
 
-#include <QDebug>
-#include <algorithm>
-#include <QString>
-#include "serial/serialhandler.h"
 #include <linux/joystick.h>
+#include <algorithm>
+
+#include <QDebug>
+#include <QString>
+
+#include "serial/serialhandler.h"
 
 /* TO Be used for updating the controllers and handling. The core functionality
  * should be moved to the AbstractController Class. The AbstractController class

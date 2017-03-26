@@ -12,10 +12,8 @@ FrSky::~FrSky()
 }
 
 
-void FrSky::emitAxisChanges(quint8 axisIndex){
-
-
-
+void FrSky::emitAxisChanges(quint8 axisIndex)
+{
     if(m_mode == 0){
         if(axisIndex == 0 || axisIndex == 1) { //left and right y - drive motor power
             qint16 l = m_currentState->axes[0];
@@ -40,7 +38,8 @@ void FrSky::emitAxisChanges(quint8 axisIndex){
 }
 
 
-void FrSky::emitButtonChanges(quint8 buttonIndex){
+void FrSky::emitButtonChanges(quint8 buttonIndex)
+{
     if(buttonIndex == 5){ //SF - Pause
         sendPauseState(m_currentState->buttons[5]);
     }

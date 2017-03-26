@@ -2,6 +2,7 @@
 #define MESSAGEHANDLER_H
 
 #include <QTextStream>
+#include <QFile>
 
 void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
 {

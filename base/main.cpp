@@ -5,8 +5,6 @@
 #include "messagehandler.h"
 #include "backend.h"
 
-#define SerialHandlerInstance Singleton<SerialHandler>::instance()
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

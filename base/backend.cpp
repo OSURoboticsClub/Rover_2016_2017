@@ -4,8 +4,8 @@
 #include <QDebug>
 
 #include "serial/serialhandler.h"
-#define Serial SerialHandler::instance()
 
+#define Serial SerialHandler::instance()
 
 Backend::Backend(QObject *view) :
     m_inputs(new ControllerHandler),
@@ -65,17 +65,6 @@ Backend::~Backend()
 {
     close();
 }
-
-
-/* *
- * Might need to add an "exec" to this,
- * as well as a "_connectedAlready" bool
- */
-
-
-//add exec
-
-
 
 
 void Backend::close()
@@ -223,14 +212,14 @@ void Backend::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 
 
 void Backend::colorSerialHandler(QString color, bool isActive){
     if (m_view){
-        m_view->setProperty("colorSerialSerial", color);
-        m_view->setProperty("activeSeriaSerial", isActive);
+        m_view->setProperty("colorSerialHandler", color);
+        m_view->setProperty("activeSeriaHandler", isActive);
     }
 }
 void Backend::colorControllerHandler(QString color, bool isActive){
     if (m_view){
-        m_view->setProperty("colorControllerSerial", color);
-        m_view->setProperty("activeControllerSerial", isActive);
+        m_view->setProperty("colorControllerHandler", color);
+        m_view->setProperty("activeControllerHandler", isActive);
     }
 }
 void Backend::colorUpdater(QString color, bool isActive){

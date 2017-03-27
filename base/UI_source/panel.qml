@@ -18,48 +18,18 @@ Item {
     height: 600
 
 
-    Gauge {
-        id: leftMotor
-        x: 0
-        y: 36
-        width: parent.width * 0.5
-        height: parent.height * 0.3
-        scale: 1.0
-        antialiasing: true
-        maximumValue: 13
-        value: 5
-        visible: true
-    }
-
-    Gauge {
-        id: rightMotor
-        x: 100
-        y: 36
-        width: parent.width * 0.5
-        height: parent.height * 0.3
-        anchors.leftMargin: 0
-        transformOrigin: Item.Center
-        antialiasing: true
-        anchors.left: leftMotor.right;
-        enabled: true
-        visible: true
-        value: 10
-        rotation: 0
-        maximumValue: 13
-        clip: false
-    }
-
     Item {
         id: voltageGuage
         property int min: 20
         property int max: 25
         property double value: testVoltProgressBar
-        property color color: "green"
+        property color color: "black"
 
-        width: parent.width; height: 23
+        width: parent.width; height: 37
         //        clip: true
         Rectangle {
             id: border
+            height: 51
             anchors.fill: parent
             anchors.bottomMargin: 2
             anchors.rightMargin: 2
@@ -75,13 +45,29 @@ Item {
             anchors.margins: 2
 
             width: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));
-            color: "red"
+            color: "blue"
 
+        }
+
+        Text {
+            id: voltageGuageLabel
+            x: 71
+            y: 10
+            anchors.leftMargin: 100
+            text: qsTr("Voltage")
+            anchors.horizontalCenter: border.horizontalCenter
+            font.bold: true
+            font.family: "Tahoma"
+            font.pixelSize: 13
         }
     }
 
     ColumnLayout {
         id: columnLayout1
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
         anchors.fill: parent
     }
 

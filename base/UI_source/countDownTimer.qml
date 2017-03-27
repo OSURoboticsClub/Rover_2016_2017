@@ -128,39 +128,39 @@ Rectangle {
             height: 50
 
         }
-
-        Image {
-            id: colonLeft
-            x: 60
-            y: 3
-            width: 10
-            height: 45
-            source: "beaverLogoColon.png"
-        }
-        Image {
-            id: colonRight
-            x: 129
-            y: 3
-            width: 10
-            height: 45
-            source: "beaverLogoColon.png"
-        }
         /*
-        Text {
+        Image {
             id: colonLeft
             x: 60
-            y: 0
-            text: qsTr(":")
-            font.pixelSize: 36
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
         }
-        Text {
+        Image {
             id: colonRight
             x: 129
-            y: 0
-            text: qsTr(":")
-            font.pixelSize: 36
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
         }
         */
+        Text {
+            id: colonLeft
+            x: 60
+            y: 0
+            text: qsTr(":")
+            font.pixelSize: 36
+        }
+        Text {
+            id: colonRight
+            x: 129
+            y: 0
+            text: qsTr(":")
+            font.pixelSize: 36
+        }
+
     }
 
     Button {

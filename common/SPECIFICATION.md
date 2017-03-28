@@ -57,7 +57,7 @@ don't change the name of existing command arguments.
 | Swerve Drive State     | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Arm Motors             | RW | 0x12 | i8 arm_motor_1, i8 arm_motor_2, i8 arm_motor_3, i8 arm_motor_4, i8 arm_motor_5 | 0,0,0,0,0 | -127 = full reverse 128 = full forward TODO: Define motor->joint mapping
 | Potentiometers         | R  | 0x13 | u8 pot_1, u8 pot_2, u8 pot_3, u8 pot_4, u8 pot_5 | 0,0,0,0,0 | Potentiometer readings, each 0-255. |
-| Servo                  |  W | 0x14 | u8 ax12_addr, i16 ax12_angle | 0,512 | Set the target angle of an AX12 servo. |
+| Servo                  |  W | 0x14 | u8 ax12_addr, u16 ax12_angle | 0,512 | Set the target angle of an AX12 servo. |
 | S Bus Values 1         | R  | 0x15 | u16 sbus_1, u16 sbus_2, u16 sbus_3, u16 sbus_4, u16 sbus_5, u16 sbus_6, u16 sbus_7, u16 sbus_8 | - | S-Bus channel values. |
 | S Bus Values 2         | R  | 0x16 | u16 sbus_9, u16 sbus_10, u16 sbus_11, u16 sbus_12, u16 sbus_13, u16 sbus_14, u16 sbus_15, u16 sbus_16, u8 sbus_failsafe | - | S-Bus channel values plus a status bit indicating if the failsafe has been set. |
 | Select Camera          | RW | 0x20 | u8 selected_camera | 1 | 1-6; select camera feed to send to the base station and to send commands to. Note: camera output will be disabled unless the callsign has been set. TODO: define which camera corresponds to which number.  |
@@ -69,8 +69,8 @@ don't change the name of existing command arguments.
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
 | Compass Heading        | R  | 0x29 | u8 compass_heading_valid, i16 compass_heading | 0,0 | Magnetic compass heading. TODO: define units and axis directions. |
-| Pan Tilt Primary       | RW | 0x2A | i8 pan, i8 tilt | 0,0 | Primary pan/tilt system angles. |
-| Pan Tilt Secondary     | RW | 0x2B | i8 pan2, i8 tilt2 | 0,0 | Secondary pan/tilt system angles. |
+| Pan Tilt Primary       | RW | 0x2A | u16 pan, u16 tilt | 590,0 | Primary pan/tilt system angles. Both range from 0-1023. |
+| Pan Tilt Secondary     | RW | 0x2B | u16 pan2, u16 tilt2 | 0,0 | Secondary pan/tilt system angles.  Both range from 0-1023.|
 | GPIO Direction         | RW | 0x30 | u8 gpio_dir | 0 | GPIO pin directions. 1 = out, 0 = in. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Out Value         | RW | 0x31 | u8 gpio_out | 0 | GPIO pin directions. 1 = high, 0 = low. If high in input mode, pull-up resistor is enabled. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Read State        | RW | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |

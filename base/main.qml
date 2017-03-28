@@ -133,7 +133,7 @@ Item {
         Row {
             id: contentRow
             width: parent.width
-            height: parent.height * 0.8
+            height: parent.height
             Loader {
                 id: contentLoader
                 width: parent.width
@@ -142,18 +142,6 @@ Item {
             }
         }
 
-
-        Row {
-            id: consoleRow
-            width: parent.width
-            height: parent.height * 0.2
-            TextArea {
-                id: logger
-                width: parent.width
-                height: parent.height
-                readOnly: false
-            }
-        }
     }
 
 }

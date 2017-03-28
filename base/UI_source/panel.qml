@@ -53,7 +53,7 @@ Item {
             id: voltageGuageLabel
             x: 71
             y: 10
-            text: qsTr("Voltage")
+            text: root.testVoltProgressBar
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
@@ -63,23 +63,11 @@ Item {
         }
     }
 
-    Item {
-        id: timerBackwards
-        x: 0
-        y: 300
-        width: 200
-        height: 200
-        Loader {
-            id: thisTimer
-            anchors.fill: parent
-            source: "countDownTimer.qml"
-        }
-    }
-
     Image {
         id: logo
         x: 0
         y: 501
+        anchors.bottom: parent.bottom
         width: parent.width
         height: 91
         source: "Logo0.png"
@@ -95,9 +83,11 @@ Item {
     CircularGauge {
         id: speedGuage
         x: 0
-        y: 43
         width: 200
-        height: 251
+        anchors.bottom: compassHeading.top
+        anchors.bottomMargin: -10
+        anchors.top: voltageGuage.bottom
+        anchors.topMargin: 6
         anchors.horizontalCenter: parent.horizontalCenter
         minimumValue: 0
         maximumValue: 20
@@ -155,5 +145,87 @@ Item {
             }
         }
     }
+    CircularGauge {
+        id: compassHeading
+        x: -12
+        width: 200
+        anchors.horizontalCenterOffset: 0
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: voltageGuage.bottom
+        anchors.topMargin: 246
+        minimumValue: 0
+        maximumValue: 360
+        value: root.gps_heading
+        Text {
+            id: compassHeadingText
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.bottom
+            anchors.topMargin: 10
+            text: root.gps_heading
+            font.family: "Verdana"
+            font.pointSize: 16
+        }
 
+        function colorChooser(value, min, max){
+            var range = max - min;
+            if (range * .25 > value){
+                //orangish
+                return "#552100";
+            }
+            else if (range * .5 > value){
+                //brownish
+                return "#553500";
+            }
+            else if (range * .75 > value){
+                //blueish
+                return "#051A38";
+            }
+            else {
+                //green-blueish
+                return "#00372B";
+
+            }
+        }
+        style: CircularGaugeStyle {
+            minimumValueAngle: 0
+            maximumValueAngle: 360
+            minorTickmarkCount: 2
+            tickmarkStepSize: 30
+            needle: Rectangle {
+                implicitWidth: outerRadius * 0.03
+                implicitHeight: outerRadius * .78
+                antialiasing: true
+                color: compassHeading.colorChooser(compassHeading.value, compassHeading.minimumValue, compassHeading.maximumValue);
+            }
+            foreground: Item {
+                Rectangle {
+                    width: outerRadius * 0.2
+                    height: width
+                    radius: width / 2
+                    color: compassHeading.colorChooser(compassHeading.value, compassHeading.minimumValue, compassHeading.maximumValue);
+                    anchors.centerIn: parent
+                }
+            }
+            tickmarkLabel: Text {
+                font.pixelSize: Math.max(6, outerRadius * 0.1)
+                text: styleData.value
+                color: "black"
+                antialiasing: true
+            }
+            tickmark: Rectangle {
+                visible: styleData.value < compassHeading.maximumValue || styleData.value % 10 == 0
+                implicitWidth: outerRadius * 0.02
+                antialiasing: true
+                implicitHeight: outerRadius * 0.11
+                color: "black"
+            }
+            minorTickmark: Rectangle {
+                visible: styleData.value < speedGuage.maximumValue
+                implicitWidth: outerRadius * .01
+                antialiasing: true
+                implicitHeight: outerRadius * .03
+                color: "black"
+            }
+        }
+    }
 }

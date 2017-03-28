@@ -20,5 +20,6 @@
         <file>UI_source/Logo2.png</file>
         <file>UI_source/Logo1.png</file>
         <file>UI_source/Logo0.png</file>
+        <file>UI_source/panelRight.qml</file>
     </qresource>
 </RCC>

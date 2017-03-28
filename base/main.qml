@@ -63,7 +63,7 @@ Item {
 
     property int gps_track_valid: 0
     property int gps_heading: 0
-    property int gps_speed: 0
+    property double gps_speed: 0
 
     property string colorSerialHandler: "white"
     property bool activeSeriaHandler: false

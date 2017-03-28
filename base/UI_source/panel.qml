@@ -25,11 +25,12 @@ Item {
         property int max: 25
         property double value: testVoltProgressBar
         property color color: "black"
+        property double fakeVoltage: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));
+
 
         width: parent.width; height: 37
-        //        clip: true
         Rectangle {
-            id: borderVoltage
+            id: border
             height: 51
             anchors.fill: parent
             anchors.bottomMargin: 2
@@ -39,27 +40,26 @@ Item {
             border.color: parent.color
         }
         Rectangle {
-            id: progressVoltage
+            id: progress
             anchors.top: border.top
             anchors.bottom: border.bottom
             anchors.left: border.left
             anchors.margins: 2
-
-            width: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));
-            color: "blue"
-
+            width: parent.fakeVoltage
+            color: ((voltageGuageLabel.width/2) + (parent.width/2)) <= (progress.width) ? "blue" : "red"
         }
 
         Text {
             id: voltageGuageLabel
             x: 71
             y: 10
-            anchors.leftMargin: 100
             text: qsTr("Voltage")
-            anchors.horizontalCenter: border.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
             font.family: "Tahoma"
             font.pixelSize: 13
+            color: ((voltageGuageLabel.width/2) + (parent.width/2)) <= (progress.width) ? "white" : "black";
         }
     }
 
@@ -96,12 +96,13 @@ Item {
         id: speedGuage
         x: 0
         y: 43
-        width: 388
+        width: 200
         height: 251
+        anchors.horizontalCenter: parent.horizontalCenter
         minimumValue: 0
         maximumValue: 20
         stepSize: 1
-        value: root.gps_speed
+        value: root.gps_speed/1000
         Text {
             font.family: "Verdana"
             font.pointSize: 16
@@ -109,7 +110,7 @@ Item {
             anchors.horizontalCenterOffset: 0
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            text: root.gps_speed + " UPS"
+            text: root.gps_speed/1000 + " KPH"
         }
 
         style: CircularGaugeStyle {
@@ -119,7 +120,7 @@ Item {
             maximumValueAngle: 90
             needle: Rectangle {
                 implicitWidth: outerRadius * 0.03
-                implicitHeight: outerRadius * 1.02
+                implicitHeight: outerRadius * .85
                 antialiasing: true
                 color: "black"
             }

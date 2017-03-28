@@ -6,8 +6,8 @@ import QtQuick.Controls 1.4
 
 Item {
     id: root
-    width: 1100
-    height: 600
+    width: 1300
+    height: 800
 
 
 
@@ -63,7 +63,7 @@ Item {
 
     property int gps_track_valid: 0
     property int gps_heading: 0
-    property int gps_speed: 0
+    property double gps_speed: 0
 
     property string colorSerialHandler: "white"
     property bool activeSeriaHandler: false
@@ -94,47 +94,46 @@ Item {
     }
 
 
-    Column {
-        id: sidebarCol
-        width: 0.3 * parent.width
+    Item {
+        id: panelLeft
+        width: 0.2 * parent.width
         height: parent.height
+        anchors.right: mainCol.left
+        anchors.left: parent.left
         Loader {
             id: sidebarLoader
             anchors.fill: parent
             source: "UI_source/panel.qml"
         }
     }
-    /*
-    Column {
-        id: video
-        x: 800
-        y: 0
+
+    Item {
+        id: panelRight
         anchors.left: mainCol.right
         anchors.right: parent.right
-        width: .3 *parent.width
+        width: .2 *parent.width
         height: parent.height
         Loader {
-            id: videoLoader
-            width: parent.width
-            height: parent.height
-            source: "video.qml"
+            id: panelRightLoader
+            anchors.fill: parent
+            source: "UI_source/panelRight.qml";
         }
     }
-    */
+
 
     Column {
         id: mainCol
-        anchors.left: sidebarCol.right
+        anchors.left: panelLeft.right
         anchors.leftMargin: 0
 
         anchors.rightMargin: 0
-        width:  0.7 * parent.width
+        width:  0.6 * parent.width
         height: parent.height
 
         Row {
             id: contentRow
             width: parent.width
-            height: parent.height * 0.8
+            height: parent.height
             Loader {
                 id: contentLoader
                 width: parent.width
@@ -143,18 +142,6 @@ Item {
             }
         }
 
-
-        Row {
-            id: consoleRow
-            width: parent.width
-            height: parent.height * 0.2
-            TextArea {
-                id: logger
-                width: parent.width
-                height: parent.height
-                readOnly: true
-            }
-        }
     }
 
 }

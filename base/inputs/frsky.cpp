@@ -63,5 +63,5 @@ void FrSky::emitButtonChanges(quint8 buttonIndex){
                 sendSwerveDriveState(0);
            }
         }
-    }
+    }    
 }

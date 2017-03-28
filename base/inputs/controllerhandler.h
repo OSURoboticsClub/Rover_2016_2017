@@ -36,7 +36,7 @@ typedef QSharedPointer<AbstractController> ControllerPointer;
  *
  * Since this class is a subclass of QThread, the event loop as well as any
  * necessary setup can be invoked by calling the run() method. Likewise, calling
- * the quit() slot will exit the event loop.
+ * the stop() slot will exit the event loop.
  */
 
 class ControllerHandler : public QThread

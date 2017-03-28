@@ -182,6 +182,8 @@ Item {
         text: qsTr("upVolt")
         onClicked: {
             root.testVoltProgressBar += .3;
+            root.gps_speed += 500;
+            root.gps_heading += 30;
         }
     }
 
@@ -192,6 +194,9 @@ Item {
         text: qsTr("downVolt")
         onClicked: {
             root.testVoltProgressBar -= .3;
+            root.gps_speed -= 500;
+            root.gps_heading -= 30;
+
         }
     }
 }

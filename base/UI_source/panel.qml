@@ -10,14 +10,13 @@ import QtQuick.Controls 1.1
 import QtQuick.Controls 1.0
 import QtQuick.Controls 1.4
 
-import "simpleGuage" as Guage
-
 
 Item {
     property int t
     id: item1
     width: 200
     height: 600
+
 
 
     Item {
@@ -30,7 +29,7 @@ Item {
         width: parent.width; height: 37
         //        clip: true
         Rectangle {
-            id: border
+            id: borderVoltage
             height: 51
             anchors.fill: parent
             anchors.bottomMargin: 2
@@ -40,7 +39,7 @@ Item {
             border.color: parent.color
         }
         Rectangle {
-            id: progress
+            id: progressVoltage
             anchors.top: border.top
             anchors.bottom: border.bottom
             anchors.left: border.left
@@ -64,15 +63,6 @@ Item {
         }
     }
 
-    ColumnLayout {
-        id: columnLayout1
-        anchors.rightMargin: 0
-        anchors.bottomMargin: 0
-        anchors.leftMargin: 0
-        anchors.topMargin: 0
-        anchors.fill: parent
-    }
-
     Item {
         id: timerBackwards
         x: 0
@@ -87,60 +77,82 @@ Item {
     }
 
     Image {
-        id: rectangle1
+        id: logo
         x: 0
         y: 501
         width: parent.width
         height: 91
-        source: "osurclogo.png"
+        source: "Logo0.png"
+        property int logoNumber: 0
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                logo.logoNumber++;
+                logo.source = "Logo" + (logo.logoNumber % 3) + ".png";
+            }
+        }
     }
+    CircularGauge {
+        id: speedGuage
+        x: 0
+        y: 43
+        width: 388
+        height: 251
+        minimumValue: 0
+        maximumValue: 20
+        stepSize: 1
+        value: root.gps_speed
+        Text {
+            font.family: "Verdana"
+            font.pointSize: 16
+            anchors.verticalCenterOffset: -40
+            anchors.horizontalCenterOffset: 0
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: root.gps_speed + " UPS"
+        }
+
+        style: CircularGaugeStyle {
+            minorTickmarkCount: 5
+            tickmarkStepSize: 5
+            minimumValueAngle: -90
+            maximumValueAngle: 90
+            needle: Rectangle {
+                implicitWidth: outerRadius * 0.03
+                implicitHeight: outerRadius * 1.02
+                antialiasing: true
+                color: "black"
+            }
+            foreground: Item {
+                Rectangle {
+                    width: outerRadius * 0.2
+                    height: width
+                    radius: width / 2
+                    color: "black"
+                    anchors.centerIn: parent
+                }
+            }
+            tickmarkLabel: Text {
+                font.pixelSize: Math.max(6, outerRadius * 0.1)
+                text: styleData.value
+                color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+                antialiasing: true
+            }
+            tickmark: Rectangle {
+                visible: styleData.value < speedGuage.maximumValue || styleData.value % 10 == 0
+                implicitWidth: outerRadius * 0.02
+                antialiasing: true
+                implicitHeight: outerRadius * 0.11
+                color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+            }
+            minorTickmark: Rectangle {
+                visible: styleData.value < speedGuage.maximumValue
+                implicitWidth: outerRadius * .01
+                antialiasing: true
+                implicitHeight: outerRadius * .03
+                color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+            }
+        }
+    }
+
 }
-
-//    TextInput {
-//        id: time
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 255
-//        y: 267
-//    }
-//    TextInput {
-//        id: mins
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 210
-//        y: 267
-//    }
-//    TextInput {
-//        id: hours
-//        font.pixelSize: 30
-//        text: "--"
-//        x: 175
-//        y: 267
-//    }
-//    Timer{
-//        id: countdownTimer
-//        interval: 1000
-//        running: time.text > 0 || mins.text > 0 || hours.text > 0
-//        repeat: true
-//        onTriggered: {
-//            if (time.text == 0 && (mins.text == 0 || mins.text == "--") && (hours.text == 0|| hours.text == "--")){
-//                mins.text = "--"
-//                time.text = "--"
-//                hours.text = "--"
-//            }
-//            else if (time.text == 0 && mins.text == 0){
-//                hours.text = --hours.text
-//                time.text = "59"
-//                mins.text = "59"
-//            }
-//            else if (time.text == 0){
-//                mins.text = --mins.text
-//                time.text = "59"
-//            }
-//            else{
-//                time.text = --time.text
-//            }
-//        }
-
-//    }
-

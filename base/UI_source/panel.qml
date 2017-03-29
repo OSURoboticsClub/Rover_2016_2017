@@ -23,7 +23,7 @@ Item {
         id: voltageGuage
         property int min: 20
         property int max: 25
-        property double value: testVoltProgressBar
+        property double value: root.battery_voltage/1000
         property color color: "black"
         property double fakeVoltage: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));
 
@@ -53,7 +53,7 @@ Item {
             id: voltageGuageLabel
             x: 71
             y: 10
-            text: root.testVoltProgressBar
+            text: parent.value + "V";
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             font.bold: true
@@ -161,7 +161,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.bottom
             anchors.topMargin: 10
-            text: root.gps_heading
+            text: root.gps_heading + " deg"
             font.family: "Verdana"
             font.pointSize: 16
         }
@@ -190,10 +190,10 @@ Item {
             minimumValueAngle: 0
             maximumValueAngle: 360
             minorTickmarkCount: 2
-            tickmarkStepSize: 30
+            tickmarkStepSize: 45
             needle: Rectangle {
                 implicitWidth: outerRadius * 0.03
-                implicitHeight: outerRadius * .78
+                implicitHeight: outerRadius * .74
                 antialiasing: true
                 color: compassHeading.colorChooser(compassHeading.value, compassHeading.minimumValue, compassHeading.maximumValue);
             }
@@ -211,6 +211,7 @@ Item {
                 text: styleData.value
                 color: "black"
                 antialiasing: true
+                visible: styleData.value < compassHeading.maximumValue
             }
             tickmark: Rectangle {
                 visible: styleData.value < compassHeading.maximumValue || styleData.value % 10 == 0

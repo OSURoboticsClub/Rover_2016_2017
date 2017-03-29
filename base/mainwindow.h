@@ -66,6 +66,7 @@ public slots:
     void colorSerialHandler(QString, bool);
     void colorControllerHandler(QString, bool);
     void colorUpdater(QString, bool);
+    void frSkyPaused(qint16);
     //batteryVoltageReceived(battery_voltage)
 
 private slots:

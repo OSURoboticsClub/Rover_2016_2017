@@ -181,9 +181,9 @@ Item {
         y: 385
         text: qsTr("upVolt")
         onClicked: {
-            root.testVoltProgressBar += .3;
-            root.gps_speed += 500;
-            root.gps_heading += 30;
+//            root.testVoltProgressBar += .3;
+//            root.gps_speed += 500;
+//            root.gps_heading += 30;
         }
     }
 
@@ -193,10 +193,20 @@ Item {
         y: 385
         text: qsTr("downVolt")
         onClicked: {
-            root.testVoltProgressBar -= .3;
-            root.gps_speed -= 500;
-            root.gps_heading -= 30;
+//            root.testVoltProgressBar -= .3;
+//            root.gps_speed -= 500;
+//            root.gps_heading -= 30;
 
+        }
+    }
+
+    Button {
+        id: connectDevice
+        x: 367
+        y: 105
+        text: qsTr("connect device")
+        onClicked: {
+            root._connectDevice()
         }
     }
 }

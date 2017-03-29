@@ -86,6 +86,7 @@ void AbstractController::sendPauseState(qint16 pauseValue){
     qDebug("Send Pause: %i",pauseState);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePause",
                               Q_ARG( unsigned char, pauseState ));
+    emit frSkyPaused(pauseState);
 }
 
 void AbstractController::sendSelectCamera(qint16 increment){

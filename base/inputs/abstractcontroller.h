@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QFile>
 #include <linux/joystick.h>
-
 class AbstractController : public QObject
 {
     Q_OBJECT
@@ -14,6 +13,8 @@ public:
     virtual void emitChanges();
 
 signals:
+    void frSkyPaused(qint16);
+
 
 
 
@@ -41,6 +42,7 @@ protected:
         qint16 buttons[32];
     };
     JoystickState *m_currentState;
+
 
 
 

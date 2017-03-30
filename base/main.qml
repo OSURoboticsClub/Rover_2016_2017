@@ -23,6 +23,7 @@ Item {
     signal _updateRoverPosistion()
     signal _roverPosTrigger()
     signal _connectDevice()
+    signal _connectControllers()
 
 
     property int battery_voltage: 0

@@ -40,6 +40,7 @@ void FrSky::emitAxisChanges(quint8 axisIndex){
         else if(axisIndex == 5){//left pot
             //armGripper();
         }
+
     }
     if (axisIndex == 3){
 
@@ -79,6 +80,9 @@ void FrSky::emitButtonChanges(quint8 buttonIndex){
                 sendSwerveDriveState(0);
             }
         }
+    }
+    if (buttonIndex == 7){
+        panMode = m_currentState->buttons[7];
     }
 
 }

@@ -14,11 +14,18 @@
         <div id="mapid" style="height: 100%; width: 100%"></div>
 
         <script id="script1">
-
-            var lat = 38.4063;
-            var long = -110.792286;
-
-
+				/*42.264638, -118.675529 */
+            var lat = 42.264638;
+            var long = -118.675529;
+				
+				/*
+				var lat = 38.390262;
+				var long = -110.784326;
+				*/
+				/*
+				var lat = 44.561850;
+				var long = -123.281650;
+				*/            
             var roverLat = 0;
             var roverLong = 0;
             var roverRotation = 0;
@@ -28,7 +35,7 @@
 
             var wayPointLatLong;
             var clickCoords;
-			var wayPointName;
+				var wayPointName;
 
             var clickPopup = L.popup();
             var map = L.map('mapid').setView([lat, long], 17);
@@ -40,20 +47,25 @@
                 else
                     return document.getElementById("_wayPointName").value;
             }
-
+				
             L.tileLayer.wms(
-                "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
+                "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer",
                 {
-                    layers: "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
-                    useCache: false,
+                    layers: "0,1,2,3,4,5,6,7,8,9,10",
+                    useCache: true,
                     crossOrigin: true,
-                    useOnlyCache: true
+                    useOnlyCache: false
                 }
             ).addTo(map);
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+           
+            L.tileLayer.wms('https://basemap.nationalmap.gov/arcgis/services/USGSImageryOnly/MapServer/WMSServer', {
+                    layers: "0",
+						  maxZoom: 15,
+                    useCache: true,
+                    crossOrigin: true,
+                    useOnlyCache: false
             }).addTo(map);
-
+			
             var snazzyCircle = L.icon({
                 iconUrl: 'snazzyCircle.png',
                 iconSize: [25,25],

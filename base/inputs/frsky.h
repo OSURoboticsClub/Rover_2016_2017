@@ -21,6 +21,7 @@ protected:
     QTime timeAxis;
     bool axisEnable;
     int _axis_wait_time_ms;
+    int panMode;
 
 };
 

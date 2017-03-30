@@ -26,13 +26,16 @@ protected:
     void sendPauseState(qint16 p);
     void sendSwerveDriveState(qint16 s);
     void sendSelectCamera(qint16 i);
-    void sendPanTilt(qint8,qint8,qint8,qint8);
+    void sendPanPrimary(qint16,qint16);
+  //  void sendPanSecondary(qint16,qint16);
 
 
     QFile *m_file;
     struct js_event m_jse;
     int m_id;
     int m_camera_state = 1;
+    quint16 m_cameraPan = 0;
+    quint16 m_cameraTilt = 0;
     int m_mode = 0;
     bool swerveStateON = false;
     float m_axisTolerance;

@@ -79,10 +79,10 @@ void ControllerHandler::setControllers() {
                 frSky = new FrSky(file);
                 m_controllers->push_back(ControllerPointer(frSky));
             }
-            else{
+            if (name.startsWith("Afterglow")){
                 xbox = new XboxController(file);
                 m_controllers->push_back(ControllerPointer(xbox));
-                qDebug() << "xbox controller starts with:" + name;
+//                qDebug() << "xbox controller starts with:" + name;
             }
         }
       }

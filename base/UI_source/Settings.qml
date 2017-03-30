@@ -202,11 +202,18 @@ Item {
 
     Button {
         id: connectDevice
-        x: 367
-        y: 105
+        x: 400
+        y: 54
         text: qsTr("connect device")
         onClicked: {
             root._connectDevice()
         }
+    }
+
+    Button {
+        id: connectController
+        x: 249
+        y: 54
+        text: qsTr("connect controllers")
     }
 }

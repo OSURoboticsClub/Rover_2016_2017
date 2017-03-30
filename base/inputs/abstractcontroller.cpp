@@ -10,7 +10,7 @@
 AbstractController::AbstractController(QFile *file, QObject *parent)
     : QObject(parent),
       m_file(file),
-      m_axisTolerance(0),
+      m_axisTolerance(500),
       m_currentState(new JoystickState())
 {
 }
@@ -30,9 +30,14 @@ void AbstractController::emitChanges()
 {
     while(read(m_file->handle(), &m_jse, sizeof(m_jse)) > 0){
         if((m_jse.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS){
-            m_currentState->axes[m_jse.number] = m_jse.value;
-            qDebug("Axis: %i, value: %i", m_jse.number, m_jse.value);
-            emitAxisChanges(m_jse.number);
+            if(abs(m_currentState->axes[m_jse.number] - m_jse.value) > m_axisTolerance) {
+                m_currentState->axes[m_jse.number] = m_jse.value;
+                qDebug("Axis: %i, value: %i", m_jse.number, m_jse.value);
+                emitAxisChanges(m_jse.number);
+            } else {
+                m_currentState->axes[m_jse.number] = m_jse.value;
+            }
+
         } else if((m_jse.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON){
             qDebug("Button: %i, value: %i", m_jse.number, m_jse.value);
             m_currentState->buttons[m_jse.number] = m_jse.value;
@@ -116,19 +121,24 @@ void AbstractController::sendSelectCamera(qint16 increment){
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSelectCamera",
                               Q_ARG( signed char, selected_camera ));
 }
-void AbstractController::sendPanTilt(qint8 _pan, qint8 _tilt, qint8 _pan2, qint8 _tilt2){
-    double conversion_factor = 255;
-    int8_t pan = static_cast<uint8_t>(_pan/conversion_factor);
-    int8_t tilt = static_cast<uint8_t>(_tilt/conversion_factor);
+void AbstractController::sendPanPrimary(qint16 _pan, qint16 _tilt){
+    quint8 conversion_factor = 255;
+    quint16 m_cameraPan = static_cast<quint16>((_pan + m_cameraPan) / conversion_factor);
+    quint16 m_cameraTilt = static_cast<quint16>((_tilt + m_cameraTilt) / conversion_factor);
+    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltPrimary",
+                              Q_ARG(quint16, m_cameraPan),
+                              Q_ARG(quint16, m_cameraTilt));
+}
+/*
+void AbstractController::sendPanSecondary(qint16 _pan2, qint16 _tilt2){
+    quint8 conversion_factor = 255;
     int8_t pan2 = static_cast<uint8_t>(_pan2/conversion_factor);
     int8_t tilt2 = static_cast<uint8_t>(_tilt2/conversion_factor);
-    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltPrimary",
-                              Q_ARG(signed char, pan),
-                              Q_ARG(signed char, tilt));
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltSecondary",
                               Q_ARG(signed char, pan2),
                               Q_ARG(signed char, tilt2));
 }
+*/
 
 //sendCameraCommand
 //sendServo?

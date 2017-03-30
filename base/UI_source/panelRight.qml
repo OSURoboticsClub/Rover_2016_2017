@@ -123,7 +123,7 @@ Item {
 
     Text {
         function isPaused(){
-            if (root.frSkyPaused){
+            if (!root.frSkyPaused){
                 return "PAUSED";
             }
             else {
@@ -157,7 +157,7 @@ Item {
 
     Text {
         function isModeChanged(){
-            if (root.frSkyModeChanged){
+            if (!root.frSkyModeChanged){
                 return "Mode 1";
             }
             else{

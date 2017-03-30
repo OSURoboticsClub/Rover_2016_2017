@@ -91,18 +91,16 @@ void AbstractController::sendPauseState(qint16 pauseValue){
 void AbstractController::sendSelectCamera(qint16 increment){
     //Increments up if true, and down if false.
     //Loops around to other end if necessary.
-    if(increment){
+    if(increment) {
         if(m_camera_state < 6)
             m_camera_state++;
         else
             m_camera_state = 1;
-    }
-    else{
+    } else {
         if(m_camera_state > 1)
             m_camera_state--;
         else
             m_camera_state = 6;
-
     }
     //option without looping around
     /*
@@ -113,7 +111,7 @@ void AbstractController::sendSelectCamera(qint16 increment){
     */
     uint8_t selected_camera = static_cast<uint8_t>(m_camera_state);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSelectCamera",
-                              Q_ARG( signed char, selected_camera ));
+                              Q_ARG( unsigned char, selected_camera ));
 }
 
 //sendCameraCommand

@@ -60,6 +60,10 @@ public:
      * controller input handling.
      */
     void run() Q_DECL_OVERRIDE;
+    QList<ControllerPointer> *m_controllers;
+    FrSky *frSky;
+    XboxController *xbox;
+
 
 public slots:
     void stop();
@@ -72,7 +76,6 @@ private:
     /*
      * The list containing the controller class instances that this class uses.
      */
-    QList<ControllerPointer> *m_controllers;
     bool m_stop;
 };
 

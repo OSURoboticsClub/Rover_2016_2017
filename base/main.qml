@@ -22,6 +22,7 @@ Item {
     signal _resumeAllThreads()
     signal _updateRoverPosistion()
     signal _roverPosTrigger()
+    signal _connectDevice()
 
 
     property int battery_voltage: 0
@@ -71,6 +72,8 @@ Item {
     property bool activeControllerHandler: false
     property string colorUpdater: "white"
     property bool activeUpdater: false
+    property int frSkyPaused: 0
+    property int frSkyModeChanged: 0
 
     //delete later: testing progress bar
     property double testVoltProgressBar: 20

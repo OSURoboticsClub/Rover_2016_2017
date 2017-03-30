@@ -14,7 +14,7 @@ MainWindow::MainWindow(QObject *_item) :
     threadarray->push(m_inputs, false);
     threadarray->push(m_updater, false);
 
-    SerialHandler::instance()->connectDevice();
+    //SerialHandler::instance()->connectDevice();
 
 
 
@@ -57,8 +57,7 @@ MainWindow::MainWindow(QObject *_item) :
     connect(item, SIGNAL(_allThreadsClose()), this, SLOT(close()));
     connect(item, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
 
-    if (item)
-        item->setProperty("battery_voltage", 2017);
+    connect(item, SIGNAL(_connectDevice()), SerialHandler::instance(), SLOT(connectDevice()));
 }
 
 //would need to destruct in the close button as well
@@ -94,6 +93,8 @@ void MainWindow::close()
         item->deleteLater();
     }
 }
+
+
 void MainWindow::pauseThreads(){
     SerialHandler::instance()->stop();
     m_inputs->stop();
@@ -230,11 +231,25 @@ void MainWindow::colorControllerHandler(QString color, bool activeControllerHand
     if (item){
         item->setProperty("colorControllerHandler", color);
         item->setProperty("activeControllerHandler", activeControllerHandler);
+        if (m_inputs->frSky != '\0'){
+            connect(m_inputs->frSky, SIGNAL(frSkyPaused(qint16)), this, SLOT(frSkyPaused(qint16)));
+            connect(m_inputs->frSky, SIGNAL(frSkyModeChange(qint16)), this, SLOT(frSkyModeChange(qint16)));
+        }
     }
 }
 void MainWindow::colorUpdater(QString color, bool activeUpdater){
     if (item){
         item->setProperty("colorUpdater", color);
         item->setProperty("activeUpdater", activeUpdater);
+    }
+}
+void MainWindow::frSkyPaused(qint16 _frSkyPaused){
+    if (item){
+        item->setProperty("frSkyPaused", _frSkyPaused);
+    }
+}
+void MainWindow::frSkyModeChange(qint16 _frSkyModeChanged){
+    if (item){
+        item->setProperty("frSkyModeChanged", _frSkyModeChanged);
     }
 }

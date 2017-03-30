@@ -21,7 +21,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Add big pause/unpause buttons
 #TODO: Fix issue with spinbox that prevents typing 0 or -
 
-SerialPortPath = "/dev/ttyACM0"
+SerialPortPath = "/dev/ttyUSB0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""

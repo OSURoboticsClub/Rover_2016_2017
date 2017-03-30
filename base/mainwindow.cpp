@@ -14,7 +14,7 @@ MainWindow::MainWindow(QObject *_item) :
     threadarray->push(m_inputs, false);
     threadarray->push(m_updater, false);
 
-    SerialHandler::instance()->connectDevice();
+    //SerialHandler::instance()->connectDevice();
 
 
 

@@ -82,7 +82,7 @@ void ControllerHandler::setControllers() {
             else{
                 xbox = new XboxController(file);
                 m_controllers->push_back(ControllerPointer(xbox));
-                qDebug("xbox controller starts with:" + name)
+                qDebug() << "xbox controller starts with:" + name;
             }
         }
       }

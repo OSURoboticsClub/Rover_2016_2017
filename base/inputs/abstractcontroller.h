@@ -26,6 +26,7 @@ protected:
     void sendPauseState(qint16 p);
     void sendSwerveDriveState(qint16 s);
     void sendSelectCamera(qint16 i);
+    void sendPanTilt(qint8,qint8,qint8,qint8);
 
 
     QFile *m_file;

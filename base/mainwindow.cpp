@@ -231,8 +231,10 @@ void MainWindow::colorControllerHandler(QString color, bool activeControllerHand
     if (item){
         item->setProperty("colorControllerHandler", color);
         item->setProperty("activeControllerHandler", activeControllerHandler);
-        qDebug() << "setting frSky Paused State";
-        connect(m_inputs->frSky, SIGNAL(frSkyPaused(qint16)), this, SLOT(frSkyPaused(qint16)));
+        if (m_inputs->frSky != '\0'){
+            connect(m_inputs->frSky, SIGNAL(frSkyPaused(qint16)), this, SLOT(frSkyPaused(qint16)));
+            connect(m_inputs->frSky, SIGNAL(frSkyModeChange(qint16)), this, SLOT(frSkyModeChange(qint16)));
+        }
     }
 }
 void MainWindow::colorUpdater(QString color, bool activeUpdater){
@@ -244,5 +246,10 @@ void MainWindow::colorUpdater(QString color, bool activeUpdater){
 void MainWindow::frSkyPaused(qint16 _frSkyPaused){
     if (item){
         item->setProperty("frSkyPaused", _frSkyPaused);
+    }
+}
+void MainWindow::frSkyModeChange(qint16 _frSkyModeChanged){
+    if (item){
+        item->setProperty("frSkyModeChanged", _frSkyModeChanged);
     }
 }

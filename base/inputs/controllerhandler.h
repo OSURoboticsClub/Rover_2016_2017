@@ -62,6 +62,7 @@ public:
     void run() Q_DECL_OVERRIDE;
     QList<ControllerPointer> *m_controllers;
     FrSky *frSky;
+    XboxController *xbox;
 
 
 public slots:

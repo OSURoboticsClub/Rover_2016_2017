@@ -13,6 +13,7 @@ public:
     ~FrSky();
 
 signals:
+    void frSkyModeChange(qint16);
 
 protected:
     void emitAxisChanges(quint8) Q_DECL_OVERRIDE;

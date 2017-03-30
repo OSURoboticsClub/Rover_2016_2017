@@ -3,7 +3,6 @@
 
 
 #include "abstractcontroller.h"
-#include <QFile>
 
 class XboxController : public AbstractController
 {
@@ -15,8 +14,8 @@ public:
 signals:
 
 protected:
-    void emitAxisChanges(int axisIndex);
-    void emitButtonChanges(int buttonIndex);
+    void emitAxisChanges(quint8 axisIndex) Q_DECL_OVERRIDE;
+    void emitButtonChanges(quint8 buttonIndex) Q_DECL_OVERRIDE;
 };
 
 #endif // XBOXCONTROLLER_H

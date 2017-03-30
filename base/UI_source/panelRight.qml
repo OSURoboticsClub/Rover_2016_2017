@@ -75,12 +75,6 @@ Item {
         text: qsTr("lat1")
         anchors.horizontalCenter: lng.horizontalCenter
         font.pixelSize: 16
-//        MouseArea {
-//            anchors.fill: parent
-//            onClicked: {
-//                lat1.text = "";
-//            }
-//        }
     }
 
     TextInput {
@@ -92,12 +86,6 @@ Item {
         anchors.left: lat1.right
         anchors.leftMargin: 22
         font.pixelSize: 16
-//        MouseArea {
-//            anchors.fill: parent
-//            onClicked: {
-//                lng1.text = "";
-//            }
-//        }
     }
 
     TextInput {
@@ -109,12 +97,6 @@ Item {
         text: qsTr("lat2")
         anchors.horizontalCenter: lat1.horizontalCenter
         font.pixelSize: 16
-//        MouseArea {
-//            anchors.fill: parent
-//            onClicked: {
-//                lat2.text = "";
-//            }
-//        }
     }
 
     TextInput {
@@ -126,12 +108,6 @@ Item {
         text: qsTr("lng2")
         anchors.horizontalCenter: lng1.horizontalCenter
         font.pixelSize: 16
-//        MouseArea {
-//            anchors.fill: parent
-//            onClicked: {
-//                lng2.text = "";
-//            }
-//        }
     }
 
     Text {
@@ -148,21 +124,22 @@ Item {
     Text {
         function isPaused(){
             if (root.frSkyPaused){
-                return "PAUSED"
+                return "PAUSED";
             }
             else {
-                return "RUNNING"
+                return "RUNNING";
             }
         }
 
         id: frSkyPaused
-        x: 307
         text: frSkyPaused.isPaused()
-        anchors.top: lat2.bottom
-        anchors.topMargin: 85
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 16
+        anchors.top: calcDist.bottom
+        anchors.topMargin: 25
         font.pixelSize: 20
     }
+
 
     Button {
         id: calcDist
@@ -176,6 +153,25 @@ Item {
         onClicked: {
             distOutput.text = "Dist: " + panelRight.latLngDist(lat1.text,lng1.text,lat2.text,lng2.text) + " m";
         }
+    }
+
+    Text {
+        function isModeChanged(){
+            if (root.frSkyModeChanged){
+                return "Mode 1";
+            }
+            else{
+                return "Mode 2";
+            }
+        }
+
+        id: frSkyModeChanged
+        text: frSkyModeChanged.isModeChanged()
+        anchors.left: parent.left
+        anchors.leftMargin: 16
+        anchors.top: frSkyPaused.bottom
+        anchors.topMargin: 12
+        font.pixelSize: 20
     }
 
 }

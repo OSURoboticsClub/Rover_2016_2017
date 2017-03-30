@@ -73,6 +73,7 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
     property int frSkyPaused: 0
+    property int frSkyModeChanged: 0
 
     //delete later: testing progress bar
     property double testVoltProgressBar: 20

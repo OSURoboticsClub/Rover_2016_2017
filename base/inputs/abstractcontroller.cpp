@@ -116,6 +116,19 @@ void AbstractController::sendSelectCamera(qint16 increment){
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSelectCamera",
                               Q_ARG( signed char, selected_camera ));
 }
+void AbstractController::sendPanTilt(qint8 _pan, qint8 _tilt, qint8 _pan2, qint8 _tilt2){
+    double conversion_factor = 255;
+    int8_t pan = static_cast<uint8_t>(_pan/conversion_factor);
+    int8_t tilt = static_cast<uint8_t>(_tilt/conversion_factor);
+    int8_t pan2 = static_cast<uint8_t>(_pan2/conversion_factor);
+    int8_t tilt2 = static_cast<uint8_t>(_tilt2/conversion_factor);
+    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltPrimary",
+                              Q_ARG(signed char, pan),
+                              Q_ARG(signed char, tilt));
+    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltSecondary",
+                              Q_ARG(signed char, pan2),
+                              Q_ARG(signed char, tilt2));
+}
 
 //sendCameraCommand
 //sendServo?

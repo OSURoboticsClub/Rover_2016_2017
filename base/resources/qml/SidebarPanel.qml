@@ -58,7 +58,7 @@ Item {
         width: parent.width; height: 23
         //        clip: true
         Rectangle {
-            id: border
+            id: borderRect
             anchors.fill: parent
             anchors.bottomMargin: 2
             anchors.rightMargin: 2
@@ -68,9 +68,9 @@ Item {
         }
         Rectangle {
             id: progress
-            anchors.top: border.top
-            anchors.bottom: border.bottom
-            anchors.left: border.left
+            anchors.top: borderRect.top
+            anchors.bottom: borderRect.bottom
+            anchors.left: borderRect.left
             anchors.margins: 2
 
             width: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));

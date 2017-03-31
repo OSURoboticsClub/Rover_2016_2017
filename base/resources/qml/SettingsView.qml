@@ -12,7 +12,6 @@ Item {
         width: 163
         height: 35
         text: qsTr("turn on SerialHandler")
-        objectName: "serialHandlerOn"
         onClicked : {
             root.serialHandlerOn();
         }
@@ -88,7 +87,7 @@ Item {
             width: 52
             height: 35
             //anchors.fill
-            running: root.activeSeriaHandler;
+            running: root.activeSerialHandler;
         }
     }
 
@@ -133,7 +132,7 @@ Item {
         height: 35
         text: qsTr("pause threads")
         onClicked : {
-            root_pauseAllThreads();
+            root.pauseAllThreads();
         }
     }
 
@@ -149,49 +148,4 @@ Item {
         }
     }
 
-    Button {
-        id: setRoverPos
-        text: qsTr("change rover coords")
-        x: 249
-        y: 15
-        onClicked: {
-            root.latitude = 38.41
-            root.longitude = -110.9
-            root.gps_heading = 60
-            console.log(gps.coords)
-        }
-
-    }
-    Button {
-        id: setRoverPosAgain
-        text: qsTr("change rover coords again")
-        x: 400
-        y: 15
-        onClicked: {
-            root.latitude = 38.42
-            root.longitude = -110.91
-            root.gps_heading = 270
-            console.log(gps.coords)
-        }
-    }
-
-    Button {
-        id: upVolt
-        x: 26
-        y: 385
-        text: qsTr("upVolt")
-        onClicked: {
-            root.testVoltProgressBar += .3;
-        }
-    }
-
-    Button {
-        id: downVolt
-        x: 149
-        y: 385
-        text: qsTr("downVolt")
-        onClicked: {
-            root.testVoltProgressBar -= .3;
-        }
-    }
 }

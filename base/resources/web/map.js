@@ -39,7 +39,7 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var snazzyCircle = L.icon({
-    iconUrl: 'snazzyCircle.png',
+    iconUrl: 'qrc:/img/marker.png',
     iconSize: [25,25],
     iconAnchor: [12.5,12.5],
     popupAnchor: [0,-13]

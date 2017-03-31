@@ -6,7 +6,7 @@
         <file>qml/MainPanel.qml</file>
         <file>qml/DataView.qml</file>
         <file>qml/SettingsView.qml</file>
-        <file>img/snazzyCircle.png</file>
+        <file>img/marker.png</file>
         <file>web/map.html</file>
         <file>web/leaflet.rotatedMarker.js</file>
         <file>img/osurc-logo.png</file>

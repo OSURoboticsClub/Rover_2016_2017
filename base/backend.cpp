@@ -17,7 +17,7 @@ Backend::Backend(QObject *view) :
     m_threadarray->push(m_inputs, false);
     m_threadarray->push(m_updater, false);
 
-    Serial->connectDevice();
+    //Serial->connectDevice();
 
 
 
@@ -54,10 +54,8 @@ Backend::Backend(QObject *view) :
     connect(m_view, SIGNAL(pauseAllThreads()), this, SLOT(pauseThreads()));
     connect(m_view, SIGNAL(resumeAllThreads()), this, SLOT(resumeThreads()));
     connect(m_view, SIGNAL(allThreadsClose()), this, SLOT(close()));
-    connect(m_view, SIGNAL(closing(QQuickCloseEvent)), this, SLOT(close()));
+    connect(m_view, SIGNAL(destroyed()), this, SLOT(close()));
 
-    if (m_view)
-        m_view->setProperty("battery_voltage", 2017);
 }
 
 //would need to destruct in the close button as well

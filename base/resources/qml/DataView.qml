@@ -15,7 +15,6 @@ Item {
         width: parent.width/2
         height: parent.height
         anchors.left: parent.left
-        
 
         
         Text {
@@ -28,7 +27,7 @@ Item {
         Text {
             id: driveMotorPower
             text: qsTr("Drive Motor Power: ")
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
 
         Text {
@@ -71,13 +70,13 @@ Item {
             id: swerveDriveState
             text: qsTr("Swerve Drive State: " + root.swerve_state)
             wrapMode: Text.NoWrap
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
 
         Text {
             id: armMotors
             text: qsTr("Arm Motors: ")
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
         Text {
             id: m1
@@ -108,7 +107,7 @@ Item {
         Text {
             id: potentiometers
             text: qsTr("Potentometers:")
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
         Text {
             id: pot1
@@ -147,18 +146,18 @@ Item {
         Text {
             id: selectedCamera
             text: qsTr("Selected Camera: " + root.selected_camera)
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
 
         Text {
             id: callsign
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
 
         Text {
             id: magnetomer
             text: qsTr("Magnetomer: ")
-            font.pixelSize: dataview.largeFontSize
+            font.pixelSize: dataView.largeFontSize
         }
         Text {
             id: magX

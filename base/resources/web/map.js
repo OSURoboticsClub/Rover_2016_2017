@@ -149,9 +149,10 @@ function checkCoordWithClick(e) {
     wayPointLatLong = e.latlng;
 };
 map.on('click', checkCoordWithClick);
+
 var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
     console.log("marker made");
-    channel.objects.gps._pushRoverCoords.connect(function(){
+    channel.objects.gps.pushRoverCoords.connect(function(){
         
         var marker = L.marker([channel.objects.gps.coords[0], channel.objects.gps.coords[1]], {
             rotationAngle: channel.objects.gps.coords[2],

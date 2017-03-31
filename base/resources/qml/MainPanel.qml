@@ -10,8 +10,8 @@ import QtWebChannel 1.0
 
 TabView {
     id: mainPanel
-    width: parent.width
-    height: parent.height
+    width: 800
+    height: 600
 
     Tab {
         id: mapTab

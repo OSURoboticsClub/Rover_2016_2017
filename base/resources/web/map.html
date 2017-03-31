@@ -3,27 +3,34 @@
     <head>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <!-- TOOD: upgrade pouchdb to avoid annoying warnings -->
         <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
         <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
         <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
-        <script src="leaflet.rotatedMarker.js"></script>
+        <script src="qrc:///web/leaflet.rotatedMarker.js"></script>
+        <script src="qrc:///web/map.js"></script>
+
 
     </head>
 
-    <body style="height: 85%; width: 100%;">
-        <div id="mapid" style="height: 100%; width: 100%"></div>
+    <body style="height: 95%; width: 95%;">
+        <div id="mapid" style="height: 80%; width: 95%"></div>
 
-        <script id="script1" src="map.js">
         </script>
-        <input type="text" id="_lat" value="38.4063">
-        <input type="text" id="_long" value="-110.792286">
-        <input type="text" id="_wayPointName" value="">
+        <form method="post">
+            <!-- TODO: there is some sort of placeholder name -->
+            <input type="text" id="_lat" text="latitude" />
+            <input type="text" id="_long" value="longitude" />
+            <input type="text" id="_wayPointName" value="name" />
+            <!-- TODO -->
+            <input type="submit" onclick="changeText(false)" text="add waypoint"></input>
+        </from>
+
         <button onClick="deleteMarkers()">Delete All Waypoints</button>
-        <button onClick="changeText(false)">Add WayPoint</button>
         <button onClick="changeText(true)">Add From Clickable</button>
         <button onClick="deleteClicked()">Delete Clicked</button>
         <p id="clickedName">Name of waypoint: </p>
         <p id="clickedDistInfo">Distance to rover: </p>
-        
+
     </body>
 </html>

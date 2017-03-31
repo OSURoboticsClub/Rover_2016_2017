@@ -52,7 +52,6 @@ Item {
         id: voltageGuage
         property int min: 20
         property int max: 25
-        property double value: testVoltProgressBar
         property color color: "green"
 
         width: parent.width; height: 23

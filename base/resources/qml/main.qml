@@ -6,8 +6,8 @@ import QtQuick.Controls 1.4
 
 Item {
     id: root
-    width: 1100
-    height: 600
+    width: 1250
+    height: 700
 
 
 
@@ -72,9 +72,6 @@ Item {
     property string colorUpdater: "white"
     property bool activeUpdater: false
 
-    //delete later: testing progress bar
-    property double testVoltProgressBar: 20
-
     QtObject {
         id: gps
         signal pushRoverCoords;
@@ -82,10 +79,9 @@ Item {
         WebChannel.id: "gps"
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
-            //console.log(gps.coords);
         }
     }
-
+    // TODO: is this actually necessary?
     Timer {
         interval: 500; running: true; repeat: true
         onTriggered: {
@@ -94,42 +90,42 @@ Item {
     }
 
 
-    Column {
-        id: sidebarCol
-        width: 0.3 * parent.width
-        height: parent.height
-        SidebarPanel{}
-    }
+    RowLayout {
+        id: splitView
+        anchors.fill: parent
 
-    Column {
-        id: mainCol
-        anchors.left: sidebarCol.right
-        anchors.leftMargin: 0
-
-        anchors.rightMargin: 0
-        width:  0.7 * parent.width
-        height: parent.height
-
-        Row {
-            id: contentRow
-            width: parent.width
-            height: parent.height * 0.8
-            MainPanel{}
+        Column {
+            id: sidebarCol
+            height: parent.height
+            SidebarPanel{}
         }
 
+        Column {
+            id: mainCol
+            anchors.left: sidebarCol.right
 
-        Row {
-            id: consoleRow
-            width: parent.width
-            height: parent.height * 0.2
-            TextArea {
-                id: logger
-                width: parent.width
-                height: parent.height
-                readOnly: true
+
+            ColumnLayout {
+                id: columnLayout
+
+
+                Row {
+                    id: contentRow
+                    MainPanel{}
+                }
+
+                Row {
+                    id: consoleRow
+
+                    TextArea {
+                        id: logger
+                        readOnly: true
+                    }
+                }
             }
         }
     }
+
 
 }
 

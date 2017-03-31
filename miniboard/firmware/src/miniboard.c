@@ -80,7 +80,7 @@ void reset_timeout_timer(void){
 }
 
 ISR(TIMER4_COMPA_vect){
-	CommTimedOut= true;
+	CommTimedOut = true;
 	TCCR4B = 0;
 }
 
@@ -101,8 +101,10 @@ void init(void){
 
 void miniboard_main(void){
 	init();
+	bool super_pause;
 	/* Miniboard main loop. */
 	while(1){
+		super_pause = !Data->pause_state || CommTimedOut;
 		/* GPS */
 		/* (handled in-module) */
 		
@@ -128,9 +130,9 @@ void miniboard_main(void){
 		} else {
 			/* Not Paused */
 			sabertooth_set_speed(0, 0, Data->l_f_drive);
-			sabertooth_set_speed(0, 1, Data->r_f_drive);
+			sabertooth_set_speed(1, 1, Data->r_f_drive);
 			sabertooth_set_speed(1, 0, Data->l_m_drive);
-			sabertooth_set_speed(1, 1, Data->r_m_drive);
+			sabertooth_set_speed(0, 1, Data->r_m_drive);
 			sabertooth_set_speed(2, 0, Data->l_b_drive);
 			sabertooth_set_speed(2, 1, Data->r_b_drive);
 			if(1 == Data->swerve_state){

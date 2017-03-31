@@ -21,12 +21,11 @@
 #include "videoswitch.h"
 #include "imu.h"
 #include "gpio.h"
+#include "uart.h"
 #include <stdio.h>
 #include <string.h>
 
 /* TODO: Watchdog timer. */
-/* TODO: Debug facilities. */
-/* TODO: Fix unnecessary memory consumption of variable-length registers. */
 
 /* Triggers for data read commands. */
 void camera_command_trigger(void){
@@ -61,6 +60,30 @@ ISR(BADISR_vect){
 	}
 }
 
+#define COMM_TIMEOUT 2 /* If this time (in seconds) elapses without a
+                        * message from the computer, the connection is
+                        * considered to be lost. In that case, S-BUS control
+                        * may be enabled, or the rover may be paused.
+                        * The maximum timeout is 4. */
+                        
+static bool CommTimedOut; /* If true, the connection to the computer has been lost. */
+
+/* Start a countdown timer for COMM_TIMEOUT seconds.
+ * Once it expires, CommTimedOut will be set to true */
+void reset_timeout_timer(void){
+	TCCR4B = 0;
+	TCNT4 = 0;
+	OCR4A = (uint16_t) 15625*COMM_TIMEOUT;
+	TIMSK5 = _BV(OCIE4A);
+	TCCR4B = _BV(CS42) | _BV(CS40); /* Set 1024 prescaler. */
+	CommTimedOut = false;
+}
+
+ISR(TIMER4_COMPA_vect){
+	CommTimedOut= true;
+	TCCR4B = 0;
+}
+
 /* Setup all peripherals and subsystems. */
 void init(void){
 	comm_init();
@@ -70,6 +93,7 @@ void init(void){
 	//set_callsign("asdf");
 	sbus_init();
 	sei();
+	reset_timeout_timer();
 }
 
 /* Get a value, then atomically set the target variable. */
@@ -148,14 +172,10 @@ void miniboard_main(void){
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
-// 			ax12_set_goal_position(1, 512 + Data->pan*4);
-// 			ax12_set_goal_position(2, 512 + Data->tilt*4);
-// 			ax12_set_goal_position(3, 512 + Data->tilt*4);
-// 			ax12_set_goal_position(4, 512 + Data->tilt*4);
-			
-			//TODO
-// 			ax12_set_id(AX12_ALL_BROADCAST_ID, 2);
-// 			ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 0xCF);
+			ax12_set_goal_position(1, Data->pan);
+			ax12_set_goal_position(2, Data->tilt);
+			ax12_set_goal_position(3, Data->pan2);
+			ax12_set_goal_position(4, Data->tilt2);
 		}
 
 		/* S-Bus */
@@ -199,10 +219,50 @@ void miniboard_main(void){
 	}
 }
 
+// void copy_txd3(void){
+// 	/* A0 = PF0 = non-inverting */
+// 	/* A1 = PF1 = inverting */
+// 	/* TXD3 = PJ1 */
+// 	DDRF |= _BV(PF1) | _BV(PF0);
+// 	while(uart_tx_in_progress(3)){
+// 		if(PINJ & _BV(PJ1)){
+// 			PORTF |= _BV(PF0);
+// 			PORTF &= ~_BV(PF1);
+// 		} else {
+// 			PORTF &= ~_BV(PF0);
+// 			PORTF |= _BV(PF1);
+// 		}
+// 	}
+// 	DDRF &= ~(_BV(PF1) | _BV(PF0));
+// 	PORTF &= ~(_BV(PF1) | _BV(PF0));
+// }
+// 
+// 
+// void soil_sensor_test(void){
+// 	uart_enable(0, 9600, 1, 0);
+// 	uart_enable(3, 9600, 1, 0);
+// 	sei();
+// 	char str[256];
+// 	snprintf(str, 256, "Hello\r\n");
+// 	uart_tx(0, str, strlen(str));
+// 	snprintf(str, 256, "SN=?\r\n");
+// 	uart_tx(3, str, strlen(str));
+// 	copy_txd3();
+// 	while(1){
+// 		char c;
+// 		if(uart_rx(3, &c, 1)){
+// 			uart_tx(0, &c, 1);
+// 		}
+// 	}
+// 	
+// 	while(1);
+// }
+
 int main(void){
 	/* For testing, remove the following call and insert your code below.
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
 	miniboard_main();
+	//soil_sensor_test();
 	return(0);
 }

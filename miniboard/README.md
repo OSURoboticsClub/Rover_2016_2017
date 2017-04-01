@@ -25,6 +25,8 @@ The GPS module includes a magnetometer to determine the compass heading. It is a
 Since the GPS module is located outside of the e-box on a somewhat long cable, a slow clock speed (perhaps 50kHz)
 should be used with the I2C bus.
 
+The compass module also uses timer 2. 
+
 ## IMU
 The miniboard's onboard IMU is connected to the SPI peripheral. Accelerometer CS is PL3. 
 Magnetometer CS is PL0. Gyroscope CS is PL1.

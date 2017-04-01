@@ -113,7 +113,7 @@ void miniboard_main(void){
 			/* Wait for AX12 stuff to finish. */
 		}
 		sabertooth_init();
-		if(0 == Data->pause_state){
+		if(super_pause){
 			/* Paused */
 			sabertooth_set_speed(0, 0, 0);
 			sabertooth_set_speed(0, 1, 0);
@@ -169,7 +169,7 @@ void miniboard_main(void){
 			/* Wait for sabertooth stuff to finish. */
 		}
 		ax12_init();
-		if(0 == Data->pause_state) {
+		if(super_pause) {
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);

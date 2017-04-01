@@ -13,15 +13,18 @@ public:
     ~FrSky();
 
 signals:
-    void frSkyModeChange(qint16);
+    //void frSkyModeChange(qint16);
+    //void frSkyModeChange(qint16);
 
 protected:
     void emitAxisChanges(quint8) Q_DECL_OVERRIDE;
     void emitButtonChanges(quint8) Q_DECL_OVERRIDE;
+    int panMode;
+
+
     QTime timeAxis;
     bool axisEnable;
     int _axis_wait_time_ms;
-    int panMode;
 
 };
 

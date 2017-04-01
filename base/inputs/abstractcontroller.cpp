@@ -10,13 +10,18 @@
 AbstractController::AbstractController(QFile *file, QObject *parent)
     : QObject(parent),
       m_file(file),
-      m_axisTolerance(500),
-      m_currentState(new JoystickState())
+      m_axisTolerance(255),
+      m_currentState(new JoystickState()),
+      m_swerveControlInto(new SwerveControl()),
+      m_swerveControlOutof(new SwerveControl())
 {
 }
 
 AbstractController::~AbstractController()
 {
+    delete m_currentState;
+    delete m_swerveControlInto;
+    delete m_swerveControlOutof;
 }
 
 AbstractController::JoystickState::JoystickState()
@@ -25,9 +30,24 @@ AbstractController::JoystickState::JoystickState()
     std::fill(buttons, buttons + 32, false);
 }
 
+AbstractController::SwerveControl::SwerveControl()
+{
+    elapsed = new QTime;
+}
 
 void AbstractController::emitChanges()
 {
+    if(m_swerveControlInto->lock && (m_swerveControlInto->elapsed->elapsed() %  m_swerveControlInto->timeout) == m_swerveControlInto->timeout) {
+        m_swerveControlInto->lock = false;
+        sendDriveMotorPower(0, 0);
+    }
+    if(m_swerveControlOutof->lock && (m_swerveControlOutof->elapsed->elapsed() % m_swerveControlOutof->timeout) == m_swerveControlOutof->timeout){
+        m_swerveControlOutof->lock = false;
+        sendDriveMotorPower(0,0);
+    }
+
+
+
     while(read(m_file->handle(), &m_jse, sizeof(m_jse)) > 0){
         if((m_jse.type & ~JS_EVENT_INIT) == JS_EVENT_AXIS){
             if(abs(m_currentState->axes[m_jse.number] - m_jse.value) > m_axisTolerance) {
@@ -36,12 +56,16 @@ void AbstractController::emitChanges()
                 emitAxisChanges(m_jse.number);
             } else {
                 m_currentState->axes[m_jse.number] = m_jse.value;
+                break;
             }
 
         } else if((m_jse.type & ~JS_EVENT_INIT) == JS_EVENT_BUTTON){
             qDebug("Button: %i, value: %i", m_jse.number, m_jse.value);
+            if(m_currentState->buttons[m_jse.number] == m_jse.value)
+                break;
             m_currentState->buttons[m_jse.number] = m_jse.value;
             emitButtonChanges(m_jse.number);
+
         }
     }
 }
@@ -80,7 +104,6 @@ void AbstractController::sendDriveMotorPower(qint16 left, qint16 right){
 
 void AbstractController::sendSwerveDriveState(qint16 swerveValue){
     uint8_t swerve_state = static_cast<uint8_t>(swerveValue);
-    qDebug("%i",swerve_state);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSwerveDriveState",
                               Q_ARG( unsigned char, swerve_state ));
 }
@@ -97,18 +120,16 @@ void AbstractController::sendPauseState(qint16 pauseValue){
 void AbstractController::sendSelectCamera(qint16 increment){
     //Increments up if true, and down if false.
     //Loops around to other end if necessary.
-    if(increment){
+    if(increment) {
         if(m_camera_state < 6)
             m_camera_state++;
         else
             m_camera_state = 1;
-    }
-    else{
+    } else {
         if(m_camera_state > 1)
             m_camera_state--;
         else
             m_camera_state = 6;
-
     }
     //option without looping around
     /*
@@ -119,15 +140,43 @@ void AbstractController::sendSelectCamera(qint16 increment){
     */
     uint8_t selected_camera = static_cast<uint8_t>(m_camera_state);
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeSelectCamera",
-                              Q_ARG( signed char, selected_camera ));
+                              Q_ARG( unsigned char, selected_camera ));
 }
-void AbstractController::sendPanPrimary(qint16 _pan, qint16 _tilt){
-    quint8 conversion_factor = 255;
-    quint16 m_cameraPan = static_cast<quint16>((_pan + m_cameraPan) / conversion_factor);
-    quint16 m_cameraTilt = static_cast<quint16>((_tilt + m_cameraTilt) / conversion_factor);
+void AbstractController::sendPanPrimary(quint16 _pan, quint16 _tilt){
+    double conversion_factor = 16320.0;
+    quint16 pan = static_cast<quint16>((_pan + m_cameraPan) / conversion_factor);
+    quint16 tilt = static_cast<quint16>((_tilt + m_cameraTilt) / conversion_factor);
+
     QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writePanTiltPrimary",
-                              Q_ARG(quint16, m_cameraPan),
-                              Q_ARG(quint16, m_cameraTilt));
+                              Q_ARG(quint16, pan),
+                              Q_ARG(quint16, tilt));
+}
+
+
+void AbstractController::sendSwerveMotorPower(qint16 dir)
+{
+    qDebug() << "Writing motor power";
+    qint8 modDir = 0;
+    if (dir)
+        modDir = -1;
+    else if (!dir)
+        modDir = 1;
+
+    QMetaObject::invokeMethod(SerialHandler::instance()->p(), "writeDriveMotorPower",
+                              Q_ARG( signed char, 50 * modDir),
+                              Q_ARG( signed char, 0 ),
+                              Q_ARG( signed char, 50 * modDir),
+                              Q_ARG( signed char, 50 * modDir),
+                              Q_ARG( signed char, 0 ),
+                              Q_ARG( signed char, 50 * modDir));
+    if (dir) {
+        m_swerveControlOutof->elapsed->start();
+        m_swerveControlOutof->lock = true;
+    }
+    else if (dir) {
+        m_swerveControlInto->elapsed->start();
+        m_swerveControlInto->lock = true;
+    }
 }
 /*
 void AbstractController::sendPanSecondary(qint16 _pan2, qint16 _tilt2){

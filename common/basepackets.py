@@ -8,7 +8,8 @@ import re
 from collections import OrderedDict
 
 class BasePackets(object):
-    """Autogenerates C++ code to encode and decode packets sent between the base
+    """
+    Autogenerates C++ code to encode and decode packets sent between the base
     station and the miniboard.
 
     This class takes in template C++ source and header files and expands them
@@ -326,7 +327,7 @@ class BasePackets(object):
                     string += ws + "\t%s >> %s;\n" % (
                         self._params["datastream"], arg[1]
                     )
-                    string += ws + '\tqDebug("argument: %s; value: %i",' + '"%s", %s);\n' % (
+                    string += ws + '\tqDebug() << "argument: " << "%s" << "; value: " << %s;\n' % (
                         arg[1], arg[1]
                     )
                     

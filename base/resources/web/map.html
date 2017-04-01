@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html style="height: 100%; width: 100%;">
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <!-- TOOD: upgrade pouchdb to avoid annoying warnings -->
+        <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+        <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+        <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        <script src="qrc:///web/leaflet.rotatedMarker.js"></script>
+        <style type="text/css">
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        </style>
+
+    </head>
+
+    <body>
+        <div id="map"></div>
+        <script src="qrc:///web/map.js"></script>
+    </body>
+</html>

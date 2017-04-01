@@ -24,15 +24,13 @@ ControllerHandler::ControllerHandler(QObject *parent)
       m_stop(false),
       m_controllers(new QList<ControllerPointer>())
 {
-    frSky = '\0';
-    xbox = '\0';
 }
 
 ControllerHandler::~ControllerHandler()
 {
     delete m_controllers;
-    delete frSky;
-    delete xbox;
+    //delete frSky;
+    //delete xbox;
 }
 
 
@@ -76,13 +74,12 @@ void ControllerHandler::setControllers() {
             ioctl(file->handle(), JSIOCGNAME(sizeof(c_name)), c_name);
             QString name = c_name;
             if(name.startsWith("FrSky")){
-                frSky = new FrSky(file);
+                FrSky *frSky = new FrSky(file);
                 m_controllers->push_back(ControllerPointer(frSky));
             }
             if (name.startsWith("Afterglow")){
-                xbox = new XboxController(file);
+                XboxController *xbox = new XboxController(file);
                 m_controllers->push_back(ControllerPointer(xbox));
-//                qDebug() << "xbox controller starts with:" + name;
             }
         }
       }

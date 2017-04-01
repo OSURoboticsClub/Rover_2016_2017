@@ -145,15 +145,15 @@ def get_joystick(joystick):
 	"""Return a tuple (l,r) of motor powers from the joystick."""
 	x = joystick.get_axis(0)
 	y = joystick.get_axis(1)
-	print x, y
-	theta = math.atan2(y, x)
-	rad = math.sqrt(x**2 + y**2)
-	print theta, rad
-	if(rad > 1):
-		rad = 1
-	l=x 
-	r=-y
-	return (l,r)
+	#print x, y
+	#theta = math.atan2(y, x)
+	#rad = math.sqrt(x**2 + y**2)
+	#print theta, rad
+	#if(rad > 1):
+		#rad = 1
+	#l=x 
+	#r=-y
+	return (x,y)
 	
 def main():
 	with open(get_specpath(), "r") as f:
@@ -169,8 +169,8 @@ def main():
 		pygame.init()
 		pygame.event.get()
 		l,r = get_joystick(j)
-		print "Motor power L=", l, "R=", r
+		#print "Motor power L=", l, "R=", r
 		set_drive_power(io, l, r)
-		time.sleep(.1)
+		#time.sleep(.01)
 	
 main()

@@ -33,9 +33,9 @@ SerialHandler::~SerialHandler()
 void SerialHandler::run()
 {
     qDebug() << "starting serial read";
-
-    QByteArray *buffer = new QByteArray();
+    connectDevice();
     if(m_packets->device() == NULL) {
+        QByteArray *buffer = new QByteArray();
         setBuffer(buffer);
     }
 
@@ -78,6 +78,7 @@ void SerialHandler::connectDevice()
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
     if(!serialPorts.isEmpty()){
         qDebug() << serialPorts[0].portName();
+        // TODO: add checking
         //if(serialPorts[i].portName() == "ttyUSB0") {
             qDebug() << "identifyed serial";
             QSerialPort *serial = new QSerialPort(serialPorts[0]);
@@ -90,6 +91,7 @@ void SerialHandler::connectDevice()
             serial->setStopBits(QSerialPort::OneStop);
             serial->setFlowControl(QSerialPort::NoFlowControl);
             setDevice(serial);
+        //}
     }
 }
 

@@ -11,29 +11,23 @@ XboxController::~XboxController()
 
 }
 
-void XboxController::emitAxisChanges(int axisIndex)
+void XboxController::emitAxisChanges(quint8 axisIndex)
 {
-<<<<<<< Updated upstream
-    if(axisIndex == 1 || axisIndex == 2) {
-        //sendDriveMotorPower();
-        // send a packet
-    }
-=======
+    if((axisIndex == 0 || axisIndex == 1) && panMode) {
+        quint16 pan = m_currentState->axes[0];
+        quint16 tilt = m_currentState->axes[1];
 
->>>>>>> Stashed changes
+        sendPanPrimary(pan, tilt);
+    }
 }
 
-void XboxController::emitButtonChanges(int buttonIndex)
+void XboxController::emitButtonChanges(quint8 buttonIndex)
 {
-    // TODO: what are these buttons?
-    if(buttonIndex == 1) {
-        if(m_currentState->axes[buttonIndex]) {
-            sendSelectCamera(1);
-        }
-    } else if (buttonIndex == 2) {
-        if(m_currentState->axes[buttonIndex]) {
-            sendSelectCamera(-1);
-        }
+    //TODO:: decide actual button
+    //if button is pushed toggle pan mode
+    if (buttonIndex == 3 && m_currentState->buttons[3]){
+        panMode = !panMode;
+        //emit panModeChange(panMode);
     }
 }
 

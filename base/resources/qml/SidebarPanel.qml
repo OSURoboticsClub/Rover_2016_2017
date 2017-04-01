@@ -13,8 +13,6 @@ import QtQuick.Controls 1.4
 
 Item {
     id: sidebarPanel
-    width: 200
-    height: 600
 
 
     Gauge {
@@ -78,10 +76,6 @@ Item {
         }
     }
 
-    ColumnLayout {
-        id: columnLayout1
-        anchors.fill: parent
-    }
     
     Timer{id: timer}
 

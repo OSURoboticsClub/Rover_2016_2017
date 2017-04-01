@@ -7,37 +7,38 @@ import QtWebEngine 1.3
 import QtWebChannel 1.0
 
 
-
-TabView {
+Item {
     id: mainPanel
-    width: 800
-    height: 600
 
-    Tab {
-        id: mapTab
-        title: "Map"
+    TabView {
+        id: mainTabView
+        anchors.fill: parent
 
-        WebEngineView {
-            id: map
-            anchors.fill: parent
-            url: "qrc:/web/map.html"
-            webChannel: WebChannel {
-                registeredObjects: [gps]
+        Tab {
+            id: mapTab
+            title: "Map"
+
+            WebEngineView {
+                id: map
+                anchors.fill: parent
+                url: "qrc:/web/map.html"
+                webChannel: WebChannel {
+                    registeredObjects: [gps]
+                }
             }
         }
-    }
-    Tab {
-        id: settingsTab
-        title: "Settings"
-        source: "SettingsView.qml"
-    }
-    Tab {
-        id: dataTab
-        title: "Data"
-        source: "DataView.qml"
+        Tab {
+            id: settingsTab
+            title: "Settings"
+            source: "qrc:/qml/SettingsView.qml"
+        }
+        Tab {
+            id: dataTab
+            title: "Data"
+            source: "qrc:/qml/DataView.qml"
+
+        }
 
     }
-
 }
-
 

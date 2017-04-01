@@ -14,6 +14,13 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     "~/Qt/5.7/gcc_64"
     "~/Qt5.7.0/5.7/gcc_64"
 )
+set(QML_IMPORT_PATH ${QML_IMPORT_PATH}
+    "/opt/Qt/5.7/gcc_64/qml"
+    "/opt/Qt5.7.0/5.7/gcc_64/qml"
+    "~/Qt5.7.0/5.7/gcc_64/qml"
+    "~/Qt/5.7/gcc_64/qml"
+    "~/Qt5.7.0/5.7/gcc_64/qml"
+)
 
 # Find the necessary Qt libraries
 find_package(Qt5Widgets 5.7 REQUIRED)

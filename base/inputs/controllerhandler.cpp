@@ -1,12 +1,10 @@
 #include "controllerhandler.h"
 
-#include <linux/joystick.h>
-#include <algorithm>
-
 #include <QDebug>
+#include <algorithm>
 #include <QString>
-
 #include "serial/serialhandler.h"
+#include <linux/joystick.h>
 
 /* TO Be used for updating the controllers and handling. The core functionality
  * should be moved to the AbstractController Class. The AbstractController class
@@ -26,12 +24,15 @@ ControllerHandler::ControllerHandler(QObject *parent)
       m_stop(false),
       m_controllers(new QList<ControllerPointer>())
 {
-
+    frSky = '\0';
+    xbox = '\0';
 }
 
 ControllerHandler::~ControllerHandler()
 {
     delete m_controllers;
+    delete frSky;
+    delete xbox;
 }
 
 
@@ -59,7 +60,6 @@ void ControllerHandler::eventLoop()
         for(int i = 0; i < m_controllers->size(); i++) {
             (*m_controllers)[i]->emitChanges();
         }
-        msleep(100);
     }
     emit changeButtonColor("#9d0606", false);
 }
@@ -75,9 +75,13 @@ void ControllerHandler::setControllers() {
             ioctl(file->handle(), JSIOCGNAME(sizeof(c_name)), c_name);
             QString name = c_name;
             if(name.startsWith("FrSky")){
-                m_controllers->push_back(ControllerPointer (new FrSky(file)));
+                frSky = new FrSky(file);
+                m_controllers->push_back(ControllerPointer(frSky));
+            }
+            if (name.startsWith("Afterglow")){
+                xbox = new XboxController(file);
+                m_controllers->push_back(ControllerPointer(xbox));
             }
         }
       }
-
 }

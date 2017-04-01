@@ -1,10 +1,12 @@
 #ifndef CONTROLLERHANDLER_H
 #define CONTROLLERHANDLER_H
 
+
 #include <QObject>
 #include <QList>
 #include <QSharedPointer>
 #include <QThread>
+#include <QDebug>
 
 #include "inputs/abstractcontroller.h"
 #include "inputs/xboxcontroller.h"
@@ -34,7 +36,7 @@ typedef QSharedPointer<AbstractController> ControllerPointer;
  *
  * Since this class is a subclass of QThread, the event loop as well as any
  * necessary setup can be invoked by calling the run() method. Likewise, calling
- * the quit() slot will exit the event loop.
+ * the stop() slot will exit the event loop.
  */
 
 class ControllerHandler : public QThread
@@ -58,6 +60,10 @@ public:
      * controller input handling.
      */
     void run() Q_DECL_OVERRIDE;
+    QList<ControllerPointer> *m_controllers;
+    FrSky *frSky;
+    XboxController *xbox;
+
 
 public slots:
     void stop();
@@ -70,7 +76,6 @@ private:
     /*
      * The list containing the controller class instances that this class uses.
      */
-    QList<ControllerPointer> *m_controllers;
     bool m_stop;
 };
 

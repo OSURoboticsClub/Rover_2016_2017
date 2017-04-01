@@ -327,7 +327,7 @@ class BasePackets(object):
                     string += ws + "\t%s >> %s;\n" % (
                         self._params["datastream"], arg[1]
                     )
-                    string += ws + '\tqDebug("argument: %s; value: %i",' + '"%s", %s);\n' % (
+                    string += ws + '\tqDebug() << "argument: " << "%s" << "; value: " << %s;\n' % (
                         arg[1], arg[1]
                     )
                     

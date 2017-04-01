@@ -9,8 +9,6 @@ Item {
     width: 1250
     height: 700
 
-
-
     signal serialHandlerOn()
     signal serialHandlerOff()
     signal updaterOn()
@@ -76,7 +74,7 @@ Item {
         id: gps
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
-        WebChannel.id: "gps"
+              WebChannel.id: "gps"
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }
@@ -89,43 +87,39 @@ Item {
         }
     }
 
-
     RowLayout {
-        id: splitView
+        id: rowLayout
         anchors.fill: parent
 
         Column {
             id: sidebarCol
             height: parent.height
-            SidebarPanel{}
+            width: 0.2 * parent.width
+            SidebarPanel{anchors.fill: parent}
         }
 
         Column {
-            id: mainCol
-            anchors.left: sidebarCol.right
+            id: mainColumn
+            height: parent.height
+            width: 0.8 * parent.width
+            Row {
+                id: mainPanelRow
+                width: parent.width
+                height: 0.8 * parent.height
+                MainPanel{anchors.fill: parent}
+            }
 
+            Row {
+                id: loggerRow
+                width: parent.width
+                height: 0.2 * parent.height
 
-            ColumnLayout {
-                id: columnLayout
-
-
-                Row {
-                    id: contentRow
-                    MainPanel{}
-                }
-
-                Row {
-                    id: consoleRow
-
-                    TextArea {
-                        id: logger
-                        readOnly: true
-                    }
+                TextArea {
+                    id: logger
+                    anchors.fill: parent
                 }
             }
         }
     }
-
-
 }
 

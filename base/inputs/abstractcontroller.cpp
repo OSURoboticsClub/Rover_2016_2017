@@ -139,7 +139,22 @@ void AbstractController::sendPanSecondary(qint16 _pan2, qint16 _tilt2){
                               Q_ARG(signed char, tilt2));
 }
 */
+void abstractcontroller::camera_command(double zoomin, double zoomout){
+    zoomin = 100;
+    zoomout = 100;
 
+    uint8_t zoominState =  static_cast<uint8_t>(zoomin * conversionFactor);
+    SerialHandler::instance()->p()->writePause(zoominState);
+
+    uint8_t zoomoutState =  static_cast<uint8_t>(zoomout * conversionFactor);
+    SerialHandler::instance()->p()->writePause(zoomoutState);
+}
+void AbstractController::sendServo(double servovalue){
+
+
+   uint8_t servo_data_legth = <uint_least8_t>;
+}
 //sendCameraCommand
 //sendServo?
 //sendCallsign?
+//gkjrghgowhgewogiowhgw[ifhwe[fiehwfpewkghEGIPWHEgpeifkepfwefe

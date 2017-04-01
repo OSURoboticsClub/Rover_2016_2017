@@ -141,6 +141,12 @@ def set_drive_power(io, left, right):
 	s = "".join([struct.pack('b', i) for i in [0x10, l, l, l, r, r, r]])
 	io.writeread(s) 
 	
+def set_swerve_mode(io, mode):
+	if mode == 1 or mode == 2:
+		print "Swerve mode: ", mode
+	s = "".join([struct.pack('b', i) for i in [0x11, mode]])
+	io.writeread(s) 
+	
 def get_joystick(joystick):
 	"""Return a tuple (l,r) of motor powers from the joystick."""
 	x = joystick.get_axis(0)
@@ -171,6 +177,12 @@ def main():
 		l,r = get_joystick(j)
 		#print "Motor power L=", l, "R=", r
 		set_drive_power(io, l, r)
-		#time.sleep(.01)
+		if int(j.get_button(6)) == 1:
+			set_swerve_mode(io, 2)
+		elif int(j.get_button(7)) == 1: 
+			set_swerve_mode(io, 1)
+		else:
+			set_swerve_mode(io, 0)
+		time.sleep(.02)
 	
 main()

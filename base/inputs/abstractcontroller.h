@@ -32,9 +32,17 @@ protected:
     QFile *m_file;
     struct js_event m_jse;
     int m_id;
-    int m_camera_state = 1;
+
+    quint8 m_cameraState = 0;
+
+    struct ArmControl {
+        quint16 velocityScaling = 10;
+        qint8 positions[5] = {0, 0, 0, 0, 0};
+    };
+    ArmControl *m_armControl;
+
     int m_mode = 0;
-    bool swerveStateON = false;
+    bool m_swerveState = false;
     float m_axisTolerance;
 
     struct JoystickState {
@@ -42,7 +50,8 @@ protected:
         qint16 axes[8];
         qint16 buttons[32];
     };
-    JoystickState *m_currentState;
+    JoystickState *m_currentState, *m_previousState;
+
 
 
 

@@ -28,6 +28,7 @@ void FrSky::emitAxisChanges(quint8 axisIndex)
             qint16 m3 = m_currentState->axes[2];
             qint16 m4 = m_currentState->axes[3];
             qint16 m5 = m_currentState->axes[6];
+            // these correspond to velocities!!!
             sendArmMotorPower(m1, m2, m3, m4, m5);
         }
 
@@ -49,16 +50,16 @@ void FrSky::emitButtonChanges(quint8 buttonIndex)
     }
 
     if(m_mode == 0){
-        if(buttonIndex == 6 && swerveStateON){ //SG - zero radius mode straight/turn
+        if(buttonIndex == 6 && m_swerveState){ //SG - zero radius mode straight/turn
             sendSwerveDriveState((m_currentState->buttons[6]) + 1);
             //set zero radius mode value + 1
         }
         if(buttonIndex == 3){//SD - zero radius mode on/off
            if(m_currentState->buttons[3] == 1){
-                swerveStateON = true;
+                m_swerveState = true;
            }
            else{
-                swerveStateON = false;
+                m_swerveState = false;
                 sendSwerveDriveState(0);
            }
         }

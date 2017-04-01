@@ -8,7 +8,8 @@ import re
 from collections import OrderedDict
 
 class BasePackets(object):
-    """Autogenerates C++ code to encode and decode packets sent between the base
+    """
+    Autogenerates C++ code to encode and decode packets sent between the base
     station and the miniboard.
 
     This class takes in template C++ source and header files and expands them

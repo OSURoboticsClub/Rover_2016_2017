@@ -21,7 +21,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
         txt = QString("Fatal: %1").arg(msg);
     break;
     }
-    QFile outFile("log");
+    QFile outFile("log.txt");
     outFile.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream ts(&outFile);
     ts << txt << endl;

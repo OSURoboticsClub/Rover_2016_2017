@@ -24,15 +24,11 @@ ControllerHandler::ControllerHandler(QObject *parent)
       m_stop(false),
       m_controllers(new QList<ControllerPointer>())
 {
-    frSky = '\0';
-    xbox = '\0';
 }
 
 ControllerHandler::~ControllerHandler()
 {
     delete m_controllers;
-    delete frSky;
-    delete xbox;
 }
 
 

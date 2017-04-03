@@ -11,14 +11,12 @@ int main(int argc, char *argv[])
     //qInstallMessageHandler(myMessageHandler);
     QtWebEngine::initialize();
 
-    QQuickView view;
-    view.setSource(QUrl("qrc:/qml/main.qml"));
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    QQmlApplicationEngine view(QUrl("qrc:/qml/main.qml"));
+    //view.setSource();
+    //view.show();
 
-    view.show();
-
-    QObject *rootView = view.rootObject();
-    Backend b(rootView);
+    //QObject *rootView = view.rootObject();
+    //Backend b(rootView);
 
     return app.exec();
 }

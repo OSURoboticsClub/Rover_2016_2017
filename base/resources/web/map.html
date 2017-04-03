@@ -14,23 +14,16 @@
     </head>
 
     <body style="height: 95%; width: 95%;">
-        <div id="mapid" style="height: 80%; width: 95%"></div>
+        <div id="mapid" style="height: 90%; width: 95%"></div>
 
         </script>
         <form method="post">
             <!-- TODO: there is some sort of placeholder name -->
-            <input type="text" id="_lat" text="latitude" />
-            <input type="text" id="_long" value="longitude" />
-            <input type="text" id="_wayPointName" value="name" />
+            <input type="text" id="lat" text="latitude" />
+            <input type="text" id="lon" value="longitude" />
+            <input type="text" id="name" value="name" />
             <!-- TODO -->
             <input type="submit" onclick="changeText(false)" text="add waypoint"></input>
-        </from>
-
-        <button onClick="deleteMarkers()">Delete All Waypoints</button>
-        <button onClick="changeText(true)">Add From Clickable</button>
-        <button onClick="deleteClicked()">Delete Clicked</button>
-        <p id="clickedName">Name of waypoint: </p>
-        <p id="clickedDistInfo">Distance to rover: </p>
-
+        </form>
     </body>
 </html>

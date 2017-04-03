@@ -1,13 +1,12 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-import QtWebChannel 1.0
+//import QtWebChannel 1.0
 import QtQuick.Controls 1.4
 
-Item {
+Window {
     id: root
-    width: 1250
-    height: 700
+    visibility: "Maximized"
 
     signal serialHandlerOn()
     signal serialHandlerOff()
@@ -74,52 +73,56 @@ Item {
         id: gps
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
-              WebChannel.id: "gps"
+        //WebChannel.id: "gps"
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }
     }
     // TODO: is this actually necessary?
+    /*
     Timer {
         interval: 500; running: true; repeat: true
         onTriggered: {
             gps.pushRoverCoords();
         }
     }
+    */
 
     RowLayout {
         id: rowLayout
         anchors.fill: parent
 
-        Column {
-            id: sidebarCol
-            height: parent.height
-            width: 0.2 * parent.width
-            SidebarPanel{anchors.fill: parent}
+        SidebarPanel{
+            Layout.fillHeight: true
+            Layout.minimumWidth: 150
+            Layout.preferredWidth: 200
+            Layout.maximumWidth: 300
+            Layout.minimumHeight: 500
         }
 
-        Column {
-            id: mainColumn
-            height: parent.height
-            width: 0.8 * parent.width
-            Row {
-                id: mainPanelRow
-                width: parent.width
-                height: 0.8 * parent.height
-                MainPanel{anchors.fill: parent}
+
+        ColumnLayout {
+            id: mainPanelRow
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 500
+            Layout.preferredWidth: 800
+            Layout.minimumHeight: 500
+
+            MainPanel {
+                Layout.minimumHeight: 350
+                Layout.fillHeight: true
+                Layout.fillWidth: true
             }
 
-            Row {
-                id: loggerRow
-                width: parent.width
-                height: 0.2 * parent.height
-
-                TextArea {
-                    id: logger
-                    anchors.fill: parent
-                }
+            TextArea {
+                id: logger
+                Layout.fillWidth: true
+                Layout.minimumHeight: 150
             }
         }
+
+
     }
 }
 

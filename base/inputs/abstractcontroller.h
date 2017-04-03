@@ -5,7 +5,7 @@
 #include <QFile>
 #include <linux/joystick.h>
 #include <QTime>
-#include <QQueue>
+
 class AbstractController : public QObject
 {
     Q_OBJECT

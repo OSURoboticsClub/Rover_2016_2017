@@ -5,7 +5,6 @@
 FrSky::FrSky(QFile *file, QObject *parent)
     : AbstractController(file, parent)
 {
-
 }
 
 FrSky::~FrSky()
@@ -18,14 +17,12 @@ void FrSky::emitAxisChanges(quint8 axisIndex){
 
     //if (axisEnable) {
     //axisEnable = false;
-
-    if(m_mode == 0 && !m_swerveControlInto->lock && !m_swerveControlOutof->lock){
         if(axisIndex == 0 || axisIndex == 1) { //left and right y - drive motor power
             qint16 l = m_currentState->axes[0];
             qint16 r = m_currentState->axes[1];
             sendDriveMotorPower(l, r);
         }
-    }
+
     else if (m_mode == 1) {
         if(axisIndex == 0 || axisIndex == 1 || axisIndex == 2 || axisIndex == 3 || axisIndex == 6){
             qint16 m1 = m_currentState->axes[0];
@@ -45,7 +42,6 @@ void FrSky::emitAxisChanges(quint8 axisIndex){
 
     }
 
-
 }
 
 
@@ -58,8 +54,6 @@ void FrSky::emitButtonChanges(quint8 buttonIndex){
     }
     else if(buttonIndex == 4){ //SE - change mode
         m_mode = m_currentState->buttons[4];
-        //emit frSkyModeChange(m_mode);
-
 
     }
 
@@ -77,7 +71,12 @@ void FrSky::emitButtonChanges(quint8 buttonIndex){
             else if (!m_currentState->buttons[3]){
                 sendSwerveDriveState(m_currentState->buttons[3]);
                 sendSwerveMotorPower(0);
+
             }
         }
     }
+    if (buttonIndex == 7){
+        panMode = m_currentState->buttons[7];
+    }
+
 }

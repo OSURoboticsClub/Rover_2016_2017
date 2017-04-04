@@ -126,6 +126,41 @@ Rectangle {
             height: 50
 
         }
+<<<<<<< HEAD:base/resources/qml/Timer.qml
+=======
+        /*
+        Image {
+            id: colonLeft
+            x: 60
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
+        }
+        Image {
+            id: colonRight
+            x: 129
+            y: 3
+            width: 10
+            height: 45
+            source: "beaverLogoColon.png"
+        }
+        */
+        Text {
+            id: colonLeft
+            x: 60
+            y: 0
+            text: qsTr(":")
+            font.pixelSize: 36
+        }
+        Text {
+            id: colonRight
+            x: 129
+            y: 0
+            text: qsTr(":")
+            font.pixelSize: 36
+        }
+>>>>>>> bb98e0d28509872cc229c2c1d48ba57d65452301:base/UI_source/countDownTimer.qml
 
     }
 

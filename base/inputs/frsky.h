@@ -14,6 +14,7 @@ public:
 
 signals:
     //void frSkyModeChange(qint16);
+    //void frSkyModeChange(qint16);
 
 protected:
     void emitAxisChanges(quint8) Q_DECL_OVERRIDE;
@@ -21,6 +22,9 @@ protected:
     int panMode;
 
 
+    QTime timeAxis;
+    bool axisEnable;
+    int _axis_wait_time_ms;
 
 };
 

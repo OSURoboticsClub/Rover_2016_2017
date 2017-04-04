@@ -17,7 +17,6 @@ signals:
 protected:
     void emitAxisChanges(quint8 axisIndex) Q_DECL_OVERRIDE;
     void emitButtonChanges(quint8 buttonIndex) Q_DECL_OVERRIDE;
-    bool panMode = false;
 };
 
 #endif // XBOXCONTROLLER_H

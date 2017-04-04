@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>UI_source/button1.qml</file>
+        <file>UI_source/countDownTimer.qml</file>
+        <file>UI_source/leaflet.rotatedMarker.js</file>
+        <file>UI_source/mainview.qml</file>
+        <file>UI_source/map.html</file>
+        <file>UI_source/map.qml</file>
+        <file>UI_source/panel.qml</file>
+        <file>UI_source/rawValues.qml</file>
+        <file>UI_source/Settings.qml</file>
+        <file>UI_source/SettingsForm.ui.qml</file>
+        <file>UI_source/snazzyArrow.png</file>
+        <file>UI_source/snazzyCircle.png</file>
+        <file>UI_source/superGame.html</file>
+        <file>UI_source/superGameScript.js</file>
+        <file>UI_source/video.qml</file>
+        <file>UI_source/beaverLogoColon.png</file>
+        <file>UI_source/Logo2.png</file>
+        <file>UI_source/Logo1.png</file>
+        <file>UI_source/Logo0.png</file>
+        <file>UI_source/panelRight.qml</file>
+    </qresource>
+</RCC>

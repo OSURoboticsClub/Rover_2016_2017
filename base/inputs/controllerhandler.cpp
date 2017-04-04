@@ -29,6 +29,8 @@ ControllerHandler::ControllerHandler(QObject *parent)
 ControllerHandler::~ControllerHandler()
 {
     delete m_controllers;
+    //delete frSky;
+    //delete xbox;
 }
 
 
@@ -56,6 +58,7 @@ void ControllerHandler::eventLoop()
         for(int i = 0; i < m_controllers->size(); i++) {
             (*m_controllers)[i]->emitChanges();
         }
+        msleep(50);
     }
     emit changeButtonColor("#9d0606", false);
 }
@@ -71,11 +74,11 @@ void ControllerHandler::setControllers() {
             ioctl(file->handle(), JSIOCGNAME(sizeof(c_name)), c_name);
             QString name = c_name;
             if(name.startsWith("FrSky")){
-                frSky = new FrSky(file);
+                FrSky *frSky = new FrSky(file);
                 m_controllers->push_back(ControllerPointer(frSky));
             }
             if (name.startsWith("Afterglow")){
-                xbox = new XboxController(file);
+                XboxController *xbox = new XboxController(file);
                 m_controllers->push_back(ControllerPointer(xbox));
             }
         }

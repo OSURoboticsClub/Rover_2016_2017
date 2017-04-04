@@ -60,6 +60,7 @@ void SerialHandler::eventLoop()
                 msleep(50);
             }
             m_packets->parsePacket(size);
+            qDebug() << m_packets;
             qDebug() << "--------------------";
         }
         msleep(100);
@@ -77,11 +78,10 @@ void SerialHandler::connectDevice()
 {
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
     if(!serialPorts.isEmpty()){
-        qDebug() << serialPorts[0].portName();
-        // TODO: add checking
-        //if(serialPorts[i].portName() == "ttyUSB0") {
+            qDebug() << serialPorts[1].portName();
+
             qDebug() << "identifyed serial";
-            QSerialPort *serial = new QSerialPort(serialPorts[0]);
+            QSerialPort *serial = new QSerialPort(serialPorts[1]);
             if(!serial->open(QIODevice::ReadWrite)) {
                 qDebug() << tr("error %1").arg(serial->error());
             }
@@ -115,7 +115,7 @@ SerialHandler::SerialHandler(QObject *parent)
       m_packets(new Packets())
 {
     m_run = true;
-}
+   }
 
 void SerialHandler::queryStatus()
 {

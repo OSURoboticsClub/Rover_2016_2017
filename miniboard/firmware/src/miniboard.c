@@ -147,7 +147,15 @@ void miniboard_main(void){
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
-			ax12_set_goal_position(Data->ax12_addr, (uint16_t) Data->ax12_angle);
+			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
+// 			ax12_set_goal_position(1, 512 + Data->pan*4);
+// 			ax12_set_goal_position(2, 512 + Data->tilt*4);
+// 			ax12_set_goal_position(3, 512 + Data->tilt*4);
+// 			ax12_set_goal_position(4, 512 + Data->tilt*4);
+			
+			//TODO
+// 			ax12_set_id(AX12_ALL_BROADCAST_ID, 2);
+// 			ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 0xCF);
 		}
 
 		/* S-Bus */
@@ -187,7 +195,7 @@ void miniboard_main(void){
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 		//TODO: Take this out?
-		_delay_ms(100);
+		_delay_ms(50);
 	}
 }
 

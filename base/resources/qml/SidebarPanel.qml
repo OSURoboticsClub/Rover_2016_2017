@@ -1,19 +1,17 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.0
 import QtQuick.Extras 1.4
 import QtQuick.Layouts 1.3
 
-import QtQuick.Controls 1.4
 import QtPositioning 5.7
 
+//import Widgets 1.0
 
 ColumnLayout {
     id: sidebarPanel
     anchors.fill: parent
-
+    /*
     Item {
         id: item1
-        width: 200
         height: 200
         Layout.fillWidth: true
 
@@ -22,6 +20,13 @@ ColumnLayout {
             text: "attitude indicator"
             font.pixelSize: 12
         }
+    }*/
+    AttitudeIndicator{
+        id: indicator
+        width: 100
+        height: 100
+        Layout.minimumHeight: 100
+        Layout.fillWidth: true
     }
 
     CircularGauge {
@@ -33,36 +38,27 @@ ColumnLayout {
     }
 
 
-    Item {
-        id: item2
-        width: 200
-        height: 200
+    MultiGauge {
+        id: multiGauge
+        Layout.minimumHeight: 100
+        Layout.preferredHeight: 150
         Layout.fillWidth: true
-
-        Text {
-            id: text2
-            text: "arm motors and driver motor power"
-            font.pixelSize: 12
-        }
+        model: [root.arm_motor_1, root.arm_motor_2, root.arm_motor_3,
+            root.arm_motor_4, root.arm_motor_5]
     }
 
-    Item {
-        id: item3
-        width: 200
-        height: 200
+    MultiGauge {
+        id: multiGauge1
+        Layout.minimumHeight: 100
+        Layout.preferredHeight: 150
         Layout.fillWidth: true
-
-        Text {
-            id: text3
-            text: "battery voltage, selected camera, and swerve drive state"
-            anchors.fill: parent
-            elide: Text.ElideNone
-            renderType: Text.QtRendering
-            fontSizeMode: Text.HorizontalFit
-            wrapMode: Text.WordWrap
-            font.pixelSize: 12
-        }
+        model: [root.l_f_drive, root.l_m_drive, root.l_b_drive,
+            root.r_f_drive, root.r_m_drive, root.r_b_drive]
     }
+
+
+
+
 
 }
 

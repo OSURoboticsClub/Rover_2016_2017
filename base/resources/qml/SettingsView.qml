@@ -147,5 +147,4 @@ Item {
             root.resumeAllThreads();
         }
     }
-
 }

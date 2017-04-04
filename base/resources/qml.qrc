@@ -11,5 +11,12 @@
         <file>web/leaflet.rotatedMarker.js</file>
         <file>img/osurc-logo.png</file>
         <file>web/map.js</file>
+        <file>qml/MultiGauge.qml</file>
+        <file>img/adi/adi_ring.svg</file>
+        <file>img/adi/adi_face.svg</file>
+        <file>img/adi/adi_case.svg</file>
+        <file>img/adi/adi_back.svg</file>
+        <file>img/adi/adi.svg</file>
+        <file>qml/AttitudeIndicator.qml</file>
     </qresource>
 </RCC>

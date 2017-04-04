@@ -1,10 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 
 import QtQuick.Layouts 1.3
 
-//import QtWebEngine 1.3
-//import QtWebChannel 1.0
+import QtWebEngine 1.3
+import QtWebChannel 1.0
 
 
 
@@ -15,7 +16,7 @@ TabView {
     Tab {
         id: mapTab
         title: "Map"
-        /*
+
         WebEngineView {
             id: map
             anchors.fill: parent
@@ -24,7 +25,7 @@ TabView {
                 registeredObjects: [gps]
             }
         }
-        */
+
     }
     Tab {
         id: settingsTab

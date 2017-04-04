@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/Timer.qml</file>
+        <file>qml/Countdown.qml</file>
         <file>qml/SidebarPanel.qml</file>
         <file>qml/MainPanel.qml</file>
         <file>qml/DataView.qml</file>

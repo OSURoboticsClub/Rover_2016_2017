@@ -4,23 +4,10 @@ import QtQuick.Layouts 1.3
 
 import QtPositioning 5.7
 
-//import Widgets 1.0
-
 ColumnLayout {
     id: sidebarPanel
     anchors.fill: parent
-    /*
-    Item {
-        id: item1
-        height: 200
-        Layout.fillWidth: true
 
-        Text {
-            id: text1
-            text: "attitude indicator"
-            font.pixelSize: 12
-        }
-    }*/
     AttitudeIndicator{
         id: indicator
         width: 100

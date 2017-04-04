@@ -13,7 +13,6 @@ var rov_marker = new L.FeatureGroup();
 var wayPointLatLong;
 var clickCoords;
 var wayPointName;
-
 var clickPopup = L.popup();
 var map = L.map('mapid').setView([lat, long], 17);
 var _wayPointNumber = 0;

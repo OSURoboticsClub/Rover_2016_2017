@@ -1,8 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-//import QtWebChannel 1.0
-import QtQuick.Controls 1.4
+import QtWebChannel 1.0
+import QtQuick.Controls 2.0
 
 Window {
     id: root
@@ -73,7 +73,7 @@ Window {
         id: gps
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
-        //WebChannel.id: "gps"
+        WebChannel.id: "gps"
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }

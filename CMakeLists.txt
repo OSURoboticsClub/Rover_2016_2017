@@ -29,7 +29,6 @@ find_package(Qt5Quick 5.7 REQUIRED)
 find_package(Qt5SerialPort 5.7 REQUIRED)
 find_package(Qt5QuickWidgets 5.7 REQUIRED)
 find_package(Qt5WebEngine 5.7 REQUIRED)
-find_package(Qt5Svg 5.7 REQUIRED)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

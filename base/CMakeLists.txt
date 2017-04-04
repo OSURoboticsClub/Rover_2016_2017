@@ -17,8 +17,6 @@ set(SOURCES
    inputs/abstractcontroller.cpp
    inputs/xboxcontroller.cpp
    inputs/frsky.cpp
-
-   qfi_ADI.cpp
 )
 
 set(HEADERS
@@ -36,9 +34,6 @@ set(HEADERS
     inputs/abstractcontroller.h
     inputs/xboxcontroller.h
     inputs/frsky.h
-
-    qfi_ADI.h
-
 )
 
 
@@ -60,4 +55,3 @@ target_link_libraries(main Qt5::Quick)
 target_link_libraries(main Qt5::SerialPort)
 target_link_libraries(main Qt5::QuickWidgets)
 target_link_libraries(main Qt5::WebEngine)
-target_link_libraries(main Qt5::Svg)

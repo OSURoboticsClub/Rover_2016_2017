@@ -7,7 +7,8 @@ import QtQuick.Controls 2.0
 Window {
     id: root
     visibility: "Maximized"
-
+    minimumHeight: 300
+    minimumWidth: 500
     signal serialHandlerOn()
     signal serialHandlerOff()
     signal updaterOn()

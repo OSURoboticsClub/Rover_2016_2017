@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QTime>
+#include <QList>
 
 #include "serial/serialhandler.h"
 #include "inputs/controllerhandler.h"
@@ -13,6 +14,9 @@ class ThreadArray : public QObject {
 public:
     void push(QThread *m_thread, bool startImmediately);
     bool clear();
+
+    void m_push(QThread *m_thread, bool startImmediately);
+    bool m_clear();
     ThreadArray();
     ~ThreadArray();
 private:
@@ -28,6 +32,9 @@ private:
     QThread **threadArray;
     void convertToArray();
     bool clearing;
+
+    QList<QThread *> threadList;
+
 signals:
     void closeThreads();
 };

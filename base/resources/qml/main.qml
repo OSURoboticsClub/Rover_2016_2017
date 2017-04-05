@@ -91,6 +91,7 @@ Window {
         }
     }
     // TODO: is this actually necessary?
+    // Connor: Not sure. I'm sure that there is a better way, but this got the job done when I was putting it in.
     /*
     Timer {
         interval: 500; running: true; repeat: true
@@ -100,12 +101,13 @@ Window {
     }
     */
     Pane {
+        anchors.fill: parent
         RowLayout {
             id: rowLayout
             anchors.fill: parent
 
             SidebarPanel{
-                Layout.margins: 5
+                Layout.margins: 2
                 Layout.fillHeight: true
                 Layout.minimumWidth: 200
                 Layout.preferredWidth: 200

@@ -60,22 +60,28 @@ ColumnLayout {
             root.r_f_drive, root.r_m_drive, root.r_b_drive]
     }
 
+    Label {
+        id: label
+        text: "Battery Voltage"
+        horizontalAlignment: Text.AlignHCenter
+        Layout.fillWidth: true
+    }
+
     Rectangle {
         id: voltageGauge
         property int limit: 25
-        property double value: root.battery_voltage / 1000
+        property double value: 20000 / 1000
         Layout.fillWidth: true
         Layout.minimumHeight: 40
 
         color: Material.color(Material.Grey)
 
         Rectangle {
-            id: progress
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             width: parent.value * parent.width / parent.limit
-            color: parent.width/2 <= progress.width ?
+            color: parent.width/2 > width ?
                      Material.color(Material.Red):
                         Material.color(Material.Indigo)
         }
@@ -90,7 +96,7 @@ ColumnLayout {
 
     Item {
         id: row
-        Layout.minimumHeight: 70
+        Layout.minimumHeight: 50
         Layout.fillWidth: true
 
         StatusIndicator {
@@ -127,5 +133,6 @@ ColumnLayout {
             anchors.rightMargin: 10
         }
     }
+
 }
 

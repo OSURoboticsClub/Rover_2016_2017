@@ -8,7 +8,7 @@ import QtPositioning 5.7
 
 ColumnLayout {
     id: sidebarPanel
-    anchors.fill: parent
+    //anchors.fill: parent
 
     AttitudeIndicator{
         id: indicator

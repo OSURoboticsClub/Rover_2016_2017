@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
 Column {
-    anchors.fill: parent
+//    anchors.fill: parent
 
     property double startTime: 30
 

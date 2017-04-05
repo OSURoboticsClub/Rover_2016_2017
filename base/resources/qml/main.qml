@@ -81,7 +81,7 @@ Window {
     property bool activeControllerHandler: false
     property string colorUpdater: "white"
     property bool activeUpdater: false
-
+/*
     QtObject {
         id: gps
         signal pushRoverCoords;
@@ -90,7 +90,7 @@ Window {
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }
-    }
+    }*/
     // TODO: is this actually necessary?
     // Connor: Not sure. I'm sure that there is a better way, but this got the job done when I was putting it in.
     /*
@@ -110,8 +110,9 @@ Window {
             SidebarPanel {
                 Layout.margins: 2
                 Layout.fillHeight: true
-                Layout.minimumWidth: 150
-                Layout.preferredWidth: 150
+                Layout.minimumWidth: 200
+                Layout.preferredWidth: 200
+                Layout.maximumWidth: 200
             }
 
 

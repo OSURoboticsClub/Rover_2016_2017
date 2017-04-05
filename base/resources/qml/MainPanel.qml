@@ -6,20 +6,17 @@ import QtQuick.Layouts 1.3
 
 
 RowLayout{
+
     StackLayout {
         id: mainPanel
         Layout.fillHeight: true
         Layout.fillWidth: true
-        anchors.fill: parent
-        currentIndex: 1
-
-
+        currentIndex: 0
         MapView{anchors.fill: parent}
 
-
         SettingsView{anchors.fill: parent}
-
         DataView{anchors.fill: parent}
+
     }
 
     ListView {

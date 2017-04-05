@@ -7,21 +7,35 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.0
 
+
 ColumnLayout {
-    Row {
+        //anchors.margins: 10
+
+
+    WebEngineView {
+        id: map
+
         Layout.fillHeight: true
         Layout.fillWidth: true
-        WebEngineView {
-            id: map
+        Layout.minimumWidth: 200
+        Layout.preferredWidth: 300
+        url: "qrc:/web/map.html"
 
-            anchors.fill: parent
 
-            url: "qrc:/web/map.html"
-            webChannel: WebChannel {
-                registeredObjects: [gps]
-            }
+        QtObject {
+            id: gps
+            property var coords: [root.latitude, root.longitude, root.gps_heading]
+            WebChannel.id: "gps"
+        }
+
+        webChannel: WebChannel {
+            registeredObjects: [gps]
+
         }
     }
+
+
+
 
     Row {
         Layout.fillWidth: true
@@ -44,3 +58,5 @@ ColumnLayout {
         }
     }
 }
+
+

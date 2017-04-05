@@ -11,8 +11,10 @@ Row {
     property int smallFontSize: 15
     spacing: 50
     anchors.margins: 10
+
     Column {
         id: dataCol1
+        spacing: 10
 
         Label {
             id: batteryVoltage
@@ -99,6 +101,24 @@ Row {
             font.pixelSize: dataView.smallFontSize
         }
 
+
+    }
+    
+    Column {
+        id: dataCol2
+        spacing: 10
+
+        Label {
+            id: selectedCamera
+            text: qsTr("Selected Camera: " + root.selected_camera)
+            font.pixelSize: dataView.largeFontSize
+        }
+        /*
+        Label {
+            id: callsign
+            font.pixelSize: dataView.largeFontSize
+        }
+        */
         Label {
             id: potentiometers
             text: qsTr("Potentometers:")
@@ -130,25 +150,10 @@ Row {
             font.pixelSize: dataView.smallFontSize
         }
 
-    }
-    
-    Column {
-        id: dataCol2
-
-        Label {
-            id: selectedCamera
-            text: qsTr("Selected Camera: " + root.selected_camera)
-            font.pixelSize: dataView.largeFontSize
-        }
-
-        Label {
-            id: callsign
-            font.pixelSize: dataView.largeFontSize
-        }
 
         Label {
             id: magnetomer
-            text: qsTr("Magnetomer: ")
+            text: qsTr("Magnetometer: ")
             font.pixelSize: dataView.largeFontSize
         }
         Label {
@@ -188,7 +193,7 @@ Row {
             text: qsTr("   Z: " + root.gyro_z)
             font.pixelSize: dataView.smallFontSize
         }
-
+        /*
         Label {
             id: gpioDir
             text: qsTr("GPIO direction: " + root.gpio_dir)
@@ -216,6 +221,11 @@ Row {
             text: qsTr("Build info: " + root.build_info_data)
             font.pixelSize: dataView.largeFontSize
         }
+        */
+    }
+    Column {
+        id: dataCol3
+        spacing: 10
         Label {
             id: latitude
             text: qsTr("Latitude: " + root.latitude)
@@ -231,7 +241,9 @@ Row {
             text: qsTr("Heading: " + root.gps_heading)
             font.pixelSize: dataView.largeFontSize
         }
-    }
 
+        Countdown {
+        }
+    }
 
 }

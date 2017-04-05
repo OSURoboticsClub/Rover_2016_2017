@@ -11,7 +11,7 @@ RowLayout{
         Layout.fillHeight: true
         Layout.fillWidth: true
         anchors.fill: parent
-        currentIndex: 0
+        currentIndex: 1
 
 
         MapView{anchors.fill: parent}

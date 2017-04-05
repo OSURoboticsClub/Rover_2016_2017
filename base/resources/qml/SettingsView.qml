@@ -7,12 +7,9 @@ Column {
 
     property double startTime: 30
 
-    Row {
-        Label {
-            id: label1
-            text: "Serial"
-            fontSizeMode: Text.FixedSize
-        }
+    Label {
+        id: label1
+        text: "Serial"
     }
 
     Row {
@@ -22,12 +19,21 @@ Column {
 
         Switch {
             id: switch1
-            text: qsTr("Serial")
+            text: "Serial"
+        }
+
+        Label {
+            text: "Serial port"
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         ComboBox {
             id: comboBox
         }
+    }
+
+    Label {
+        text: "Packet Updates"
     }
 
     Row {
@@ -40,17 +46,27 @@ Column {
             text: "Updater"
         }
 
+        Label {
+            text: "Refresh rate"
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         Slider {
             id: slider
             value: 0.5
         }
     }
+
+    Label {
+        text: "User Inputs"
+    }
+
     Row {
         id: row2
         Switch {
             id: switch3
 
-            text: qsTr("Switch")
+            text: "Controllers"
         }
     }
 

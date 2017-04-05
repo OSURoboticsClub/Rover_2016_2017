@@ -17,7 +17,8 @@ Window {
     visible: true
 
     Material.theme: Material.Dark
-    Material.accent: Material.Purple
+    //Material.accent: Material.Purple
+    //Material.background: Material.Grey
 
     signal serialHandlerOn()
     signal serialHandlerOff()
@@ -106,13 +107,11 @@ Window {
             id: rowLayout
             anchors.fill: parent
 
-            SidebarPanel{
+            SidebarPanel {
                 Layout.margins: 2
                 Layout.fillHeight: true
-                Layout.minimumWidth: 200
-                Layout.preferredWidth: 200
-                Layout.maximumWidth: 300
-                Layout.minimumHeight: 500
+                Layout.minimumWidth: 150
+                Layout.preferredWidth: 150
             }
 
 
@@ -120,9 +119,8 @@ Window {
                 id: mainPanelRow
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.minimumWidth: 400
-                Layout.preferredWidth: 800
-                Layout.minimumHeight: 500
+   //             Layout.minimumWidth: 400
+     //           Layout.minimumHeight: 500
 
                 MainPanel {
                     Layout.minimumHeight: 350
@@ -134,6 +132,7 @@ Window {
                     id: logger
                     Layout.fillWidth: true
                     Layout.minimumHeight: 150
+                    Layout.preferredHeight: 150
                 }
             }
 

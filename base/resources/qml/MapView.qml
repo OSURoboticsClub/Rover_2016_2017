@@ -8,22 +8,25 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.0
 
 ColumnLayout {
-
-    WebEngineView {
-        id: map
-
+    Row {
         Layout.fillHeight: true
         Layout.fillWidth: true
+        WebEngineView {
+            id: map
 
-        url: "qrc:/web/map.html"
-        webChannel: WebChannel {
-            registeredObjects: [gps]
+            anchors.fill: parent
+
+            url: "qrc:/web/map.html"
+            webChannel: WebChannel {
+                registeredObjects: [gps]
+            }
         }
     }
 
     Row {
         Layout.fillWidth: true
-        Layout.minimumHeight: 70
+        Layout.minimumHeight: 50
+        Layout.preferredHeight: 50
         spacing: 10
         TextField {
             placeholderText: "latitude"

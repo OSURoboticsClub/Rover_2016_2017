@@ -74,7 +74,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.minimumHeight: 40
 
-        color: Material.color(Material.Grey)
+        color: Material.foreground
 
         Rectangle {
             anchors.top: parent.top
@@ -83,7 +83,7 @@ ColumnLayout {
             width: parent.value * parent.width / parent.limit
             color: parent.width/2 > width ?
                      Material.color(Material.Red):
-                        Material.color(Material.Indigo)
+                        Material.accent
         }
 
         Label {

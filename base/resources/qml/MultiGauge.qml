@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
- import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Material 2.0
 
 RowLayout {
     id: multiGauge
@@ -9,8 +9,8 @@ RowLayout {
     property alias model: repeater.model
 
     property var limits
-    property string bgcolor: Material.color(Material.Grey)
-    property string fgcolor: Material.color(Material.Indigo)
+    property string bgcolor: Material.foreground
+    property string fgcolor: Material.accent
 
 
     QtObject {
@@ -19,16 +19,12 @@ RowLayout {
         property int centerY: multiGauge.limits[1] * multiGauge.height / p.range
     }
 
-
     Repeater {
         id: repeater
         Item {
             id: gauge
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-
-
 
             Rectangle {
                 color: multiGauge.bgcolor
@@ -37,7 +33,8 @@ RowLayout {
 
             Rectangle {
                 color: multiGauge.fgcolor
-                width: parent.width
+                anchors.left: parent.left
+                anchors.right: parent.right
 
                 height: multiGauge.height * Math.abs(model.modelData) / p.range
 
@@ -49,7 +46,7 @@ RowLayout {
                 width: parent.width
                 height: 2
                 y: p.centerY
-                color: "black"
+                color: Material.background
 
 
             }

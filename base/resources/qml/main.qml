@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-//import QtWebChannel 1.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 
@@ -10,9 +9,10 @@ import QtQuick.Controls.Material 2.0
 
 Window {
     id: root
+
     visibility: "Maximized"
-    minimumHeight: 300
-    minimumWidth: 500
+    minimumHeight: 500
+    minimumWidth: 800
 
     visible: true
 
@@ -28,10 +28,10 @@ Window {
     signal controllerHandlerOff()
 
 
-
+    /*
     signal updateRoverPosistion()
     signal roverPosTrigger()
-
+    */
     property var serialPorts: []
 
     property int battery_voltage: 0
@@ -69,18 +69,9 @@ Window {
     property double altitude: 0
     property double latitude: 0
     property double longitude: 0
-
-
     property int gps_track_valid: 0
     property int gps_heading: 0
     property int gps_speed: 0
-
-    property string colorSerialHandler: "white"
-    property bool activeSerialHandler: false
-    property string colorControllerHandler: "white"
-    property bool activeControllerHandler: false
-    property string colorUpdater: "white"
-    property bool activeUpdater: false
 /*
     QtObject {
         id: gps
@@ -102,12 +93,14 @@ Window {
     }
     */
     Pane {
+        id: pane
         anchors.fill: parent
         RowLayout {
-            id: rowLayout
+            id: mainLayout
             anchors.fill: parent
 
             SidebarPanel {
+                id: sidebarPanel
                 Layout.margins: 2
                 Layout.fillHeight: true
                 Layout.minimumWidth: 200
@@ -115,15 +108,15 @@ Window {
                 Layout.maximumWidth: 200
             }
 
-
             ColumnLayout {
-                id: mainPanelRow
+                id: mainPanelLayout
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-   //             Layout.minimumWidth: 400
-     //           Layout.minimumHeight: 500
+                Layout.minimumWidth: 600
+                Layout.minimumHeight: 400
 
                 MainPanel {
+                    id: mainPanel
                     Layout.minimumHeight: 350
                     Layout.fillHeight: true
                     Layout.fillWidth: true

@@ -4,9 +4,9 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
 RowLayout{
-
+    id: mainPanel
     StackLayout {
-        id: mainPanel
+        id: mainStack
         Layout.fillHeight: true
         Layout.fillWidth: true
         currentIndex: 0
@@ -28,7 +28,7 @@ RowLayout{
     }
 
     Column {
-        id: listView
+        id: navColumn
         Layout.minimumWidth: 70
         Layout.fillHeight: true
 

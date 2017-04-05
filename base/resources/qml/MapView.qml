@@ -9,6 +9,7 @@ import QtQuick.Controls.Material 2.0
 
 
 ColumnLayout {
+    id: mapView
         //anchors.margins: 10
 
 
@@ -33,27 +34,28 @@ ColumnLayout {
 
         }
     }
-
-
-
-
     Row {
+        id: mapInput
         Layout.fillWidth: true
         Layout.minimumHeight: 50
         Layout.preferredHeight: 50
         spacing: 10
         TextField {
+            id: inputLatitude
             placeholderText: "latitude"
             validator: DoubleValidator{}
         }
         TextField {
+            id: inputLongitude
             placeholderText: "longitude"
             validator: DoubleValidator{}
         }
         TextField {
+            id: inputName
             placeholderText: "name"
         }
         Button {
+            id: submitButton
             text: "Add Waypoint"
         }
     }

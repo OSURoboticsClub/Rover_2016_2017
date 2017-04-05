@@ -11,12 +11,13 @@ ColumnLayout {
     //anchors.fill: parent
 
     AttitudeIndicator{
-        id: indicator
+        id: attitudeIndicator
         Layout.minimumHeight: 200
         Layout.fillWidth: true
     }
 
     CircularGauge {
+        id: speedGauge
         maximumValue: 20
         Layout.preferredHeight: 200
         Layout.fillWidth: true
@@ -29,7 +30,7 @@ ColumnLayout {
 
 
     Label {
-        id: text1
+        id: armMotorLabel
         text: "Arm Motors"
         Layout.fillWidth: true
         horizontalAlignment: Text.AlignHCenter
@@ -45,7 +46,7 @@ ColumnLayout {
     }
 
     Label {
-        id: text2
+        id: motorPowerLabel
         text: "Motor Power"
         Layout.fillWidth: true
         horizontalAlignment: Text.AlignHCenter
@@ -61,7 +62,7 @@ ColumnLayout {
     }
 
     Label {
-        id: label
+        id: batteryVoltageLabel
         text: "Battery Voltage"
         horizontalAlignment: Text.AlignHCenter
         Layout.fillWidth: true
@@ -95,42 +96,41 @@ ColumnLayout {
     }
 
     Item {
-        id: row
+        id: statusItem
         Layout.minimumHeight: 50
         Layout.fillWidth: true
 
         StatusIndicator {
             id: statusIndicator
             anchors.left: parent.left
-            anchors.leftMargin: 0
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         Label {
-            id: text3
+            id: statusText
             text: "Status"
-            anchors.verticalCenter: statusIndicator.verticalCenter
+            anchors.verticalCenter: parent.verticalCenter
             anchors.left: statusIndicator.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: 5
         }
 
-        Rectangle {
-            id: rectangle
-            width: 40
-            height: 40
-            color: "#e32929"
+        Image {
+            id: cameraIcon
             anchors.bottom: parent.bottom
+            anchors.top: parent.top
             anchors.right: parent.right
+            fillMode: Image.PreserveAspectFit
+            source: "qrc:/img/placeholder-icon.svg"
         }
 
         Label {
-            id: text4
-            text: qsTr("Camera")
+            id: cameraText
+            text: "Camera"
             horizontalAlignment: Text.AlignRight
-            anchors.verticalCenter: text3.verticalCenter
-            anchors.right: rectangle.left
-            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: cameraIcon.left
+            anchors.rightMargin: 5
         }
     }
 

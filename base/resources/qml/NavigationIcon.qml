@@ -4,8 +4,11 @@ import QtQuick.Controls.Material 2.0
 
 
 Image {
+    id: navigationIcon
     fillMode: Image.PreserveAspectFit
+
     signal clicked()
+
     Rectangle {
         id: leftRect
         anchors.left: parent.left

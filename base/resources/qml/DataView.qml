@@ -5,8 +5,6 @@ import QtQuick.Layouts 1.3
 Row {
     id: dataView
 
-//    anchors.fill: parent
-
     property int largeFontSize: 20
     property int smallFontSize: 15
     spacing: 50

@@ -11,7 +11,6 @@ Canvas {
     property double pitch: 0
 
     Image {
-        id: image
         anchors.fill: parent
         source: Qt.resolvedUrl("qrc:/img/adi/adi_back.svg")
         transformOrigin: Item.Center

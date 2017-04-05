@@ -2,10 +2,9 @@ import QtQuick 2.1
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
-Column {
-//    anchors.fill: parent
+// TODO: id everything accurately
 
-    property double startTime: 30
+Column {
 
     Label {
         id: label1
@@ -20,6 +19,9 @@ Column {
         Switch {
             id: switch1
             text: "Serial"
+            onClicked: {
+                checked ? serialHandlerOn() : serialHandlerOff()
+            }
         }
 
         Label {
@@ -44,6 +46,9 @@ Column {
         Switch {
             id: switch2
             text: "Updater"
+            onClicked: {
+                checked ? updaterOn() : updaterOff()
+            }
         }
 
         Label {
@@ -65,8 +70,10 @@ Column {
         id: row2
         Switch {
             id: switch3
-
             text: "Controllers"
+            onClicked: {
+                checked ? controllerHandlerOn() : controllerHandlerOff()
+            }
         }
     }
 

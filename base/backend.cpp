@@ -41,15 +41,12 @@ Backend::Backend(QObject *view) :
 
     connect(m_view, SIGNAL(serialHandlerOn()), Serial, SLOT(start()));
     connect(m_view, SIGNAL(serialHandlerOff()), Serial, SLOT(stop()));
-    connect(Serial, SIGNAL(changeButtonColor(QString, bool)), this, SLOT(colorSerialHandler(QString, bool)));
 
     connect(m_view, SIGNAL(updaterOn()), m_updater, SLOT(start()));
     connect(m_view, SIGNAL(updaterOff()), m_updater, SLOT(stop()));
-    connect(m_updater, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorUpdater(QString, bool)));
 
     connect(m_view, SIGNAL(controllerHandlerOn()), m_inputs, SLOT(start()));
     connect(m_view, SIGNAL(controllerHandlerOff()), m_inputs, SLOT(stop()));
-    connect(m_inputs, SIGNAL(changeButtonColor(QString,bool)), this, SLOT(colorControllerHandler(QString, bool)));
 
     connect(m_view, SIGNAL(pauseAllThreads()), this, SLOT(pauseThreads()));
     connect(m_view, SIGNAL(resumeAllThreads()), this, SLOT(resumeThreads()));
@@ -205,24 +202,5 @@ void Backend::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 
         m_view->setProperty("gps_track_valid", gps_track_valid);
         m_view->setProperty("gps_heading", gps_heading);
         m_view->setProperty("gps_speed", gps_speed);
-    }
-}
-
-void Backend::colorSerialHandler(QString color, bool isActive){
-    if (m_view){
-        m_view->setProperty("colorSerialHandler", color);
-        m_view->setProperty("activeSeriaHandler", isActive);
-    }
-}
-void Backend::colorControllerHandler(QString color, bool isActive){
-    if (m_view){
-        m_view->setProperty("colorControllerHandler", color);
-        m_view->setProperty("activeControllerHandler", isActive);
-    }
-}
-void Backend::colorUpdater(QString color, bool isActive){
-    if (m_view){
-        m_view->setProperty("colorUpdater", color);
-        m_view->setProperty("activeUpdater", isActive);
     }
 }

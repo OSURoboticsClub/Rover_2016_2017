@@ -37,7 +37,7 @@ RowLayout{
             anchors.right: parent.right
             source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
             onClicked: {
-                mainPanel.currentIndex = 0
+                mainStack.currentIndex = 0
             }
         }
         NavigationIcon{
@@ -45,7 +45,7 @@ RowLayout{
             anchors.right: parent.right
             source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
             onClicked: {
-                mainPanel.currentIndex = 1
+                mainStack.currentIndex = 1
             }
         }
         NavigationIcon{
@@ -53,7 +53,7 @@ RowLayout{
             anchors.right: parent.right
             source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
             onClicked: {
-                mainPanel.currentIndex = 2
+                mainStack.currentIndex = 2
             }
         }
     }

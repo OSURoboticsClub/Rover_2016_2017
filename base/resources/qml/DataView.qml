@@ -1,135 +1,130 @@
 import QtQuick 2.1
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
-Item {
+Row {
     id: dataView
-    height: parent.height
-    width: parent.width
 
-    property int largeFontSize: 15
-    property int smallFontSize: 12    
-    
+    anchors.fill: parent
+
+    property int largeFontSize: 20
+    property int smallFontSize: 15
+    spacing: 50
+    anchors.margins: 10
     Column {
         id: dataCol1
-        width: parent.width/2
-        height: parent.height
-        anchors.left: parent.left
 
-        
-        Text {
+        Label {
             id: batteryVoltage
             text: qsTr("Battery Voltage: " + root.battery_voltage)
-            verticalAlignment: Text.AlignTop
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: driveMotorPower
             text: qsTr("Drive Motor Power: ")
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: lfDrive
             text: qsTr("   Left Front: " + root.l_f_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: lmDrive
             text: qsTr("   Left Middle: " + root.l_m_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: lbDrive
             text: qsTr("   Left Back: " + root.l_b_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: rfDrive
             text: qsTr("   Right Front: " + root.r_f_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: rmDrive
             text: qsTr("   Right Middle: " + root.r_m_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: rbDrive
             text: qsTr("   Right Back: " + root.r_b_drive)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: swerveDriveState
             text: qsTr("Swerve Drive State: " + root.swerve_state)
-            wrapMode: Text.NoWrap
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: armMotors
             text: qsTr("Arm Motors: ")
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: m1
             text: qsTr("   Motor 1: " + root.arm_motor_1)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: m2
             text: qsTr("   Motor 2: " + root.arm_motor_2)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: m3
             text: qsTr("   Motor 3: " + root.arm_motor_3)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: m4
             text: qsTr("   Motor 4: " + root.arm_motor_4)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: m5
             text: qsTr("   Motor 5: " + root.arm_motor_5)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: potentiometers
             text: qsTr("Potentometers:")
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: pot1
             text: qsTr("   Pot 1: " + root.pot_1)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: pot2
             text: qsTr("   Pot 2: " + root.pot_2)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: pot3
             text: qsTr("   Pot 3: " + root.pot_3)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: pot4
             text: qsTr("   Pot 4: " + root.pot_4)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: pot5
             text: qsTr("   Pot 5: " + root.pot_5)
             font.pixelSize: dataView.smallFontSize
@@ -139,102 +134,99 @@ Item {
     
     Column {
         id: dataCol2
-        height: parent.height
-        width: parent.width / 2
-        anchors.left: dataCol1.right
 
-        Text {
+        Label {
             id: selectedCamera
             text: qsTr("Selected Camera: " + root.selected_camera)
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: callsign
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: magnetomer
             text: qsTr("Magnetomer: ")
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: magX
             text: qsTr("   X: " + root.mag_x)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: magY
             text: qsTr("   Y: " + root.mag_y)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: magZ
             text: qsTr("   Z: " + root.mag_z)
             font.pixelSize: dataView.smallFontSize
         }
 
 
-        Text {
+        Label {
             id: gyroscope
             text: qsTr("Gyroscope: ")
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: gyroX
             text: qsTr("   X: " + root.gyro_x)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: gyroY
             text: qsTr("   Y: " + root.gyro_y)
             font.pixelSize: dataView.smallFontSize
         }
-        Text {
+        Label {
             id: gyroZ
             text: qsTr("   Z: " + root.gyro_z)
             font.pixelSize: dataView.smallFontSize
         }
 
-        Text {
+        Label {
             id: gpioDir
             text: qsTr("GPIO direction: " + root.gpio_dir)
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: gpioOutValue
             text: qsTr("GPIO out value: " + root.gpio_out)
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: gpioReadState
             text: qsTr("GPIO read state: " + root.gpio_state)
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id: debugInfo
             text: qsTr("Debugging info: " + root.debug_str_data)
             font.pixelSize: dataView.largeFontSize
         }
 
-        Text {
+        Label {
             id:buildInfo
             text: qsTr("Build info: " + root.build_info_data)
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id: latitude
             text: qsTr("Latitude: " + root.latitude)
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id:longitude
             text: qsTr("Longitude: " + root.longitude)
             font.pixelSize: dataView.largeFontSize
         }
-        Text {
+        Label {
             id:gps_heading
             text: qsTr("Heading: " + root.gps_heading)
             font.pixelSize: dataView.largeFontSize

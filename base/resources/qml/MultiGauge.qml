@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+ import QtQuick.Controls.Material 2.0
 
 RowLayout {
     id: multiGauge
@@ -8,8 +9,8 @@ RowLayout {
     property alias model: repeater.model
 
     property var limits
-    property string bgcolor: "white"
-    property string fgcolor: "orange"
+    property string bgcolor: Material.color(Material.Grey)
+    property string fgcolor: Material.color(Material.Indigo)
 
 
     QtObject {

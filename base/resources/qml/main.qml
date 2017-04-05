@@ -16,7 +16,7 @@ Window {
 
     visible: true
 
-    Material.theme: Material.Light
+    Material.theme: Material.Dark
     Material.accent: Material.Purple
 
     signal serialHandlerOn()
@@ -99,43 +99,44 @@ Window {
         }
     }
     */
+    Pane {
+        RowLayout {
+            id: rowLayout
+            anchors.fill: parent
 
-    RowLayout {
-        id: rowLayout
-        anchors.fill: parent
-
-        SidebarPanel{
-            Layout.margins: 5
-            Layout.fillHeight: true
-            Layout.minimumWidth: 200
-            Layout.preferredWidth: 200
-            Layout.maximumWidth: 300
-            Layout.minimumHeight: 500
-        }
+            SidebarPanel{
+                Layout.margins: 5
+                Layout.fillHeight: true
+                Layout.minimumWidth: 200
+                Layout.preferredWidth: 200
+                Layout.maximumWidth: 300
+                Layout.minimumHeight: 500
+            }
 
 
-        ColumnLayout {
-            id: mainPanelRow
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.minimumWidth: 400
-            Layout.preferredWidth: 800
-            Layout.minimumHeight: 500
-
-            MainPanel {
-                Layout.minimumHeight: 350
+            ColumnLayout {
+                id: mainPanelRow
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                Layout.minimumWidth: 400
+                Layout.preferredWidth: 800
+                Layout.minimumHeight: 500
+
+                MainPanel {
+                    Layout.minimumHeight: 350
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                }
+
+                TextArea {
+                    id: logger
+                    Layout.fillWidth: true
+                    Layout.minimumHeight: 150
+                }
             }
 
-            TextArea {
-                id: logger
-                Layout.fillWidth: true
-                Layout.minimumHeight: 150
-            }
+
         }
-
-
     }
 }
 

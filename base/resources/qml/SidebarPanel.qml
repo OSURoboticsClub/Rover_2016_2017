@@ -2,8 +2,10 @@ import QtQuick 2.0
 import QtQuick.Extras 1.4
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles 1.4
+ import QtQuick.Controls.Material 2.0
 import QtQuick.Controls 2.0
 import QtPositioning 5.7
+
 
 Pane {
 
@@ -68,8 +70,7 @@ Pane {
             Layout.fillWidth: true
             Layout.minimumHeight: 40
 
-            color: "transparent"
-            border.width: 2
+            color: Material.color(Material.Grey)
 
             Rectangle {
                 id: progress
@@ -77,7 +78,9 @@ Pane {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 width: parent.value * parent.width / parent.limit
-                color: parent.width/2 <= progress.width ? "blue" : "red"
+                color: parent.width/2 <= progress.width ?
+                         Material.color(Material.Red):
+                            Material.color(Material.Indigo)
             }
 
             Label {

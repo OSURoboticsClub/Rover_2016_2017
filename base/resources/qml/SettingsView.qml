@@ -11,7 +11,7 @@ Column {
         Label {
             id: label1
             text: "Serial"
-            font.pixelSize: 12
+            fontSizeMode: Text.FixedSize
         }
     }
 

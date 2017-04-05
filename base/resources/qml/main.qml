@@ -91,14 +91,15 @@ Window {
         }
     }
     // TODO: is this actually necessary?
-    /*
+    // Connor: Not sure. I'm sure that there is a better way, but this got the job done when I was putting it in.
+
     Timer {
         interval: 500; running: true; repeat: true
         onTriggered: {
             gps.pushRoverCoords();
         }
     }
-    */
+
 
     RowLayout {
         id: rowLayout

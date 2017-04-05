@@ -14,8 +14,7 @@ var wayPointLatLong;
 var clickCoords;
 var wayPointName;
 var clickPopup = L.popup();
-var map = L.map('mapid').setView([lat, long], 17);
-console.warn("THIS");
+var map = L.map('map').setView([lat, long], 17);
 
 var _wayPointNumber = 0;
 

@@ -3,8 +3,7 @@ import QtQuick.Controls 2.0
 
 import QtQuick.Layouts 1.3
 
-import QtWebEngine 1.3
-import QtWebChannel 1.0
+
 
 RowLayout{
     StackLayout {
@@ -15,14 +14,7 @@ RowLayout{
         currentIndex: 0
 
 
-        WebEngineView {
-            id: map
-            anchors.fill: parent
-            url: "qrc:/web/map.html"
-            webChannel: WebChannel {
-                registeredObjects: [gps]
-            }
-        }
+        MapView{anchors.fill: parent}
 
 
         SettingsView{anchors.fill: parent}
@@ -34,17 +26,15 @@ RowLayout{
         id: listView
         Layout.minimumWidth: 70
         Layout.fillHeight: true
-        delegate: Item {
-            x: 5
-            width: 80
-            height: 40
-            Row {
+
+        delegate: Row {
                 id: row1
                 spacing: 10
-                Rectangle {
-                    width: 40
+                Image {
+                    source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
                     height: 40
-                    color: "blue"
+                    width: 40
+                    fillMode: Image.PreserveAspectFit
                     Text {
                         text: model.modelData
                     }
@@ -57,8 +47,7 @@ RowLayout{
                 }
             }
         }
-        }
         model: ["map", "settings", "data"]
-        }
     }
+}
 

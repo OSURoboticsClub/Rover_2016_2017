@@ -18,5 +18,7 @@
         <file>img/adi/adi_back.svg</file>
         <file>img/adi/adi.svg</file>
         <file>qml/AttitudeIndicator.qml</file>
+        <file>qml/MapView.qml</file>
+        <file>img/placeholder-icon.svg</file>
     </qresource>
 </RCC>

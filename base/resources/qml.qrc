@@ -20,5 +20,6 @@
         <file>qml/AttitudeIndicator.qml</file>
         <file>qml/MapView.qml</file>
         <file>img/placeholder-icon.svg</file>
+        <file>qml/NavigationIcon.qml</file>
     </qresource>
 </RCC>

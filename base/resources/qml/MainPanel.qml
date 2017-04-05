@@ -3,8 +3,6 @@ import QtQuick.Controls 2.0
 
 import QtQuick.Layouts 1.3
 
-
-
 RowLayout{
 
     StackLayout {
@@ -12,39 +10,53 @@ RowLayout{
         Layout.fillHeight: true
         Layout.fillWidth: true
         currentIndex: 0
-        MapView{anchors.fill: parent}
 
-        SettingsView{anchors.fill: parent}
-        DataView{anchors.fill: parent}
+        MapView{
+            id: mapView
+            anchors.fill: parent
+        }
+
+        SettingsView{
+            id: settingsView
+            anchors.fill: parent
+        }
+        DataView{
+            id: dataView
+            anchors.fill: parent
+        }
 
     }
 
-    ListView {
+    Column {
         id: listView
         Layout.minimumWidth: 70
         Layout.fillHeight: true
 
-        delegate: Row {
-                id: row1
-                spacing: 10
-                Image {
-                    source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
-                    height: 40
-                    width: 40
-                    fillMode: Image.PreserveAspectFit
-                    Text {
-                        text: model.modelData
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            console.log(model.index)
-                            mainPanel.currentIndex = model.index
-                    }
-                }
+        NavigationIcon{
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
+            onClicked: {
+                mainPanel.currentIndex = 0
             }
         }
-        model: ["map", "settings", "data"]
+        NavigationIcon{
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
+            onClicked: {
+                mainPanel.currentIndex = 1
+            }
+        }
+        NavigationIcon{
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: Qt.resolvedUrl("qrc:/img/placeholder-icon.svg")
+            onClicked: {
+                mainPanel.currentIndex = 2
+            }
+        }
     }
 }
+
 

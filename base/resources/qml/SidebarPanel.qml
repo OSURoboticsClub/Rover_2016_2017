@@ -2,11 +2,10 @@ import QtQuick 2.0
 import QtQuick.Extras 1.4
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Styles 1.4
-
+import QtQuick.Controls 2.0
 import QtPositioning 5.7
 
-Rectangle {
-    color: "white"
+Pane {
 
     ColumnLayout {
         id: sidebarPanel
@@ -14,8 +13,6 @@ Rectangle {
 
         AttitudeIndicator{
             id: indicator
-//            width: 100
-//            height: 100
             Layout.minimumHeight: 200
             Layout.fillWidth: true
         }
@@ -32,12 +29,11 @@ Rectangle {
         }
 
 
-        Text {
+        Label {
             id: text1
             text: "Arm Motors"
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 12
         }
 
         MultiGauge {
@@ -49,12 +45,11 @@ Rectangle {
                 root.arm_motor_4, root.arm_motor_5]
         }
 
-        Text {
+        Label {
             id: text2
             text: "Motor Power"
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 12
         }
 
         MultiGauge {
@@ -85,7 +80,7 @@ Rectangle {
                 color: parent.width/2 <= progress.width ? "blue" : "red"
             }
 
-            Text {
+            Label {
                 text: parent.value + " V"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -106,13 +101,12 @@ Rectangle {
                 anchors.bottomMargin: 0
             }
 
-            Text {
+            Label {
                 id: text3
                 text: "Status"
                 anchors.verticalCenter: statusIndicator.verticalCenter
                 anchors.left: statusIndicator.right
                 anchors.leftMargin: 10
-                font.pixelSize: 12
             }
 
             Rectangle {
@@ -121,19 +115,16 @@ Rectangle {
                 height: 40
                 color: "#e32929"
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
                 anchors.right: parent.right
-                anchors.rightMargin: 0
             }
 
-            Text {
+            Label {
                 id: text4
                 text: qsTr("Camera")
                 horizontalAlignment: Text.AlignRight
                 anchors.verticalCenter: text3.verticalCenter
                 anchors.right: rectangle.left
                 anchors.rightMargin: 10
-                font.pixelSize: 12
             }
         }
     }

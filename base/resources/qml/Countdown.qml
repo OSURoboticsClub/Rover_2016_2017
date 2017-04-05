@@ -2,12 +2,10 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 
 
-Rectangle {
+Pane {
     id: timer
     width: 200
     height: 200
-    border.width: 5
-    border.color: "black"
 
     property int timeElapsed: 0
     property variant timeText: [0,0,0]

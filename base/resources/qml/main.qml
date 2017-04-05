@@ -16,7 +16,7 @@ Window {
 
     visible: true
 
-    Material.theme: Material.Dark
+    Material.theme: Material.Light
     Material.accent: Material.Purple
 
     signal serialHandlerOn()
@@ -25,12 +25,13 @@ Window {
     signal updaterOff()
     signal controllerHandlerOn()
     signal controllerHandlerOff()
-    signal allThreadsClose()
-    signal pauseAllThreads()
-    signal resumeAllThreads()
+
+
+
     signal updateRoverPosistion()
     signal roverPosTrigger()
 
+    property var serialPorts: []
 
     property int battery_voltage: 0
     property int l_f_drive: 0
@@ -125,9 +126,6 @@ Window {
                 Layout.minimumHeight: 350
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-
-                Material.theme: Material.Dark
-                Material.accent: Material.Purple
             }
 
             TextArea {

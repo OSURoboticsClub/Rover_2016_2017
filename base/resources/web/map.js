@@ -1,5 +1,4 @@
-
-
+// TODO: refactor this!!!
 var lat = 38.4063;
 var long = -110.792286;
 
@@ -26,21 +25,25 @@ function getWayPointNumber() {
     else
         return document.getElementById("_wayPointName").value;
 }
-
 L.tileLayer.wms(
-    "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer?",
+    "https://services.nationalmap.gov/arcgis/services/USGSImageOnlyLarge/MapServer/WMSServer",
     {
-        layers: "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
-        useCache: false,
+        layers: "0,1,2,3,4,5,6,7,8,9,10",
+        useCache: true,
         crossOrigin: true,
         useOnlyCache: false
     }
 ).addTo(map);
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+
+L.tileLayer.wms('https://basemap.nationalmap.gov/arcgis/services/USGSImageryOnly/MapServer/WMSServer', {
+        layers: "0",
+              maxZoom: 15,
+        useCache: true,
+        crossOrigin: true,
+        useOnlyCache: false
 }).addTo(map);
 
-var snazzyCircle = L.icon({
+var icon = L.icon({
     iconUrl: 'qrc:/img/marker.png',
     iconSize: [25,25],
     iconAnchor: [12.5,12.5],
@@ -59,6 +62,7 @@ function deleteMarkers(lines = true, markers = true) {
     }
     wayPoints = [];
 }
+
 //shamelessly copied from Ravindranath Akila on stack overflow. This is the haversine formula
 function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -71,6 +75,7 @@ function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement fun
     var d = R * c;
     return d * 1000; // meters
 }
+
 function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
     var marker;
     var poly;

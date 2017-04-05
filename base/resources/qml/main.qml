@@ -1,14 +1,24 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
-import QtWebChannel 1.0
+//import QtWebChannel 1.0
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.0
+
+
+
 
 Window {
     id: root
     visibility: "Maximized"
     minimumHeight: 300
     minimumWidth: 500
+
+    visible: true
+
+    Material.theme: Material.Dark
+    Material.accent: Material.Purple
+
     signal serialHandlerOn()
     signal serialHandlerOff()
     signal updaterOn()
@@ -74,7 +84,7 @@ Window {
         id: gps
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
-        WebChannel.id: "gps"
+        //WebChannel.id: "gps"
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }
@@ -94,8 +104,9 @@ Window {
         anchors.fill: parent
 
         SidebarPanel{
+            Layout.margins: 5
             Layout.fillHeight: true
-            Layout.minimumWidth: 150
+            Layout.minimumWidth: 200
             Layout.preferredWidth: 200
             Layout.maximumWidth: 300
             Layout.minimumHeight: 500
@@ -106,7 +117,7 @@ Window {
             id: mainPanelRow
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.minimumWidth: 500
+            Layout.minimumWidth: 400
             Layout.preferredWidth: 800
             Layout.minimumHeight: 500
 
@@ -114,6 +125,9 @@ Window {
                 Layout.minimumHeight: 350
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+
+                Material.theme: Material.Dark
+                Material.accent: Material.Purple
             }
 
             TextArea {

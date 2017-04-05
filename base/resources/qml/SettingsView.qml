@@ -1,8 +1,10 @@
 import QtQuick 2.1
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.0
 
 Item {
     anchors.fill: parent
+
     property double startTime: 30
     Button {
         id: serialHandlerOn
@@ -167,5 +169,12 @@ Item {
     Countdown {
         x: 309
         y: 123
+    }
+
+    RadioButton {
+        id: radioButton
+        x: 55
+        y: 338
+        text: qsTr("Radio Button")
     }
 }

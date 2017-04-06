@@ -50,8 +50,8 @@ Backend::Backend(QObject *view) :
 
     connect(m_view, SIGNAL(pauseAllThreads()), this, SLOT(pauseThreads()));
     connect(m_view, SIGNAL(resumeAllThreads()), this, SLOT(resumeThreads()));
-    connect(m_view, SIGNAL(allThreadsClose()), this, SLOT(close()));
     connect(m_view, SIGNAL(destroyed()), this, SLOT(close()));
+
 
 }
 
@@ -176,6 +176,8 @@ void Backend::setUIGpsPosition(quint8 gps_pos_valid, qint64 latitude, qint64 lon
 
         m_view->setProperty("latitude", lat);
         m_view->setProperty("longitude", lon);
+        QMetaObject::invokeMethod(m_view->findChild<QObject*>("gps"), "roverPosChangeTrigger");
+
     }
 }
 
@@ -187,14 +189,6 @@ void Backend::setUIDebugInfo(QByteArray debug_str_data){
 void Backend::setUIBuildInfo(QByteArray build_info_data){
     if (m_view){
         m_view->setProperty("build_info_data", build_info_data);
-    }
-}
-void Backend::setUIGpsPos(quint8 gps_pos_valid, qint64 latitude, qint64 longitude, qint32 altitude){
-    if(m_view){
-        m_view->setProperty("gps_pos_valid",gps_pos_valid);
-        m_view->setProperty("latitude", latitude);
-        m_view->setProperty("longitude", longitude);
-        m_view->setProperty("altitude", altitude);
     }
 }
 void Backend::setUIGpsTrack(quint8 gps_track_valid, qint16 gps_heading, quint16 gps_speed){

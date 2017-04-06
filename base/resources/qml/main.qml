@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
-
+import QtWebChannel 1.0
 
 
 
@@ -26,7 +26,8 @@ Window {
     signal updaterOff()
     signal controllerHandlerOn()
     signal controllerHandlerOff()
-
+    signal pauseAllThreads()
+    signal resumeAllThreads()
 
     /*
     signal updateRoverPosistion()
@@ -72,27 +73,23 @@ Window {
     property int gps_track_valid: 0
     property int gps_heading: 0
     property int gps_speed: 0
-/*
-    QtObject {
+
+
+
+    //TODO: instead of gps heading also add root function that calculates heading using magnometer and accelometer
+
+    Item {
         id: gps
+        objectName: "gps"
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
-        //WebChannel.id: "gps"
-        //onChange()
-        onPushRoverCoords: {
-            coords = [root.latitude, root.longitude, root.gps_heading];
-        }
-    }*/
-    // TODO: is this actually necessary?
-    // Connor: Not sure. I'm sure that there is a better way, but this got the job done when I was putting it in.
-    /*
-    Timer {
-        interval: 500; running: true; repeat: true
-        onTriggered: {
-            gps.pushRoverCoords();
+        WebChannel.id: "gps"
+        function  roverPosChangeTrigger() {
+            gps.coords = [root.latitude, root.longitude, root.gps_heading];
+            console.log("here");
         }
     }
-    */
+
     Pane {
         id: pane
         anchors.fill: parent

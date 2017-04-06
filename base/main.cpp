@@ -19,9 +19,6 @@ int main(int argc, char *argv[])
     QObject *rootView = view.rootObjects()[0];
     Backend b(rootView);
 
-    //this is irratating because it always throws a qdebug message when connecting the view to deleteLater(), but this is an actual bug with qt and neccessary to properly close out all of the threads
-    //QObject::connect(rootView, SIGNAL(closeMainWindow()), &b, SLOT(close()));
-    //QObject::connect(rootView, SIGNAL(closeMainWindow()), item, SLOT(deleteLater()));
 
     return app.exec();
 }

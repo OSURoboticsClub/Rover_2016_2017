@@ -81,8 +81,8 @@ ColumnLayout {
             objectName: "gps"
             WebChannel.id: "gps"
 
-            property double _inputLatitude: 38.40626//parseFloat(inputLatitude.text)
-            property double _inputLongitude: -110.79299//parseFloat(inputLongitude.text)
+            property double _inputLatitude: parseFloat(inputLatitude.text)
+            property double _inputLongitude: parseFloat(inputLongitude.text)
             property string _inputName: inputName.text
             property var coords: [root.latitude, root.longitude, root.gps_heading]
 

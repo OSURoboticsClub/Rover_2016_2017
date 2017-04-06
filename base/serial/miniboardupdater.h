@@ -20,7 +20,6 @@ private:
     QTime runTime;
 signals:
     void update();
-    void changeButtonColor(QString,bool);
 
 public slots:
     void stop();

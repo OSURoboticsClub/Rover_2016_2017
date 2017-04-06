@@ -25,6 +25,7 @@ ColumnLayout {
 
         QtObject {
             id: gps
+
             property var coords: [root.latitude, root.longitude, root.gps_heading]
             WebChannel.id: "gps"
         }

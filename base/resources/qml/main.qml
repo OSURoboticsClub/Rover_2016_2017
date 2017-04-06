@@ -3,7 +3,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
-import QtWebChannel 1.0
 
 
 
@@ -77,18 +76,6 @@ Window {
 
 
     //TODO: instead of gps heading also add root function that calculates heading using magnometer and accelometer
-
-    Item {
-        id: gps
-        objectName: "gps"
-        signal pushRoverCoords;
-        property var coords: [root.latitude, root.longitude, root.gps_heading]
-        WebChannel.id: "gps"
-        function  roverPosChangeTrigger() {
-            gps.coords = [root.latitude, root.longitude, root.gps_heading];
-            console.log("here");
-        }
-    }
 
     Pane {
         id: pane

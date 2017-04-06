@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("Material");
     QQmlApplicationEngine view(QUrl("qrc:/qml/main.qml"));
 
+
     QObject *rootView = view.rootObjects()[0];
     Backend b(rootView);
 

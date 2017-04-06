@@ -21,19 +21,11 @@ ColumnLayout {
         Layout.minimumWidth: 200
         Layout.preferredWidth: 300
         url: "qrc:/web/map.html"
-
-
-        QtObject {
-            id: gps
-
-            property var coords: [root.latitude, root.longitude, root.gps_heading]
-            WebChannel.id: "gps"
-        }
-
-        webChannel: WebChannel {
+        webChannel: WebChannel{
             registeredObjects: [gps]
-
         }
+
+
     }
     Row {
         id: mapInput
@@ -58,6 +50,63 @@ ColumnLayout {
         Button {
             id: submitButton
             text: "Add Waypoint"
+            onClicked: {
+                gps._submitButton();
+            }
+        }
+        Button {
+            id: addFromClicked
+            text: "Add From CLicked"
+            onClicked: {
+                gps._addFromClicked();
+            }
+        }
+
+        Button {
+            id: deleteClicked
+            text: "Delete Clicked"
+            onClicked: {
+                gps._deleteClicked();
+            }
+        }
+        Button {
+            id: deleteAll
+            text: "Delete All"
+            onClicked: {
+                gps._deleteAll();
+            }
+        }
+        QtObject {
+            id: gps
+            objectName: "gps"
+            WebChannel.id: "gps"
+
+            property double _inputLatitude: 38.40626//parseFloat(inputLatitude.text)
+            property double _inputLongitude: -110.79299//parseFloat(inputLongitude.text)
+            property string _inputName: inputName.text
+            property var coords: [root.latitude, root.longitude, root.gps_heading]
+
+            property string dist: "0 m"
+            property string name: ""
+
+            signal _pushRoverCoords()
+            signal _submitButton()
+            signal _addFromClicked()
+            signal _deleteClicked()
+            signal _deleteAll()
+
+            function  roverPosChangeTrigger() {
+                gps.coords = [root.latitude, root.longitude, root.gps_heading];
+                _pushRoverCoords();
+            }
+        }
+        Text {
+            id: name
+            text: gps.name
+        }
+        Text {
+            id: dist
+            text: gps.dist
         }
     }
 }

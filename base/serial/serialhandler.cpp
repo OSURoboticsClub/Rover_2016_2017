@@ -45,7 +45,6 @@ void SerialHandler::run()
 
 void SerialHandler::eventLoop()
 {
-    emit changeButtonColor("#169d06", true);
     while (m_run){
         if(m_packets->device()->bytesAvailable() >= 2) {
 
@@ -66,7 +65,6 @@ void SerialHandler::eventLoop()
         msleep(100);
     }
     qDebug() << "exiting serial read";
-    emit changeButtonColor("#9d0606", false);
 }
 
 void SerialHandler::stop() {
@@ -78,10 +76,10 @@ void SerialHandler::connectDevice()
 {
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
     if(!serialPorts.isEmpty()){
-            qDebug() << serialPorts[1].portName();
+            qDebug() << serialPorts[0].portName();
 
             qDebug() << "identifyed serial";
-            QSerialPort *serial = new QSerialPort(serialPorts[1]);
+            QSerialPort *serial = new QSerialPort(serialPorts[0]);
             if(!serial->open(QIODevice::ReadWrite)) {
                 qDebug() << tr("error %1").arg(serial->error());
             }
@@ -132,10 +130,10 @@ void SerialHandler::queryStatus()
     p()->readMagnetometer();
     p()->readAccelerometer();
     p()->readGyroscope();
-    p()->readCompassHeading();
-    p()->readGpioDirection();
-    p()->readGpioOutValue();
-    p()->readGpioReadState();
+    //p()->readCompassHeading();
+    //p()->readGpioDirection();
+    //p()->readGpioOutValue();
+    //p()->readGpioReadState();
     //p()->readDebuggingInfo();
     //p()->readBuildInfo();
     qDebug() << "Done Pulling";

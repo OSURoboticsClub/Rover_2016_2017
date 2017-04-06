@@ -9,7 +9,7 @@ ThreadArray::ThreadArray(){
 }
 
 
-void ThreadArray::push(QThread *m_thread, bool startImmediately)
+void ThreadArray::m_push(QThread *m_thread, bool startImmediately)
 {
     if (!(m_thread->isRunning())){
         threadnode *temp = new threadnode;
@@ -39,7 +39,7 @@ void ThreadArray::push(QThread *m_thread, bool startImmediately)
     }
 }
 
-void ThreadArray::m_push(QThread *m_thread, bool startImmediately){
+void ThreadArray::push(QThread *m_thread, bool startImmediately){
     if (!(m_thread->isRunning())){
        threadList.append(m_thread);
        if (startImmediately)
@@ -62,7 +62,7 @@ void ThreadArray::convertToArray()
 }
 
 
-bool ThreadArray :: clear()
+bool ThreadArray :: m_clear()
 {
     if (!clearing){
         clearing = true;
@@ -121,7 +121,7 @@ bool ThreadArray :: clear()
     }
 }
 
-bool ThreadArray::m_clear(){
+bool ThreadArray::clear(){
     if (!clearing){
         clearing = true;
         emit closeThreads();

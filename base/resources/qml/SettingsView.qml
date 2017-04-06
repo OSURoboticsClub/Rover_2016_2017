@@ -17,7 +17,7 @@ Column {
         spacing: 10
 
         Switch {
-            id: switch1
+            id: serialSwitch
             text: "Serial"
             onClicked: {
                 checked ? serialHandlerOn() : serialHandlerOff()
@@ -44,7 +44,7 @@ Column {
         spacing: 10
 
         Switch {
-            id: switch2
+            id: updaterSwitch
             text: "Updater"
             onClicked: {
                 checked ? updaterOn() : updaterOff()
@@ -69,7 +69,7 @@ Column {
     Row {
         id: row2
         Switch {
-            id: switch3
+            id: controllerSwitch
             text: "Controllers"
             onClicked: {
                 checked ? controllerHandlerOn() : controllerHandlerOff()

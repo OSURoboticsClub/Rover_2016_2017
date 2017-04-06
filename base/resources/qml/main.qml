@@ -78,6 +78,7 @@ Window {
         signal pushRoverCoords;
         property var coords: [root.latitude, root.longitude, root.gps_heading]
         //WebChannel.id: "gps"
+        //onChange()
         onPushRoverCoords: {
             coords = [root.latitude, root.longitude, root.gps_heading];
         }

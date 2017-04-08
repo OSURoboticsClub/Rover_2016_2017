@@ -111,7 +111,8 @@ function placeWayPoint(name, clickAble = false){
 
                           }).addTo(map);
         map.closePopup();
-        clickPopup.setContent("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
+        var container = "</br>" + "<p> tezt </p>";
+        clickPopup.setContent("Waypoint: " + name + "</br>" + wayPointLatLong.toString() + container);
         marker.bindPopup(clickPopup);
         poly = L.polygon([
                              wayPointLatLong,

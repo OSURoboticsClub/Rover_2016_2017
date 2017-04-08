@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <avr/io.h>
+#define F_CPU 16000000UL
+#include <util/delay.h>
 #include "sabertooth.h"
 #include "uart.h"
 
@@ -86,6 +88,12 @@ void sbus_handle_packet(void) {
 /* Recieve S-BUS protocol bytes as they come in over the UART. When a full
  * packet has been recieved, validate it and handle it. */
 void sbus_byte_handler(uint8_t b) {
+	//TODO
+	//Arduino pin 7 = PH4
+	DDRH |= _BV(PH4);
+	PORTH |= _BV(PH4);
+	_delay_us(1);
+	PORTH &= ~_BV(PH4);
 	/* If the expected start and end bytes haven't been recieved, discard the
 	 * packet. */
 	if (buffer_current == 0 && b != SBUS_START_BYTE) {

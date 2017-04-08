@@ -225,8 +225,20 @@ void miniboard_main(void){
 // 	/* A0 = PF0 = non-inverting */
 // 	/* A1 = PF1 = inverting */
 // 	/* TXD3 = PJ1 */
+// 	PORTF |= _BV(PF0);
+// 	PORTF &= ~_BV(PF1);
 // 	DDRF |= _BV(PF1) | _BV(PF0);
+// 	_delay_ms(1);
 // 	while(uart_tx_in_progress(3)){
+// 		if(PINJ & _BV(PJ1)){
+// 			PORTF |= _BV(PF0);
+// 			PORTF &= ~_BV(PF1);
+// 		} else {
+// 			PORTF &= ~_BV(PF0);
+// 			PORTF |= _BV(PF1);
+// 		}
+// 	}
+// 	for(int i=10000;i>0;i--){
 // 		if(PINJ & _BV(PJ1)){
 // 			PORTF |= _BV(PF0);
 // 			PORTF &= ~_BV(PF1);
@@ -247,7 +259,7 @@ void miniboard_main(void){
 // 	char str[256];
 // 	snprintf(str, 256, "Hello\r\n");
 // 	uart_tx(0, str, strlen(str));
-// 	snprintf(str, 256, "SN=?\r\n");
+// 	snprintf(str, 256, "///FV=?\r\n");
 // 	uart_tx(3, str, strlen(str));
 // 	copy_txd3();
 // 	while(1){
@@ -259,6 +271,18 @@ void miniboard_main(void){
 // 	
 // 	while(1);
 // }
+// 
+// void ax12_test(){
+// 	init();
+// 	while(1){
+// 		ax12_init();
+// 		ax12_enable(AX12_ALL_BROADCAST_ID);
+// 		ax12_set_id(AX12_ALL_BROADCAST_ID, 6);
+// 		ax12_toggle_led(AX12_ALL_BROADCAST_ID, 1);
+// 		ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 207);
+// 		_delay_ms(300);
+// 	}
+// }
 
 int main(void){
 	/* For testing, remove the following call and insert your code below.
@@ -266,5 +290,6 @@ int main(void){
 	 * miniboard.c to the main branch! */
 	miniboard_main();
 	//soil_sensor_test();
+	//ax12_test();
 	return(0);
 }

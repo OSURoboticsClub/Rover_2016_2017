@@ -17,7 +17,7 @@
 
 #define SBUS_PACKET_LENGTH 25
 #define SBUS_START_BYTE 0x0F
-#define SBUS_END_BYTE 0xFF
+#define SBUS_END_BYTE 0x00
 
 #define SBUS_FLAGS_INDEX 23
 #define SBUS_FLAG_FAILSAFE 4
@@ -87,18 +87,18 @@ void sbus_handle_packet(void) {
 
 /* Recieve S-BUS protocol bytes as they come in over the UART. When a full
  * packet has been recieved, validate it and handle it. */
-void sbus_byte_handler(uint8_t b) {
-	//TODO
+void sbus_byte_handler(uint8_t b){
+	/* If the expected start and end bytes haven't been recieved, discard the
+	 * packet. */
+	if (buffer_current == 0 && b != SBUS_START_BYTE) {
+		buffer_current = 0;
+	} else if (buffer_current == (SBUS_PACKET_LENGTH - 1) && b != SBUS_END_BYTE) {
+		//TODO
 	//Arduino pin 7 = PH4
 	DDRH |= _BV(PH4);
 	PORTH |= _BV(PH4);
 	_delay_us(1);
 	PORTH &= ~_BV(PH4);
-	/* If the expected start and end bytes haven't been recieved, discard the
-	 * packet. */
-	if (buffer_current == 0 && b != SBUS_START_BYTE) {
-		buffer_current = 0;
-	} else if (buffer_current == SBUS_PACKET_LENGTH - 1 && b != SBUS_END_BYTE) {
 		buffer_current = 0;
 	} else { /* Data byte is okay */
 		packet_buffer[buffer_current] = b;

@@ -3,10 +3,8 @@
 
 #include <QObject>
 #include <QThread>
-#include <QDebug>
 #include <QIODevice>
 #include <QtSerialPort/QSerialPort>
-
 
 #include <packets.h>
 // http://stackoverflow.com/questions/15103599/qt-serial-port-reading-data-consistently
@@ -26,7 +24,7 @@ public:
     void setBuffer(QByteArray *a);
     QIODevice *device();
 
-    Packets *p() const {return m_packets;}
+    Packets *p() {return m_packets;}
 
 signals:
     void changeButtonColor(QString, bool);

@@ -5,11 +5,13 @@
  * emit signals when a packet is recieved.
  **/
 
-
 #include "serial/serialhandler.h"
-#include "serial/singleton.h"
+
 #include <QSerialPortInfo>
 #include <QBuffer>
+#include <QDebug>
+
+#include "serial/singleton.h"
 
 
 SerialHandler* SerialHandler::createInstance()
@@ -31,9 +33,9 @@ SerialHandler::~SerialHandler()
 void SerialHandler::run()
 {
     qDebug() << "starting serial read";
-
-    QByteArray *buffer = new QByteArray();
+    connectDevice();
     if(m_packets->device() == NULL) {
+        QByteArray *buffer = new QByteArray();
         setBuffer(buffer);
     }
 
@@ -43,7 +45,6 @@ void SerialHandler::run()
 
 void SerialHandler::eventLoop()
 {
-    emit changeButtonColor("#169d06", true);
     while (m_run){
         if(m_packets->device()->bytesAvailable() >= 2) {
 
@@ -64,7 +65,6 @@ void SerialHandler::eventLoop()
         msleep(100);
     }
     qDebug() << "exiting serial read";
-    emit changeButtonColor("#9d0606", false);
 }
 
 void SerialHandler::stop() {
@@ -76,12 +76,10 @@ void SerialHandler::connectDevice()
 {
     QList<QSerialPortInfo> serialPorts = QSerialPortInfo::availablePorts();
     if(!serialPorts.isEmpty()){
-        for (int i = 0;i < serialPorts.length();i++){
-            qDebug() << serialPorts[i].portName();
-        }
-        //if(serialPorts[i].portName() == "ttyUSB0") {
+            qDebug() << serialPorts[0].portName();
+
             qDebug() << "identifyed serial";
-            QSerialPort *serial = new QSerialPort(serialPorts[1]);
+            QSerialPort *serial = new QSerialPort(serialPorts[0]);
             if(!serial->open(QIODevice::ReadWrite)) {
                 qDebug() << tr("error %1").arg(serial->error());
             }
@@ -91,6 +89,7 @@ void SerialHandler::connectDevice()
             serial->setStopBits(QSerialPort::OneStop);
             serial->setFlowControl(QSerialPort::NoFlowControl);
             setDevice(serial);
+        //}
     }
 }
 
@@ -131,10 +130,10 @@ void SerialHandler::queryStatus()
     p()->readMagnetometer();
     p()->readAccelerometer();
     p()->readGyroscope();
-    p()->readCompassHeading();
-    p()->readGpioDirection();
-    p()->readGpioOutValue();
-    p()->readGpioReadState();
+    //p()->readCompassHeading();
+    //p()->readGpioDirection();
+    //p()->readGpioOutValue();
+    //p()->readGpioReadState();
     //p()->readDebuggingInfo();
     //p()->readBuildInfo();
     qDebug() << "Done Pulling";

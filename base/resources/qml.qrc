@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/Countdown.qml</file>
+        <file>qml/SidebarPanel.qml</file>
+        <file>qml/MainPanel.qml</file>
+        <file>qml/DataView.qml</file>
+        <file>qml/SettingsView.qml</file>
+        <file>img/marker.png</file>
+        <file>web/map.html</file>
+        <file>web/leaflet.rotatedMarker.js</file>
+        <file>img/osurc-logo.png</file>
+        <file>web/map.js</file>
+        <file>qml/MultiGauge.qml</file>
+        <file>img/adi/adi_ring.svg</file>
+        <file>img/adi/adi_face.svg</file>
+        <file>img/adi/adi_case.svg</file>
+        <file>img/adi/adi_back.svg</file>
+        <file>img/adi/adi.svg</file>
+        <file>qml/AttitudeIndicator.qml</file>
+        <file>qml/MapView.qml</file>
+        <file>img/placeholder-icon.svg</file>
+        <file>qml/NavigationIcon.qml</file>
+        <file>web/mapRefactor.js</file>
+    </qresource>
+</RCC>

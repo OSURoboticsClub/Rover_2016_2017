@@ -20,6 +20,6 @@ add_custom_command(
 
 qt5_wrap_cpp(GENERATED_MOC ${PACKETS_HEADERS})
 
-add_library(packets SHARED ${GENERATED_MOC} ${PACKETS_SOURCES})
+add_library(packets STATIC ${GENERATED_MOC} ${PACKETS_SOURCES})
 
 target_link_libraries(packets Qt5::Widgets)

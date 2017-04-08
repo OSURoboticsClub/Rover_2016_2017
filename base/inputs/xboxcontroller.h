@@ -12,6 +12,7 @@ public:
     ~XboxController();
 
 signals:
+    //void panModeChange(bool);
 
 protected:
     void emitAxisChanges(quint8 axisIndex) Q_DECL_OVERRIDE;

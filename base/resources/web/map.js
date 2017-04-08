@@ -66,6 +66,19 @@ function deleteMarkers(lines = true, markers = true) {
     wayPoints = [];
 }
 
+function deleteClicked(){
+    var idx;
+    for (var i = 0;i < wayPoints.length;i++){
+        if (wayPoints[i][0] == wayPointName) {
+            map.removeLayer(wayPoints[i][1]);
+            map.removeLayer(wayPoints[i][2]);
+            wayPoints[i] = 0;
+            idx = i;
+            break;
+        }
+    }
+};
+
 //shamelessly copied from Ravindranath Akila on stack overflow. This is the haversine formula
 function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -97,7 +110,9 @@ function placeWayPoint(name, clickAble = false){
         marker = L.marker(wayPointLatLong, {
 
                           }).addTo(map);
-        marker.bindPopup("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
+        map.closePopup();
+        clickPopup.setContent("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
+        marker.bindPopup(clickPopup);
         poly = L.polygon([
                              wayPointLatLong,
                              [roverLat, roverLong]
@@ -121,7 +136,10 @@ function placeWayPoint(name, clickAble = false){
         marker = L.marker([x,y], {
 
                           }).addTo(map);
-        marker.bindPopup("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
+        map.closePopup();
+        var popUp = L.popup();
+        popUp.setContent("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
+        marker.bindPopup(popUp);
         poly = L.polygon([
                              L.latLng(x,y),
                              [roverLat, roverLong]
@@ -206,16 +224,4 @@ var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
     });
 });
 
-function deleteClicked(){
-    var idx;
-    for (var i = 0;i < wayPoints.length;i++){
-        if (wayPoints[i][0] == wayPointName) {
-            map.removeLayer(wayPoints[i][1]);
-            map.removeLayer(wayPoints[i][2]);
-            wayPoints[i] = 0;
-            idx = i;
-            break;
-        }
-    }
-};
 

@@ -10,8 +10,10 @@ import QtQuick.Controls.Material 2.0
 
 ColumnLayout {
     id: mapView
-        //anchors.margins: 10
-
+    //anchors.margins: 10
+    property int largeFontSize: 25
+    property int smallFontSize: 20
+    property string fontColor: "white"
 
     WebEngineView {
         id: map
@@ -100,13 +102,42 @@ ColumnLayout {
                 _pushRoverCoords();
             }
         }
+    }
+    function checkNull(val, text) {
+        if (val)
+            return val
+        else
+            return text
+    }
+
+    Row {
+        id: mapOutputName
+        Layout.fillWidth: true
+        Layout.minimumHeight: 50
+        Layout.preferredHeight: 50
+        spacing: 10
+        anchors.top: mapInput.bottom
+        anchors.topMargin: 15
         Text {
             id: name
-            text: gps.name
+            text: "Name: " + gps.name
+            font.pixelSize: mapView.largeFontSize
+            color: mapView.fontColor
         }
+    }
+    Row {
+        id: mapOutputDist
+        Layout.fillWidth: true
+        Layout.minimumHeight: 50
+        Layout.preferredHeight: 50
+        spacing: 10
+        anchors.top: mapOutputName.bottom
+        anchors.topMargin: 15
         Text {
             id: dist
-            text: gps.dist
+            text: "Distance: " + gps.dist
+            font.pixelSize: mapView.largeFontSize
+            color: mapView.fontColor
         }
     }
 }

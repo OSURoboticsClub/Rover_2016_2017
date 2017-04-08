@@ -79,18 +79,18 @@ function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement fun
     return d * 1000; // meters
 }
 
-function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
+function placeWayPoint(name, clickAble = false){
     var marker;
     var poly;
     var x;
     var y;
-    if (!lat && !long){
+    if (gps._inputLatitude != null && gps._inputLongitude != null){
         x = gps._inputLatitude;
         y = gps._inputLongitude;
     }
     else {
-        x = lat;
-        y = long;
+        x = 0;
+        y = 0;
     }
     //use clicked way point
     if (clickAble){
@@ -111,9 +111,9 @@ function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
         wayPoints.push(newMarker);
         marker.on("click", function () {
             wayPointName = name;
-            gps.name = "Name of waypoint: " + name;
+            gps.name = name;
             var dist = measure(wayPointLatLong.lat, wayPointLatLong.lng, roverLat, roverLong);
-            gps.dist = "Distance from Rover: [" + dist + "] m";
+            gps.dist = " [" + dist + "] m";
         });
     }
     //use manual entry
@@ -135,9 +135,9 @@ function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
         wayPoints.push(newMarker);
         marker.on("click", function () {
             wayPointName = name;
-            gps.name = "Name of waypoint: " + name;
+            gps.name = name;
             var dist = measure(L.latLng(x,y).lat, L.latLng(x,y).lng, roverLat, roverLong);
-            gps.dist = "Distance from Rover: [" + dist + "] m";
+            gps.dist = " [" + dist + "] m";
         });
     }
 }

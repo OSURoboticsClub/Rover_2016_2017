@@ -27,6 +27,8 @@ protected:
     void sendSwerveMotorPower(qint16 direction);
     void sendSelectCamera(qint16 i);
     void sendPanPrimary(quint16,quint16);
+    void sendServo(double servovalue);
+    void camera_command(double zoomin, double zoomout);
   //  void sendPanSecondary(qint16,qint16);
 
 

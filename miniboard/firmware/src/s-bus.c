@@ -65,7 +65,7 @@ uint16_t extract_11b(uint8_t *stream, uint16_t bit_index){
 		uint16_t ubyte = stream[biu/8];
 		uint16_t umask = ((1 << ((biu%8)+1))-1);
 		ubyte &= umask;
-		return (lbyte >> (bil%8)) | (ubyte << 8);
+ 		return (lbyte >> (bil%8)) | (ubyte << (8-(bil%8)));
 	}
 }
 

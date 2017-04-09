@@ -66,6 +66,19 @@ function deleteMarkers(lines = true, markers = true) {
     wayPoints = [];
 }
 
+function deleteClicked(){
+    var idx;
+    for (var i = 0;i < wayPoints.length;i++){
+        if (wayPoints[i][0] == wayPointName) {
+            map.removeLayer(wayPoints[i][1]);
+            map.removeLayer(wayPoints[i][2]);
+            wayPoints[i] = 0;
+            idx = i;
+            break;
+        }
+    }
+};
+
 //shamelessly copied from Ravindranath Akila on stack overflow. This is the haversine formula
 function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function
     var R = 6378.137; // Radius of earth in KM
@@ -79,25 +92,28 @@ function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement fun
     return d * 1000; // meters
 }
 
-function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
+function placeWayPoint(name, clickAble = false){
     var marker;
     var poly;
     var x;
     var y;
-    if (!lat && !long){
+    if (gps._inputLatitude != null && gps._inputLongitude != null){
         x = gps._inputLatitude;
         y = gps._inputLongitude;
     }
     else {
-        x = lat;
-        y = long;
+        x = 0;
+        y = 0;
     }
     //use clicked way point
     if (clickAble){
         marker = L.marker(wayPointLatLong, {
 
                           }).addTo(map);
-        marker.bindPopup("Waypoint: " + name + "</br>" + wayPointLatLong.toString());
+        map.closePopup();
+        var container = "</br>" + "<p> tezt </p>";
+        clickPopup.setContent("Waypoint: " + name + "</br>" + wayPointLatLong.toString() + container);
+        marker.bindPopup(clickPopup);
         poly = L.polygon([
                              wayPointLatLong,
                              [roverLat, roverLong]
@@ -111,9 +127,9 @@ function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
         wayPoints.push(newMarker);
         marker.on("click", function () {
             wayPointName = name;
-            gps.name = "Name of waypoint: " + name;
+            gps.name = name;
             var dist = measure(wayPointLatLong.lat, wayPointLatLong.lng, roverLat, roverLong);
-            gps.dist = "Distance from Rover: [" + dist + "] m";
+            gps.dist = " [" + dist + "] m";
         });
     }
     //use manual entry
@@ -121,7 +137,10 @@ function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
         marker = L.marker([x,y], {
 
                           }).addTo(map);
-        marker.bindPopup("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
+        map.closePopup();
+        var popUp = L.popup();
+        popUp.setContent("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
+        marker.bindPopup(popUp);
         poly = L.polygon([
                              L.latLng(x,y),
                              [roverLat, roverLong]
@@ -135,9 +154,9 @@ function placeWayPoint(name, clickAble = false, lat = 0, long = 0){
         wayPoints.push(newMarker);
         marker.on("click", function () {
             wayPointName = name;
-            gps.name = "Name of waypoint: " + name;
+            gps.name = name;
             var dist = measure(L.latLng(x,y).lat, L.latLng(x,y).lng, roverLat, roverLong);
-            gps.dist = "Distance from Rover: [" + dist + "] m";
+            gps.dist = " [" + dist + "] m";
         });
     }
 }
@@ -206,16 +225,4 @@ var webChannel = new QWebChannel(qt.webChannelTransport, function(channel) {
     });
 });
 
-function deleteClicked(){
-    var idx;
-    for (var i = 0;i < wayPoints.length;i++){
-        if (wayPoints[i][0] == wayPointName) {
-            map.removeLayer(wayPoints[i][1]);
-            map.removeLayer(wayPoints[i][2]);
-            wayPoints[i] = 0;
-            idx = i;
-            break;
-        }
-    }
-};
 

@@ -367,7 +367,7 @@ def setup(window, spec_table, io):
 	
 	timer = QTimer(ar_lbl)
 	timer.timeout.connect(autoread)
-	timer.start(1000);
+	timer.start(200);
 	
 	gh.addWidget(ar_lbl)
 	gh.addWidget(rbtn)

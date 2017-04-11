@@ -68,6 +68,8 @@ void send_packet(uint8_t *data, uint16_t count){
 	uart_tx(COMM_UART, data, count);
 }
 
+void reset_timeout_timer(void);
+
 /* Receive a byte and place it in the packet buffer.
  * This function handles start, escape, and end bytes.
  * It calls the parse_packet() function when an end byte
@@ -91,6 +93,7 @@ void comm_receive_byte(uint8_t byte){
 			if(pcount > 4 && (pcount - 2) == pbuf[1]){
 				crc = calc_crc(pbuf + 4, pcount - 4);
 				if((crc >> 8) == pbuf[3] && (crc & 0xFF) == pbuf[2]){
+					reset_timeout_timer();
 					parse_packet(pbuf + 4, pcount - 4);
 				}
 				state = WAIT_START;

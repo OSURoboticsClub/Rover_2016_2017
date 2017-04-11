@@ -1,5 +1,5 @@
 # Miniboard
-This folder contains the code for the onboard Rover miniboard.
+This folder contains the code for the Rover onboard controller, the Miniboard.
 
 # On-Chip Resource Allocations
 ## UARTS
@@ -8,14 +8,14 @@ This folder contains the code for the onboard Rover miniboard.
 - UART2: GPS (9600 baud) - gps.h
 - UART3: Camera Control/S-BUS - -/sbus.h (Camera control is TX, S-BUS is  RX.)
 
+## Communication Timeout
+The main loop uses timer 4 to implement a lost connection detector.
+
 ## Sabertooth/AX12 Switch control lines
 The AX12 line is always connected to RXD1. The UART receiver should be enabled
 or disabled as necessary. TXD1 is switched between the AX12 and sabertooth lines
 by an analog switch. When PC6 is low, the sabertooth line is selected. When it is
 high, the AX12 line is selected.
-
-TODO: Add enable/disable functionality to uart module.
-TODO: Add switch control line function.
 
 ## GPS
 In addition to UART2, the GPS module also uses timer 5 for validity determination.
@@ -24,6 +24,8 @@ In addition to UART2, the GPS module also uses timer 5 for validity determinatio
 The GPS module includes a magnetometer to determine the compass heading. It is accessed over I2C (PD1/PD0).
 Since the GPS module is located outside of the e-box on a somewhat long cable, a slow clock speed (perhaps 50kHz)
 should be used with the I2C bus.
+
+The compass module also uses timer 2. 
 
 ## IMU
 The miniboard's onboard IMU is connected to the SPI peripheral. Accelerometer CS is PL3. 

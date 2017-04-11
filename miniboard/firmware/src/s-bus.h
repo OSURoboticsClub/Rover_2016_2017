@@ -14,7 +14,7 @@
  * Packets are 25 bytes long, starting with 0xF0 (byte 0) and ending with 0x00
  * (byte 24). Bytes 1-22 contain data for the 16 servo channels with each
  * channel taking up 11 bits. So Channel 1 would use byte 1 + the first three
- * bytes of byte 2, Channel 2 would use the last five bytes of byte 2 + the
+ * bits of byte 2, Channel 2 would use the last five bytes of byte 2 + the
  * first six bytes of byte 3, etc. Byte 23 contains flags laid out as such:
  *
  * Bit 7 - Digital Channel 17

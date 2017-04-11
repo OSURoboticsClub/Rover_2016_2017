@@ -64,6 +64,8 @@ function deleteMarkers(lines = true, markers = true) {
             map.removeLayer(wayPoints[i][2]);
     }
     wayPoints = [];
+    gps.name = '';
+    gps.dist = '[]';
 }
 
 function deleteClicked(){
@@ -111,8 +113,20 @@ function placeWayPoint(name, clickAble = false){
 
                           }).addTo(map);
         map.closePopup();
-        var container = "</br>" + "<p> tezt </p>";
-        clickPopup.setContent("Waypoint: " + name + "</br>" + wayPointLatLong.toString() + container);
+
+        var li = document.createElement("list");
+        var p1 = document.createElement("p");
+        p1.appendChild(document.createTextNode( "Waypoint: " + name));
+        p1.appendChild(document.createElement("br"));
+        p1.appendChild(document.createTextNode(wayPointLatLong.toString()));
+        var button = document.createElement("button");
+        button.innerHTML = "delete";
+        button.onclick = function(){deleteClicked()};
+        button.style.textAlign="center";
+        li.appendChild(p1);
+        li.appendChild(button);
+
+        clickPopup.setContent(li);
         marker.bindPopup(clickPopup);
         poly = L.polygon([
                              wayPointLatLong,
@@ -139,7 +153,18 @@ function placeWayPoint(name, clickAble = false){
                           }).addTo(map);
         map.closePopup();
         var popUp = L.popup();
-        popUp.setContent("Waypoint: " + name + "</br>" + L.latLng(x, y).toString());
+        var li = document.createElement("list");
+        var p1 = document.createElement("p");
+        p1.appendChild(document.createTextNode( "Waypoint: " + name));
+        p1.appendChild(document.createElement("br"));
+        p1.appendChild(document.createTextNode(L.latLng(x, y).toString()));
+        var button = document.createElement("button");
+        button.innerHTML = "delete";
+        button.onclick = function(){deleteClicked()};
+        li.appendChild(p1);
+        li.appendChild(button);
+
+        popUp.setContent(li);
         marker.bindPopup(popUp);
         poly = L.polygon([
                              L.latLng(x,y),
@@ -171,8 +196,20 @@ function changeText(clickAble ) {
 
 
 function checkCoordWithClick(e) {
+
+    var li = document.createElement("list");
+    var p1 = document.createElement("p");
+    p1.appendChild(document.createTextNode( "Clicked Waypoint:"));
+    p1.appendChild(document.createElement("br"));
+    p1.appendChild(document.createTextNode(e.latlng.toString()));
+    var button = document.createElement("button");
+    button.innerHTML = "add";
+    button.onclick = function(){changeText(true)};
+    li.appendChild(p1);
+    li.appendChild(button);
+
     clickPopup.setLatLng(e.latlng);
-    clickPopup.setContent("Clicked Waypoint:</br>" + e.latlng.toString());
+    clickPopup.setContent(li);
     clickPopup.openOn(map);
     clickCoords = e.latlng;
     wayPointLatLong = e.latlng;

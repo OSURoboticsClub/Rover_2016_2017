@@ -23,9 +23,6 @@
  * Bit 4 - Failsafe activated
  * Bits 3-0 - Not used */
 
-extern uint16_t sbus_channels[16];
-extern uint8_t sbus_failsafe;
-
 /* Initialize the S-BUS receiver module to start listening for S-BUS commands
  * over a UART */
 void sbus_init(void);

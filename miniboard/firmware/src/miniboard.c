@@ -181,25 +181,7 @@ void miniboard_main(void){
 		}
 
 		/* S-Bus */
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-			Data->sbus_1 = sbus_channels[0];
-			Data->sbus_2 = sbus_channels[1];
-			Data->sbus_3 = sbus_channels[2];
-			Data->sbus_4 = sbus_channels[3];
-			Data->sbus_5 = sbus_channels[4];
-			Data->sbus_6 = sbus_channels[5];
-			Data->sbus_7 = sbus_channels[6];
-			Data->sbus_8 = sbus_channels[7];
-			Data->sbus_9 = sbus_channels[8];
-			Data->sbus_10 = sbus_channels[9];
-			Data->sbus_11 = sbus_channels[10];
-			Data->sbus_12 = sbus_channels[11];
-			Data->sbus_13 = sbus_channels[12];
-			Data->sbus_14 = sbus_channels[13];
-			Data->sbus_15 = sbus_channels[14];
-			Data->sbus_16 = sbus_channels[15];
-			Data->sbus_failsafe = sbus_failsafe;
-		}
+		/* Handled in module. */
 		
 		/* Compass */
 		compass_retrieve();

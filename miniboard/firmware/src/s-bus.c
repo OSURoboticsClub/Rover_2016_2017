@@ -58,7 +58,14 @@ uint16_t extract_11b(uint8_t *stream, uint16_t bit_index){
 	const uint16_t biu = bit_index + 10;
 	if(((bil/8)+1) != ((biu)/8)){
 		/* Value spans three bytes. */
-		return 33;
+		uint16_t lbyte = stream[bil/8];
+		uint16_t mbyte = stream[(bil/8)+1];
+		uint16_t ubyte = stream[biu/8];
+		uint16_t umask = ((1 << ((biu%8)+1))-1);
+		uint16_t lmask = ~((1 << ((bil%8)+1))-1);
+		ubyte &= umask;
+		lbyte &= lmask;
+ 		return (lbyte >> (bil%8)) | (mbyte << (8-(bil%8))) | (ubyte << (16-(bil%8)));
 	} else {
 		/* Value spans two bytes. */
 		uint16_t lbyte = stream[bil/8];
@@ -84,29 +91,10 @@ void sbus_handle_packet(void) {
 	}
 
 	sbus_failsafe = 0;
-
-// 	sbus_channels[0] = packet_buffer[1] | (((uint16_t)packet_buffer[2]) & 0b0111)<<8;
+	
 	for(int i=0;i<16;i++){
 		sbus_channels[i] = extract_11b(packet_buffer + 1, i * 11);
 	}
-	/* Convert multiple bytes of the buffer at a time to numbers and bitmask
-	 * them to isolate each channel */
-// 	sbus_channels[0] = (*((uint16_t *) packet_buffer + 1) & 0xFFE0) >> 5;
-// 	sbus_channels[1] = (*((uint16_t *) packet_buffer + 2) & 0x1FFC) >> 2;
-// 	sbus_channels[2] = (uint16_t) ((*((uint32_t *) packet_buffer + 3) & 0x03FF8000) >> 15);
-// 	sbus_channels[3] = (*((uint16_t *) packet_buffer + 5) & 0x7FF0) >> 4;
-// 	sbus_channels[4] = (*((uint16_t *) packet_buffer + 6) & 0x0FFE) >> 1;
-// 	sbus_channels[5] = (uint16_t) ((*((uint32_t *) packet_buffer + 7) & 0x01FFC000) >> 14);
-// 	sbus_channels[6] = (*((uint16_t *) packet_buffer + 9) & 0x3FF8) >> 3;
-// 	sbus_channels[7] = *((uint16_t *) packet_buffer + 10) & 0x07FF;
-// 	sbus_channels[8] = (*((uint16_t *) packet_buffer + 12) & 0xFFE0) >> 5;
-// 	sbus_channels[9] = (*((uint16_t *) packet_buffer + 13) & 0x1FFC) >> 2;
-// 	sbus_channels[10] = (uint16_t) ((*((uint32_t *) packet_buffer + 14) & 0x03FF8000) >> 15);
-// 	sbus_channels[11] = (*((uint16_t *) packet_buffer + 16) & 0x7FF0) >> 4;
-// 	sbus_channels[12] = (*((uint16_t *) packet_buffer + 17) & 0x0FFE) >> 1;
-// 	sbus_channels[13] = (uint16_t) ((*((uint32_t *) packet_buffer + 18) & 0x01FFC000) >> 14);
-// 	sbus_channels[14] = (*((uint16_t *) packet_buffer + 20) & 0x3FF8) >> 3;
-// 	sbus_channels[15] = *((uint16_t *) packet_buffer + 21) & 0x07FF;
 }
 
 /* Recieve S-BUS protocol bytes as they come in over the UART. When a full
@@ -117,12 +105,6 @@ void sbus_byte_handler(uint8_t b){
 	if (buffer_current == 0 && b != SBUS_START_BYTE) {
 		buffer_current = 0;
 	} else if (buffer_current == (SBUS_PACKET_LENGTH - 1) && b != SBUS_END_BYTE) {
-		//TODO
-	//Arduino pin 7 = PH4
-	DDRH |= _BV(PH4);
-	PORTH |= _BV(PH4);
-	_delay_us(1);
-	PORTH &= ~_BV(PH4);
 		buffer_current = 0;
 	} else { /* Data byte is okay */
 		packet_buffer[buffer_current] = b;

@@ -13,7 +13,6 @@
         <file>web/map.js</file>
         <file>qml/MultiGauge.qml</file>
         <file>img/adi/adi_ring.svg</file>
-        <file>img/adi/adi_face.svg</file>
         <file>img/adi/adi_case.svg</file>
         <file>img/adi/adi_back.svg</file>
         <file>img/adi/adi.svg</file>
@@ -22,5 +21,12 @@
         <file>img/placeholder-icon.svg</file>
         <file>qml/NavigationIcon.qml</file>
         <file>web/mapRefactor.js</file>
+        <file>img/MBlack.png</file>
+        <file>img/MWhite.png</file>
+        <file>img/RBlack.png</file>
+        <file>img/RWhite.png</file>
+        <file>img/SBlack.png</file>
+        <file>img/SWhite.png</file>
+        <file>qml/VoltageGuage.qml</file>
     </qresource>
 </RCC>

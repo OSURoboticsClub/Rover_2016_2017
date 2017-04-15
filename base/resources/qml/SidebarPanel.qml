@@ -16,18 +16,6 @@ ColumnLayout {
         Layout.fillWidth: true
     }
 
-    CircularGauge {
-        id: speedGauge
-        maximumValue: 20
-        Layout.preferredHeight: 200
-        Layout.fillWidth: true
-
-        style: CircularGaugeStyle {
-            minorTickmarkCount: 5
-            tickmarkStepSize: 5
-        }
-    }
-
 
     Label {
         id: armMotorLabel
@@ -68,31 +56,9 @@ ColumnLayout {
         Layout.fillWidth: true
     }
 
-    Rectangle {
-        id: voltageGauge
-        property int limit: 25
-        property double value: 20000 / 1000
+    VoltageGuage{
+        id: voltageGuage
         Layout.fillWidth: true
-        Layout.minimumHeight: 40
-
-        color: Material.foreground
-
-        Rectangle {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            width: parent.value * parent.width / parent.limit
-            color: parent.width/2 > width ?
-                     Material.color(Material.Red):
-                        Material.accent
-        }
-
-        Label {
-            text: parent.value + " V"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
     }
 
     Item {
@@ -133,6 +99,67 @@ ColumnLayout {
             anchors.rightMargin: 5
         }
     }
+    CircularGauge {
+            id: speedGuage
+            anchors.horizontalCenter: parent.horizontalCenter
+            Layout.preferredHeight: 200
+            Layout.fillWidth: true
+            minimumValue: 0
+            maximumValue: 20
+            stepSize: 1
+            value: root.gps_speed/1000
+            Text {
+                font.family: "Verdana"
+                font.pointSize: 16
+                anchors.verticalCenterOffset: -40
+                anchors.horizontalCenterOffset: 0
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: root.gps_speed/1000 + " KPH"
+                color: "white"
+            }
+
+            style: CircularGaugeStyle {
+                minorTickmarkCount: 5
+                tickmarkStepSize: 5
+                minimumValueAngle: -90
+                maximumValueAngle: 90
+                needle: Rectangle {
+                    implicitWidth: outerRadius * 0.03
+                    implicitHeight: outerRadius * .85
+                    antialiasing: true
+                }
+                foreground: Item {
+                    Rectangle {
+                        width: outerRadius * 0.2
+                        height: width
+                        radius: width / 2
+                        anchors.centerIn: parent
+                    }
+                }
+                tickmarkLabel: Text {
+                    font.pixelSize: Math.max(6, outerRadius * 0.1)
+                    text: styleData.value
+                    color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+                    antialiasing: true
+                }
+                tickmark: Rectangle {
+                    visible: styleData.value < speedGuage.maximumValue || styleData.value % 10 == 0
+                    implicitWidth: outerRadius * 0.02
+                    antialiasing: true
+                    implicitHeight: outerRadius * 0.11
+                    color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+                }
+                minorTickmark: Rectangle {
+                    visible: styleData.value < speedGuage.maximumValue
+                    implicitWidth: outerRadius * .01
+                    antialiasing: true
+                    implicitHeight: outerRadius * .03
+                    color: styleData.value >= (speedGuage.maximumValue * .8) ? "red" : "green"
+                }
+            }
+    }
 
 }
+
 

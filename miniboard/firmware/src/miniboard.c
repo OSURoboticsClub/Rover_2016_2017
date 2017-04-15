@@ -104,7 +104,7 @@ void miniboard_main(void){
 	bool super_pause;
 	/* Miniboard main loop. */
 	while(1){
-		super_pause = !Data->pause_state || CommTimedOut;
+		super_pause = !Data->pause_state || (CommTimedOut && !Data->sbus_active);
 		/* GPS */
 		/* (handled in-module) */
 		

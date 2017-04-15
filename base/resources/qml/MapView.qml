@@ -98,7 +98,7 @@ ColumnLayout {
             signal _deleteAll()
 
             function  roverPosChangeTrigger() {
-                gps.coords = [root.latitude, root.longitude, root.gps_heading];
+                gps.coords = [root.latitude, root.longitude, root.heading];
                 _pushRoverCoords();
             }
         }

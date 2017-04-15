@@ -77,17 +77,9 @@ void reset_timeout_timer(void){
 	TIMSK4 = _BV(OCIE4A);
 	TCCR4B = _BV(CS42) | _BV(CS40); /* Set 1024 prescaler. */
 	CommTimedOut = false;
-	
-	//TODO
-	//Arduino pin 7 = PH4
-	DDRH |= _BV(PH4);
-	PORTH &= ~_BV(PH4);
 }
 
 ISR(TIMER4_COMPA_vect){
-	//TODO
-	PORTH |= _BV(PH4);
-	
 	CommTimedOut = true;
 	TCCR4B = 0;
 }

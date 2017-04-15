@@ -49,6 +49,144 @@ void sbus_release(void) {
 	uart_disable(SBUS_UART);
 }
 
+/* FRSky channels */
+#define JOY_LV 1
+#define JOY_LH 4
+#define JOY_RV 2
+#define JOY_RH 3
+#define POT_L 6 /* Pot on front face of FRsky */
+#define POT_R 7 /* Pot on front face of FRsky */
+#define SIDE_L 5 /* Pot on side of FRsky */
+#define SIDE_R 8 /* Pot on side of FRsky */
+#define SA 9
+#define SB 10
+#define SC 11
+#define SD 12
+#define SWE 13 /* SE conflicts with AVR-libc definition */
+#define SF 14
+#define SG 15
+#define SH 16
+
+/* Channel functions */
+#define MODE_SWITCH SWE
+#define TURN_SWITCH SG
+#define PAUSE_SWITCH SF
+#define DRIVE_LEFT JOY_LV
+#define DRIVE_RIGHT JOY_RV
+#define ARM_BASE JOY_LH
+#define ARM_BICEP JOY_LV
+#define ARM_FOREARM JOY_RV
+#define ARM_PITCH JOY_RH
+
+/* Convert a switch channel value to a position. */
+typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
+switch_t switch_ch(uint8_t ch){
+	uint16_t servo_value = sbus_channels[ch-1];
+	if(servo_value < 300){
+		return SW_FORWARD;
+	} else if (servo_value >= 300 && servo_value < 1300){
+		return SW_MIDDLE;
+	} else {
+		return SW_BACK;
+	}
+}
+
+/* Convert a joystick/analog channel value to a motor
+ * power value */
+int8_t joy_ch(uint8_t ch){
+	int32_t servo_value = sbus_channels[ch-1];
+	const int16_t center = 1030;
+	const int16_t deadband = 140;
+	const int16_t amp = 1811 - center;
+	servo_value -= center;
+	if(servo_value < deadband && servo_value > -deadband){
+		return 0;
+	}
+	servo_value *= 127;
+	servo_value /= amp;
+	if(servo_value > 127){
+		servo_value = 127;
+	}
+	if(servo_value < -127){
+		servo_value = -127;
+	}
+	return servo_value;
+}
+
+/* Set values in the Data structure according to s-bus channels, allowing the
+ * frsky controller to operate the rover. */
+static void sbus_control(void){
+	static uint8_t prev_active;
+	static uint8_t prev_pause;
+	
+	if(sbus_active && !prev_active){
+		/* Got controller */
+		prev_pause = Data->pause_state;
+		Data->pause_state = 1;
+	}
+	if(!sbus_active && prev_active){
+		/* Lost controller */
+		Data->pause_state = prev_pause;
+		Data->l_f_drive = 0;
+		Data->l_m_drive = 0;
+		Data->l_b_drive = 0;
+		Data->r_f_drive = 0;
+		Data->r_m_drive = 0;
+		Data->r_b_drive = 0;
+		Data->arm_motor_1 = 0;
+		Data->arm_motor_2 = 0;
+		Data->arm_motor_3 = 0;
+		Data->arm_motor_4 = 0;
+		Data->arm_motor_5 = 0;
+	}
+	prev_active = sbus_active;
+	
+	Data->sbus_1 = sbus_channels[0];
+	Data->sbus_2 = sbus_channels[1];
+	Data->sbus_3 = sbus_channels[2];
+	Data->sbus_4 = sbus_channels[3];
+	Data->sbus_5 = sbus_channels[4];
+	Data->sbus_6 = sbus_channels[5];
+	Data->sbus_7 = sbus_channels[6];
+	Data->sbus_8 = sbus_channels[7];
+	Data->sbus_9 = sbus_channels[8];
+	Data->sbus_10 = sbus_channels[9];
+	Data->sbus_11 = sbus_channels[10];
+	Data->sbus_12 = sbus_channels[11];
+	Data->sbus_13 = sbus_channels[12];
+	Data->sbus_14 = sbus_channels[13];
+	Data->sbus_15 = sbus_channels[14];
+	Data->sbus_16 = sbus_channels[15];
+	Data->sbus_active = sbus_active;
+	if(sbus_active){
+		if(switch_ch(PAUSE_SWITCH) == SW_FORWARD){
+			Data->pause_state = 1;
+		} else {
+			Data->pause_state = 0;
+		}
+		if(switch_ch(MODE_SWITCH) == SW_FORWARD){
+			/* Mode 1 - Drive */
+			int8_t left = joy_ch(JOY_LV);
+			int8_t right = joy_ch(JOY_RV);
+			Data->l_f_drive = left;
+			Data->l_m_drive = left;
+			Data->l_b_drive = left;
+			Data->r_f_drive = right;
+			Data->r_m_drive = right;
+			Data->r_b_drive = right;
+			Data->swerve_state = switch_ch(TURN_SWITCH);
+		} else {
+			/* Mode 2 - Arm */
+			Data->arm_motor_1 = joy_ch(ARM_BASE);
+			Data->arm_motor_2 = joy_ch(ARM_BICEP);
+			Data->arm_motor_3 = joy_ch(ARM_FOREARM);
+			Data->arm_motor_4 = joy_ch(ARM_PITCH);
+			Data->arm_motor_5 = 0;
+			//TODO: control servo speed
+		}
+	}
+}
+
 /* Extract an 11-bit, LSB-first, unsigned value from a bit stream.
  * stream is a uint8_t pointer to the stream of bytes.
  * bit_index is the bit number (starting at 0) of the first bit in
@@ -90,23 +228,7 @@ void sbus_handle_packet(void) {
 		sbus_channels[i] = extract_11b(packet_buffer + 1, i * 11);
 	}
 	
-	Data->sbus_1 = sbus_channels[0];
-	Data->sbus_2 = sbus_channels[1];
-	Data->sbus_3 = sbus_channels[2];
-	Data->sbus_4 = sbus_channels[3];
-	Data->sbus_5 = sbus_channels[4];
-	Data->sbus_6 = sbus_channels[5];
-	Data->sbus_7 = sbus_channels[6];
-	Data->sbus_8 = sbus_channels[7];
-	Data->sbus_9 = sbus_channels[8];
-	Data->sbus_10 = sbus_channels[9];
-	Data->sbus_11 = sbus_channels[10];
-	Data->sbus_12 = sbus_channels[11];
-	Data->sbus_13 = sbus_channels[12];
-	Data->sbus_14 = sbus_channels[13];
-	Data->sbus_15 = sbus_channels[14];
-	Data->sbus_16 = sbus_channels[15];
-	Data->sbus_active = sbus_active;
+	sbus_control();
 }
 
 /* Recieve S-BUS protocol bytes as they come in over the UART. When a full

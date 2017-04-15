@@ -79,6 +79,8 @@ function deleteClicked(){
             break;
         }
     }
+    gps.name = '';
+    gps.dist = '[]'
 };
 
 //shamelessly copied from Ravindranath Akila on stack overflow. This is the haversine formula

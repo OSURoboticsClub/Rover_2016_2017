@@ -16,18 +16,6 @@ ColumnLayout {
         Layout.fillWidth: true
     }
 
-    CircularGauge {
-        id: speedGauge
-        maximumValue: 20
-        Layout.preferredHeight: 200
-        Layout.fillWidth: true
-
-        style: CircularGaugeStyle {
-            minorTickmarkCount: 5
-            tickmarkStepSize: 5
-        }
-    }
-
 
     Label {
         id: armMotorLabel
@@ -41,7 +29,7 @@ ColumnLayout {
         Layout.minimumHeight: 70
         Layout.fillWidth: true
         limits: [-127, 127]
-        model: [-50, 100, root.arm_motor_3,
+        model: [root.arm_motor_1, root.arm_motor_2, root.arm_motor_3,
             root.arm_motor_4, root.arm_motor_5]
     }
 
@@ -57,7 +45,7 @@ ColumnLayout {
         Layout.minimumHeight: 70
         Layout.fillWidth: true
         limits: [0, 255]
-        model: [10, 20, 150,
+        model: [root.l_f_drive, root.l_m_drive, root.l_b_drive,
             root.r_f_drive, root.r_m_drive, root.r_b_drive]
     }
 
@@ -68,31 +56,9 @@ ColumnLayout {
         Layout.fillWidth: true
     }
 
-    Rectangle {
-        id: voltageGauge
-        property int limit: 25
-        property double value: 20000 / 1000
+    VoltageGuage{
+        id: voltageGuage
         Layout.fillWidth: true
-        Layout.minimumHeight: 40
-
-        color: Material.foreground
-
-        Rectangle {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            width: parent.value * parent.width / parent.limit
-            color: parent.width/2 > width ?
-                     Material.color(Material.Red):
-                        Material.accent
-        }
-
-        Label {
-            text: parent.value + " V"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-
     }
 
     Item {
@@ -133,6 +99,10 @@ ColumnLayout {
             anchors.rightMargin: 5
         }
     }
+    SpeedGuage {
+        id: speedGuage
+    }
 
 }
+
 

@@ -76,6 +76,9 @@ Window {
 
 
     //TODO: instead of gps heading also add root function that calculates heading using magnometer and accelometer
+    function heading () {
+        return Math.tan2(root.mag_x, root.mag.y);
+    }
 
     Pane {
         id: pane

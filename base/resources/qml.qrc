@@ -28,5 +28,7 @@
         <file>img/SBlack.png</file>
         <file>img/SWhite.png</file>
         <file>qml/VoltageGuage.qml</file>
+        <file>qml/SpeedGuage.qml</file>
+        <file>img/adi/adi_face.svg</file>
     </qresource>
 </RCC>

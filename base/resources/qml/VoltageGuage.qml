@@ -36,7 +36,7 @@ import QtQuick.Controls.Material 2.0
 Rectangle {
     property int min: 20
     property int max: 25
-    property double value: 21
+    property double value: root.battery_voltage
     property color color: Material.foreground
     property double fakeVoltage: (parent.width) * ((voltageGuage.value - voltageGuage.min)/(voltageGuage.max - voltageGuage.min));
 

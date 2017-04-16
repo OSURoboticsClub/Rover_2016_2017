@@ -10,16 +10,16 @@
 #include <stdbool.h>
 #include <avr/pgmspace.h>
 #define F_CPU 16000000UL
-#include "uart.h"
+#include "spi.h"
 #include "commgen.h"
 #include "comm.h"
 
 #define PACKET_BUF_SIZE 150
 #define START_BYTE 0x01
 
-/* Configure the computer communications uart. */
+/* Configure the data radio. */
 void comm_init(void){
-	uart_enable(COMM_UART, COMM_BAUD, 1, 0);
+	/* probably stuff here, need to read the datasheet more */
 }
 
 /* Data for calc_crc() */
@@ -58,14 +58,15 @@ uint16_t calc_crc(uint8_t *body, uint8_t length){
  * (comm.c). */
 void send_packet(uint8_t *data, uint16_t count){
 	//TODO: make less bad
-	uint8_t buf[4];
+	uint8_t buf[3];
 	uint16_t crc = calc_crc(data, count);
-	buf[0] = 0x01; /* Start byte. */
-	buf[1] = 2 + count; /* Length */
-	buf[2] = crc & 0xFF;
-	buf[3] = crc >> 8;
-	uart_tx(COMM_UART, buf, 4);
-	uart_tx(COMM_UART, data, count);
+
+	buf[0] = 2 + count; /* Length */
+	buf[1] = crc & 0xFF;
+	buf[2] = crc >> 8;
+
+	spi_write_reg(SPI_CS_RADIO, 0x00, buf, sizeof(buf));
+	spi_write_reg(SPI_CS_RADIO, 0x00, data, count);
 }
 
 void reset_timeout_timer(void);
@@ -104,4 +105,10 @@ void comm_receive_byte(uint8_t byte){
 	}
 }
 
-void (*UART0RXHandler)(uint8_t) = comm_receive_byte;
+ISR(INT5_vect){
+	uint8_t data;
+
+	spi_read_reg(SPI_CS_RADIO, 0x00, &data, 1);
+
+	comm_receive_byte(data);
+}

@@ -3,7 +3,7 @@ This folder contains the code for the Rover onboard controller, the Miniboard.
 
 # On-Chip Resource Allocations
 ## UARTS
-- UART0: Data radio - comm.h (and USB serial port)
+- UART0: USB Serial Port
 - UART1: Saberteeth/AX12 - sabertooth.h/ax12.h (switch between using analog switch)
 - UART2: GPS (9600 baud) - gps.h
 - UART3: Camera Control/S-BUS - -/sbus.h (Camera control is TX, S-BUS is  RX.)

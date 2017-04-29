@@ -121,8 +121,16 @@ int8_t joy_ch(uint8_t ch){
 /* Set values in the Data structure according to s-bus channels, allowing the
  * frsky controller to operate the rover. */
 static void sbus_control(void){
+	static uint8_t drop_packet;
 	static uint8_t prev_active;
 	static uint8_t prev_pause;
+	
+	if(drop_packet == 2){
+		drop_packet = 0;
+		return;
+	} else {
+		drop_packet++;
+	}
 	
 	if(sbus_active && !prev_active){
 		/* Got controller */

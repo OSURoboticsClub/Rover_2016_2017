@@ -88,9 +88,8 @@ ISR(TIMER4_COMPA_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	comp_init();
+	//comp_init();
 	imu_init();
-	//set_callsign("asdf");
 	sbus_init();
 	sei();
 	reset_timeout_timer();
@@ -101,6 +100,7 @@ void init(void){
 
 void miniboard_main(void){
 	init();
+	
 	bool super_pause;
 	/* Miniboard main loop. */
 	while(1){

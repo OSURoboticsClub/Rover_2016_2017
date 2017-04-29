@@ -45,7 +45,7 @@ class RoverController(QtCore.QThread):
         self.__connect_signals_to_slots()
 
         # ########## Start Thread ##########
-        # self.start()
+        self.start()
 
     def run(self):
         self.logger.debug("Rover controller Thread Starting...")

@@ -50,7 +50,7 @@ class DataView(QtCore.QObject):
         self.__connect_signals_to_slots()
 
     def __connect_signals_to_slots(self):
-        self.main_window.controller_class.controller_update_ready_signal.connect(self.on_controller_update_ready__slot)
+        self.main_window.xbox_controller_class.controller_update_ready_signal.connect(self.on_controller_update_ready__slot)
 
     def __update_drive_percentages(self):
         left_percentage = round((self.controller_states["left_stick_y_axis"] / JOYSTICK_AXIS_MAX * 100), 2)

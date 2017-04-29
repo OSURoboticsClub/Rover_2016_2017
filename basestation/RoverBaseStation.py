@@ -28,7 +28,8 @@ import time
 from Framework.SettingsCore import Settings
 from Framework.LoggingCore import Logger
 from Interface.InterfaceCore import Interface
-from Framework.GameControllerCore import GameController
+from Framework.XBOXControllerCore import XBOXController
+from Framework.FreeSkyControllerCore import FreeSkyController
 from Framework.RoverControllerCore import RoverController
 
 #####################################
@@ -68,13 +69,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.logger = logging.getLogger("RoverBaseStation")
 
         # All interface elements
-        self.controller_class = GameController(self)
+        self.xbox_controller_class = XBOXController(self)
+        self.freesky_controller_class = FreeSkyController(self)
         self.interface_class = Interface(self)
         self.rover_controller_class = RoverController(self)
 
         # ########## Add threads to list for easy access on program close ##########
         self.threads.append(self.interface_class.live_logs_class)
-        self.threads.append(self.controller_class)
+        self.threads.append(self.xbox_controller_class)
+        self.threads.append(self.freesky_controller_class)
         self.threads.append(self.rover_controller_class)
 
         # ########## Set up QT Application Window ##########

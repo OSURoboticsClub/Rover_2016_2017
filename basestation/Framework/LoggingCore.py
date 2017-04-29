@@ -36,8 +36,8 @@ class Logger(QtCore.QObject):
 
         # ########## Set variables with useful paths ##########
         self.appdata_base_directory = self.settings.value("appdata_directory", type=str)
-        self.log_directory = self.appdata_base_directory + "\\logs"
-        self.log_file_path = self.log_directory + "\\log.txt"
+        self.log_directory = self.appdata_base_directory + "/logs"
+        self.log_file_path = self.log_directory + "/log.txt"
 
         # ########## Cleanup old log files ##########
         self.__cleanup_log_files()
@@ -85,7 +85,7 @@ class Logger(QtCore.QObject):
 
                 # If we do, move the current logfile to a backup in the format old_log_datetime
                 if exists(self.log_file_path):
-                    rename(self.log_file_path, self.log_directory + "\\old_log_" + date_time + ".txt")
+                    rename(self.log_file_path, self.log_directory + "/old_log_" + date_time + ".txt")
 
                 # If we have more than the max log files delete the oldest one
                 if num_log_files >= MAX_NUM_LOG_FILES:
@@ -105,7 +105,7 @@ class Logger(QtCore.QObject):
             # Go through all of the filenames found
             for file in file_names:
                 # Recreate the full path and get the modified time of the file
-                current_path = dir_path + "\\" + file
+                current_path = dir_path + "/" + file
                 time = getmtime(current_path)
 
                 # Default case for if the variables above have not been initially set

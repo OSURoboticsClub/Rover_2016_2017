@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #Generates communications code for the miniboard firmware, based on
 #a command protocol specification document (see docparse.py) supplied
 #as the first command-line argument.
@@ -106,7 +106,7 @@ def gen_header(cmd_list):
 def gen_struct_dec(cmd_list):
 	s = "struct comm_data_t DataReal = {\n"
 	for c in cmd_list:
-		for i,d in zip(range(0, len(c["default"])), c["default"]):
+		for i,d in zip(list(range(0, len(c["default"]))), c["default"]):
 			s += "\t." + c["argument"][i][1] + " = " + d + ",\n"
 	s += "};\n"
 	s += "volatile struct comm_data_t *Data = &DataReal;\n"

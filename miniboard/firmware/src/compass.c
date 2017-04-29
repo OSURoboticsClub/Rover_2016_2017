@@ -27,7 +27,7 @@
 #define RD_CMD 0x3D
 #define DEV_WRITE (DEV_ADDRESS | WR_CMD) //LSB is a zero to write
 #define DEV_READ (DEV_ADDRESS | RD_CMD) //LSB is a one to read
-#define COMP_VALID_TIMEOUT 3
+#define COMP_VALID_TIMEOUT 2
 #define CONF_A 0x00
 #define	CONF_B 0x01
 #define	MODE 0x02

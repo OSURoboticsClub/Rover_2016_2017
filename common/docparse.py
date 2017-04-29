@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #Parses a markdown file (first command line argument)
 #containing a table with the header whose header starts with:
 #| Name | RW | Command Code
@@ -74,7 +74,7 @@ def format_code_size(fmt_name):
 	if fmt_name == "*":
 		return 255
 	else:
-		return int(fmt_name[1:])/8
+		return int(fmt_name[1:])//8
 
 def cannon_name(command):
 	"""Given the name of a command, return the canonical function name
@@ -269,13 +269,13 @@ def gen_packing_funcs():
 	
 	for n in [8, 16, 32, 64]:
 		s += "void pack%d(uint8_t *data, uint16_t pos, uint%d_t value){\n"%(n,n)
-		for i in range(0, n/8):
+		for i in range(0, n//8):
 			s += "\t*(data + pos + %d) = (value >> %d) & 0xFF;\n"%(i,i*8)
 		s += "}\n"
 		
 		s += "void unpack%d(uint8_t *data, uint16_t pos, uint%d_t *result){\n"%(n,n)
 		s += "\t*result = "
-		for i in range(0, n/8):
+		for i in range(0, n//8):
 			s += "(((uint%d_t) *(data + pos + %d) << %d)) | "%(n,i, i * 8)
 		s = s[0:-3] #trim last " | "
 		s += ";\n}\n"
@@ -286,4 +286,4 @@ if __name__ == "__main__":
 	with open(sys.argv[1], "r") as f:
 		cmds = extract_table(f.read())
 		for c in cmds:
-			print c["argument"]
+			print(c["argument"])

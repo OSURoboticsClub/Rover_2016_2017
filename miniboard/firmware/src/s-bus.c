@@ -97,10 +97,15 @@ int8_t joy_ch(uint8_t ch){
 	int32_t servo_value = sbus_channels[ch-1];
 	const int16_t center = 1030;
 	const int16_t deadband = 140;
-	const int16_t amp = 1811 - center;
+	const int16_t amp = 1811 - center - deadband;
 	servo_value -= center;
 	if(servo_value < deadband && servo_value > -deadband){
 		return 0;
+	}
+	if(servo_value > 0){
+		servo_value -= deadband;
+	} else {
+		servo_value += deadband;
 	}
 	servo_value *= 127;
 	servo_value /= amp;

@@ -74,7 +74,7 @@ void reset_timeout_timer(void){
 	TCCR4B = 0;
 	TCNT4 = 0;
 	OCR4A = (uint16_t) 15625*COMM_TIMEOUT;
-	TIMSK5 = _BV(OCIE4A);
+	TIMSK4 = _BV(OCIE4A);
 	TCCR4B = _BV(CS42) | _BV(CS40); /* Set 1024 prescaler. */
 	CommTimedOut = false;
 }
@@ -198,8 +198,6 @@ void miniboard_main(void){
 		/* Blink LED. */
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
-		//TODO: Take this out?
-		_delay_ms(50);
 	}
 }
 

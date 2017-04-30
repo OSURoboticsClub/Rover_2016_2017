@@ -10,6 +10,7 @@ import logging
 import struct
 import signal
 from io import StringIO,BytesIO
+import enum
 
 #Import docparse
 docparsepath = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/common/"
@@ -17,6 +18,15 @@ sys.path.append(docparsepath)
 import docparse
 with open(docparsepath + "/SPECIFICATION.md") as p:
 	RoverCmdTable = docparse.extract_table(p.read())
+RoverCmdDict = {cmd["code"]: cmd for cmd in RoverCmdTable}
+for k in RoverCmdDict:
+	expected_size = 5
+	for a in RoverCmdDict[k]["argument"]:
+		if a[0] == "*":
+			expected_size += 256
+		else:
+			expected_size += int(a[0][1:])//8
+	RoverCmdDict[k]["expected_size"] = expected_size
 
 #Create read/write functions
 def create_funcs(module_vars, cmd_table):
@@ -32,7 +42,7 @@ def create_funcs(module_vars, cmd_table):
 		"""Return a function that takes a signal (connected to MiniboardIO's send())
 		   and emits a string of packet data."""
 		def f(signal):
-			packet_data = list(cmd["code"] | 0x80)
+			packet_data = [cmd["code"] | 0x80]
 			signal.emit(packet_data)
 		return f
 	
@@ -54,19 +64,33 @@ def create_funcs(module_vars, cmd_table):
 		return f
 	
 	for c in cmd_table:
-		module_vars["read_"+docparse.cannon_name(c["name"])] = build_read_func(c)
-		module_vars["write_"+docparse.cannon_name(c["name"])] = build_write_func(c)
+		if "r" in c["rw"]:module_vars["read_"+docparse.cannon_name(c["name"])] = build_read_func(c)
+		if "w" in c["rw"]:module_vars["write_"+docparse.cannon_name(c["name"])] = build_write_func(c)
 		
 create_funcs(vars(), RoverCmdTable)
+
+def make_signals():
+		"""Return a string that when eval'd in MiniboardIO
+		   creates signals for received data from the rover.
+		   Each signal has the name data_<canonical command name>,
+		   such as data_battery_voltage.
+		   Each signal emits a dictionary containing string keys of the
+		   command's argument names."""
+		s = ""
+		for c in RoverCmdTable:
+			signame = "data_"+docparse.cannon_name(c["name"])
+			s+="%s = QtCore.pyqtSignal([dict])\n"%signame
+		return s
+
+signal_eval_str = make_signals()
 
 class MiniboardIO(QtCore.QThread):
 	"""Handles reading and writing from the miniboard."""
 	path = "/dev/ttyUSB0"
 	baud = 9600
-	cmd = RoverCmdTable
 	on_kill_threads__slot = QtCore.pyqtSignal()
+	exec(signal_eval_str)
 	def __init__(self, main_window):
-		self.make_signals()
 		super().__init__()
 		self.main_window = main_window
 		self.logger = logging.getLogger("MiniboardIO")
@@ -76,11 +100,11 @@ class MiniboardIO(QtCore.QThread):
 	                             parity=serial.PARITY_NONE,
 	                             stopbits=serial.STOPBITS_ONE,
 	                             bytesize=serial.EIGHTBITS,
-	                             timeout=0.005)
+	                             timeout=0.015)
 		self.reply = ""
 		self.run_thread_flag = True
 		self.connect_signals_to_slots()
-		
+		self.queue = []
 	def calc_crc(self, body):
 		remainder = 0xFFFF
 		for i in range(0, len(body)):
@@ -95,34 +119,74 @@ class MiniboardIO(QtCore.QThread):
 					remainder &= 0xFFFF
 		return remainder
 	
-	def send(self, body_list):
+	def append(self, body_list):
+		"""Add a command to the queue."""
+		self.queue.append(body_list)
+	
+	def __send(self, body_list):
 		"""Given a packet body list, turn it into a packet and send it to the rover."""
 		packet_contents = body_list
 		plen = len(packet_contents) + 2
 		crc = self.calc_crc(packet_contents)
 		packet_contents = [0x01] + [plen] + [crc & 0xFF] + [crc >> 8] + packet_contents
-		for b in packet_contents:
-			print("0x%02X, "%b,end="")
-		print("\n")
 		self.tty.write(packet_contents)
-		
-	def make_signals(self):
-		"""Create signals for received data from the rover.
-		   Each signal has the name data_<canonical command name>,
-		   such as data_battery_voltage.
-		   Each signal emits a dictionary containing string keys of the
-		   command's argument names."""
-		for c in self.cmd:
-			signame = "data_"+docparse.cannon_name(c["name"])
-			setattr(self, signame, QtCore.pyqtSignal([dict]))
+		self.msleep((4+len(body_list)) * .001)
 	 
 	def run(self):
 		"""Read from the serial port, recognize the command, and emit a signal."""
-		reply = bytes("", "ascii")
+		reply = []
+		fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i", "i64":"<Q", "i64":"<q"}
 		while self.run_thread_flag:
-			reply += self.tty.read(size=10000000)
-			#process packet
-			self.msleep(10)
+			if len(self.queue) > 0:
+				body = self.queue[0]
+				self.__send(body)
+				self.queue = self.queue[1:]
+				if len(body) < 1:
+					expected_size = 1000000
+				else:
+					if body[0] & 0x80: #read
+						expected_size = RoverCmdDict[body[0]& 0x7F]["expected_size"]
+					else:
+						expected_size = 5
+				reply = list(self.tty.read(size=expected_size))
+				n = 2
+				while n > 0 and len(reply) < expected_size:
+					reply += list(self.tty.read(size=1000000))
+					n-=1
+				
+				while len(reply) > 0:
+					while len(reply) > 0:
+						if reply[0] != 0x01:
+							reply = reply[1:]
+						else:
+							break
+					if len(reply) > 0: #Got start byte
+						if len(reply) >= 5: #Got minimum complete packet
+							if len(reply) >= (reply[1] + 2): #Got enough bytes for this packet
+								if self.calc_crc(reply[4:]) == struct.unpack("<H", bytes(reply[2:4]))[0]: #CRC OK
+									if reply[4] & 0x80:
+										print("read")
+										code = reply[4] & 0x7F
+										cmd = RoverCmdDict[code]
+										adict = {}
+										b = 5
+										vs = []
+										for a,i in zip(cmd["argument"], range(0, len(cmd["argument"]))):
+											if a[0] != "*":
+												s = struct.calcsize(fmtcodes[a[0]])
+												value = struct.unpack(fmtcodes[a[0]], bytes(reply[b:b+s]))[0]
+												adict[a[1]] = value
+												vs.append(value)
+												b += s
+											else:
+												s = vs[i-1]
+												value = reply[b:b+s]
+												adict[a[1]] = value
+												b+=s
+										getattr(self, "data_"+docparse.cannon_name(cmd["name"])).emit(adict)
+										print(adict)
+								reply = reply[(reply[1] + 2):]
+			self.msleep(1)
 	
 	def connect_signals_to_slots(self):
 		self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
@@ -140,12 +204,17 @@ class DemoThread(QtCore.QThread):
 	def run(self):
 		while True:
 			write_swerve_drive_state(self.send_packet, 3)
+			read_swerve_drive_state(self.send_packet)
+			read_callsign(self.send_packet)
 			self.msleep(1000)
-
 	def connect_signals_to_slots(self):
 		self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
-		self.send_packet.connect(self.main_window.m.send)
-        
+		self.send_packet.connect(self.main_window.m.append)
+		self.main_window.m.data_swerve_drive_state.connect(self.handle_swerve_data)
+	
+	def handle_swerve_data(self, sdict):
+		print(sdict)
+													 
 class DemoWindow(QtWidgets.QMainWindow):
 	kill_threads_signal = QtCore.pyqtSignal()
 	def __init__(self):

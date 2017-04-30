@@ -106,6 +106,10 @@ class MotionProcessor(QtCore.QThread):
         self.logger.debug("Motion Processor Thread Starting...")
 
         # TODO: Switching out of drive state stops motion
+        read_pan_tilt_primary(self.send_miniboard_control_packet)
+
+        while self.pan_position == -1 or self.tilt_position == -1:
+            self.msleep(1)
 
         while self.run_thread_flag:
             if self.xbox_states and self.frsky_states:
@@ -214,25 +218,14 @@ class MotionProcessor(QtCore.QThread):
         controller_pan_raw = self.xbox_states["right_stick_x_axis"]
         controller_tilt_raw = self.xbox_states["right_stick_y_axis"]
 
-        self.logger.debug(controller_pan_raw)
-        self.logger.debug(controller_tilt_raw)
-
         if abs(controller_pan_raw) < DEAD_BAND_XBOX:
             controller_pan_raw = 0
 
         if abs(controller_tilt_raw) < DEAD_BAND_XBOX:
             controller_tilt_raw = 0
 
-        self.pan_position = -1
-        self.tilt_position = -1
-
-        read_pan_tilt_primary(self.send_miniboard_control_packet)
-
-        while self.pan_position == -1 or self.tilt_position == -1:
-            self.msleep(1)
-
-        controller_pan = -controller_pan_raw/4096
-        controller_tilt = -controller_tilt_raw/4096
+        controller_pan = -controller_pan_raw/2560
+        controller_tilt = -controller_tilt_raw/2560
 
         new_pan = self.clamp(int(self.pan_position+controller_pan), 0, 65535)
         new_tilt = self.clamp(int(self.tilt_position+controller_tilt), 0, 65535)
@@ -242,6 +235,9 @@ class MotionProcessor(QtCore.QThread):
 
         while self.wait_for_primary_pan_tilt_response:
             self.msleep(1)
+
+        self.pan_position = new_pan
+        self.tilt_position = new_tilt
 
     def on_xbox_states_updated__slot(self, states):
         self.xbox_states = states

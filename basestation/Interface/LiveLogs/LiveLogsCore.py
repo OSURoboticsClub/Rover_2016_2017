@@ -8,6 +8,7 @@
 # Python native imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
+from Framework.MiniBoardIOCore import write_swerve_drive_state, read_swerve_drive_state
 
 
 #####################################
@@ -16,6 +17,8 @@ import logging
 class LiveLogs(QtCore.QThread):
 
     text_ready_signal = QtCore.pyqtSignal(str)
+
+    send_packet = QtCore.pyqtSignal(list)
 
     def __init__(self, main_window):
         super(LiveLogs, self).__init__()
@@ -51,7 +54,10 @@ class LiveLogs(QtCore.QThread):
                 self.open_log_file_flag = False
             elif self.show_log_file_flag:
                 self.__show_updated_log_file()
-                self.msleep(250)
+
+            write_swerve_drive_state(self.send_packet, 3)
+            read_swerve_drive_state(self.send_packet)
+            self.msleep(5000)
 
         self.logger.debug("Live Logs Thread Stopping...")
 
@@ -61,6 +67,9 @@ class LiveLogs(QtCore.QThread):
         self.live_log_tb.textChanged.connect(self.__on_move_cursor_needed__slot)
 
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
+
+        self.send_packet.connect(self.main_window.miniboard_class.append)
+        self.main_window.miniboard_class.data_swerve_drive_state.connect(self.handle_swerve_data)
 
     def __open_log_file(self):
         # Get the log file path
@@ -88,6 +97,9 @@ class LiveLogs(QtCore.QThread):
     def __on_move_cursor_needed__slot(self):
         # Move the cursor to the end when the text browser text updates. This essentially scrolls constantly.
         self.live_log_tb.moveCursor(QtGui.QTextCursor.End)
+
+    def handle_swerve_data(self, sdict):
+        self.logger.debug(sdict)
 
     def on_kill_threads__slot(self):
         self.run_thread_flag = False

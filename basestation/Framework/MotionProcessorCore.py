@@ -119,8 +119,9 @@ class MotionProcessor(QtCore.QThread):
                 if not self.frsky_states["sa_state"]:  # 0 is drive mode
                     if not self.frsky_states["se_state"]:  # 0 is drive mode
                         self.__drive_manual()
-                    else:  # 1 is arm mode
                         self.__arm_manual()
+                    else:  # 1 is arm mode
+                        pass
                 else:  # 1 is auto mode
                     self.__drive_auto()
 

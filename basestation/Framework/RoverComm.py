@@ -178,6 +178,7 @@ class MiniboardIO(QtCore.QThread):
 												value = reply[b:b+s]
 												adict[a[1]] = value
 												b+=s
+										getattr(self, "data_"+docparse.cannon_name(cmd["name"])).emit(adict)
 										print(adict)
 								reply = reply[(reply[1] + 2):]
 			self.msleep(1)

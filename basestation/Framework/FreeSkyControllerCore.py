@@ -55,6 +55,7 @@ class FreeSkyController(QtCore.QThread):
             "sf_state": 0,
             "sg_state": 0,
             "se_state": 0,
+            "sa_state": 0,
 
             "ls_axis": 0,
             "rs_axis": 0,
@@ -74,6 +75,7 @@ class FreeSkyController(QtCore.QThread):
             "BTN_Z": "sf_state",
             "BTN_TL": "sg_state",
             "BTN_WEST": "se_state",
+            "BTN_SOUTH": "sa_state",
 
             "ABS_RY": "ls_axis",
             "ABS_RUDDER": "rs_axis",
@@ -116,9 +118,7 @@ class FreeSkyController(QtCore.QThread):
             # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
             #     self.logger.debug(str(event.code) + " : " + str(event.state))
 
-
     def __broadcast_if_ready(self):
-
         current_time = time.time()
 
         if (current_time - self.last_time) > (1/CONTROLLER_DATA_UPDATE_FREQUENCY):

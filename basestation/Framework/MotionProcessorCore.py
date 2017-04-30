@@ -91,27 +91,23 @@ class MotionProcessor(QtCore.QThread):
         self.xbox_states = {}
         self.frsky_states = {}
 
+        self.last_pause_state = 0
+
     def run(self):
         self.logger.debug("Motion Processor Thread Starting...")
 
         # TODO: Switching out of drive state stops motion
-        write_pause(self.send_miniboard_control_packet, 1)
+
         while self.run_thread_flag:
             if self.xbox_states and self.frsky_states:
-
-                if self.frsky_states['sf_state']:                   # 1 is unpaused
-
-                    if not self.frsky_states["sa_state"]:           # 0 is manual mode
-                        if not self.frsky_states["se_state"]:       # 0 is drive mode
-                            self.__drive_manual()
-                        else:                                       # 1 is arm mode
-                            self.__arm_manual()
-                    else:                                           # 1 is auto mode
-                        self.__drive_auto()
-                else:                                               # 0 is paused
-                    # TODO: STOP ALL MOTION IMMEDIATELY
-                    # write_pause(self.send_miniboard_control_packet, 0)
-                    self.__all_stop()
+                self.__set_pause_on_state_change()
+                if not self.frsky_states["sa_state"]:           # 0 is manual mode
+                    if not self.frsky_states["se_state"]:       # 0 is drive mode
+                        self.__drive_manual()
+                    else:                                       # 1 is arm mode
+                        self.__arm_manual()
+                else:                                           # 1 is auto mode
+                    self.__drive_auto()
 
         self.logger.debug("Motion Processor Thread Stopping...")
 
@@ -126,6 +122,13 @@ class MotionProcessor(QtCore.QThread):
         self.main_window.miniboard_class.ack_drive_motor_power.connect(self.on_drive_response_received__slot)
 
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
+
+    def __set_pause_on_state_change(self):
+        current_state = self.frsky_states['sf_state']
+
+        if current_state != self.last_pause_state:
+            write_pause(self.send_miniboard_control_packet, current_state)
+            self.last_pause_state = current_state
 
     def __drive_manual(self):
         OFFSET = 127

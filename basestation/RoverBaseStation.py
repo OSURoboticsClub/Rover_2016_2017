@@ -29,6 +29,7 @@ from Interface.InterfaceCore import Interface
 from Framework.XBOXControllerCore import XBOXController
 from Framework.FreeSkyControllerCore import FreeSkyController
 from Framework.MiniBoardIOCore import MiniboardIO
+from Framework.MotionProcessorCore import MotionProcessor
 
 #####################################
 # Global Variables
@@ -69,17 +70,17 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # All interface elements
         self.xbox_controller_class = XBOXController(self)
-        self.freesky_controller_class = FreeSkyController(self)
+        self.frsky_controller_class = FreeSkyController(self)
         self.interface_class = Interface(self)
-        # self.rover_controller_class = RoverController(self)
+        self.motion_processor_class = MotionProcessor(self)
         self.miniboard_class = MiniboardIO(self)
 
         # ########## Add threads to list for easy access on program close ##########
         self.threads.append(self.interface_class.live_logs_class)
         self.threads.append(self.xbox_controller_class)
-        self.threads.append(self.freesky_controller_class)
+        self.threads.append(self.frsky_controller_class)
         self.threads.append(self.miniboard_class)
-        # self.threads.append(self.rover_controller_class)
+        self.threads.append(self.motion_processor_class)
 
         # ########## Setup signal/slot connections ##########
         for thread in self.threads:

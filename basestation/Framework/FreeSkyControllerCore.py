@@ -15,7 +15,7 @@ import time
 # Global Variables
 #####################################
 GAME_CONTROLLER_NAME = "FrSky FrSky Taranis Joystick"
-CONTROLLER_DATA_UPDATE_FREQUENCY = 20  # Times per second
+CONTROLLER_DATA_UPDATE_FREQUENCY = 50  # Times per second
 
 
 #####################################
@@ -52,6 +52,7 @@ class FreeSkyController(QtCore.QThread):
             "right_stick_x_axis": 0,
             "right_stick_y_axis": 0,
 
+            "sc_state": 0,
             "sf_state": 0,
             "sg_state": 0,
             "se_state": 0,
@@ -72,6 +73,7 @@ class FreeSkyController(QtCore.QThread):
             "ABS_Y": "right_stick_y_axis",
 
 
+            "BTN_C": "sc_state",
             "BTN_Z": "sf_state",
             "BTN_TL": "sg_state",
             "BTN_WEST": "se_state",

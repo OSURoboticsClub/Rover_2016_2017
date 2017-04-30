@@ -42,12 +42,6 @@ class LiveLogs(QtCore.QThread):
         self.log_file_reader = None
         self.log_file_prev_mtime = 0
 
-        # ########## Make signal/slot connections ##########
-        self.__connect_signals_to_slots()
-
-        # ########## Start Thread ##########
-        self.start()
-
     def run(self):
         self.logger.debug("Live Logs Thread Starting...")
 
@@ -62,7 +56,7 @@ class LiveLogs(QtCore.QThread):
         self.logger.debug("Live Logs Thread Stopping...")
 
     # noinspection PyUnresolvedReferences
-    def __connect_signals_to_slots(self):
+    def connect_signals_to_slots__slot(self):
         self.text_ready_signal.connect(self.live_log_tb.setText)
         self.live_log_tb.textChanged.connect(self.__on_move_cursor_needed__slot)
 

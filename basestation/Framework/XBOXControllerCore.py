@@ -9,11 +9,14 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
 from inputs import devices, GamePad
+import time
 
 #####################################
 # Global Variables
 #####################################
 GAME_CONTROLLER_NAME = "Afterglow Gamepad for Xbox 360"
+CONTROLLER_DATA_UPDATE_FREQUENCY = 20  # Times per second
+
 
 #####################################
 # Controller Class Definition
@@ -37,7 +40,7 @@ class XBOXController(QtCore.QThread):
         # ########## Thread Flags ##########
         self.run_thread_flag = True
         self.setup_controller_flag = True
-        self.broadcast_controller_data_flag = True
+        self.data_acquisition_and_broadcast_flag = True
 
         # ########## Class Variables ##########
         self.gamepad = None  # type: GamePad
@@ -67,9 +70,7 @@ class XBOXController(QtCore.QThread):
             "a_pressed": 0,
             "b_pressed": 0,
             "x_pressed": 0,
-            "y_pressed": 0,
-
-            "dummy": 0
+            "y_pressed": 0
         }
 
         self.raw_mapping_to_class_mapping = {
@@ -92,22 +93,15 @@ class XBOXController(QtCore.QThread):
 
             "BTN_SELECT": "select_pressed",
             "BTN_START": "start_pressed",
-            "BTN_HOME": "home_pressed",
+            "BTN_MODE": "home_pressed",
 
             "BTN_SOUTH": "a_pressed",
             "BTN_EAST": "b_pressed",
             "BTN_NORTH": "x_pressed",
-            "BTN_WEST": "y_pressed",
-
-            "SYN_REPORT": "dummy"
+            "BTN_WEST": "y_pressed"
         }
 
-
-        # ########## Make signal/slot connections ##########
-        self.__connect_signals_to_slots()
-
-        # ########## Start Thread ##########
-        # self.start()
+        self.last_time = time.time()
 
     def run(self):
         self.logger.debug("Xbox Thread Starting...")
@@ -116,14 +110,14 @@ class XBOXController(QtCore.QThread):
             if self.setup_controller_flag:
                 self.__setup_controller()
                 self.setup_controller_flag = False
-            if self.broadcast_controller_data_flag:
-                self.__get_and_broadcast_controller_data()
-            # self.msleep(50)
+            if self.data_acquisition_and_broadcast_flag:
+                self.__get_controller_data()
+                self.__broadcast_if_ready()
 
         self.logger.debug("Xbox Thread Stopping...")
 
     # noinspection PyUnresolvedReferences
-    def __connect_signals_to_slots(self):
+    def connect_signals_to_slots__slot(self):
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
 
     def __setup_controller(self):
@@ -132,14 +126,22 @@ class XBOXController(QtCore.QThread):
                 self.gamepad = device
                 return
 
-    def __get_and_broadcast_controller_data(self):
+    def __get_controller_data(self):
         events = self.gamepad.read()
 
         for event in events:
-            self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
+            if event.code in self.raw_mapping_to_class_mapping:
+                self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
+                self.controller_update_ready_signal.emit(self.controller_states)
+
+
+    def __broadcast_if_ready(self):
+
+        current_time = time.time()
+
+        if (current_time - self.last_time) > (1/CONTROLLER_DATA_UPDATE_FREQUENCY):
             self.controller_update_ready_signal.emit(self.controller_states)
-
-
+            self.last_time = current_time
 
     def on_kill_threads__slot(self):
         self.terminate()  # DON'T normally do this!!!!!

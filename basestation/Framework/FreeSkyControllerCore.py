@@ -9,11 +9,13 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
 from inputs import devices, GamePad
+import time
 
 #####################################
 # Global Variables
 #####################################
 GAME_CONTROLLER_NAME = "FrSky FrSky Taranis Joystick"
+CONTROLLER_DATA_UPDATE_FREQUENCY = 20  # Times per second
 
 
 #####################################
@@ -38,7 +40,7 @@ class FreeSkyController(QtCore.QThread):
         # ########## Thread Flags ##########
         self.run_thread_flag = True
         self.setup_controller_flag = True
-        self.broadcast_controller_data_flag = True
+        self.data_acquisition_and_broadcast_flag = True
 
         # ########## Class Variables ##########
         self.gamepad = None  # type: GamePad
@@ -50,52 +52,36 @@ class FreeSkyController(QtCore.QThread):
             "right_stick_x_axis": 0,
             "right_stick_y_axis": 0,
 
-            "sf_state"
-            "sg_state"
-            "se_state"
-            
-            "ls_axis"
-            "rs_axis"
+            "sf_state": 0,
+            "sg_state": 0,
+            "se_state": 0,
 
-            "dummy": 0
+            "ls_axis": 0,
+            "rs_axis": 0,
+
+            "s1_axis": 0
         }
 
         self.raw_mapping_to_class_mapping = {
             "ABS_RX": "left_stick_x_axis",
             "ABS_X": "left_stick_y_axis",
-            "BTN_THUMBL": "left_stick_center_pressed",
+
 
             "ABS_Z": "right_stick_x_axis",
             "ABS_Y": "right_stick_y_axis",
-            "BTN_THUMBR": "right_stick_center_pressed",
 
-            "ABS_Z": "left_trigger_z_axis",
-            "BTN_TL": "left_bumper_pressed",
 
-            "ABS_RZ": "right_trigger_z_axis",
-            "BTN_TR": "right_bumper_pressed",
+            "BTN_Z": "sf_state",
+            "BTN_TL": "sg_state",
+            "BTN_WEST": "se_state",
 
-            "ABS_HAT0X": "dpad_x",
-            "ABS_HAT0Y": "dpad_y",
+            "ABS_RY": "ls_axis",
+            "ABS_RUDDER": "rs_axis",
 
-            "BTN_SELECT": "select_pressed",
-            "BTN_START": "start_pressed",
-            "BTN_HOME": "home_pressed",
-
-            "BTN_SOUTH": "a_pressed",
-            "BTN_EAST": "b_pressed",
-            "BTN_NORTH": "x_pressed",
-            "BTN_WEST": "y_pressed",
-
-            "SYN_REPORT": "dummy"
+            "ABS_RZ": "s1_axis"
         }
 
-
-        # ########## Make signal/slot connections ##########
-        self.__connect_signals_to_slots()
-
-        # ########## Start Thread ##########
-        self.start()
+        self.last_time = time.time()
 
     def run(self):
         self.logger.debug("FreeSky Thread Starting...")
@@ -104,14 +90,14 @@ class FreeSkyController(QtCore.QThread):
             if self.setup_controller_flag:
                 self.__setup_controller()
                 self.setup_controller_flag = False
-            if self.broadcast_controller_data_flag:
-                self.__get_and_broadcast_controller_data()
-            # self.msleep(50)
+            if self.data_acquisition_and_broadcast_flag:
+                self.__get_controller_data()
+                self.__broadcast_if_ready()
 
         self.logger.debug("FreeSky Thread Stopping...")
 
     # noinspection PyUnresolvedReferences
-    def __connect_signals_to_slots(self):
+    def connect_signals_to_slots__slot(self):
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
 
     def __setup_controller(self):
@@ -120,18 +106,28 @@ class FreeSkyController(QtCore.QThread):
                 self.gamepad = device
                 return
 
-    def __get_and_broadcast_controller_data(self):
+    def __get_controller_data(self):
         events = self.gamepad.read()
 
         for event in events:
+            if event.code in self.raw_mapping_to_class_mapping:
+                self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
 
-            self.logger.debug(str(event.code) + " : " + str(event.state))
-            # self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
+            # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
+            #     self.logger.debug(str(event.code) + " : " + str(event.state))
+
+
+    def __broadcast_if_ready(self):
+
+        current_time = time.time()
+
+        if (current_time - self.last_time) > (1/CONTROLLER_DATA_UPDATE_FREQUENCY):
             self.controller_update_ready_signal.emit(self.controller_states)
-
+            self.last_time = current_time
+            # self.logger.debug(self.controller_states)
 
     def on_kill_threads__slot(self):
-        self.terminate()  # DON'T normally do this!!!!!
+        self.terminate()  # DON'T normally do this, but fine in this instance
         self.run_thread_flag = False
 
 

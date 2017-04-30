@@ -20,9 +20,7 @@ __status__ = "Development"
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 import signal
-import ctypes
 import logging
-import time
 
 # Custom Imports
 from Framework.SettingsCore import Settings
@@ -42,7 +40,8 @@ UI_FILE_PATH = "Resources/UI/RoverBaseStation.ui"
 # Application Class Definition
 #####################################
 class ApplicationWindow(QtWidgets.QMainWindow):
-
+    connect_all_signals_to_slots_signal = QtCore.pyqtSignal()
+    start_all_threads = QtCore.pyqtSignal()
     kill_threads_signal = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
@@ -52,7 +51,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # ########## Class Variables ##########
         self.num_threads_running = 0
-        self.threads = []
+        self.threads = []  # type: [QtCore.QThread]
 
         # ########## Instantiation of program classes ##########
         # Settings class and version number set
@@ -80,8 +79,26 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.threads.append(self.freesky_controller_class)
         self.threads.append(self.rover_controller_class)
 
-        # ########## Set up QT Application Window ##########
-        self.show()
+        # ########## Setup signal/slot connections ##########
+        for thread in self.threads:
+            self.connect_all_signals_to_slots_signal.connect(thread.connect_signals_to_slots__slot)
+
+        self.connect_all_signals_to_slots_signal.emit()
+
+        # ########## Start all child threads ##########
+        for thread in self.threads:
+            self.start_all_threads.connect(thread.start)
+
+        self.start_all_threads.emit()
+
+        # ########## Ensure all threads started properly ##########
+        for thread in self.threads:
+            if not thread.isRunning():
+                self.close()
+
+        self.logger.info("All threads started successfully!")
+
+
 
     def closeEvent(self, event):
         # Tell all threads to die

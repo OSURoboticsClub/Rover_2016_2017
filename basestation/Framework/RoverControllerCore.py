@@ -41,12 +41,6 @@ class RoverController(QtCore.QThread):
 
         # ########## Class Variables ##########
 
-        # ########## Make signal/slot connections ##########
-        self.__connect_signals_to_slots()
-
-        # ########## Start Thread ##########
-        self.start()
-
     def run(self):
         self.logger.debug("Rover controller Thread Starting...")
 
@@ -57,7 +51,7 @@ class RoverController(QtCore.QThread):
         self.logger.debug("Rover controller Thread Stopping...")
 
     # noinspection PyUnresolvedReferences
-    def __connect_signals_to_slots(self):
+    def connect_signals_to_slots__slot(self):
         self.update_other_gui_elements.connect(self.main_window.interface_class.data_view_class.on_update_other_gui_elements__slot)
 
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)

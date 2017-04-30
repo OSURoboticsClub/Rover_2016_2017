@@ -204,15 +204,17 @@ class DemoThread(QtCore.QThread):
 	def run(self):
 		while True:
 			write_swerve_drive_state(self.send_packet, 3)
-			self.msleep(1000)
 			read_swerve_drive_state(self.send_packet)
-			self.msleep(1000)
 			read_callsign(self.send_packet)
-
+			self.msleep(1000)
 	def connect_signals_to_slots(self):
 		self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
 		self.send_packet.connect(self.main_window.m.append)
-        
+		self.main_window.m.data_swerve_drive_state.connect(self.handle_swerve_data)
+	
+	def handle_swerve_data(self, sdict):
+		print(sdict)
+													 
 class DemoWindow(QtWidgets.QMainWindow):
 	kill_threads_signal = QtCore.pyqtSignal()
 	def __init__(self):

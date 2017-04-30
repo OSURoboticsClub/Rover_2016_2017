@@ -69,13 +69,28 @@ def create_funcs(module_vars, cmd_table):
 		
 create_funcs(vars(), RoverCmdTable)
 
+def make_signals():
+		"""Return a string that when eval'd in MiniboardIO
+		   creates signals for received data from the rover.
+		   Each signal has the name data_<canonical command name>,
+		   such as data_battery_voltage.
+		   Each signal emits a dictionary containing string keys of the
+		   command's argument names."""
+		s = ""
+		for c in RoverCmdTable:
+			signame = "data_"+docparse.cannon_name(c["name"])
+			s+="%s = QtCore.pyqtSignal([dict])\n"%signame
+		return s
+
+signal_eval_str = make_signals()
+
 class MiniboardIO(QtCore.QThread):
 	"""Handles reading and writing from the miniboard."""
 	path = "/dev/ttyUSB0"
 	baud = 9600
 	on_kill_threads__slot = QtCore.pyqtSignal()
+	exec(signal_eval_str)
 	def __init__(self, main_window):
-		self.make_signals()
 		super().__init__()
 		self.main_window = main_window
 		self.logger = logging.getLogger("MiniboardIO")
@@ -116,16 +131,6 @@ class MiniboardIO(QtCore.QThread):
 		packet_contents = [0x01] + [plen] + [crc & 0xFF] + [crc >> 8] + packet_contents
 		self.tty.write(packet_contents)
 		self.msleep((4+len(body_list)) * .001)
-		
-	def make_signals(self):
-		"""Create signals for received data from the rover.
-		   Each signal has the name data_<canonical command name>,
-		   such as data_battery_voltage.
-		   Each signal emits a dictionary containing string keys of the
-		   command's argument names."""
-		for c in RoverCmdTable:
-			signame = "data_"+docparse.cannon_name(c["name"])
-			setattr(self, signame, QtCore.pyqtSignal([dict]))
 	 
 	def run(self):
 		"""Read from the serial port, recognize the command, and emit a signal."""

@@ -10,6 +10,7 @@ import logging
 import struct
 import signal
 from io import StringIO,BytesIO
+import enum
 
 #Import docparse
 docparsepath = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) + "/common/"
@@ -32,7 +33,7 @@ def create_funcs(module_vars, cmd_table):
 		"""Return a function that takes a signal (connected to MiniboardIO's send())
 		   and emits a string of packet data."""
 		def f(signal):
-			packet_data = list(cmd["code"] | 0x80)
+			packet_data = [cmd["code"] | 0x80]
 			signal.emit(packet_data)
 		return f
 	
@@ -80,6 +81,7 @@ class MiniboardIO(QtCore.QThread):
 		self.reply = ""
 		self.run_thread_flag = True
 		self.connect_signals_to_slots()
+		self.queue = []
 		
 	def calc_crc(self, body):
 		remainder = 0xFFFF
@@ -95,15 +97,16 @@ class MiniboardIO(QtCore.QThread):
 					remainder &= 0xFFFF
 		return remainder
 	
-	def send(self, body_list):
+	def append(self, body_list):
+		"""Add a command to the queue."""
+		self.queue.append(body_list)
+	
+	def __send(self, body_list):
 		"""Given a packet body list, turn it into a packet and send it to the rover."""
 		packet_contents = body_list
 		plen = len(packet_contents) + 2
 		crc = self.calc_crc(packet_contents)
 		packet_contents = [0x01] + [plen] + [crc & 0xFF] + [crc >> 8] + packet_contents
-		for b in packet_contents:
-			print("0x%02X, "%b,end="")
-		print("\n")
 		self.tty.write(packet_contents)
 		
 	def make_signals(self):
@@ -118,10 +121,27 @@ class MiniboardIO(QtCore.QThread):
 	 
 	def run(self):
 		"""Read from the serial port, recognize the command, and emit a signal."""
-		reply = bytes("", "ascii")
+		reply = []
+		fmtcodes = {"u8":"<B", "i8":"<b", "u16":"<H", "i16":"<h", "u32":"<I", "i32":"<i", "i64":"<Q", "i64":"<q"}
 		while self.run_thread_flag:
-			reply += self.tty.read(size=10000000)
+			reply += list(self.tty.read(size=10000000))
 			#process packet
+			while len(reply) > 0:
+				if reply[0] != 0x01:
+					reply = reply[1:]
+				else:
+					break
+			if len(reply) > 0: #Got start byte
+				if len(reply) >= 5: #Got minimum complete packet
+					if len(reply) >= (reply[1] + 2): #Got enough bytes for this packet
+						if self.calc_crc(reply[4:]) == struct.unpack("<H", bytes(reply[2:4]))[0]: #CRC OK
+							print("CRC OK")
+							for c in reply:
+								print("0x%02X, "%c, end="")
+							print ("\n")
+							if reply[0] & 0x80:
+								print("read")
+						reply = reply[(reply[1] + 2):]
 			self.msleep(10)
 	
 	def connect_signals_to_slots(self):
@@ -141,10 +161,12 @@ class DemoThread(QtCore.QThread):
 		while True:
 			write_swerve_drive_state(self.send_packet, 3)
 			self.msleep(1000)
+			read_swerve_drive_state(self.send_packet)
+			self.msleep(1000)
 
 	def connect_signals_to_slots(self):
 		self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
-		self.send_packet.connect(self.main_window.m.send)
+		self.send_packet.connect(self.main_window.m.append)
         
 class DemoWindow(QtWidgets.QMainWindow):
 	kill_threads_signal = QtCore.pyqtSignal()

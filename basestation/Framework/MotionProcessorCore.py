@@ -183,13 +183,8 @@ class MotionProcessor(QtCore.QThread):
 
         scale_percentage = max_speed_scale_raw / 255
 
-        left_scaled = (abs(left_stick_y_axis_raw) * scale_percentage)
-        right_scaled = (abs(right_stick_y_axis_raw) * scale_percentage)
-
-        if left_stick_y_axis_raw < 0:
-            left_scaled = -left_scaled
-        if right_stick_y_axis_raw < 0:
-            right_scaled = -right_scaled
+        left_scaled = left_stick_y_axis_raw * scale_percentage
+        right_scaled = right_stick_y_axis_raw * scale_percentage
 
         left_scaled = int(self.clamp(left_scaled, DRIVE_MIN, DRIVE_MAX))
         right_scaled = int(self.clamp(right_scaled, DRIVE_MIN, DRIVE_MAX))

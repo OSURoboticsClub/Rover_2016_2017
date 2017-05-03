@@ -11,6 +11,8 @@ from PyQt5 import QtCore, QtWidgets
 
 # Custom imports
 from Interface.LiveLogs.LiveLogsCore import LiveLogs
+from PyQt5.QtQuick import QQuickView, QQuickItem
+from PyQt5.QtCore import QUrl, QObject
 from Interface.Map.MapCore import Map
 from Interface.DataView.DataViewCore import DataView
 
@@ -30,9 +32,19 @@ class Interface(QtCore.QObject):
         self.maps_class = Map(self.main_window)
         self.data_view_class = DataView(self.main_window)
 
+
         # ########## References to GUI Elements ##########
         self.tab_widget = self.main_window.tab_widget  # type: QtWidgets.QTabWidget
+        self.qml = self.main_window.rectangle_flasher # type: QtWidgets.QQuickView
 
         # ########## Set default interface parameters ##########
         # Always open to first tab on launch
         self.tab_widget.setCurrentIndex(0)
+
+        self.qml.setSource(QUrl("Resources/UI/color_toggle.qml"))
+        self.qml.show()
+
+        self.qml.rootObject().write.connect(lambda: self.qml_clicked__slot())
+
+    def qml_clicked__slot(self):
+        print("UI CLICKED")

@@ -556,8 +556,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>602</width>
+             <height>487</height>
             </rect>
            </property>
            <attribute name="label">
@@ -573,7 +573,7 @@
     <item row="0" column="1">
      <widget class="QTabWidget" name="tab_widget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="map">
        <attribute name="title">
@@ -614,12 +614,37 @@
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="qml_loader">
+       <attribute name="title">
+        <string>qml</string>
+       </attribute>
+       <widget class="QQuickWidget" name="rectangle_flasher">
+        <property name="geometry">
+         <rect>
+          <x>-1</x>
+          <y>-1</y>
+          <width>601</width>
+          <height>621</height>
+         </rect>
+        </property>
+        <property name="resizeMode">
+         <enum>QQuickWidget::SizeRootObjectToView</enum>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header>QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

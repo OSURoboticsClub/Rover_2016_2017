@@ -23,6 +23,8 @@ CONTROLLER_DATA_UPDATE_FREQUENCY = 20  # Times per second
 #####################################
 class XBOXController(QtCore.QThread):
 
+    # ########## Signals ##########
+    controller_connection_aquired = QtCore.pyqtSignal(bool)
     controller_update_ready_signal = QtCore.pyqtSignal([dict])
 
     def __init__(self, main_window):
@@ -41,9 +43,11 @@ class XBOXController(QtCore.QThread):
         self.run_thread_flag = True
         self.setup_controller_flag = True
         self.data_acquisition_and_broadcast_flag = True
+        self.controller_aquired = False
 
         # ########## Class Variables ##########
         self.gamepad = None  # type: GamePad
+
 
         self.controller_states = {
             "left_stick_x_axis": 0,
@@ -108,7 +112,7 @@ class XBOXController(QtCore.QThread):
 
         while self.run_thread_flag:
             if self.setup_controller_flag:
-                self.__setup_controller()
+                self.controller_aquired = self.__setup_controller()
                 self.setup_controller_flag = False
             if self.data_acquisition_and_broadcast_flag:
                 self.__get_controller_data()
@@ -124,15 +128,20 @@ class XBOXController(QtCore.QThread):
         for device in devices.gamepads:
             if device.name == GAME_CONTROLLER_NAME:
                 self.gamepad = device
-                return
+                self.controller_connection_aquired.emit(True)
+                return True
+        self.logger.info("XBOX Controller Failed to Connect")
+        self.controller_connection_aquired.emit(False)
+        return False
 
     def __get_controller_data(self):
-        events = self.gamepad.read()
+        if (self.controller_aquired):
+            events = self.gamepad.read()
 
-        for event in events:
-            if event.code in self.raw_mapping_to_class_mapping:
-                self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
-                self.controller_update_ready_signal.emit(self.controller_states)
+            for event in events:
+                if event.code in self.raw_mapping_to_class_mapping:
+                    self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
+                    self.controller_update_ready_signal.emit(self.controller_states)
 
 
     def __broadcast_if_ready(self):

@@ -34,7 +34,7 @@ from Framework.MotionProcessorCore import MotionProcessor
 #####################################
 # Global Variables
 #####################################
-UI_FILE_PATH = "Resources/UI/RoverBaseStation.ui"
+UI_FILE_PATH = "Resources/new_ui_work_4-30-17/RoverBaseStation.ui"
 
 
 #####################################

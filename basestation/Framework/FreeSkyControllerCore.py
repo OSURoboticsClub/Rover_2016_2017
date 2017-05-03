@@ -23,6 +23,8 @@ CONTROLLER_DATA_UPDATE_FREQUENCY = 50  # Times per second
 #####################################
 class FreeSkyController(QtCore.QThread):
 
+    # ########## Signals ##########
+    controller_connection_aquired = QtCore.pyqtSignal(bool)
     controller_update_ready_signal = QtCore.pyqtSignal([dict])
 
     def __init__(self, main_window):
@@ -41,6 +43,7 @@ class FreeSkyController(QtCore.QThread):
         self.run_thread_flag = True
         self.setup_controller_flag = True
         self.data_acquisition_and_broadcast_flag = True
+        self.controller_aquired = False
 
         # ########## Class Variables ##########
         self.gamepad = None  # type: GamePad
@@ -92,7 +95,7 @@ class FreeSkyController(QtCore.QThread):
 
         while self.run_thread_flag:
             if self.setup_controller_flag:
-                self.__setup_controller()
+                self.controller_aquired = self.__setup_controller()
                 self.setup_controller_flag = False
             if self.data_acquisition_and_broadcast_flag:
                 self.__get_controller_data()
@@ -108,14 +111,18 @@ class FreeSkyController(QtCore.QThread):
         for device in devices.gamepads:
             if device.name == GAME_CONTROLLER_NAME:
                 self.gamepad = device
-                return
-
+                self.controller_connection_aquired.emit(True)
+                return True
+        self.logger.info("FrySky Failed to Connect")
+        self.controller_connection_aquired.emit(False)
+        return False
     def __get_controller_data(self):
-        events = self.gamepad.read()
+        if self.controller_aquired:
+            events = self.gamepad.read()
 
-        for event in events:
-            if event.code in self.raw_mapping_to_class_mapping:
-                self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
+            for event in events:
+                if event.code in self.raw_mapping_to_class_mapping:
+                    self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
 
             # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
             #     self.logger.debug(str(event.code) + " : " + str(event.state))

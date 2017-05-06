@@ -108,7 +108,7 @@ class MotionProcessor(QtCore.QThread):
         # TODO: Switching out of drive state stops motion
         read_pan_tilt_primary(self.send_miniboard_control_packet)
 
-        while self.pan_position == -1 or self.tilt_position == -1:
+        while self.pan_position == -1 or self.tilt_position == -1 or self.run_thread_flag:
             self.msleep(1)
 
         while self.run_thread_flag:

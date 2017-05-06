@@ -31,7 +31,7 @@ class Interface(QtCore.QObject):
 
         # ########## Instantiations of sub-classes ##########
         self.live_logs_class = LiveLogs(self.main_window)
-        self.maps_class = Map(self.main_window)
+        # self.maps_class = Map(self.main_window)
         self.data_view_class = DataView(self.main_window)
 
 

@@ -25,7 +25,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.minimumWidth: 200
         Layout.preferredWidth: 300
-        url: "/home/hodgerti/Documents/OSU_Robotics/Rover2017/basestation/Resources/web/map.html"
+        url: "/home/rover/Rover2017/basestation/Resources/web/map.html"
         webChannel: WebChannel{
             registeredObjects: [gps]
         }

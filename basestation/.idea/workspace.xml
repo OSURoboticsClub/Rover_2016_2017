@@ -15,11 +15,33 @@
       <file leaf-file-name="InterfaceCore.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Interface/InterfaceCore.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="41" column="44" lean-forward="true" selection-start-line="41" selection-start-column="44" selection-end-line="41" selection-end-column="44" />
+            <state relative-caret-position="184">
+              <caret line="29" column="44" lean-forward="true" selection-start-line="29" selection-start-column="44" selection-end-line="29" selection-end-column="44" />
               <folding>
-                <element signature="e#242#277#0" expanded="true" />
+                <element signature="e#242#290#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="map.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resources/web/map.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="1" column="24" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="24" />
+              <folding>
+                <marker date="1494055932830" expanded="true" signature="1601:1634" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="map.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resources/web/map.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1998">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -27,8 +49,8 @@
       <file leaf-file-name="RoverBaseStation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RoverBaseStation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1444">
-              <caret line="130" column="39" lean-forward="false" selection-start-line="130" selection-start-column="39" selection-end-line="130" selection-end-column="39" />
+            <state relative-caret-position="364">
+              <caret line="129" column="59" lean-forward="false" selection-start-line="129" selection-start-column="59" selection-end-line="129" selection-end-column="59" />
               <folding>
                 <element signature="e#478#488#0" expanded="true" />
               </folding>
@@ -87,8 +109,8 @@
         <option value="$PROJECT_DIR$/Resources/UI/color_toggle.qml" />
         <option value="$PROJECT_DIR$/Resources/UI/map_engine.qml" />
         <option value="$PROJECT_DIR$/Resources/web/map.html" />
-        <option value="$PROJECT_DIR$/Interface/InterfaceCore.py" />
         <option value="$PROJECT_DIR$/RoverBaseStation.py" />
+        <option value="$PROJECT_DIR$/Interface/InterfaceCore.py" />
       </list>
     </option>
   </component>
@@ -502,7 +524,7 @@
         <state relative-caret-position="720">
           <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding>
-            <element signature="e#242#277#0" expanded="true" />
+            <element signature="e#242#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -522,7 +544,7 @@
         <state relative-caret-position="540">
           <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
-            <element signature="e#242#277#0" expanded="true" />
+            <element signature="e#242#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -584,7 +606,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#242#277#0" expanded="true" />
+            <element signature="e#242#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -772,13 +794,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/web/map.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="810">
-          <caret line="45" column="101" lean-forward="false" selection-start-line="45" selection-start-column="101" selection-end-line="45" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Framework/MiniBoardIOCore.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1278">
@@ -787,13 +802,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Framework/SettingsCore.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/web/map.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -815,12 +823,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RoverBaseStation.py">
+    <entry file="file://$PROJECT_DIR$/Resources/web/map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1444">
-          <caret line="130" column="39" lean-forward="false" selection-start-line="130" selection-start-column="39" selection-end-line="130" selection-end-column="39" />
+        <state relative-caret-position="-1998">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/web/map.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="24" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="24" />
           <folding>
-            <element signature="e#478#488#0" expanded="true" />
+            <marker date="1494055932830" expanded="true" signature="1601:1634" ph="..." />
           </folding>
         </state>
       </provider>
@@ -833,12 +849,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/RoverBaseStation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="129" column="59" lean-forward="false" selection-start-line="129" selection-start-column="59" selection-end-line="129" selection-end-column="59" />
+          <folding>
+            <element signature="e#478#488#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Interface/InterfaceCore.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="41" column="44" lean-forward="true" selection-start-line="41" selection-start-column="44" selection-end-line="41" selection-end-column="44" />
+        <state relative-caret-position="184">
+          <caret line="29" column="44" lean-forward="true" selection-start-line="29" selection-start-column="44" selection-end-line="29" selection-end-column="44" />
           <folding>
-            <element signature="e#242#277#0" expanded="true" />
+            <element signature="e#242#290#0" expanded="true" />
           </folding>
         </state>
       </provider>

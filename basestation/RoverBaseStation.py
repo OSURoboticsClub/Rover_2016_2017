@@ -18,7 +18,7 @@ __status__ = "Development"
 #####################################
 # Python native imports
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtWebEngine, QtQuick, QtQml, QtWebEngineWidgets
+from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtWebEngine, QtQuick, QtQml
 import signal
 import logging
 
@@ -128,5 +128,4 @@ if __name__ == "__main__":
     app_window = ApplicationWindow()  # Make a window in this application
     app_window.setWindowTitle("Rover Base Station")  # Sets the window title
     app_window.show()  # Show the window in the application
-    QtWebEngine.QtWebEngine.initialize()
     application.exec_()  # Execute launching of the application

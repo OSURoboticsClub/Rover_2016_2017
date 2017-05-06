@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import QtQuick.Window 2.0
 
 import QtWebEngine 1.4
 import QtWebChannel 1.0
@@ -7,10 +6,9 @@ import QtWebChannel 1.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
-RowLayout {
+ColumnLayout {
     id: mapView
     //anchors.margins: 10
-    anchors.fill: parent
     objectName: "leaflet_map"
     property int largeFontSize: 25
     property int smallFontSize: 20
@@ -21,9 +19,8 @@ RowLayout {
 
 
     WebEngineView {
-
         id: map
-        anchors.fill: parent
+
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.minimumWidth: 200
@@ -33,6 +30,7 @@ RowLayout {
             registeredObjects: [gps]
         }
     }
+
     Row {
         id: mapInput
         Layout.fillWidth: true

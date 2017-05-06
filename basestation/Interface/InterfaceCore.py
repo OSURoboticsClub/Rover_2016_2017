@@ -7,7 +7,7 @@
 # Imports
 #####################################
 # Python native imports
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtWebEngine
 
 # Custom imports
 from Interface.LiveLogs.LiveLogsCore import LiveLogs
@@ -26,6 +26,8 @@ class Interface(QtCore.QObject):
 
         # ########## Reference to top level window ##########
         self.main_window = main_window  # type: QtWidgets.QMainWindow
+
+        QtWebEngine.QtWebEngine.initialize()
 
         # ########## Instantiations of sub-classes ##########
         self.live_logs_class = LiveLogs(self.main_window)

@@ -36,11 +36,13 @@ class Interface(QtCore.QObject):
         # ########## References to GUI Elements ##########
         self.tab_widget = self.main_window.tab_widget  # type: QtWidgets.QTabWidget
         self.qml = self.main_window.rectangle_flasher # type: QtWidgets.QQuickView
+        self.map_view = self.main_window.leaflet_map # type: QtWidgets.QQuickView
 
         # ########## Set default interface parameters ##########
         # Always open to first tab on launch
         self.tab_widget.setCurrentIndex(0)
 
+        self.map_view.setSource(QUrl("Resources/UI/map_view.qml"))
         self.qml.setSource(QUrl("Resources/UI/color_toggle.qml"))
         self.qml.show()
 

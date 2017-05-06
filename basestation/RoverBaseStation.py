@@ -18,7 +18,7 @@ __status__ = "Development"
 #####################################
 # Python native imports
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtWebEngine, QtQuick, QtQml, QtWebEngineWidgets
 import signal
 import logging
 

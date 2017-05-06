@@ -614,6 +614,36 @@
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="second_map">
+       <attribute name="title">
+        <string>Page</string>
+       </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>601</width>
+          <height>621</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QQuickWidget" name="leaflet_map">
+           <property name="minimumSize">
+            <size>
+             <width>599</width>
+             <height>619</height>
+            </size>
+           </property>
+           <property name="resizeMode">
+            <enum>QQuickWidget::SizeRootObjectToView</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
       <widget class="QWidget" name="qml_loader">
        <attribute name="title">
         <string>qml</string>

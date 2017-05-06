@@ -128,4 +128,5 @@ if __name__ == "__main__":
     app_window = ApplicationWindow()  # Make a window in this application
     app_window.setWindowTitle("Rover Base Station")  # Sets the window title
     app_window.show()  # Show the window in the application
+    QtWebEngine.QtWebEngine.initialize()
     application.exec_()  # Execute launching of the application

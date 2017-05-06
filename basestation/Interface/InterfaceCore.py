@@ -44,7 +44,6 @@ class Interface(QtCore.QObject):
 
         self.map_view.setSource(QUrl("Resources/UI/map_view.qml"))
         self.qml.setSource(QUrl("Resources/UI/color_toggle.qml"))
-        self.qml.show()
 
         self.qml.rootObject().write.connect(lambda: self.qml_clicked__slot())
 

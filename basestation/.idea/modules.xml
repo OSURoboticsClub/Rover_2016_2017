@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../archive/.idea/archive.iml" filepath="$PROJECT_DIR$/../archive/.idea/archive.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/basestation.iml" filepath="$PROJECT_DIR$/.idea/basestation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../corwinex/.idea/corwinex.iml" filepath="$PROJECT_DIR$/../../corwinex/.idea/corwinex.iml" />
+    </modules>
+  </component>
+</project>

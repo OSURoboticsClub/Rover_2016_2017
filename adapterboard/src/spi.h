@@ -5,6 +5,8 @@
  * Author: Aaron Cohen
  */
 
+#include <stdint.h>
+
 void spi_init(void);
 
-void spi_tx(uint8_t *data, uint8_t count);
+void spi_fifo_write(void);

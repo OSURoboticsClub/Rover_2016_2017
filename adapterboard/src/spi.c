@@ -15,10 +15,16 @@
 #define FIFO_TX_BASE_ADDR 0x80
 
 #define REG_FIFO 0x00
+#define REG_OP_MODE 0x01
 #define REG_FIFO_ADDR_PTR 0x0D
 #define REG_FIFO_RX_CURRENT_ADDR 0x10
+#define REG_IRQ_FLAGS_MASK 0x11
 #define REG_IRQ_FLAGS 0x12
 #define REG_RX_NB_BYTES 0x13
+
+#define LORA_MODE 0x80
+#define TX_MODE 0x3
+#define RXCONT_MODE 0x5
 
 #define IRQ_RX_DONE 0x40
 
@@ -26,7 +32,7 @@
 #define READ_ADDR(addr) (addr & 0x7F)
 
 
-inline void spi_wait(void)
+static inline void spi_wait(void)
 {
 	while(!(SPSR & _BV(SPIF)));
 }
@@ -59,26 +65,7 @@ static uint8_t spi_single_read(uint8_t addr)
 }
 
 
-static void spi_fifo_write(void)
-{
-	/* Prepare to write FIFO data by resetting the address pointer */
-	spi_single_write(REG_FIFO_ADDR_PTR, FIFO_TX_BASE_ADDR);
-
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-	{
-		SPDR = WRITE_ADDR(REG_FIFO);
-		spi_wait();
-		for (uint8_t i = 0; i < buf_size(BUF_OUT); i++)
-		{
-			SPDR = buf_peek_first(BUF_OUT);
-			buf_pop_first(BUF_OUT);
-			spi_wait();
-		}
-	}
-}
-
-
-static uint8_t spi_fifo_read(void)
+static void spi_fifo_read(void)
 {
 	uint8_t num_bytes = spi_single_read(REG_RX_NB_BYTES);
 	uint8_t current_addr = spi_single_read(REG_FIFO_RX_CURRENT_ADDR);
@@ -95,8 +82,6 @@ static uint8_t spi_fifo_read(void)
 			buf_add(BUF_IN, SPDR);
 		}
 	}
-
-	return num_bytes;
 }
 
 
@@ -117,11 +102,32 @@ void spi_init(void)
 	/* Generate interrupt on falling edge */
 	MCUCR = _BV(ISC01);
 
-	/* TODO:
-	 * set LoRa mode
-	 * set explicit header mode
-	 * Probably set other things too
-	 */
+	/* Enable LoRa modem and set mode to continuous RX */
+	spi_single_write(REG_OP_MODE, LORA_MODE | RXCONT_MODE);
+
+	/* Mask interrupts except for RxDone */
+	spi_single_write(REG_IRQ_FLAGS_MASK, ~IRQ_RX_DONE);
+
+	/* Default frequency is 434 MHz. Write to REG_FR_* to modify it */
+}
+
+
+void spi_fifo_write(void)
+{
+	/* Prepare to write FIFO data by resetting the address pointer */
+	spi_single_write(REG_FIFO_ADDR_PTR, FIFO_TX_BASE_ADDR);
+
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		SPDR = WRITE_ADDR(REG_FIFO);
+		spi_wait();
+		for (uint8_t i = 0; i < buf_size(BUF_OUT); i++)
+		{
+			SPDR = buf_peek_first(BUF_OUT);
+			buf_pop_first(BUF_OUT);
+			spi_wait();
+		}
+	}
 }
 
 
@@ -134,4 +140,7 @@ ISR(INT0_vect)
 	{
 		spi_fifo_read();
 	}
+
+	/* Clear IRQ */
+	spi_single_write(REG_IRQ_FLAGS, 0x00);
 }

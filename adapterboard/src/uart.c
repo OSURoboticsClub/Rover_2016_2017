@@ -7,9 +7,16 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <util/atomic.h>
 #include <stdint.h>
 #include "buf.h"
 #include "uart.h"
+
+
+static inline void uart_wait(void)
+{
+	while(!(UCSR0A & _BV(UDRE0)));
+}
 
 
 void uart_init(void)
@@ -29,6 +36,20 @@ void uart_init(void)
 
 	/* Remap UART0 to PB2 and PA7 */
 	REMAP |= _BV(U0MAP);
+}
+
+
+void uart_tx(void)
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		for (uint8_t i = 0; i < buf_size(BUF_IN); i++)
+		{
+			uart_wait();
+			UDR0 = buf_peek_first(BUF_IN);
+			buf_pop_first(BUF_IN);
+		}
+	}
 }
 
 

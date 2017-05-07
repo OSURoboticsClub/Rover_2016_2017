@@ -15,16 +15,26 @@
 
 struct circ_buf
 {
-	uint8_t buf[BUF_SIZE];
+	uint8_t *buf;
 	uint8_t first;
 	uint8_t size;
+	uint8_t cap;
 } buf_in, buf_out;
+
+
+uint8_t raw_buf_in[BUF_IN_SIZE];
+uint8_t raw_buf_out[BUF_OUT_SIZE];
 
 
 void buf_init(void)
 {
+	buf_in.buf = raw_buf_in;
 	buf_in.first = buf_in.size = 0;
+	buf_in.cap = BUF_IN_SIZE;
+
+	buf_out.buf = raw_buf_out;
 	buf_out.first = buf_out.size = 0;
+	buf_out.cap = BUF_OUT_SIZE;
 }
 
 
@@ -34,12 +44,12 @@ void buf_add(enum Buf sel, uint8_t data)
 
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
-		buf->buf[(buf->first + buf->size) % BUF_SIZE] = data;
+		buf->buf[(buf->first + buf->size) % buf->cap] = data;
 		buf->size += 1;
 
-		if (buf->size > BUF_SIZE)
+		if (buf->size > buf->cap)
 		{
-			buf->first += 1;
+			buf->first = (buf->first + 1) % buf->cap;
 			buf->size -= 1;
 		}
 	}
@@ -60,7 +70,22 @@ uint8_t buf_peek_first(enum Buf sel)
 
 	if (buf->size > 0)
 	{
-		return buf->buf[buf->first + buf->size - 1];
+		return buf->buf[buf->first];
+	}
+	else
+	{
+		return 0xFF;
+	}
+}
+
+
+uint8_t buf_at(enum Buf sel, uint8_t ind)
+{
+	struct circ_buf *buf = BUF_SEL(sel);
+
+	if (ind < buf->size)
+	{
+		return buf->buf[(buf->first + ind) % buf->cap];
 	}
 	else
 	{
@@ -77,8 +102,20 @@ void buf_pop_first(enum Buf sel)
 	{
 		if (buf->size > 0)
 		{
-			buf->first += 1;
+			buf->first = (buf->first + 1) % buf->cap;
 			buf->size -= 1;
 		}
 	}
+}
+
+
+uint8_t buf_packet_check(enum Buf sel)
+{
+	struct circ_buf *buf = BUF_SEL(sel);
+
+	/* TODO: CRC checking */
+	if (buf->size >= 2 && buf_at(sel, 0) == 0x01 && (buf_at(sel, 1) == buf->size || buf->size >= buf->cap))
+		return 1;
+	else
+		return 0;
 }

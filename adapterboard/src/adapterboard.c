@@ -17,6 +17,7 @@ void adapterboard_init(void)
 	uart_init();
 	spi_init();
 
+	/* Enable interrupts */
 	sei();
 }
 
@@ -27,14 +28,14 @@ void adapterboard_main(void)
 
 	while (1)
 	{
-		if (buf_size(BUF_OUT) > 0)
+		if (buf_packet_check(BUF_OUT))
 		{
-			//TODO
+			spi_fifo_write();
 		}
 
-		if (buf_size(BUF_IN) > 0)
+		if (buf_packet_check(BUF_IN))
 		{
-			//TODO
+			uart_tx();
 		}
 	}
 }

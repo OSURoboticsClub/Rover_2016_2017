@@ -5,7 +5,10 @@
  * Author: Aaron Cohen
  */
 
+#include <stdint.h>
+
 #define UART_BAUD 9600
 
-
 void uart_init(void);
+
+void uart_tx(void);

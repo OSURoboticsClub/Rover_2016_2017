@@ -52,7 +52,7 @@ def create_funcs(module_vars, cmd_table):
         return f
 
     def build_write_func(cmd):
-        """Return a function that takes a signal (connected to MiniboardIO's send())
+        """Return a function that takes a signal (connected to MiniboardIO's __send())
 		   and emits a string of packet data."""
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
                     "i64": "<q"}

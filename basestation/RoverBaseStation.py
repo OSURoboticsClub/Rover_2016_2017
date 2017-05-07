@@ -30,6 +30,7 @@ from Framework.XBOXControllerCore import XBOXController
 from Framework.FreeSkyControllerCore import FreeSkyController
 from Framework.MiniBoardIOCore import MiniboardIO
 from Framework.MotionProcessorCore import MotionProcessor
+from Framework.ReadUpdater import ReadUpdater
 
 #####################################
 # Global Variables
@@ -71,9 +72,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # All interface elements
         self.xbox_controller_class = XBOXController(self)
         self.frsky_controller_class = FreeSkyController(self)
+        self.miniboard_class = MiniboardIO(self)
         self.interface_class = Interface(self)
         self.motion_processor_class = MotionProcessor(self)
-        self.miniboard_class = MiniboardIO(self)
+        self.read_updater = ReadUpdater(self)
 
         # ########## Add threads to list for easy access on program close ##########
         self.threads.append(self.interface_class.live_logs_class)
@@ -81,6 +83,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.threads.append(self.frsky_controller_class)
         self.threads.append(self.miniboard_class)
         self.threads.append(self.motion_processor_class)
+        self.threads.append(self.read_updater)
 
         # ########## Setup signal/slot connections ##########
         for thread in self.threads:

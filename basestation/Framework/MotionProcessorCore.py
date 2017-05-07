@@ -9,13 +9,17 @@
 from PyQt5 import QtCore, QtWidgets
 import logging
 from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt_primary, read_pan_tilt_secondary, write_pan_tilt_primary, write_pan_tilt_secondary
+    read_pan_tilt_primary, read_pan_tilt_secondary, write_pan_tilt_primary, write_pan_tilt_secondary, \
+    write_arm_motors
 
 #####################################
 # Global Variables
 #####################################
 DRIVE_MIN = -127
 DRIVE_MAX = 127
+
+ARMS_MIN = -127
+ARMS_MAX = 127
 
 DEAD_BAND_FRSKY = 20
 DEAD_BAND_XBOX = 1500
@@ -91,6 +95,7 @@ class MotionProcessor(QtCore.QThread):
         self.run_thread_flag = True
         self.wait_for_drive_response = False
         self.wait_for_primary_pan_tilt_response = False
+        self.wait_for_arm_response = False
 
         # ########## Class Variables ##########
         self.xbox_states = {}
@@ -119,8 +124,9 @@ class MotionProcessor(QtCore.QThread):
                 if not self.frsky_states["sa_state"]:  # 0 is drive mode
                     if not self.frsky_states["se_state"]:  # 0 is drive mode
                         self.__drive_manual()
-                        self.__arm_manual()
+                        self.__pan_tilt_manual()
                     else:  # 1 is arm mode
+                        # self.__arm_control_manual()
                         pass
                 else:  # 1 is auto mode
                     self.__drive_auto()
@@ -144,6 +150,8 @@ class MotionProcessor(QtCore.QThread):
             self.on_pan_tilt_secondary_position_response__slot)
 
         self.main_window.miniboard_class.ack_pan_tilt_primary.connect(self.on_primary_pan_tilt_write_acknowledged__slot)
+
+        self.main_window.miniboard_class.ack_arm_motors.connect(self.on_arm_motors_write_acknowledged__slot)
 
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
 
@@ -173,6 +181,49 @@ class MotionProcessor(QtCore.QThread):
             self.last_drive_state = current_state
         elif (current_state == 0) and (self.last_drive_state == 1):
             self.last_drive_state = 0
+
+    def __arm_control_manual(self):
+        OFFSET = 127
+
+        max_speed_scale_raw = self.frsky_states["s1_axis"] + OFFSET
+        base_speed_raw = self.frysky_states["left_stick_x_axis"]
+        bicep_speed_raw = self.frysky_states["left_stick_y_axis"]
+        forearm_speed_raw = self.frysky_states["right_stick_y_axis"]
+        pitch_speed_raw = self.frysky_states["rs_axis"]
+        wrist_rotation_speed_raw = self.frysky_states["right_stick_x_axis"]
+        arm_gripper_speed_raw = self.frysky_states["ls_axis"]
+
+        scale_percentage = max_speed_scale_raw / 255
+
+        base_speed_scaled = base_speed_raw * max_speed_scale_raw
+        bicep_speed_scaled = bicep_speed_raw * max_speed_scale_raw
+        forearm_speed_scaled = forearm_speed_raw * max_speed_scale_raw
+        pitch_speed_scaled = pitch_speed_raw * max_speed_scale_raw
+        wrist_rotation_speed_scaled = wrist_rotation_speed_raw * max_speed_scale_raw
+        arm_gripper_speed_scaled = arm_gripper_speed_raw * max_speed_scale_raw
+
+        base_speed_scaled = int(self.clamp(base_speed_scaled, ARMS_MIN, ARMS_MAX))
+        bicep_speed_scaled = int(self.clamp(bicep_speed_scaled, ARMS_MIN, ARMS_MAX))
+        forearm_speed_scaled = int(self.clamp(forearm_speed_scaled, ARMS_MIN, ARMS_MAX))
+        pitch_speed_scaled = int(self.clamp(pitch_speed_scaled, ARMS_MIN, ARMS_MAX))
+        wrist_rotation_speed_scaled = int(self.clamp(wrist_rotation_speed_scaled, ARMS_MIN, ARMS_MAX))
+        arm_gripper_speed_scaled = int(self.clamp(arm_gripper_speed_scaled, ARMS_MIN, ARMS_MAX))
+
+        self.wait_for_arm_response = True
+
+        write_arm_motors(self.send_miniboard_control_packet,
+                         base_speed_scaled,
+                         bicep_speed_scaled,
+                         forearm_speed_scaled,
+                         pitch_speed_scaled,
+                         wrist_rotation_speed_scaled,
+                         arm_gripper_speed_scaled)
+
+        while self.wait_for_arm_response:
+            self.msleep(1)
+
+
+        # write_arm_motors(self.send_miniboard_control_packet, )
 
     def __drive_manual(self):
         OFFSET = 127
@@ -205,7 +256,9 @@ class MotionProcessor(QtCore.QThread):
     def __drive_auto(self):
         pass
 
-    def __arm_manual(self):
+
+
+    def __pan_tilt_manual(self):
         # X axis (min to max) -32768 to 32768
         # Y axis (min to max) 32768 to 32768
 
@@ -259,6 +312,9 @@ class MotionProcessor(QtCore.QThread):
 
     def on_drive_response_received__slot(self):
         self.wait_for_drive_response = False
+
+    def on_arm_motors_write_acknowledged__slot(self):
+        self.wait_for_arm_response = False
 
     def on_kill_threads__slot(self):
         self.run_thread_flag = False

@@ -64,7 +64,8 @@ class FreeSkyController(QtCore.QThread):
             "ls_axis": 0,
             "rs_axis": 0,
 
-            "s1_axis": 0
+            "s1_axis": 0,
+            "s2_axis": 0
         }
 
         self.raw_mapping_to_class_mapping = {
@@ -85,7 +86,8 @@ class FreeSkyController(QtCore.QThread):
             "ABS_RY": "ls_axis",
             "ABS_RUDDER": "rs_axis",
 
-            "ABS_RZ": "s1_axis"
+            "ABS_RZ": "s1_axis",
+            "ABS_THROTTLE" : "s2_axis"
         }
 
         self.last_time = time.time()
@@ -124,8 +126,11 @@ class FreeSkyController(QtCore.QThread):
                 if event.code in self.raw_mapping_to_class_mapping:
                     self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
 
-            # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
-            #     self.logger.debug(str(event.code) + " : " + str(event.state))
+                # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
+                #     self.logger.debug(str(event.code) + " : " + str(event.state))
+                #
+                # if event.code == "ABS_RUDDER":
+                #     self.logger.debug(str(event.code) + " : " + str(event.state))
 
     def __broadcast_if_ready(self):
         current_time = time.time()

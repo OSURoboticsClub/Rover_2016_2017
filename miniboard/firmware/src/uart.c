@@ -32,21 +32,21 @@ void __attribute__((weak)) (*UART3RXHandler)(uint8_t) = NULL;
  * End indexes one past the last character in the buffer.
  * If Start == End, the buffer is empty. */
 typedef struct {
-	volatile uint8_t *data;
+	uint8_t *data;
 	uint8_t start;
 	uint8_t end;
 	uint8_t capacity;
 } circbuf_t;
-static volatile uint8_t URBuf[4][UART_RX_BUFFER];
-static volatile uint8_t UTBuf[4][UART_TX_BUFFER];
-static volatile circbuf_t UT[4];
-static volatile circbuf_t UR[4];
-static volatile uint8_t done[4]; /* Used to communicate TXCn status from the interrupt */
+static uint8_t URBuf[4][UART_RX_BUFFER];
+static uint8_t UTBuf[4][UART_TX_BUFFER];
+static circbuf_t UT[4];
+static circbuf_t UR[4];
+
 #define CIRC_EOF 0xFFEE
 
 /* Remove a character from the circular buffer and return it.
  * Returns CIRC_EOF if there are no more characters in the buffer. */
-static uint16_t circ_remove(volatile circbuf_t *buf){
+static uint16_t circ_remove(circbuf_t *buf){
 	if(buf->start == buf->end)return CIRC_EOF;
 	uint8_t c = buf->data[buf->start];
 	buf->start++;
@@ -58,7 +58,7 @@ static uint16_t circ_remove(volatile circbuf_t *buf){
 
 /* Add a character to a circular buffer.
  * Returns 0 on success, -1 on error (not enough space). */
-static int8_t circ_add(volatile circbuf_t *buf, uint8_t c){
+static int8_t circ_add(circbuf_t *buf, uint8_t c){
 	if(buf->end == (buf->start - 1)
 	   || (buf->start == 0 && buf->end == buf->capacity - 1)
 	   )return -1;
@@ -86,7 +86,7 @@ static int8_t circ_add(volatile circbuf_t *buf, uint8_t c){
  *  1 - odd
  *  2 - even
  * Stop bits can be 1 or 2. */
-void uart_enable(volatile uint8_t uart, volatile uint32_t baud, volatile uint8_t stopbits, volatile uint8_t parity){
+void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	UR[uart].data = URBuf[uart];
 	UR[uart].capacity = UART_RX_BUFFER;
 	UR[uart].start = 0;
@@ -107,12 +107,12 @@ void uart_enable(volatile uint8_t uart, volatile uint32_t baud, volatile uint8_t
 }
 
 /* Disable a uart. */
-void uart_disable(volatile uint8_t uart){
+void uart_disable(uint8_t uart){
 	UCSRnB(uart) = 0;
 }
 
 /* UART receive interrupts and handler. */
-static void uart_rx_isr(volatile uint8_t uart){
+static void uart_rx_isr(uint8_t uart){
 	if(uart == 0 && UART0RXHandler != NULL){
 		UART0RXHandler(UDRn(uart));
 	} else
@@ -146,14 +146,11 @@ ISR(USART3_RX_vect){
 }
 
 /* UART transmit (data register empty) interrupts and handler. */
-static void uart_tx_isr(volatile uint8_t uart){
+static void uart_tx_isr(uint8_t uart){
 	uint16_t r = circ_remove(UT + uart);
 	if(r != CIRC_EOF){
 		UDRn(uart) = r;
-		done[uart] = 0;
-	} else {
-		done[uart] = 1;
-	}	
+	}
 }
 
 ISR(USART0_TX_vect){
@@ -187,7 +184,7 @@ ISR(USART3_TX_vect){
  * (Unless there's not enough space in the buffer; in that case, data will be sent
  * until there's enough space, then this function will return, then no more data
  * will be sent until the interrupt exits.) */
-void uart_tx(volatile uint8_t uart, volatile const uint8_t *data, volatile uint16_t count){
+void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
  	/* possible states:
 	 * if not sending, need to prime pump.
    	 * -thread:
@@ -204,7 +201,6 @@ void uart_tx(volatile uint8_t uart, volatile const uint8_t *data, volatile uint1
 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 			if(!uart_tx_in_progress(uart)){ /* If buffer empty, we'll need to set UDR for the first byte. */
 				UDRn(uart) = data[i];
-				done[uart] = 0;
 				i++;
 			}
 			int r = 0;
@@ -228,7 +224,6 @@ void uart_tx(volatile uint8_t uart, volatile const uint8_t *data, volatile uint1
 		uint16_t i = 0;
 		if(!uart_tx_in_progress(uart)){ /* If buffer empty, we'll need to set UDR for the first byte. */
 			UDRn(uart) = data[i];
-			done[uart] = 0;
 			i++;
 		}
 		int r = 0;
@@ -254,16 +249,8 @@ void uart_tx(volatile uint8_t uart, volatile const uint8_t *data, volatile uint1
 }
 
 /* Returns 1 if data is being sent through the uart, 0 if not. */
-uint8_t uart_tx_in_progress(volatile uint8_t uart){
-	return 0;
-	return !done[uart];
-}
-
-/* Wait until all data has been sent from the UART, then return. */
-void uart_wait(volatile uint8_t uart){
-	while(uart_tx_in_progress(uart)){
-		/* Wait */
-	}
+uint8_t uart_tx_in_progress(uint8_t uart){
+	return !(UCSRnA(uart) & _BV(UDRE0)) || (UT[uart].start !=  UT[uart].end);
 }
 
 /* Receive data from the uart. 
@@ -273,7 +260,7 @@ void uart_wait(volatile uint8_t uart){
  * buffer to overflow, the extra data will be lost.
  * If a receive handler is specified (with UART_HANDLER()),
  * this function will never provide any data. */
-uint8_t uart_rx(volatile uint8_t uart, volatile uint8_t *data, volatile uint8_t capacity){
+uint8_t uart_rx(uint8_t uart, uint8_t *data, uint8_t capacity){
 	uint16_t i;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 		for(i=0; i<capacity; i++){

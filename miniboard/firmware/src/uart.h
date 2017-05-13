@@ -14,10 +14,10 @@
  * bytes from UART 1 as they arrive, place the code
  *   void (*UART1RXHandler)(uint8_t) = module_byte_handler_func;
  * in the top level of the module .c file. */
-extern void (*UART0RXHandler)(volatile uint8_t);
-extern void (*UART1RXHandler)(volatile uint8_t);
-extern void (*UART2RXHandler)(volatile uint8_t);
-extern void (*UART3RXHandler)(volatile uint8_t);
+extern void (*UART0RXHandler)(uint8_t);
+extern void (*UART1RXHandler)(uint8_t);
+extern void (*UART2RXHandler)(uint8_t);
+extern void (*UART3RXHandler)(uint8_t);
 
 /* Enable and configure a uart.
  * Parity options:
@@ -25,10 +25,10 @@ extern void (*UART3RXHandler)(volatile uint8_t);
  *  1 - odd
  *  2 - even
  * Stop bits can be 1 or 2. */
-void uart_enable(volatile uint8_t uart, volatile uint32_t baud, volatile uint8_t stopbits, volatile uint8_t parity);
+void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity);
 
 /* Disable a uart. */
-void uart_disable(volatile uint8_t uart);
+void uart_disable(uint8_t uart);
 
 /* Send a block of data through the given uart.
  * If there is space in the uart buffer, the data will be copied into the
@@ -45,13 +45,10 @@ void uart_disable(volatile uint8_t uart);
  * (Unless there's not enough space in the buffer; in that case, data will be sent
  * until there's enough space, then this function will return, then no more data
  * will be sent until the interrupt exits.) */
-void uart_tx(volatile uint8_t uart, volatile const uint8_t *data, volatile uint16_t count);
+void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count);
 
 /* Returns 1 if data is being sent through the uart, 0 if not. */
-uint8_t uart_tx_in_progress(volatile uint8_t uart);
-
-/* Wait until all data has been sent from the UART, then return. */
-void uart_wait(volatile uint8_t uart);
+uint8_t uart_tx_in_progress(uint8_t uart);
 
 /* Receive data from the uart. 
  * Up to capacity bytes will be written to the data buffer.
@@ -60,4 +57,4 @@ void uart_wait(volatile uint8_t uart);
  * buffer to overflow, the extra data will be lost.
  * If a receive handler is specified (with UART_HANDLER()),
  * this function will never provide any data. */
-uint8_t uart_rx(volatile uint8_t uart, volatile uint8_t *data, volatile uint8_t capacity);
+uint8_t uart_rx(uint8_t uart, uint8_t *data, uint8_t capacity);

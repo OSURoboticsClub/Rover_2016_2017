@@ -11,7 +11,7 @@
 
 /* Set the UART that will be used to communicate with the motor drivers */
 #define TETRAD_UART 1
-#define TETRAD_BAUD 115200
+#define TETRAD_BAUD 38400
 /* Initialize tetrad communication by enabling the tetrad UART */
 void tetrad_init(void);
 

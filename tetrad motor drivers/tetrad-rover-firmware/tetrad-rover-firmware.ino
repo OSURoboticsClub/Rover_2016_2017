@@ -32,7 +32,7 @@ byte command_buf[5]; //create string to hold command received
 byte num_bytes;
 
 void setup(){
-	Serial2.begin(115200);
+	Serial2.begin(38400);
 	Serial.begin(115200);
 	pinMode(statpin, OUTPUT);
 	pinMode(R_PIN, OUTPUT);

@@ -25,7 +25,22 @@
 #include <stdio.h>
 #include <string.h>
 
-/* TODO: Watchdog timer. */
+/* AX12 limits */
+#define PAN_MIN 100
+#define PAN_MAX 800
+#define TILT_MIN 100
+#define TILT_MAX 800
+
+/* AX12 addresses */
+#define PAN_AX12 1
+#define TILT_AX12 2
+#define PITCH_AX12 4
+#define WRIST_AX12 5
+#define SQUEEZE_AX12 6
+#define CFLEX1_AX12 7
+#define CFLEX2_AX12 8
+#define CSEAL_AX12 9
+
 
 /* Triggers for data read commands. */
 void camera_command_trigger(void){
@@ -93,6 +108,7 @@ void init(void){
 	sbus_init();
 	sei();
 	reset_timeout_timer();
+	_delay_ms(100);
 }
 
 /* Get a value, then atomically set the target variable. */
@@ -109,9 +125,7 @@ void miniboard_main(void){
 		/* (handled in-module) */
 		
 		/* Saberteeth */
-		while(uart_tx_in_progress(AX12_UART)){
-			/* Wait for AX12 stuff to finish. */
-		}
+		ax12_wait_uart();
 		tetrad_init();
 		if(super_pause){
 			/* Paused */
@@ -155,17 +169,29 @@ void miniboard_main(void){
 		videoswitch_select(Data->selected_camera);
 		
 		/* AX12 */
-		while(uart_tx_in_progress(AX12_UART)){
-			/* Wait for tetrad stuff to finish. */
-		}
+		ax12_wait_uart();
 		ax12_init();
-		if(super_pause) {
+		//TODO
+		if(0 && super_pause) {
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
-			ax12_set_goal_position(1, Data->pan);
-			ax12_set_goal_position(2, Data->tilt);
+			ax12_set_goal_position(PAN_AX12, Data->pan_angle);
+			ax12_set_goal_position(TILT_AX12, Data->tilt_angle);
+			ax12_set_goal_position(5, 400);
+			//ax12_set_goal_position(4, 400);
+			ax12_wait_uart();
+			//_delay_ms(10);
+// 			if(Data->arm_mode != 0){
+// 				
+// 				if(Data->arm_mode == 1){
+// 				
+// 				} else if(Data->arm_mode == 2){
+// 					
+// 				}
+// 			}
+
 		}
 
 		/* S-Bus */

@@ -217,3 +217,33 @@ void ax12_lock(uint8_t servo_id) {
 	uint8_t data[] = {0x2f, AX12_LOCK};
 	ax12_write_packet(servo_id, data, 2);
 }
+
+/* Put an AX12 into angle mode. */
+void ax12_set_angle_mode(uint8_t servo_id){
+	ax12_set_operating_angle_limit(servo_id, 0, 0x3ff);
+}
+
+/* Put an AX12 into continuous rotation mode. */
+void ax12_set_continuous_mode(uint8_t servo_id){
+	ax12_set_operating_angle_limit(servo_id, 0, 0);
+}
+
+/* Set AX12 continuous rotation speed.
+ * Speed ranges from -1023 to 1023. */
+void ax12_continuous_speed(uint8_t servo_id, int16_t speed){
+	uint16_t dir = speed > 0;
+	if(speed > 0){
+		if(speed > 1023)speed = 1023;
+	} else {
+		if(speed < -1023)speed = -1023;
+		speed = -speed;
+	}
+	ax12_set_moving_speed(servo_id, (dir << 10) | ((uint16_t) speed));
+}
+
+/* Wait for ax12 or tetrad transmission to complete. */
+void ax12_wait_uart(void){
+	while(uart_tx_in_progress(AX12_UART)){
+		/* Wait for tetrad stuff to finish. */
+	}
+}

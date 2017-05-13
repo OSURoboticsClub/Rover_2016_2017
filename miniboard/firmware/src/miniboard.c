@@ -166,8 +166,6 @@ void miniboard_main(void){
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
 			ax12_set_goal_position(1, Data->pan);
 			ax12_set_goal_position(2, Data->tilt);
-			ax12_set_goal_position(3, Data->pan2);
-			ax12_set_goal_position(4, Data->tilt2);
 		}
 
 		/* S-Bus */

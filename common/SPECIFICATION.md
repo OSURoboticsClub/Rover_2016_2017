@@ -69,8 +69,8 @@ don't change the name of existing command arguments.
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
 | Compass Heading        | R  | 0x29 | u8 compass_heading_valid, i16 compass_heading | 0,0 | Magnetic compass heading. TODO: define units and axis directions. |
-| Pan Tilt Primary       | RW | 0x2A | u16 pan, u16 tilt | 590,270 | Primary pan/tilt system angles. Both range from 0-1023. |
-| Pan Tilt Secondary     | RW | 0x2B | u16 pan2, u16 tilt2 | 0,0 | Secondary pan/tilt system angles.  Both range from 0-1023.|
+| Pan Tilt               | RW | 0x2A | u16 pan, u16 tilt | 590,270 | Pan/tilt system angles. Both range from 0-1023. |
+| Pan Tilt Speed         | RW | 0x2B | i8 pan_speed, i8 tilt_speed | 0,0 | Secondary pan/tilt system angles.  Both range from -128 to 127. The total angle will be limited to safe values.|
 | GPIO Direction         | RW | 0x30 | u8 gpio_dir | 0 | GPIO pin directions. 1 = out, 0 = in. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Out Value         | RW | 0x31 | u8 gpio_out | 0 | GPIO pin directions. 1 = high, 0 = low. If high in input mode, pull-up resistor is enabled. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Read State        | RW | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |

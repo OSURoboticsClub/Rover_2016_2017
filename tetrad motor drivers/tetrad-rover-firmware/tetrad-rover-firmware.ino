@@ -27,7 +27,7 @@ byte address = 0 + 128; //address of this motor controller
 
 int len = 4;
 
-byte command_buf[4]; //create string to hold command received
+byte command_buf[5]; //create string to hold command received
 
 byte num_bytes;
 
@@ -63,7 +63,7 @@ void loop() {
 	if(Serial2.available()){
 		byte b = Serial2.read();
 		//digitalWrite(B_PIN, !digitalRead(B_PIN));
-		if(b > 128){
+		if(b >= 128){
 			/* This is a command byte. */
 			count = 0;
 		}
@@ -71,64 +71,34 @@ void loop() {
 		count++;
 	}
 
-	if (count == 4) { //if we have a command_buf we need to parse and update things
-	//check the checksum
-		if (((command_buf[0] + command_buf[1] + command_buf[2]) & 127) == command_buf[3]) { //checksum is good
-			Serial.print("Got packet\n");
+	if (count == 5) { //if we have a command_buf we need to parse and update things
+		Serial.print("Got packet. Address = ");
+		Serial.println(command_buf[0]);
+		if (((command_buf[0] + command_buf[1] + command_buf[2] + command_buf[3]) & 127) == command_buf[4]) { //checksum is good
 			if (command_buf[0] == address) { //its our address
-				switch (command_buf[1]) {//update everything
-					case 0: //drive motor 1 forward
-						set_motor_output(0, 1, command_buf[2]);
-						break;
-					case 1: //drive motor 1 backward
-						set_motor_output(0, 2, command_buf[2]);
-						break;
-					case 4: //drive motor 2 forward
-						set_motor_output(1, 1, command_buf[2]);
-						break;
-					case 5: //drive motor 2 backwards
-						set_motor_output(1, 2, command_buf[2]);
-						break;
-				}
+				Serial.println("Got packet for this driver.");
+				set_motor_output(command_buf[1], command_buf[2], command_buf[3]);
 			}
 		}
 		count = 0; //reset command_buf to zero
 	}
 }
 
-void set_motor_output(uint8_t motor, uint8_t direct, uint8_t pwm)
-{
-  /* Set status RGB led. */
-  if(motor == 0){
-    if(pwm == 0){
-      digitalWrite(G_PIN, HIGH);
-    } else {
-      digitalWrite(G_PIN, LOW);
-    }
-  } else {
-    if(pwm == 0){
-      digitalWrite(R_PIN, HIGH);
-    } else {
-      digitalWrite(R_PIN, LOW);
-    }
-  }
-  if (motor <= 1)
-  {
-    if (direct <= 4)
-    {
-      // Set inA[motor]
-      if (direct <= 1)
-        digitalWrite(inApin[motor], HIGH);
-      else
-        digitalWrite(inApin[motor], LOW);
-
-      // Set inB[motor]
-      if ((direct == 0) || (direct == 2))
-        digitalWrite(inBpin[motor], HIGH);
-      else
-        digitalWrite(inBpin[motor], LOW);
-
-      analogWrite(pwmpin[motor], pwm);
-    }
-  }
+void set_motor_output(uint8_t dir, uint8_t m1, uint8_t m2){	
+	if(m1 == 0){
+		digitalWrite(G_PIN, HIGH);
+	} else {
+		digitalWrite(G_PIN, LOW);
+	}
+	if(m2 == 0){
+		digitalWrite(R_PIN, HIGH);
+	} else {
+		digitalWrite(R_PIN, LOW);
+	}
+	
+	digitalWrite(inApin[0], !!(dir & (1 << 1)));
+	analogWrite(pwmpin[0], m1 * 2);
+	
+	digitalWrite(inApin[1], !!(dir & (1 << 2)));
+	analogWrite(pwmpin[1], m2 * 2);
 }

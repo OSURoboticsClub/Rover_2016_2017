@@ -88,7 +88,7 @@ ISR(TIMER4_COMPA_vect){
 void init(void){
 	comm_init();
 	gps_init();
-	//comp_init();
+	comp_init();
 	imu_init();
 	sbus_init();
 	sei();

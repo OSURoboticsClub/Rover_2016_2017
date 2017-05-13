@@ -1,7 +1,7 @@
 MCU:= atmega2560
 PROGRAMMER:= wiring
-PROGRAMMER_PORT:= /dev/ttyACM0
-PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
+PROGRAMMER_PORT:= /dev/ttyUSB0
+PROGRAMMER_PORT_ALT:= /dev/ttyACM0
 PROGRAMMER_PORT_OSX:= /dev/tty.usbmodem1421
 
 SIMAVR:=simavr

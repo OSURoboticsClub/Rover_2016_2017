@@ -38,7 +38,7 @@ void tetrad_tx(struct tetrad_packet *packet) {
 void tetrad_init(void) {
 	DDRC |= _BV(PC6);
 	PORTC &= ~_BV(PC6);
-	uart_enable(TETRAD_UART, 9600, 1, 0);
+	uart_enable(TETRAD_UART, 38400, 1, 0);
 }
 
 void tetrad_release(void) {

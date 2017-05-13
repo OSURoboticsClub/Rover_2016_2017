@@ -32,33 +32,28 @@ byte command_buf[4]; //create string to hold command received
 byte num_bytes;
 
 void setup(){
-   Serial2.begin(9600);
-   pinMode(statpin, OUTPUT);
-   pinMode(R_PIN, OUTPUT);
-   pinMode(G_PIN, OUTPUT);
-   pinMode(B_PIN, OUTPUT);
-   digitalWrite(R_PIN, HIGH);
-   digitalWrite(G_PIN, HIGH);
-   digitalWrite(B_PIN, HIGH);
-   
-  // Initialize digital pins as outputs
-  for (int i = 0; i < 2; i++)
-  {
-    pinMode(inApin[i], OUTPUT);
-    pinMode(inBpin[i], OUTPUT);
-    pinMode(pwmpin[i], OUTPUT);
-  }
-  // Initialize braked
-  for (int i = 0; i < 2; i++)
-  {
-    digitalWrite(inApin[i], LOW);
-    digitalWrite(inBpin[i], LOW);
-  }
-
-  //set PWM frequency
-  analogWriteFrequency(pwmpin[0], 187500);
-  analogWriteFrequency(pwmpin[1], 187500);
-
+	Serial2.begin(9600);
+	pinMode(statpin, OUTPUT);
+	pinMode(R_PIN, OUTPUT);
+	pinMode(G_PIN, OUTPUT);
+	pinMode(B_PIN, OUTPUT);
+	digitalWrite(R_PIN, HIGH);
+	digitalWrite(G_PIN, HIGH);
+	digitalWrite(B_PIN, HIGH);
+	// Initialize digital pins as outputs
+	for (int i = 0; i < 2; i++){
+		pinMode(inApin[i], OUTPUT);
+		pinMode(inBpin[i], OUTPUT);
+		pinMode(pwmpin[i], OUTPUT);
+	}
+	// Initialize braked
+	for (int i = 0; i < 2; i++){
+		digitalWrite(inApin[i], LOW);
+		digitalWrite(inBpin[i], LOW);
+	}
+	//set PWM frequency
+	analogWriteFrequency(pwmpin[0], 187500);
+	analogWriteFrequency(pwmpin[1], 187500);
 }
 
 uint8_t count = 0;

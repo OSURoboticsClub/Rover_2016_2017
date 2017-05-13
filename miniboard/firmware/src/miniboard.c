@@ -12,7 +12,7 @@
 #include "comm.h"
 #include "commgen.h"
 #include "adc.h"
-#include "sabertooth.h"
+#include "tetrad.h"
 #include "callsign.h"
 #include "gps.h"
 #include "compass.h"
@@ -112,44 +112,34 @@ void miniboard_main(void){
 		while(uart_tx_in_progress(AX12_UART)){
 			/* Wait for AX12 stuff to finish. */
 		}
-		sabertooth_init();
+		tetrad_init();
 		if(super_pause){
 			/* Paused */
-			sabertooth_set_speed(0, 0, 0);
-			sabertooth_set_speed(0, 1, 0);
-			sabertooth_set_speed(1, 0, 0);
-			sabertooth_set_speed(1, 1, 0);
-			sabertooth_set_speed(2, 0, 0);
-			sabertooth_set_speed(2, 1, 0);
-			sabertooth_set_speed(3, 0, 0);
-			sabertooth_set_speed(3, 1, 0);
-			sabertooth_set_speed(4, 0, 0);
-			sabertooth_set_speed(4, 1, 0);
-			sabertooth_set_speed(5, 0, 0);
-			sabertooth_set_speed(5, 1, 0);
+			tetrad_set_speed(0, 0, 0);
+			tetrad_set_speed(1, 0, 0);
+			tetrad_set_speed(2, 0, 0);
+			tetrad_set_speed(3, 0, 0);
+			tetrad_set_speed(4, 0, 0);
+			tetrad_set_speed(5, 0, 0);
 		} else {
 			/* Not Paused */
-			sabertooth_set_speed(0, 0, Data->l_f_drive);
-			sabertooth_set_speed(1, 1, Data->r_f_drive);
-			sabertooth_set_speed(1, 0, Data->l_m_drive);
-			sabertooth_set_speed(0, 1, Data->r_m_drive);
-			sabertooth_set_speed(2, 0, Data->l_b_drive);
-			sabertooth_set_speed(2, 1, Data->r_b_drive);
+			tetrad_set_speed(0, Data->l_f_drive, Data->r_m_drive);
+			tetrad_set_speed(1, Data->l_m_drive, Data->r_f_drive);
+			tetrad_set_speed(2, Data->l_b_drive, Data->r_b_drive);
+			int8_t swerve_speed;
 			if(1 == Data->swerve_state){
 				/* Staight */
-				sabertooth_set_speed(3, 0, 127);
+				swerve_speed = 127;
 			} else if(2 == Data->swerve_state){
 				/* Turn */
-				sabertooth_set_speed(3, 0, -127);
+				swerve_speed = -127;
 			} else {
 				/* No motion */
-				sabertooth_set_speed(3, 0, 0);
+				swerve_speed = 0;
 			}
-			sabertooth_set_speed(3, 1, Data->arm_motor_1);
-			sabertooth_set_speed(4, 0, Data->arm_motor_2);
-			sabertooth_set_speed(4, 1, Data->arm_motor_3);
-			sabertooth_set_speed(5, 0, Data->arm_motor_4);
-			sabertooth_set_speed(5, 1, Data->arm_motor_5);
+			tetrad_set_speed(3, swerve_speed, Data->arm_motor_1);
+			tetrad_set_speed(4, Data->arm_motor_2, Data->arm_motor_3);
+			tetrad_set_speed(5, Data->arm_motor_4, Data->arm_motor_5);
 		}
 		
 		/* ADC (Pot channels and battery.) */
@@ -166,7 +156,7 @@ void miniboard_main(void){
 		
 		/* AX12 */
 		while(uart_tx_in_progress(AX12_UART)){
-			/* Wait for sabertooth stuff to finish. */
+			/* Wait for tetrad stuff to finish. */
 		}
 		ax12_init();
 		if(super_pause) {

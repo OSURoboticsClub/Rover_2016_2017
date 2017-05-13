@@ -52,7 +52,7 @@ def create_funcs(module_vars, cmd_table):
         return f
 
     def build_write_func(cmd):
-        """Return a function that takes a signal (connected to MiniboardIO's send())
+        """Return a function that takes a signal (connected to MiniboardIO's __send())
 		   and emits a string of packet data."""
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
                     "i64": "<q"}
@@ -91,6 +91,8 @@ def make_signals():
     for c in RoverCmdTable:
         signame = "data_" + docparse.cannon_name(c["name"])
         s += "%s = QtCore.pyqtSignal([dict])\n" % signame
+        signame = "ack_" + docparse.cannon_name(c["name"])
+        s += "%s = QtCore.pyqtSignal()\n" % signame
     return s
 
 
@@ -114,7 +116,7 @@ class MiniboardIO(QtCore.QThread):
                                  parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,
                                  bytesize=serial.EIGHTBITS,
-                                 timeout=0.015)
+                                 timeout=1)
         self.reply = ""
         self.run_thread_flag = True
         self.queue = []
@@ -149,7 +151,7 @@ class MiniboardIO(QtCore.QThread):
     def run(self):
         """Read from the serial port, recognize the command, and emit a signal."""
 
-        self.logger.info("MiniboardIO Thread Starting...")
+        self.logger.debug("MiniboardIO Thread Starting...")
 
         reply = []
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
@@ -184,7 +186,7 @@ class MiniboardIO(QtCore.QThread):
                             if len(reply) >= (reply[1] + 2):  # Got enough bytes for this packet
                                 if self.calc_crc(reply[4:]) == struct.unpack("<H", bytes(reply[2:4]))[0]:  # CRC OK
                                     if reply[4] & 0x80:
-                                        self.logger.debug("read")
+                                        # self.logger.debug("read")
                                         code = reply[4] & 0x7F
                                         cmd = RoverCmdDict[code]
                                         adict = {}
@@ -203,11 +205,15 @@ class MiniboardIO(QtCore.QThread):
                                                 adict[a[1]] = value
                                                 b += s
                                         getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
-                                        self.logger.debug(adict)
+                                        # self.logger.debug(adict)
+                                    else:
+                                        code = reply[4] & 0x7F
+                                        cmd = RoverCmdDict[code]
+                                        getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
                                 reply = reply[(reply[1] + 2):]
             self.msleep(1)
 
-        self.logger.info("MiniboardIO Thread Stopping...")
+        self.logger.debug("MiniboardIO Thread Stopping...")
 
     def connect_signals_to_slots__slot(self):
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)

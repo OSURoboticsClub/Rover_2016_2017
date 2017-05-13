@@ -1,18 +1,22 @@
 import QtQuick 2.0
 
-import QtWebEngine 1.3
-import QtWebChannel 2.0
+import QtWebEngine 1.4
+import QtWebChannel 1.0
+
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import QtQuick.Controls.Material 2.0
-
 
 ColumnLayout {
     id: mapView
     //anchors.margins: 10
+    objectName: "leaflet_map"
     property int largeFontSize: 25
     property int smallFontSize: 20
     property string fontColor: "white"
+    property int latitude: 0
+    property int longitude: 0
+    property int heading: 0
+
 
     WebEngineView {
         id: map
@@ -21,13 +25,12 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.minimumWidth: 200
         Layout.preferredWidth: 300
-        url: "qrc:/web/map.html"
+        url: "/home/rover/Rover2017/basestation/Resources/web/map.html"
         webChannel: WebChannel{
             registeredObjects: [gps]
         }
-
-
     }
+
     Row {
         id: mapInput
         Layout.fillWidth: true
@@ -85,7 +88,7 @@ ColumnLayout {
             property double _inputLatitude: parseFloat(inputLatitude.text)
             property double _inputLongitude: parseFloat(inputLongitude.text)
             property string _inputName: inputName.text
-            property var coords: [root.latitude, root.longitude, root.gps_heading]
+            property var coords: [mapView.latitude, mapView.longitude, mapView.heading]
 
             property string dist: "0 m"
             property string name: ""
@@ -97,7 +100,7 @@ ColumnLayout {
             signal _deleteAll()
 
             function  roverPosChangeTrigger() {
-                gps.coords = [root.latitude, root.longitude, root.heading];
+                gps.coords = [mapView.latitude, mapView.longitude, mapView.heading];
                 _pushRoverCoords();
             }
         }
@@ -139,6 +142,7 @@ ColumnLayout {
             color: mapView.fontColor
         }
     }
+
 }
 
 

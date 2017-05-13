@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin python3.5
 
 """
     Main file used to launch the Rover Base Station
@@ -18,7 +18,7 @@ __status__ = "Development"
 #####################################
 # Python native imports
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtWebEngine, QtQuick, QtQml
 import signal
 import logging
 
@@ -29,11 +29,13 @@ from Interface.InterfaceCore import Interface
 from Framework.XBOXControllerCore import XBOXController
 from Framework.FreeSkyControllerCore import FreeSkyController
 from Framework.MiniBoardIOCore import MiniboardIO
+from Framework.MotionProcessorCore import MotionProcessor
+from Framework.ReadUpdater import ReadUpdater
 
 #####################################
 # Global Variables
 #####################################
-UI_FILE_PATH = "Resources/UI/RoverBaseStation.ui"
+UI_FILE_PATH = "Resources/new_ui_work_4-30-17/RoverBaseStation.ui"
 
 
 #####################################
@@ -69,17 +71,19 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # All interface elements
         self.xbox_controller_class = XBOXController(self)
-        self.freesky_controller_class = FreeSkyController(self)
-        self.interface_class = Interface(self)
-        # self.rover_controller_class = RoverController(self)
+        self.frsky_controller_class = FreeSkyController(self)
         self.miniboard_class = MiniboardIO(self)
+        self.interface_class = Interface(self)
+        self.motion_processor_class = MotionProcessor(self)
+        self.read_updater = ReadUpdater(self)
 
         # ########## Add threads to list for easy access on program close ##########
         self.threads.append(self.interface_class.live_logs_class)
         self.threads.append(self.xbox_controller_class)
-        self.threads.append(self.freesky_controller_class)
+        self.threads.append(self.frsky_controller_class)
         self.threads.append(self.miniboard_class)
-        # self.threads.append(self.rover_controller_class)
+        self.threads.append(self.motion_processor_class)
+        self.threads.append(self.read_updater)
 
         # ########## Setup signal/slot connections ##########
         for thread in self.threads:

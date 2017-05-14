@@ -30,6 +30,7 @@
 #define PAN_MAX 800
 #define TILT_MIN 100
 #define TILT_MAX 800
+#define PANTILT_DIV 8
 
 /* AX12 addresses */
 #define PAN_AX12 1
@@ -183,6 +184,23 @@ void miniboard_main(void){
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
+			int16_t new_pan, new_tilt;
+			new_pan = Data->pan_angle + Data->pan_speed/PANTILT_DIV;
+			new_tilt = Data->tilt_angle + Data->tilt_speed/PANTILT_DIV;
+			if(new_pan < PAN_MIN){
+				new_pan = PAN_MIN;
+			}
+			if(new_pan > PAN_MAX){
+				new_pan = PAN_MAX;
+			}
+			if(new_tilt < TILT_MIN){
+				new_tilt = TILT_MIN;
+			}
+			if(new_tilt > TILT_MAX){
+				new_tilt = TILT_MAX;
+			}
+			Data->pan_angle = new_pan;
+			Data->tilt_angle = new_tilt;
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
 			ax12_set_goal_position(PAN_AX12, Data->pan_angle);
 			ax12_set_goal_position(TILT_AX12, Data->tilt_angle);
@@ -305,8 +323,8 @@ int main(void){
 	/* For testing, remove the following call and insert your code below.
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
-	//miniboard_main();
+	miniboard_main();
 	//soil_sensor_test();
-	ax12_test();
+	//ax12_test();
 	return(0);
 }

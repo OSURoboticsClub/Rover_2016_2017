@@ -11,7 +11,7 @@
 
 /* Use to send command to all servos. */
 #define AX12_ALL_BROADCAST_ID 0xFE
-#define AX12_BAUD 9600
+#define AX12_BAUD 200000
 
 /* Use for ax12_set_alarm_led, ax12_set_alarm_shutdown. */
 #define AX12_INPUT_VOLTAGE_ERROR 0b00000001

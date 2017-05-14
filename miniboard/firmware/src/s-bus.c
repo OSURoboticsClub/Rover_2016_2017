@@ -188,6 +188,7 @@ static void sbus_control(void){
 			Data->r_m_drive = right;
 			Data->r_b_drive = right;
 			Data->swerve_state = switch_ch(TURN_SWITCH);
+			Data->arm_mode = 0;
 		} else {
 			/* Mode 2 - Arm */
 			Data->arm_motor_1 = joy_ch(ARM_BASE);
@@ -195,7 +196,16 @@ static void sbus_control(void){
 			Data->arm_motor_3 = joy_ch(ARM_FOREARM);
 			Data->arm_motor_4 = joy_ch(ARM_PITCH);
 			Data->arm_motor_5 = 0;
-			//TODO: control servo speed
+			Data->ee_speed = 8*joy_ch(POT_R);
+			if(switch_ch(MODE_SWITCH) == SW_MIDDLE){
+				/* Arm mode 1 - Grabber */
+				Data->arm_mode = 1;
+				Data->grabber_rotation_speed = 8*joy_ch(JOY_RH);
+				Data->grabber_speed = 8*joy_ch(POT_L);
+			} else {
+				/* Arm mode 2 - Container Sealer */
+				Data->arm_mode = 2;
+			}
 		}
 	}
 }

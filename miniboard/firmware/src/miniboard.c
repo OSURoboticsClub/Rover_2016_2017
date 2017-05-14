@@ -274,17 +274,20 @@ void miniboard_main(void){
 // 	while(1);
 // }
 // 
-// void ax12_test(){
-// 	init();
-// 	while(1){
-// 		ax12_init();
-// 		ax12_enable(AX12_ALL_BROADCAST_ID);
-// 		ax12_set_id(AX12_ALL_BROADCAST_ID, 6);
-// 		ax12_toggle_led(AX12_ALL_BROADCAST_ID, 1);
-// 		ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 207);
-// 		_delay_ms(300);
-// 	}
-// }
+void ax12_test(){
+	init();
+	uint8_t target_addr = 2;
+	while(1){
+		ax12_init();
+		ax12_enable(AX12_ALL_BROADCAST_ID);
+		ax12_set_id(AX12_ALL_BROADCAST_ID, target_addr);
+		ax12_toggle_led(target_addr, 1);
+		ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 9);
+		_delay_ms(300);
+		DDRB |= _BV(PB7);
+ 		PORTB ^= _BV(PB7);
+	}
+}
 
 // void ax12_test2(){
 // 	ax12_init();
@@ -302,8 +305,8 @@ int main(void){
 	/* For testing, remove the following call and insert your code below.
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
-	miniboard_main();
+	//miniboard_main();
 	//soil_sensor_test();
-	//ax12_test2();
+	ax12_test();
 	return(0);
 }

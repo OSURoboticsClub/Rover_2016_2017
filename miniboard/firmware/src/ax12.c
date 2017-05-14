@@ -8,8 +8,6 @@
 #include "uart.h"
 #include <avr/interrupt.h>
 
-#define AX12_UART 1
-
 #define AX12_INSTRUCTION_PING 0x01
 #define AX12_INSTRUCTION_READ 0x02
 #define AX12_INSTRUCTION_WRITE 0x03

@@ -73,7 +73,7 @@ don't change the name of existing command arguments.
 | Pan Tilt Speed         | RW | 0x2B | i8 pan_speed, i8 tilt_speed | 0,0 | Secondary pan/tilt system angles. Both range from -128 to 127. The total angle will be limited to safe values.|
 | AX12 Arm Mode          | RW | 0x2C | u8 arm_mode | 0 | 0 = arm AX12s not in use, 1 = arm grabber, 2 = arm science |
 | End Effector Speed     | RW | 0x2D | i16 ee_speed | 0 | Speed of end effector pitch control. Range -1023 to 1023. |
-| Grabber                | RW | 0x2E | i16 grabber_speed, i16 grabber_rotation | 0,0 | Speed of grabber motors. Range -1023 to 1023. |
+| Grabber                | RW | 0x2E | i16 grabber_speed, i16 grabber_rotation_speed | 0,0 | Speed of grabber motors. Range -1023 to 1023. |
 | Container Sealer       | RW | 0x2F | u16 cflex1_angle, u16 cflex2_angle, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |
 | GPIO Direction         | RW | 0x30 | u8 gpio_dir | 0 | GPIO pin directions. 1 = out, 0 = in. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Out Value         | RW | 0x31 | u8 gpio_out | 0 | GPIO pin directions. 1 = high, 0 = low. If high in input mode, pull-up resistor is enabled. Mapping: MSB X X 5 4 3 2 1 X LSB. |

@@ -136,6 +136,3 @@ void ax12_set_continuous_mode(uint8_t servo_id);
 /* Set AX12 continuous rotation speed.
  * Speed ranges from -1023 to 1023. */
 void ax12_continuous_speed(uint8_t servo_id, int16_t speed);
-
-/* Wait for ax12 or tetrad transmission to complete. */
-void ax12_wait_uart(void);

@@ -47,8 +47,8 @@ void uart_disable(uint8_t uart);
  * will be sent until the interrupt exits.) */
 void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count);
 
-/* Returns 1 if data is being sent through the uart, 0 if not. */
-uint8_t uart_tx_in_progress(uint8_t uart);
+/* Wait until the given UART has finished transmitting. */
+void uart_wait(uint8_t uart);
 
 /* Receive data from the uart. 
  * Up to capacity bytes will be written to the data buffer.

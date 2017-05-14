@@ -108,7 +108,15 @@ void init(void){
 	sbus_init();
 	sei();
 	reset_timeout_timer();
-	_delay_ms(100);
+	ax12_init();
+	ax12_set_angle_mode(PAN_AX12);
+	ax12_set_angle_mode(TILT_AX12);
+	ax12_set_continuous_mode(PITCH_AX12);
+	ax12_set_continuous_mode(WRIST_AX12);
+	ax12_set_continuous_mode(SQUEEZE_AX12);
+	ax12_set_angle_mode(CFLEX1_AX12);
+	ax12_set_angle_mode(CFLEX2_AX12);
+	ax12_set_continuous_mode(CSEAL_AX12);
 }
 
 /* Get a value, then atomically set the target variable. */
@@ -125,7 +133,7 @@ void miniboard_main(void){
 		/* (handled in-module) */
 		
 		/* Saberteeth */
-		ax12_wait_uart();
+		uart_wait(AX12_UART);
 		tetrad_init();
 		if(super_pause){
 			/* Paused */
@@ -169,28 +177,28 @@ void miniboard_main(void){
 		videoswitch_select(Data->selected_camera);
 		
 		/* AX12 */
-		ax12_wait_uart();
+		uart_wait(AX12_UART);
 		ax12_init();
-		//TODO
-		if(0 && super_pause) {
+		if(super_pause) {
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
 			ax12_set_goal_position(PAN_AX12, Data->pan_angle);
 			ax12_set_goal_position(TILT_AX12, Data->tilt_angle);
-			ax12_set_goal_position(5, 400);
-			//ax12_set_goal_position(4, 400);
-			ax12_wait_uart();
-			//_delay_ms(10);
-// 			if(Data->arm_mode != 0){
-// 				
-// 				if(Data->arm_mode == 1){
-// 				
-// 				} else if(Data->arm_mode == 2){
-// 					
-// 				}
-// 			}
+			if(Data->arm_mode != 0){
+				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
+				if(Data->arm_mode == 1){
+					/* Grabber */
+					ax12_continuous_speed(WRIST_AX12, Data->grabber_rotation_speed);
+					ax12_continuous_speed(SQUEEZE_AX12, Data->grabber_speed);
+				} else if(Data->arm_mode == 2){
+					/* Science */
+					ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_angle);
+					ax12_set_goal_position(CFLEX2_AX12, Data->cflex1_angle);
+					ax12_continuous_speed(CSEAL_AX12, Data->clid_speed);
+				}
+			}
 
 		}
 
@@ -278,12 +286,24 @@ void miniboard_main(void){
 // 	}
 // }
 
+// void ax12_test2(){
+// 	ax12_init();
+// 	while(1){
+// 		/* Put an AX12 into continuous rotation mode. */
+// 		ax12_set_continuous_mode(5);
+// 		ax12_continuous_speed(5, 0);
+// 		_delay_ms(100);
+// 		DDRB |= _BV(PB7);
+// 		PORTB ^= _BV(PB7);
+// 	}
+// }
+
 int main(void){
 	/* For testing, remove the following call and insert your code below.
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
 	miniboard_main();
 	//soil_sensor_test();
-	//ax12_test();
+	//ax12_test2();
 	return(0);
 }

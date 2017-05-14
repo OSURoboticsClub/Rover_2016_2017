@@ -9,6 +9,9 @@
  */
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#define F_CPU 16000000UL
+#define __DELAY_BACKWARD_COMPATIBLE__
+#include <util/delay.h>
 #include "uart.h"
 #include <stdlib.h>
 #include <stdbool.h>
@@ -18,6 +21,8 @@ void __attribute__((weak)) (*UART0RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART1RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART2RXHandler)(uint8_t) = NULL;
 void __attribute__((weak)) (*UART3RXHandler)(uint8_t) = NULL;
+
+static uint8_t uart_tx_in_progress(uint8_t uart);
 
 #define UART_TX_BUFFER 100 /* Size of per-UART transmission buffer.
                             * When trying to send a chunk of data larger than this,
@@ -41,7 +46,7 @@ static uint8_t URBuf[4][UART_RX_BUFFER];
 static uint8_t UTBuf[4][UART_TX_BUFFER];
 static circbuf_t UT[4];
 static circbuf_t UR[4];
-
+static uint32_t Baud[4];
 #define CIRC_EOF 0xFFEE
 
 /* Remove a character from the circular buffer and return it.
@@ -104,6 +109,7 @@ void uart_enable(uint8_t uart, uint32_t baud, uint8_t stopbits, uint8_t parity){
 	               | ((parity == 1) ? _BV(UPM01) | _BV(UPM00) : 0)
 	               | ((parity == 2) ? _BV(UPM01) : 0);
 	UCSRnB(uart) = _BV(RXCIE0) | _BV(TXCIE0) | _BV(RXEN0) | _BV(TXEN0);
+	Baud[uart] = baud;
 }
 
 /* Disable a uart. */
@@ -249,8 +255,18 @@ void uart_tx(uint8_t uart, const uint8_t *data, uint16_t count){
 }
 
 /* Returns 1 if data is being sent through the uart, 0 if not. */
-uint8_t uart_tx_in_progress(uint8_t uart){
+static uint8_t uart_tx_in_progress(uint8_t uart){
 	return !(UCSRnA(uart) & _BV(UDRE0)) || (UT[uart].start !=  UT[uart].end);
+}
+
+/* Wait until the given UART has finished transmitting. */
+void uart_wait(uint8_t uart){
+	while(uart_tx_in_progress(uart)){
+		/* Wait */
+	}
+	/* I tried several approaches, but wasn't able to solve this
+	 * problem in an elegant way. */
+	_delay_us((10UL*1000000UL)/Baud[uart]);
 }
 
 /* Receive data from the uart. 

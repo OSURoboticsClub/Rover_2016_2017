@@ -30,7 +30,7 @@
 #define PAN_MAX 800
 #define TILT_MIN 100
 #define TILT_MAX 800
-#define PANTILT_DIV 8
+#define PANTILT_DIV 16
 
 /* AX12 addresses */
 #define PAN_AX12 1
@@ -292,9 +292,9 @@ void miniboard_main(void){
 // 	while(1);
 // }
 // 
-void ax12_test(){
+void ax12_test(void){
 	init();
-	uint8_t target_addr = 2;
+	uint8_t target_addr = 6;
 	while(1){
 		ax12_init();
 		ax12_enable(AX12_ALL_BROADCAST_ID);
@@ -324,7 +324,7 @@ int main(void){
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
 	miniboard_main();
-	//soil_sensor_test();
+	soil_sensor_test();
 	//ax12_test();
 	return(0);
 }

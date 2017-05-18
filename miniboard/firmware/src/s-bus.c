@@ -184,7 +184,7 @@ static void sbus_control(void){
 		} else {
 			Data->pause_state = 0;
 		}
-		Data->pan_speed = joy_ch(PAN);
+		Data->pan_speed = -joy_ch(PAN);
 		Data->tilt_speed = joy_ch(TILT);
 		cam_select = switch_ch(CAMERA_SELECT) == SW_BACK;
 		if(cam_select && !prev_cam_select){

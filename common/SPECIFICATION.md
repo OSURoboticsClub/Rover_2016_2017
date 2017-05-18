@@ -69,7 +69,7 @@ don't change the name of existing command arguments.
 | Accelerometer          | R  | 0x27 | i16 accel_x, i16 accel_y, i16 accel_z | 0,0,0 | IMU accelerometer reading. TODO: define units and axis directions. |
 | Gyroscope              | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
 | Compass Heading        | R  | 0x29 | u8 compass_heading_valid, i16 compass_heading | 0,0 | Magnetic compass heading. TODO: define units and axis directions. |
-| Pan Tilt               | RW | 0x2A | u16 pan_angle, u16 tilt_angle | 590,270 | Pan/tilt system angles. Both range from 0-1023. |
+| Pan Tilt               | RW | 0x2A | u16 pan_angle, u16 tilt_angle | 550,270 | Pan/tilt system angles. Both range from 0-1023. |
 | Pan Tilt Speed         | RW | 0x2B | i8 pan_speed, i8 tilt_speed | 0,0 | Secondary pan/tilt system angles. Both range from -128 to 127. The total angle will be limited to safe values.|
 | AX12 Arm Mode          | RW | 0x2C | u8 arm_mode | 0 | 0 = arm AX12s not in use, 1 = arm grabber, 2 = arm science |
 | End Effector Speed     | RW | 0x2D | i16 ee_speed | 0 | Speed of end effector pitch control. Range -1023 to 1023. |

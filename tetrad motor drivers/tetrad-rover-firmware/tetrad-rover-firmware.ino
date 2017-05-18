@@ -86,19 +86,24 @@ void loop() {
 
 void set_motor_output(uint8_t dir, uint8_t m1, uint8_t m2){	
 	if(m1 == 0){
+		/* Brake to ground */
+		digitalWrite(inApin[0], HIGH);
+		digitalWrite(inBpin[0], HIGH);
 		digitalWrite(G_PIN, HIGH);
 	} else {
 		digitalWrite(G_PIN, LOW);
+		digitalWrite(inApin[0], !!(dir & _BV(1)));
+		digitalWrite(inBpin[0],  !(dir & _BV(1)));
 	}
 	if(m2 == 0){
 		digitalWrite(R_PIN, HIGH);
+		digitalWrite(inApin[1], HIGH);
+		digitalWrite(inBpin[1], HIGH);
 	} else {
 		digitalWrite(R_PIN, LOW);
+		digitalWrite(inApin[1], !!(dir & _BV(2)));
+		digitalWrite(inBpin[1],  !(dir & _BV(2)));
 	}
-	
-	digitalWrite(inApin[0], !!(dir & (1 << 1)));
 	analogWrite(pwmpin[0], m1 * 2);
-	
-	digitalWrite(inApin[1], !!(dir & (1 << 2)));
 	analogWrite(pwmpin[1], m2 * 2);
 }

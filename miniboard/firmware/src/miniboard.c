@@ -109,7 +109,7 @@ void init(void){
 	sbus_init();
 	sei();
 	reset_timeout_timer();
-	ax12_init();
+	ax12_init(AX12_BAUD);
 	ax12_set_angle_mode(PAN_AX12);
 	ax12_set_angle_mode(TILT_AX12);
 	ax12_set_continuous_mode(PITCH_AX12);
@@ -179,7 +179,7 @@ void miniboard_main(void){
 		
 		/* AX12 */
 		uart_wait(AX12_UART);
-		ax12_init();
+		ax12_init(AX12_BAUD);
 		if(super_pause) {
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
@@ -294,16 +294,36 @@ void miniboard_main(void){
 // 
 void ax12_test(void){
 	init();
-	uint8_t target_addr = 6;
+	uint8_t target_addr = 4;
 	while(1){
-		ax12_init();
+		ax12_init(1000000);
 		ax12_enable(AX12_ALL_BROADCAST_ID);
+		ax12_toggle_led(AX12_ALL_BROADCAST_ID, 1);
 		ax12_set_id(AX12_ALL_BROADCAST_ID, target_addr);
-		ax12_toggle_led(target_addr, 1);
 		ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 9);
 		_delay_ms(300);
 		DDRB |= _BV(PB7);
  		PORTB ^= _BV(PB7);
+	}
+}
+
+void ax12_reset_addr(void){
+	uint8_t target_addr = 4;
+	init();
+	while(1){
+		for(uint16_t i=0;i<255;i++){
+			uint32_t speed = 2000000UL / (i + 1);
+			for(uint8_t i=0;i<3;i++){
+				ax12_init(speed);
+				ax12_toggle_led(AX12_ALL_BROADCAST_ID, 1);
+				ax12_set_id(AX12_ALL_BROADCAST_ID, target_addr);
+				ax12_set_baud_rate(AX12_ALL_BROADCAST_ID, 9);
+				uart_wait(AX12_UART);
+				_delay_ms(4);
+				DDRB |= _BV(PB7);
+				PORTB ^= _BV(PB7);
+			}
+		}
 	}
 }
 
@@ -324,7 +344,8 @@ int main(void){
 	 * You might need to copy stuff from init(). Don't commit your modified
 	 * miniboard.c to the main branch! */
 	miniboard_main();
-	soil_sensor_test();
+	//soil_sensor_test();
 	//ax12_test();
+	//ax12_reset_addr();
 	return(0);
 }

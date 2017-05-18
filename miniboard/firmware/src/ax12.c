@@ -60,8 +60,8 @@ static void ax12_write_packet(uint8_t servo_id, uint8_t *data, uint8_t length) {
 /* Initialize the UART for the AX12s (and connect the AX12s with the switch).
  * Since the UART is shared between the AX12 and saberteeth, this function will
  * be called after using the saberteeth and before using the AX12s. */
-void ax12_init(void) {
-	uart_enable(AX12_UART, AX12_BAUD, 1, 0);
+void ax12_init(uint32_t baud) {
+	uart_enable(AX12_UART, baud, 1, 0);
 	ax12_switch_tx();
 	ax12_status_return_level(AX12_ALL_BROADCAST_ID, NO_RESPONSE);
 }

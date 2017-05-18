@@ -43,7 +43,7 @@ enum AX12_RETURN_LEVEL {
 /* Initialize the UART for the AX12s (and connect the AX12s with the switch).
  * Since the UART is shared between the AX12 and saberteeth, this function will
  * be called after using the saberteeth and before using the AX12s. */
-void ax12_init(void);
+void ax12_init(uint32_t baud);
 
 /* Wait until no more data is being sent from the AX12 UART, then disable it. */
 void ax12_release(void);

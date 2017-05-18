@@ -26,10 +26,10 @@
 #include <string.h>
 
 /* AX12 limits */
-#define PAN_MIN 100
-#define PAN_MAX 800
+#define PAN_MIN 50
+#define PAN_MAX 1000
 #define TILT_MIN 100
-#define TILT_MAX 800
+#define TILT_MAX 450
 #define PANTILT_DIV 16
 
 /* AX12 addresses */

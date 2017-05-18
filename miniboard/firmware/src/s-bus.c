@@ -80,6 +80,8 @@ void sbus_release(void) {
 #define ARM_GRABBER SIDE_L
 #define ARM_EE SIDE_R
 #define CAMERA_SELECT SH
+#define PAN POT_R
+#define TILT POT_L
 
 /* Convert a switch channel value to a position. */
 typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
@@ -182,6 +184,8 @@ static void sbus_control(void){
 		} else {
 			Data->pause_state = 0;
 		}
+		Data->pan_speed = joy_ch(PAN);
+		Data->tilt_speed = joy_ch(TILT);
 		cam_select = switch_ch(CAMERA_SELECT) == SW_BACK;
 		if(cam_select && !prev_cam_select){
 			Data->selected_camera++;
@@ -208,11 +212,11 @@ static void sbus_control(void){
 			Data->arm_motor_2 = -joy_ch(ARM_BICEP);
 			Data->arm_motor_3 = joy_ch(ARM_FOREARM);
 			Data->arm_motor_5 = 0;
-			Data->ee_speed = 8*joy_ch(ARM_EE);
+			Data->ee_speed = -8*joy_ch(ARM_EE);
 			if(switch_ch(MODE_SWITCH) == SW_MIDDLE){
 				/* Arm mode 1 - Grabber */
 				Data->arm_mode = 1;
-				Data->grabber_rotation_speed = -8*joy_ch(ARM_PITCH);
+				Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
 				Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 			} else {
 				/* Arm mode 2 - Container Sealer */

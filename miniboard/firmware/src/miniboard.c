@@ -123,6 +123,16 @@ void init(void){
 /* Get a value, then atomically set the target variable. */
 #define atomic_set(target, value) do {typeof(target) __valstore = value; ATOMIC_BLOCK(ATOMIC_RESTORESTATE){target = __valstore;} } while(0)
 
+/* When inverting a int8_t, -128 would become 128, which is bad. This
+ * function clamps an input to [127, 127]. */
+uint8_t clamp127(int8_t value){
+	if(value == -128){
+		return -127;
+	} else {
+		return value;
+	}
+}
+	
 void miniboard_main(void){
 	init();
 	
@@ -146,9 +156,9 @@ void miniboard_main(void){
 			tetrad_set_speed(5, 0, 0);
 		} else {
 			/* Not Paused */
-			tetrad_set_speed(0, Data->l_f_drive, Data->r_m_drive);
-			tetrad_set_speed(1, Data->l_m_drive, Data->r_f_drive);
-			tetrad_set_speed(2, Data->l_b_drive, Data->r_b_drive);
+			tetrad_set_speed(0, -clamp127(Data->l_f_drive), Data->r_m_drive);
+			tetrad_set_speed(1, -clamp127(Data->l_m_drive), Data->r_f_drive);
+			tetrad_set_speed(2, -clamp127(Data->l_b_drive), Data->r_b_drive);
 			int8_t swerve_speed;
 			if(1 == Data->swerve_state){
 				/* Staight */
@@ -160,8 +170,8 @@ void miniboard_main(void){
 				/* No motion */
 				swerve_speed = 0;
 			}
-			tetrad_set_speed(3, swerve_speed, Data->arm_motor_1);
-			tetrad_set_speed(4, Data->arm_motor_2, Data->arm_motor_3);
+			tetrad_set_speed(3, swerve_speed, -clamp127(Data->arm_motor_1));
+			tetrad_set_speed(4, Data->arm_motor_2, -clamp127(Data->arm_motor_3));
 			tetrad_set_speed(5, Data->arm_motor_4, Data->arm_motor_5);
 		}
 		

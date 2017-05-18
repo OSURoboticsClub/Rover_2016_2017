@@ -77,6 +77,8 @@ void sbus_release(void) {
 #define ARM_BICEP JOY_LV
 #define ARM_FOREARM JOY_RV
 #define ARM_PITCH JOY_RH
+#define ARM_GRABBER POT_L
+#define ARM_EE POT_R
 
 /* Convert a switch channel value to a position. */
 typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
@@ -92,7 +94,7 @@ switch_t switch_ch(uint8_t ch){
 }
 
 /* Convert a joystick/analog channel value to a motor
- * power value */
+ * power value from -127 to 127. */
 int8_t joy_ch(uint8_t ch){
 	int32_t servo_value = sbus_channels[ch-1];
 	const int16_t center = 1030;
@@ -194,14 +196,13 @@ static void sbus_control(void){
 			Data->arm_motor_1 = joy_ch(ARM_BASE);
 			Data->arm_motor_2 = joy_ch(ARM_BICEP);
 			Data->arm_motor_3 = joy_ch(ARM_FOREARM);
-			Data->arm_motor_4 = joy_ch(ARM_PITCH);
 			Data->arm_motor_5 = 0;
-			Data->ee_speed = 8*joy_ch(POT_R);
+			Data->ee_speed = 8*joy_ch(ARM_EE);
 			if(switch_ch(MODE_SWITCH) == SW_MIDDLE){
 				/* Arm mode 1 - Grabber */
 				Data->arm_mode = 1;
-				Data->grabber_rotation_speed = 8*joy_ch(JOY_RH);
-				Data->grabber_speed = 8*joy_ch(POT_L);
+				Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+				Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 			} else {
 				/* Arm mode 2 - Container Sealer */
 				Data->arm_mode = 2;

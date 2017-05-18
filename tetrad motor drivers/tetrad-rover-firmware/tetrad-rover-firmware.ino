@@ -23,7 +23,7 @@ int enpin[2] = {24, 33}; // EN: Status of switches output (Analog pin)
 //---status
 const int statpin = 13;
 
-byte address = 0 + 128; //address of this motor controller
+byte address = 4 + 128; //address of this motor controller
 
 int len = 4;
 

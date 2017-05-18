@@ -162,10 +162,10 @@ void miniboard_main(void){
 			int8_t swerve_speed;
 			if(1 == Data->swerve_state){
 				/* Staight */
-				swerve_speed = 127;
+				swerve_speed = -127;
 			} else if(2 == Data->swerve_state){
 				/* Turn */
-				swerve_speed = -127;
+				swerve_speed = 127;
 			} else {
 				/* No motion */
 				swerve_speed = 0;

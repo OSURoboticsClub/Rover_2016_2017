@@ -77,8 +77,9 @@ void sbus_release(void) {
 #define ARM_BICEP JOY_LV
 #define ARM_FOREARM JOY_RV
 #define ARM_PITCH JOY_RH
-#define ARM_GRABBER POT_L
-#define ARM_EE POT_R
+#define ARM_GRABBER SIDE_L
+#define ARM_EE SIDE_R
+#define CAMERA_SELECT SH
 
 /* Convert a switch channel value to a position. */
 typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
@@ -126,6 +127,8 @@ static void sbus_control(void){
 	static uint8_t drop_packet;
 	static uint8_t prev_active;
 	static uint8_t prev_pause;
+	static uint8_t prev_cam_select;
+	uint8_t cam_select;
 	
 	if(drop_packet == 2){
 		drop_packet = 0;
@@ -179,6 +182,14 @@ static void sbus_control(void){
 		} else {
 			Data->pause_state = 0;
 		}
+		cam_select = switch_ch(CAMERA_SELECT) == SW_BACK;
+		if(cam_select && !prev_cam_select){
+			Data->selected_camera++;
+			if(Data->selected_camera > 6){
+				Data->selected_camera = 1;
+			}
+		}
+		prev_cam_select = cam_select;
 		if(switch_ch(MODE_SWITCH) == SW_FORWARD){
 			/* Mode 1 - Drive */
 			int8_t left = joy_ch(JOY_LV);
@@ -194,14 +205,14 @@ static void sbus_control(void){
 		} else {
 			/* Mode 2 - Arm */
 			Data->arm_motor_1 = joy_ch(ARM_BASE);
-			Data->arm_motor_2 = joy_ch(ARM_BICEP);
+			Data->arm_motor_2 = -joy_ch(ARM_BICEP);
 			Data->arm_motor_3 = joy_ch(ARM_FOREARM);
 			Data->arm_motor_5 = 0;
 			Data->ee_speed = 8*joy_ch(ARM_EE);
 			if(switch_ch(MODE_SWITCH) == SW_MIDDLE){
 				/* Arm mode 1 - Grabber */
 				Data->arm_mode = 1;
-				Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+				Data->grabber_rotation_speed = -8*joy_ch(ARM_PITCH);
 				Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 			} else {
 				/* Arm mode 2 - Container Sealer */

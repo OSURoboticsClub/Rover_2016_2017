@@ -82,6 +82,7 @@ void sbus_release(void) {
 #define CAMERA_SELECT SH
 #define PAN POT_R
 #define TILT POT_L
+#define ARM_DRILL SIDE_L
 
 /* Convert a switch channel value to a position. */
 typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
@@ -221,6 +222,7 @@ static void sbus_control(void){
 			} else {
 				/* Arm mode 2 - Container Sealer */
 				Data->arm_mode = 2;
+				Data->arm_motor_4 = joy_ch(ARM_DRILL);
 			}
 		}
 	}

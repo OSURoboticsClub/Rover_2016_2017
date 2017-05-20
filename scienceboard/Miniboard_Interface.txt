@@ -1,0 +1,39 @@
+Communication over SPI interface, most significant bit first
+
+Packet format:
+	| Start Byte (0xF0) | Payload Length (1 - 103) |
+	| Payload (Command + Args or Response) | Payload CRC (2 bytes) | End Byte (0x0F) |
+
+Command + Args Payload:
+
+	| Command Byte | Probe Address (3 bytes) | Command-Specific Args (0 - 11 bytes) |
+
++-------------------+--------------+-----------------------------------------------+
+| Command Name      | Command Byte | Command-Specific Args                         |
++-------------------+--------------+-----------------------------------------------+
+| CMD_GET_SERIAL    | 0x00         | N/A                                           |
+| CMD_GET_VERSION   | 0x01         | N/A                                           |
+| CMD_GET_ADDRESS   | 0x02         | N/A                                           |
+| CMD_SET_ADDRESS   | 0x03         | uint8_t serial_digits[8], uint8_t new_addr[3] |
+| CMD_GET_SOIL_TYPE | 0x04         | N/A                                           |
+| CMD_SET_SOIL_TYPE | 0x05         | uint8_t soil_type                             |
+| CMD_TAKE_READING  | 0x06         | N/A                                           |
+| CMD_GET_READING   | 0x07         | uint8_t reading_set                           |
++-------------------+--------------+-----------------------------------------------+
+
+Response Payload:
+
+	| Probe Address (3 bytes) | Command-Specific Response (0 - 100 bytes) |
+
++-------------------+-------------------------------------+
+| Command Name      | Command-Specific Response           |
++-------------------+-------------------------------------+
+| CMD_GET_SERIAL    | uint8_t serial_str[8]              |
+| CMD_GET_VERSION   | uint8_t version_str[4]              |
+| CMD_GET_ADDRESS   | N/A                                 |
+| CMD_SET_ADDRESS   | N/A                                 |
+| CMD_GET_SOIL_TYPE | uint8_t soil_type                   |
+| CMD_SET_SOIL_TYPE | N/A                                 |
+| CMD_TAKE_READING  | N/A                                 |
+| CMD_GET_READING   | uint8_t *readings (variable length) |
++-------------------+-------------------------------------+

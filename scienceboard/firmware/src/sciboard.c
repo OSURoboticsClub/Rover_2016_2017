@@ -9,18 +9,21 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 #include <util/atomic.h>
+#include "soilprobe.h"
 
 
 void sciboard_init(void) {
-	//...
+	soilprobe_init();
+	comm_init();
+
+	/* Enable interrupts */
+	sei();
 }
 
 
 void sciboard_main(void) {
 	sciboard_init();
-	while (1) {
-		//...
-	}
+	while (1);  /* Wait until SPI interrupt */
 }
 
 

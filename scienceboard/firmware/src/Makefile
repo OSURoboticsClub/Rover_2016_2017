@@ -18,7 +18,7 @@ OUTFILE:=../build/scienceboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=soilprobe.o uart.o
+OBJFILES:=soilprobe.o comm.o crc.o
 # Main file
 FILE:=sciboard.c
 

@@ -5,9 +5,9 @@
  * Author(s): Aaron Cohen
  */
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
 #include <stdint.h>
+#include <string.h>
+#include <avr/interrupt.h>
 #include "soilprobe.h"
 #include "crc.h"
 #include "comm.h"
@@ -23,7 +23,7 @@ uint8_t current;
 void comm_init(void)
 {
 	/* Enable SPI interrupt, SPI interface, and set Slave mode */
-	SPCR0 = _BV(SPIE0) | _BV(SPE0);
+	SPCR = _BV(SPIE) | _BV(SPE);
 
 	/* Set MISO output */
 	DDRB |= _BV(PB4);
@@ -42,12 +42,12 @@ static void _comm_parse_packet(void)
 	uint8_t resp_buf[108];
 
 	/* Temporarily disable SPI interrupt */
-	SPCR0 &= ~_BV(SPIE0);
+	SPCR &= ~_BV(SPIE);
 
 	/* Parse packet */
 	cmd.cmd = cmd_buf[2];
-	memcpy(cmd.addr, cmd_buf[3], 3);
-	memcpy(cmd.arg, cmd_buf[6], cmd_buf[1] - 4);
+	memcpy(cmd.addr, &(cmd_buf[3]), 3);
+	memcpy(cmd.arg, &(cmd_buf[6]), cmd_buf[1] - 4);
 	cmd.argsize = cmd_buf[1] - 4;
 
 	/* Send command to soil probe */
@@ -56,8 +56,8 @@ static void _comm_parse_packet(void)
 	/* Parse response */
 	resp_buf[0] = 0xF0;
 	resp_buf[1] = resp.datasize + 3;
-	memcpy(resp_buf[2], resp.addr, 3);
-	memcpy(resp_buf[5], resp.data, resp.datasize);
+	memcpy(&(resp_buf[2]), resp.addr, 3);
+	memcpy(&(resp_buf[5]), resp.data, resp.datasize);
 
 	resp_crc = calc_crc(&(resp_buf[2]), resp.datasize + 3);
 	resp_buf[5 + resp.datasize] = (resp_crc >> 8) & 0xFF;
@@ -68,11 +68,11 @@ static void _comm_parse_packet(void)
 	for (uint8_t i = 0; i < resp.datasize + 8; i++)
 	{
 		SPDR = resp_buf[i];
-		while (!(SPSR0 & _BV(SPIF)));
+		while (!(SPSR & _BV(SPIF)));
 	}
 
 	/* Re-enable SPI interrupt */
-	SPCR0 |= _BV(SPIE0);
+	SPCR |= _BV(SPIE);
 }
 
 
@@ -85,9 +85,10 @@ ISR(SPI_STC_vect)
 	if (current == 16)
 	{
 		uint8_t payload_length = cmd_buf[1];
+		uint16_t crc_ref = (cmd_buf[2 + payload_length] << 8) | cmd_buf[3 + payload_length];
 
 		if (cmd_buf[0] == CMD_START_BYTE
-		 && check_crc(&(cmd_buf[2]), payload_length, &(cmd_buf[2 + payload_length]))
+		 && calc_crc(&(cmd_buf[2]), payload_length) == crc_ref
 		 && cmd_buf[2 + payload_length + 2] == CMD_END_BYTE)
 		{
 			_comm_parse_packet();

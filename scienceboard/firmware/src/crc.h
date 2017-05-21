@@ -8,6 +8,5 @@
 #include <stdint.h>
 
 
+/* Calculate a the crc of a payload */
 uint16_t calc_crc(uint8_t *buf, uint8_t count);
-
-uint8_t check_crc(uint8_t *buf, uint8_t count, uint8_t *ref);

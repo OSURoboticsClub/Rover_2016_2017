@@ -5,8 +5,6 @@
  * Author(s): Aaron Cohen
  */
 
-#include <stdint.h>
-
 
 /* Initialize the communication interface */
 void comm_init(void);

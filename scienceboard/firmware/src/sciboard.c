@@ -6,9 +6,7 @@
  */
 
 #include <avr/interrupt.h>
-#define F_CPU 16000000UL
-#include <util/delay.h>
-#include <util/atomic.h>
+#include "comm.h"
 #include "soilprobe.h"
 
 

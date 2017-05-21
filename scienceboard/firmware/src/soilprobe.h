@@ -6,10 +6,10 @@
  */
 
 #include <stdint.h>
-#include <avr/io.h>
 
 
-enum soilprobe_cmd_name {
+enum soilprobe_cmd_name
+{
 	CMD_GET_SERIAL,
 	CMD_GET_VERSION,
 	CMD_GET_ADDRESS,
@@ -21,7 +21,8 @@ enum soilprobe_cmd_name {
 };
 
 
-struct soilprobe_cmd {
+struct soilprobe_cmd
+{
 	enum soilprobe_cmd_name cmd;  /* Command name */
 	uint8_t addr[3];              /* Probe address */
 	uint8_t arg[11];              /* Command argument for "set" commands */
@@ -30,7 +31,8 @@ struct soilprobe_cmd {
 };
 
 
-struct soilprobe_resp {
+struct soilprobe_resp
+{
 	uint8_t addr[3];    /* Probe address */
 	uint8_t data[100];  /* The body of the response (minus CRLF) */
 
@@ -42,9 +44,5 @@ struct soilprobe_resp {
 void soilprobe_init(void);
 
 
-/* Sends a soil probe command and parses the response
- *
- * cmd (in) - Pointer to the soilprobe_cmd struct representing the command
- * resp (out) - Pointer to the soilprobe_resp struct to fill with the
- *              response */
+/* Sends a soil probe command and parses the response */
 void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp);

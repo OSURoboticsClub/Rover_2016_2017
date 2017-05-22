@@ -76,6 +76,6 @@ don't change the name of existing command arguments.
 | Grabber                | RW | 0x2E | i16 grabber_speed, i16 grabber_rotation_speed | 0,0 | Speed of grabber motors. Range -1023 to 1023. |
 | Container Sealer       | RW | 0x2F | u16 cflex1_angle, u16 cflex2_angle, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |
 | GPIO Read State        | R  | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |
-| Sample Camera Action   | RW | 0x35 | u8 cam_action | 0 | Sample cam actions. 0 = none, 1 = shutter, 2 = focus, 3 = zoom in, 4 = zoom out |
+| Sample Camera Action   | RW | 0x35 | u8 cam_action | 0 | Sample cam actions. 0 = none, 4 = shutter, 3 = focus, 1 = zoom in, 2 = zoom out |
 | Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
 | Build Info             | R  | 0x71 | u8 build_info_data_length, * build_info_data | - | Read out string describing when/how the firmware was built. |

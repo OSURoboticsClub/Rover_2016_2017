@@ -66,3 +66,48 @@ void videoswitch_select(uint8_t input){
 			break;
 	}
 }
+
+/* Press a button on the sample camera to perform an action.
+ * Action values:
+ *   0 - no button pressed
+ *   1 - Shutter
+ *   2 - Focus
+ *   3 - Zoom in
+ *   4 - Zoom out */
+void sample_cam_button(uint8_t action){
+	/* Pin mapping:
+	 *   PK5 B
+	 *   PK7 A
+	 *   PK6 1Gn */
+	DDRK |= _BV(PK5) | _BV(PK6) | _BV(PK7);
+	switch(action){
+		case 1:
+			PORTK|= _BV(PK6);
+			PORTK &= ~_BV(PK5);
+			PORTK &= ~_BV(PK7);
+			PORTK &= ~_BV(PK6);
+			break;
+		case 2:
+			PORTK|= _BV(PK6);
+			PORTK &= ~_BV(PK5);
+			PORTK |= _BV(PK7);
+			PORTK &= ~_BV(PK6);
+			break;
+		case 3:
+			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK5);
+			PORTK &= ~_BV(PK7);
+			PORTK &= ~_BV(PK6);
+			break;
+		case 4:
+			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK5);
+			PORTK |= _BV(PK7);
+			PORTK &= ~_BV(PK6);
+			break;
+			
+		default:
+			PORTK |= _BV(PK6);
+			break;
+	}
+}

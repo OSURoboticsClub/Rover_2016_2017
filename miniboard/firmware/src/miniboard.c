@@ -241,9 +241,10 @@ void miniboard_main(void){
 		imu_gyro(&Data->gyro_x, &Data->gyro_y, &Data->gyro_z);
 		
 		/* GPIO */
-		gpio_set_state(Data->gpio_dir);
-		gpio_set_out(Data->gpio_out);
 		Data->gpio_state = gpio_get_state();
+		
+		/* Sample Camera Actions */
+		sample_cam_button(Data->cam_action);
 		
 		/* Blink LED. */
 		DDRB |= _BV(PB7);

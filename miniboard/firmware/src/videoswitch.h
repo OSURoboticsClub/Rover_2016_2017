@@ -16,3 +16,12 @@ extern bool CallsignSet;
  * ...
  * 6 = Input 6 */
 void videoswitch_select(uint8_t input);
+
+/* Press a button on the sample camera to perform an action.
+ * Action values:
+ *   0 - no button pressed
+ *   1 - Shutter
+ *   2 - Focus
+ *   3 - Zoom in
+ *   4 - Zoom out */
+void sample_cam_button(uint8_t action);

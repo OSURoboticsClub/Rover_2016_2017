@@ -30,7 +30,7 @@ void gpio_set_state(uint8_t out){
 			(_BV(PK6) * !!(out & _BV(3))) |
 			(_BV(PK3) * !!(out & _BV(5)));
 	DDRF |= (_BV(PF6) * !!(out & _BV(4)));
-	DDRF &= ~(_BV(PK3) * !!(out & _BV(5)));
+	DDRF &= ~(_BV(PF6) * !!(out & _BV(5)));
 }
 
 /* Set GPIO high/low state.
@@ -47,5 +47,5 @@ void gpio_set_out(uint8_t val){
 		 	 (_BV(PK6) * !!(val & _BV(3))) |
 		  	 (_BV(PK3) * !!(val & _BV(5)));
 	PORTF |= (_BV(PF6) * !!(val & _BV(4)));
-	PORTF &= ~(_BV(PK3) * !!(val & _BV(5)));
+	PORTF &= ~(_BV(PF6) * !!(val & _BV(5)));
 }

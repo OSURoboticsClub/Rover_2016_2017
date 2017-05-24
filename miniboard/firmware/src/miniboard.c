@@ -30,18 +30,42 @@
 
 /* Triggers for data read commands. */
 void camera_command_trigger(void){
-	
+
 }
 
 void debugging_info_trigger(void){
-	
+
 }
 
 void callsign_trigger(void){
-	
+
 }
 
 void build_info_trigger(void){
+
+}
+
+void probe_reading_set_0_trigger(void){
+
+}
+
+void probe_reading_set_1_trigger(void){
+
+}
+
+void probe_reading_set_2_trigger(void){
+
+}
+
+void probe_reading_set_3_trigger(void){
+
+}
+
+void probe_reading_set_4_trigger(void){
+
+}
+
+void probe_reading_set_5_trigger(void){
 
 }
 
@@ -81,7 +105,7 @@ void miniboard_main(void){
 	while(1){
 		/* GPS */
 		/* (handled in-module) */
-		
+
 		/* Saberteeth */
 		while(uart_tx_in_progress(AX12_UART)){
 			/* Wait for AX12 stuff to finish. */
@@ -125,7 +149,7 @@ void miniboard_main(void){
 			sabertooth_set_speed(5, 0, Data->arm_motor_4);
 			sabertooth_set_speed(5, 1, Data->arm_motor_5);
 		}
-		
+
 		/* ADC (Pot channels and battery.) */
 		atomic_set(Data->battery_voltage, battery_mV());
 		atomic_set(Data->pot_1, pot_channel(1));
@@ -133,11 +157,11 @@ void miniboard_main(void){
 		atomic_set(Data->pot_3, pot_channel(3));
 		atomic_set(Data->pot_4, pot_channel(4));
 		atomic_set(Data->pot_5, pot_channel(5));
-		
+
 		/* Video Switch */
 		//TODO: add callsign restriction
 		videoswitch_select(Data->selected_camera);
-		
+
 		/* AX12 */
 		while(uart_tx_in_progress(AX12_UART)){
 			/* Wait for sabertooth stuff to finish. */
@@ -170,19 +194,38 @@ void miniboard_main(void){
 			Data->sbus_16 = sbus_channels[15];
 			Data->sbus_failsafe = sbus_failsafe;
 		}
-		
+
 		/* Compass */
 		compass_retrieve();
-		
+
 		/* IMU */
- 		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);
+		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);
 		imu_gyro(&Data->gyro_x, &Data->gyro_y, &Data->gyro_z);
-		
+
 		/* GPIO */
 		gpio_set_state(Data->gpio_dir);
 		gpio_set_out(Data->gpio_out);
 		Data->gpio_state = gpio_get_state();
-		
+
+		/* Science Board */
+		if (Data->probe_addr_2 != probe_addr[2]
+				|| Data->probe_addr_1 != probe_addr[1]
+				|| Data->probe_addr_0 != probe_addr[0])
+		{
+			uint8_t new_probe_addr[3];
+			new_probe_addr[0] = Data->probe_addr_0;
+			new_probe_addr[1] = Data->probe_addr_1;
+			new_probe_addr[2] = Data->probe_addr_2;
+			scienceboard_probe_write_address(new_probe_addr);
+		}
+
+		if (Data->probe_soil_type != probe_soil_type)
+		{
+			scienceboard_probe_write_soil_type(Data->probe_soil_type);
+		}
+
+		//TODO: Update probe readings
+
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);
 		//TODO: Take this out?

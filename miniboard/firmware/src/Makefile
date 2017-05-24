@@ -18,7 +18,7 @@ OUTFILE:=../build/miniboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=commgen.o comm.o imu.o callsign.o sabertooth.o adc.o  compass.o gpio.o gps.o videoswitch.o s-bus.o ax12.o uart.o
+OBJFILES:=commgen.o comm.o imu.o callsign.o sabertooth.o adc.o scienceboard.o  compass.o gpio.o gps.o videoswitch.o s-bus.o ax12.o uart.o
 # Main file
 FILE:=miniboard.c
 

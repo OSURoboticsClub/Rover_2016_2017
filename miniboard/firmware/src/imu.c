@@ -75,9 +75,6 @@ static void spi_init(void){
 	DDRB |= _BV(PB2); /* MOSI */
 	DDRB |= _BV(PB0); /* SS */
 	PORTB |= _BV(PB0); /* MOSI */
-	spi_cs_mag(1);
-	spi_cs_accel(1);
-	spi_cs_gyro(1);
 	SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);
 }
 
@@ -107,7 +104,15 @@ static void write_reg_byte(void (*csfunc)(uint8_t), uint8_t reg, uint8_t data){
 
 /* Setup the IMU. */
 void imu_init(void){
-	spi_init();
+	if (!(SPCR & _BV(SPE)))
+	{
+		spi_init();
+	}
+
+	spi_cs_mag(1);
+	spi_cs_accel(1);
+	spi_cs_gyro(1);
+
 	/* Accelerometer config */
 	write_reg_byte(spi_cs_accel, 0x0F, 5); /* 4G range */
 	write_reg_byte(spi_cs_accel, 0x10, 9); /* 15Hz bandwidth */

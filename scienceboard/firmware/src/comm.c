@@ -9,13 +9,11 @@
 #include <string.h>
 #include <avr/interrupt.h>
 #include "soilprobe.h"
-#include "crc.h"
 #include "comm.h"
 
-#define CMD_START_BYTE 0xF0
-#define CMD_END_BYTE 0x0F
+#define CMD_START_BYTE 0x01
 
-uint8_t cmd_buf[16];
+uint8_t cmd_buf[15];
 uint8_t current;
 
 
@@ -29,6 +27,7 @@ void comm_init(void)
 	DDRB |= _BV(PB4);
 
 	current = 0;
+	SPDR = 0;
 }
 
 
@@ -38,8 +37,7 @@ static void _comm_parse_packet(void)
 	struct soilprobe_cmd cmd;
 	struct soilprobe_resp resp;
 
-	uint16_t resp_crc;
-	uint8_t resp_buf[108];
+	uint8_t resp_buf[105];
 
 	/* Temporarily disable SPI interrupt */
 	SPCR &= ~_BV(SPIE);
@@ -59,13 +57,8 @@ static void _comm_parse_packet(void)
 	memcpy(&(resp_buf[2]), resp.addr, 3);
 	memcpy(&(resp_buf[5]), resp.data, resp.datasize);
 
-	resp_crc = calc_crc(&(resp_buf[2]), resp.datasize + 3);
-	resp_buf[5 + resp.datasize] = (resp_crc >> 8) & 0xFF;
-	resp_buf[6 + resp.datasize] = resp_crc & 0xFF;
-	resp_buf[7 + resp.datasize] = 0x0F;
-
 	/* Send response packet */
-	for (uint8_t i = 0; i < resp.datasize + 8; i++)
+	for (uint8_t i = 0; i < resp.datasize + 5; i++)
 	{
 		SPDR = resp_buf[i];
 		while (!(SPSR & _BV(SPIF)));
@@ -81,19 +74,18 @@ ISR(SPI_STC_vect)
 {
 	cmd_buf[current] = SPDR;
 	current += 1;
+	SPDR = 0;
 
-	if (current == 16)
+	/* If the packet is valid */
+	if (current >= 2 && cmd_buf[0] == CMD_START_BYTE && current == cmd_buf[1] + 2)
 	{
-		uint8_t payload_length = cmd_buf[1];
-		uint16_t crc_ref = (cmd_buf[2 + payload_length] << 8) | cmd_buf[3 + payload_length];
+		_comm_parse_packet();
+		current = 0;
+	}
 
-		if (cmd_buf[0] == CMD_START_BYTE
-		 && calc_crc(&(cmd_buf[2]), payload_length) == crc_ref
-		 && cmd_buf[2 + payload_length + 2] == CMD_END_BYTE)
-		{
-			_comm_parse_packet();
-		}
-
+	/* If the packet is longer than the max length, it is invalid */
+	if (current > 17)
+	{
 		current = 0;
 	}
 }

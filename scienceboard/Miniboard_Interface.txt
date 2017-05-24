@@ -1,8 +1,7 @@
 Communication over SPI interface, most significant bit first
 
 Packet format:
-	| Start Byte (0xF0) | Payload Length (1 - 103) |
-	| Payload (Command + Args or Response) | Payload CRC (2 bytes) | End Byte (0x0F) |
+	| Start Byte (0x01) | Payload Length (1 - 103) | Payload (Command + Args or Response) |
 
 Command + Args Payload:
 
@@ -28,7 +27,7 @@ Response Payload:
 +-------------------+-------------------------------------+
 | Command Name      | Command-Specific Response           |
 +-------------------+-------------------------------------+
-| CMD_GET_SERIAL    | uint8_t serial_str[8]              |
+| CMD_GET_SERIAL    | uint8_t serial_str[8]               |
 | CMD_GET_VERSION   | uint8_t version_str[4]              |
 | CMD_GET_ADDRESS   | N/A                                 |
 | CMD_SET_ADDRESS   | N/A                                 |

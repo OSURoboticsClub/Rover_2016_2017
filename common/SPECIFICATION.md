@@ -47,6 +47,7 @@ Camera video data is transmitted through a separate interface. Camera commands a
 Note: when adding commands to the table, each argument's name must be unique among all commands. Since they are used in the rover firmware,
 don't change the name of existing command arguments.
 
+
 ## Packet Type Specification
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
@@ -72,5 +73,24 @@ don't change the name of existing command arguments.
 | GPIO Direction         | RW | 0x30 | u8 gpio_dir | 0 | GPIO pin directions. 1 = out, 0 = in. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Out Value         | RW | 0x31 | u8 gpio_out | 0 | GPIO pin directions. 1 = high, 0 = low. If high in input mode, pull-up resistor is enabled. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | GPIO Read State        | RW | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |
+| Probe Serial           | R  | 0x40 | u32 probe_serial | 0 | Serial number of the soil probe. |
+| Probe Firmware         | R  | 0x41 | u8 probe_ver_3, u8 probe_ver_2, u8 probe_ver_1, u8 probe_ver_0 | 0,0,0,0 | Current firmware version of the soil probe. Three or four characters long. |
+| Probe Address          | RW | 0x42 | u8 probe_addr_2, u8 probe_addr_1, u8 probe_addr_0 | - | Address of the soil probe. Three characters long. |
+| Probe Soil Type        | RW | 0x43 | u8 probe_soil_type | 1 | Calibration for soil type/textural class. See manual for values. |
+| Probe Reading Set 0    | R  | 0x44 | u8 readings_0_len, * readings_0 | - | Soil probe reading set 0 |
+| Probe Reading Set 1    | R  | 0x45 | u8 readings_1_len, * readings_1 | - | Soil probe reading set 1 |
+| Probe Reading Set 2    | R  | 0x46 | u8 readings_2_len, * readings_2 | - | Soil probe reading set 2 |
+| Probe Reading Set 3    | R  | 0x47 | u8 readings_3_len, * readings_3 | - | Soil probe reading set 3 |
+| Probe Reading Set 4    | R  | 0x48 | u8 readings_4_len, * readings_4 | - | Soil probe reading set 4 |
+| Probe Reading Set 5    | R  | 0x49 | u8 readings_5_len, * readings_5 | - | Soil probe reading set 5 |
 | Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
 | Build Info             | R  | 0x71 | u8 build_info_data_length, * build_info_data | - | Read out string describing when/how the firmware was built. |
+
+| CMD_GET_SERIAL    | 0x00         | N/A                                           |
+| CMD_GET_VERSION   | 0x01         | N/A                                           |
+| CMD_GET_ADDRESS   | 0x02         | N/A                                           |
+| CMD_SET_ADDRESS   | 0x03         | uint8_t serial_digits[8], uint8_t new_addr[3] |
+| CMD_GET_SOIL_TYPE | 0x04         | N/A                                           |
+| CMD_SET_SOIL_TYPE | 0x05         | uint8_t soil_type                             |
+| CMD_TAKE_READING  | 0x06         | N/A                                           |
+| CMD_GET_READING   | 0x07         | uint8_t reading_set                           |

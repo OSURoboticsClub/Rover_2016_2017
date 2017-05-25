@@ -54,4 +54,4 @@ void scienceboard_probe_take_reading(void);
  *   set - The reading set to return (See manual)
  *   reading_buf - The buffer to store the reading set into (1 - 100 bytes)
  *   returns - The length of the reading set */
-uint8_t scienceboard_probe_get_reading(uint8_t set, uint8_t *reading_buf);
+uint8_t scienceboard_probe_get_reading(uint8_t set, volatile uint8_t *reading_buf);

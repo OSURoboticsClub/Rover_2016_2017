@@ -28,13 +28,22 @@ static void memset_volatile(volatile uint8_t *dest, uint8_t val, uint16_t size)
 }
 
 
+static void memcpy_volatile(volatile uint8_t *dest, const uint8_t *src, uint16_t size)
+{
+	for (uint16_t i = 0; i < size; i++)
+	{
+		dest[i] = src[i];
+	}
+}
+
+
 static void spi_cs_sci(uint8_t state)
 {
-	//DDRL |= _BV(PL0);
+	DDRL |= _BV(PL4);
 	if(state){
-		//PORTL |= _BV(PL0);
+		PORTL |= _BV(PL4);
 	} else {
-		//PORTL &= ~_BV(PL0);
+		PORTL &= ~_BV(PL4);
 	}
 }
 
@@ -174,14 +183,23 @@ void scienceboard_init(void)
 }
 
 
+void scienceboard_update_readings_buffers(void)
+{
+}
+
+
 /* Read the serial number of the soil probe
  *   serial_buf - The buffer to write the serial number into (8 bytes) */
 void scienceboard_probe_read_serial(uint8_t *serial_buf)
 {
 	uint8_t payload[11];
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x00, 0, NULL);
 	scienceboard_receive_packet(payload);
+
+	spi_cs_sci(1);
 
 	memcpy(serial_buf, &(payload[3]), 8);
 }
@@ -193,8 +211,12 @@ void scienceboard_probe_read_firmware_ver(uint8_t *ver_buf)
 {
 	uint8_t payload[7];
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x01, 0, NULL);
 	scienceboard_receive_packet(payload);
+
+	spi_cs_sci(1);
 
 	memcpy(ver_buf, &(payload[3]), 4);
 }
@@ -206,8 +228,12 @@ void scienceboard_probe_read_address(uint8_t *addr_buf)
 {
 	uint8_t payload[3];
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x02, 0, NULL);
 	scienceboard_receive_packet(payload);
+
+	spi_cs_sci(1);
 
 	memcpy(addr_buf, payload, 3);
 }
@@ -223,8 +249,12 @@ void scienceboard_probe_write_address(const uint8_t *new_addr)
 	memcpy(&(args[8]), new_addr, 3);
 	memcpy(probe_addr, new_addr, 3);
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x03, 11, args);
 	scienceboard_receive_packet(NULL);
+
+	spi_cs_sci(1);
 }
 
 
@@ -233,8 +263,12 @@ uint8_t scienceboard_probe_read_soil_type(void)
 {
 	uint8_t payload[4];
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x04, 0, NULL);
 	scienceboard_receive_packet(payload);
+
+	spi_cs_sci(1);
 
 	return payload[3];
 }
@@ -249,15 +283,23 @@ void scienceboard_probe_write_soil_type(uint8_t new_type)
 	args[0] = new_type;
 	probe_soil_type = new_type;
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x05, 1, args);
 	scienceboard_receive_packet(NULL);
+
+	spi_cs_sci(1);
 }
 
 
 /* Tell the soil probe to take a reading */
 void scienceboard_probe_take_reading(void)
 {
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x06, 0, NULL);
+
+	spi_cs_sci(1);
 }
 
 
@@ -265,7 +307,7 @@ void scienceboard_probe_take_reading(void)
  *   set - The reading set to return (See manual)
  *   reading_buf - The buffer to store the reading set into (1 - 100 bytes)
  *   returns - The length of the reading set */
-uint8_t scienceboard_probe_get_reading(uint8_t set, uint8_t *reading_buf)
+uint8_t scienceboard_probe_get_reading(uint8_t set, volatile uint8_t *reading_buf)
 {
 	uint8_t args[1];
 	uint8_t payload[103];
@@ -273,9 +315,17 @@ uint8_t scienceboard_probe_get_reading(uint8_t set, uint8_t *reading_buf)
 
 	args[0] = set;
 
+	spi_cs_sci(0);
+
 	scienceboard_send_packet(0x07, 1, args);
 	payload_len = scienceboard_receive_packet(payload);
 
-	memcpy(reading_buf, &(payload[3]), payload_len - 3);
+	spi_cs_sci(1);
+
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		memcpy_volatile(reading_buf, &(payload[3]), payload_len - 3);
+	}
+
 	return payload_len - 3;
 }

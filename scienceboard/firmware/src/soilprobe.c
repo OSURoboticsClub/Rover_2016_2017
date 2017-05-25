@@ -101,7 +101,7 @@ void soilprobe_init(void)
 	UBRR0L = 207;
 
 	/* Set up IC enable/disable line */
-	DDRC |= _BV(PC0);
+	DDRD |= _BV(PD3) | _BV(PD2);
 }
 
 
@@ -146,7 +146,8 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 	}
 
 	/* Enable RS485 Driver */
-	PORTC |= _BV(PC0);
+	PORTD &= ~_BV(PD2);
+	PORTD |= _BV(PD3);
 
 	/* Transmit command */
 	for (uint8_t i = 0; i < cmdbufsize; i++)
@@ -161,7 +162,8 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 		return;
 
 	/* Enable RS485 Receiver */
-	PORTC &= ~_BV(PC0);
+	PORTD |= _BV(PD2);
+	PORTD &= ~_BV(PD3);
 
 	/* Current size of response buffer */
 	uint8_t respbufsize = 0;

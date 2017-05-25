@@ -13,6 +13,7 @@
 #include "commgen.h"
 #include "adc.h"
 #include "sabertooth.h"
+#include "scienceboard.h"
 #include "callsign.h"
 #include "gps.h"
 #include "compass.h"
@@ -224,7 +225,15 @@ void miniboard_main(void){
 			scienceboard_probe_write_soil_type(Data->probe_soil_type);
 		}
 
-		//TODO: Update probe readings
+		scienceboard_probe_take_reading();
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+			Data->readings_0_len = scienceboard_probe_get_reading(0, Data->readings_0);
+			Data->readings_1_len = scienceboard_probe_get_reading(1, Data->readings_1);
+			Data->readings_2_len = scienceboard_probe_get_reading(2, Data->readings_2);
+			Data->readings_3_len = scienceboard_probe_get_reading(3, Data->readings_3);
+			Data->readings_4_len = scienceboard_probe_get_reading(4, Data->readings_4);
+			Data->readings_5_len = scienceboard_probe_get_reading(5, Data->readings_5);
+		}
 
 		DDRB |= _BV(PB7);
 		PORTB ^= _BV(PB7);

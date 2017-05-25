@@ -102,7 +102,7 @@ switch_t switch_ch(uint8_t ch){
 int8_t joy_ch(uint8_t ch){
 	int32_t servo_value = sbus_channels[ch-1];
 	const int16_t center = 1030;
-	const int16_t deadband = 140;
+	const int16_t deadband = 40;
 	const int16_t amp = 1811 - center - deadband;
 	servo_value -= center;
 	if(servo_value < deadband && servo_value > -deadband){
@@ -120,7 +120,7 @@ int8_t joy_ch(uint8_t ch){
 	}
 	if(servo_value < -127){
 		servo_value = -127;
-	}
+	} 
 	return servo_value;
 }
 

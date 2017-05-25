@@ -23,7 +23,7 @@ int enpin[2] = {24, 33}; // EN: Status of switches output (Analog pin)
 //---status
 const int statpin = 13;
 
-byte address = 4 + 128; //address of this motor controller
+byte address = 0 + 128; //address of this motor controller
 
 int len = 4;
 
@@ -53,8 +53,8 @@ void setup(){
 		digitalWrite(inBpin[i], LOW);
 	}
 	//set PWM frequency
-	analogWriteFrequency(pwmpin[0], 187500);
-	analogWriteFrequency(pwmpin[1], 187500);
+	analogWriteFrequency(pwmpin[0], 15000);
+	analogWriteFrequency(pwmpin[1], 15000);
 }
 
 uint8_t count = 0;

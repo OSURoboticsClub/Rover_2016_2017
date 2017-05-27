@@ -39,11 +39,11 @@ static void memcpy_volatile(volatile uint8_t *dest, const uint8_t *src, uint16_t
 
 static void spi_cs_sci(uint8_t state)
 {
-	DDRL |= _BV(PL4);
+	DDRL |= _BV(PL2);
 	if(state){
-		PORTL |= _BV(PL4);
+		PORTL |= _BV(PL2);
 	} else {
-		PORTL &= ~_BV(PL4);
+		PORTL &= ~_BV(PL2);
 	}
 }
 

@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
+#define F_CPU 16000000UL
+#include <util/delay.h>
 #include "soilprobe.h"
 
 
@@ -146,8 +148,11 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 	}
 
 	/* Enable RS485 Driver */
-	PORTD &= ~_BV(PD2);
+	PORTD |= _BV(PD2);
 	PORTD |= _BV(PD3);
+
+	/* Wait 2 microseconds for driver to turn on */
+	_delay_us(2);
 
 	/* Transmit command */
 	for (uint8_t i = 0; i < cmdbufsize; i++)
@@ -162,8 +167,11 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 		return;
 
 	/* Enable RS485 Receiver */
-	PORTD |= _BV(PD2);
+	PORTD &= ~_BV(PD2);
 	PORTD &= ~_BV(PD3);
+
+	/* Wait 2 microseconds for receiver to turn on */
+	_delay_us(2);
 
 	/* Current size of response buffer */
 	uint8_t respbufsize = 0;

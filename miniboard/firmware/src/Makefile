@@ -46,15 +46,15 @@ $(OUTFILE).bin: $(OBJFILES) miniboard.c
 download:
 	@if [ -c $(PROGRAMMER_PORT) ];\
 	then \
-		$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r;\
+		$(AVRDUDE) -v -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT) -D -U flash:w:$(OUTFILE).bin:r;\
 	else \
 		if [ -c $(PROGRAMMER_PORT_ALT) ];\
 		then \
-			$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
+			$(AVRDUDE) -v -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
 		else \
 			if [ -c $(PROGRAMMER_PORT_OSX) ];\
 			then \
-				$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_OSX) -D -U flash:w:$(OUTFILE).bin:r; \
+				$(AVRDUDE) -v -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_OSX) -D -U flash:w:$(OUTFILE).bin:r; \
 			else \
 				echo "Port $(PROGRAMMER_PORT), $(PROGRAMMER_PORT_ALT), or $(PROGRAMMER_PORT_OSX) not found; skipping programming."; \
 			fi; \

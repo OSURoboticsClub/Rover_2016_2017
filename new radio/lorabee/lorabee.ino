@@ -16,7 +16,7 @@
 #include <RH_RF95.h>
 #include <string.h>
 
-#define CALLSIGN_STR "\x01Callsign: KG7PFX"
+#define CALLSIGN_STR "\001Callsign: KG7PFX"
 #define CALLSIGN_HEADER 1
 #define CALLSIGN_PER 400
 #define DATA_HEADER 2
@@ -89,49 +89,8 @@ void wait_and_transmit(uint8_t len, uint8_t *packet_data){
 }
 
 void loop(){
-	
-	SendBuf[0] = 'X';
-	uint16_t avail_count, read_count;
-	if(Serial.available()){
-		Serial.print((char) Serial.read());
-	}
-// 	if((avail_count == Serial.available())){
-// 		Serial.print(avail_count);
-// 		Serial.println(" bytes available");
-// 		//TODO: reset time counter
-// 		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
-// 		if(read_count > 0){
-// 			SendLen += read_count;
-// 		}
-// 		Serial.write(SendBuf, SendLen);
-// 		SendLen = 1;
-// 	}
-	
-	
-	
-// 	SendBuf[0] = DATA_HEADER;
-// 	if(rf95.available()){
-// 		if(rf95.recv(RecvBuf, &RecvLen)){
-// 			//TODO
-// 			//if(RecvBuf[0] == DATA_HEADER){
-// 				Serial.write(RecvBuf, RecvLen);
-// 			//}
-// 		} else {
-// 			fail_loop();
-// 		}
-// 	}
-// 	if(Serial.available()){
-// 		//TODO: reset time counter
-// 		uint8_t count;
-// 		count = Serial.readBytes(SendBuf + SendLen, MAX_LEN - SendLen);
-// 		if(count > 0){
-// 			SendLen += count;
-// 		}
-// 	}
-// 	if(/* TODO: Also if time expired */SendBuf > 1 || SendLen >= MAX_LEN){
-// 		wait_and_transmit(SendLen, SendBuf);
-// 		SendLen = 1;
-// 	}
+	rf95.send((uint8_t *) CALLSIGN_STR, strlen(CALLSIGN_STR));
+	delay(1000);
 }
 
 // void loop(){
@@ -146,12 +105,14 @@ void loop(){
 // 			fail_loop();
 // 		}
 // 	}
-// 	if(Serial.available()){
+// 
+// 	uint16_t avail_count, read_count;
+// 	if((avail_count = Serial.available())){
 // 		//TODO: reset time counter
 // 		uint8_t count;
-// 		count = Serial.readBytes(SendBuf + SendLen, MAX_LEN - SendLen);
-// 		if(count > 0){
-// 			SendLen += count;
+// 		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
+// 		if(read_count > 0){
+// 			SendLen += read_count;
 // 		}
 // 	}
 // 	if(/* TODO: Also if time expired */1 || SendLen >= MAX_LEN){

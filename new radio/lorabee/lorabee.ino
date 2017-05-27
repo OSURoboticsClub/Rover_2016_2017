@@ -89,27 +89,73 @@ void wait_and_transmit(uint8_t len, uint8_t *packet_data){
 }
 
 void loop(){
-	SendBuf[0] = DATA_HEADER;
-	if(rf95.available()){
-		if(rf95.recv(RecvBuf, &RecvLen)){
-			//TODO
-			//if(RecvBuf[0] == DATA_HEADER){
-				Serial.write(RecvBuf, RecvLen);
-			//}
-		} else {
-			fail_loop();
-		}
-	}
+	
+	SendBuf[0] = 'X';
+	uint16_t avail_count, read_count;
 	if(Serial.available()){
-		//TODO: reset time counter
-		uint8_t count;
-		count = Serial.readBytes(SendBuf + SendLen, MAX_LEN - SendLen);
-		if(count > 0){
-			SendLen += count;
-		}
+		Serial.print((char) Serial.read());
 	}
-	if(/* TODO: Also if time expired */1 || SendLen >= MAX_LEN){
-		wait_and_transmit(SendLen, SendBuf);
-		SendLen = 1;
-	}
+// 	if((avail_count == Serial.available())){
+// 		Serial.print(avail_count);
+// 		Serial.println(" bytes available");
+// 		//TODO: reset time counter
+// 		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
+// 		if(read_count > 0){
+// 			SendLen += read_count;
+// 		}
+// 		Serial.write(SendBuf, SendLen);
+// 		SendLen = 1;
+// 	}
+	
+	
+	
+// 	SendBuf[0] = DATA_HEADER;
+// 	if(rf95.available()){
+// 		if(rf95.recv(RecvBuf, &RecvLen)){
+// 			//TODO
+// 			//if(RecvBuf[0] == DATA_HEADER){
+// 				Serial.write(RecvBuf, RecvLen);
+// 			//}
+// 		} else {
+// 			fail_loop();
+// 		}
+// 	}
+// 	if(Serial.available()){
+// 		//TODO: reset time counter
+// 		uint8_t count;
+// 		count = Serial.readBytes(SendBuf + SendLen, MAX_LEN - SendLen);
+// 		if(count > 0){
+// 			SendLen += count;
+// 		}
+// 	}
+// 	if(/* TODO: Also if time expired */SendBuf > 1 || SendLen >= MAX_LEN){
+// 		wait_and_transmit(SendLen, SendBuf);
+// 		SendLen = 1;
+// 	}
 }
+
+// void loop(){
+// 	SendBuf[0] = DATA_HEADER;
+// 	if(rf95.available()){
+// 		if(rf95.recv(RecvBuf, &RecvLen)){
+// 			//TODO
+// 			//if(RecvBuf[0] == DATA_HEADER){
+// 				Serial.write(RecvBuf, RecvLen);
+// 			//}
+// 		} else {
+// 			fail_loop();
+// 		}
+// 	}
+// 	if(Serial.available()){
+// 		//TODO: reset time counter
+// 		uint8_t count;
+// 		count = Serial.readBytes(SendBuf + SendLen, MAX_LEN - SendLen);
+// 		if(count > 0){
+// 			SendLen += count;
+// 		}
+// 	}
+// 	if(/* TODO: Also if time expired */1 || SendLen >= MAX_LEN){
+// 		wait_and_transmit(SendLen, SendBuf);
+// 		SendLen = 1;
+// 	}
+// }

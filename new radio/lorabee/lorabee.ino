@@ -25,8 +25,10 @@ uint8_t SendBuf[MAX_LEN];
 uint8_t SendLen=1;
 uint8_t RecvBuf[MAX_LEN];
 uint8_t RecvLen;
+uint32_t LastByteMilis;
 
 #define INTERFACE_BAUD 2400
+#define SERIAL_TIMEOUT 8 /* Number of milliseconds to wait for a new character before sending a packet. */
 
 #define LED 13
 #define RFM95_CS 10
@@ -41,6 +43,7 @@ void fail_loop(){
 	}
 	
 }
+
 
 void setup(){
 	pinMode(LED, OUTPUT);     
@@ -71,6 +74,8 @@ void setup(){
 	// If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then 
 	// you can set transmitter powers from 5 to 23 dBm:
 	rf95.setTxPower(23, false);
+	
+	LastByteMilis = millis();
 }
 
 /* Wait until the radio is ready, then transmit a packet.
@@ -88,14 +93,15 @@ void wait_and_transmit(uint8_t len, uint8_t *packet_data){
 	}
 }
 
+
 void loop(){
 	SendBuf[0] = DATA_HEADER;
 	if(rf95.available()){
+		RecvLen = MAX_LEN;
 		if(rf95.recv(RecvBuf, &RecvLen)){
-			//TODO
-			//if(RecvBuf[0] == DATA_HEADER){
-				Serial.write(RecvBuf, RecvLen);
-			//}
+			if(RecvBuf[0] == DATA_HEADER){
+				Serial.write(RecvBuf+1, RecvLen-1);
+			}
 		} else {
 			fail_loop();
 		}
@@ -103,14 +109,14 @@ void loop(){
 
 	uint16_t avail_count, read_count;
 	if((avail_count = Serial.available())){
-		//TODO: reset time counter
+		LastByteMilis = millis();
 		uint8_t count;
 		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
 		if(read_count > 0){
 			SendLen += read_count;
 		}
 	}
-	if(/* TODO: Also if time expired */ SendLen > 1 || SendLen >= MAX_LEN){
+	if((SendLen > 1 && ((millis() - LastByteMilis) > SERIAL_TIMEOUT)) || SendLen >= MAX_LEN){
 		wait_and_transmit(SendLen, SendBuf);
 		SendLen = 1;
 	}

@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
+#include "uart.h"
 #include "soilprobe.h"
 
 
@@ -93,21 +94,18 @@ static uint8_t * _cmd_str(enum soilprobe_cmd_name cmd)
 void soilprobe_init(void)
 {
 	/* UART initialized to 9600 8N1 */
-	/* 2X UART speed */
-	UCSR0A = _BV(U2X0);
-
-	/* Enable UART receive and transmit */
-	UCSR0B = _BV(RXEN0) | _BV(TXEN0);
-
-	/* Baud Rate = 9600 */
-	UBRR0L = 207;
+	uart_enable(0, 9600, 1, 0);
 
 	/* Set up IC enable/disable line */
 	DDRD |= _BV(PD3) | _BV(PD2);
+
+	/* Enable RS485 Driver */
+	PORTD |= _BV(PD2);
+	PORTD |= _BV(PD3);
 }
 
 
-void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
+void soilprobe_send_cmd(struct soilprobe_cmd const *cmd, struct soilprobe_resp *resp)
 {
 	/* Command size and maximum response size */
 	uint8_t cmdbufsize = _cmd_buf_size(cmd->cmd);
@@ -147,20 +145,9 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 		memcpy(&(cmdbuf[7]), "\x0D\x0A", 2);
 	}
 
-	/* Enable RS485 Driver */
-	PORTD |= _BV(PD2);
-	PORTD |= _BV(PD3);
-
-	/* Wait 2 microseconds for driver to turn on */
-	_delay_us(2);
-
 	/* Transmit command */
-	for (uint8_t i = 0; i < cmdbufsize; i++)
-	{
-		UDR0 = cmdbuf[i];
-		while(!(UCSR0A & _BV(TXC0)));
-	}
-
+	uart_tx(0, cmdbuf, cmdbufsize);
+	while(!uart_tx_in_progress(0));
 
 	/* No response for "Take Reading" command */
 	if (cmd->cmd == CMD_TAKE_READING)
@@ -170,27 +157,50 @@ void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp)
 	PORTD &= ~_BV(PD2);
 	PORTD &= ~_BV(PD3);
 
-	/* Wait 2 microseconds for receiver to turn on */
-	_delay_us(2);
-
 	/* Current size of response buffer */
 	uint8_t respbufsize = 0;
 
-	/* Receive response */
-	while(respbufsize < 2
-	   || (respbuf[respbufsize - 2] == '\x0D' && respbuf[respbufsize - 1] == '\x0A'))
-	{
-		while(!(UCSR0A & _BV(RXC0)));
-		respbuf[respbufsize] = UDR0;
-		respbufsize += 1;
+	/* Number of bytes previously written */
+	uint8_t respwritten = 0;
 
-		/* If we've gone over our max size, something went wrong */
-		if (respbufsize > maxrespbufsize)
-			break;
+	/* Time since last byte received */
+	uint16_t timesincelast = 0;
+
+ 	// Receive response
+ 	// Loop until all bytes written or response timeout
+ 	while (respbufsize < maxrespbufsize && timesincelast < 1000)
+	{
+ 		respwritten = uart_rx(0, &(respbuf[respbufsize]), maxrespbufsize - respbufsize);
+
+		// No bytes written since last loop
+ 		if (respwritten == 0)
+		{
+ 			timesincelast += 1;  // Increase timeout
+ 		}
+		else if (respbufsize + respwritten <= maxrespbufsize)  // Bytes written
+		{
+ 			respbufsize += respwritten;
+ 			timesincelast = 0;
+ 		}
+		else  // Total bytes written more than expected
+		{
+ 			break;
+ 		}
+
+ 		// Check for CRLF packet ending (Useful for variable length "Transmit
+ 		// Reading" packet type)
+ 		if (respbufsize >= 2 && memcmp(&(respbuf[respbufsize - 2]), "\x0D\x0A", 2) == 0)
+ 			break;
+
+ 		_delay_us(1);
 	}
 
 	/* Parse response */
-	memcpy(resp->addr, respbuf, 3);
-	memcpy(resp->data, &(respbuf[3]), respbufsize - 5);
-	resp->datasize = respbufsize - 5;
+	//memcpy(resp->addr, respbuf, 3);
+	//memcpy(resp->data, &(respbuf[3]), respbufsize - 5);
+	//resp->datasize = respbufsize - 5;
+
+	/* Enable RS485 Driver */
+	PORTD |= _BV(PD2);
+	PORTD |= _BV(PD3);
 }

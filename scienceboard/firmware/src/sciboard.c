@@ -34,9 +34,9 @@ void sciboard_main(void) {
 		cmd.addr[2] = '/';
 		cmd.argsize = 0;
 
-		soilprobe_cmd(&cmd, &resp);
+		soilprobe_send_cmd(&cmd, &resp);
 
-		_delay_ms(1);
+		_delay_us(100);
 	}
 }
 

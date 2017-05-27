@@ -45,4 +45,4 @@ void soilprobe_init(void);
 
 
 /* Sends a soil probe command and parses the response */
-void soilprobe_cmd(struct soilprobe_cmd *cmd, struct soilprobe_resp *resp);
+void soilprobe_send_cmd(struct soilprobe_cmd const *cmd, struct soilprobe_resp *resp);

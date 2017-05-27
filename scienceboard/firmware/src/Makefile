@@ -1,4 +1,4 @@
-MCU:= atmega2560
+MCU:= atmega328p
 PROGRAMMER:= arduino
 PROGRAMMER_PORT:= /dev/ttyACM0
 PROGRAMMER_PORT_ALT:= /dev/ttyUSB0
@@ -18,7 +18,7 @@ OUTFILE:=../build/scienceboard
 # Object file names
 # NOTE: Order is important! For the weak-symbol based UART receive handler mapping,
 # uart.o must come last.
-OBJFILES:=soilprobe.o comm.o
+OBJFILES:=soilprobe.o comm.o uart.o
 # Main file
 FILE:=sciboard.c
 
@@ -45,7 +45,7 @@ download:
 	else \
 		if [ -c $(PROGRAMMER_PORT_ALT) ];\
 		then \
-			$(AVRDUDE) -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -D -U flash:w:$(OUTFILE).bin:r; \
+			$(AVRDUDE) -C/usr/share/arduino/hardware/tools/avrdude.conf -v -v -v -v -p $(MCU) -c $(PROGRAMMER) -P $(PROGRAMMER_PORT_ALT) -b57600 -D -Uflash:w:$(OUTFILE).bin:r; \
 		else \
 			if [ -c $(PROGRAMMER_PORT_OSX) ];\
 			then \

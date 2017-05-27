@@ -49,7 +49,7 @@ static void _comm_parse_packet(void)
 	cmd.argsize = cmd_buf[1] - 4;
 
 	/* Send command to soil probe */
-	soilprobe_cmd(&cmd, &resp);
+	soilprobe_send_cmd(&cmd, &resp);
 
 	/* Parse response */
 	resp_buf[0] = 0xF0;

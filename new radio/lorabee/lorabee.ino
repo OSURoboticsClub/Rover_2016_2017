@@ -82,41 +82,36 @@ void wait_and_transmit(uint8_t len, uint8_t *packet_data){
 	static uint32_t non_callsign;
 	rf95.send(packet_data, len);
 	non_callsign++;
-	if(non_callsign > CALLSIGN_PER){
+	if(non_callsign >= CALLSIGN_PER){
 		rf95.send((uint8_t *) CALLSIGN_STR, strlen(CALLSIGN_STR));
 		non_callsign = 0;
 	}
 }
 
 void loop(){
-	rf95.send((uint8_t *) CALLSIGN_STR, strlen(CALLSIGN_STR));
-	delay(1000);
-}
+	SendBuf[0] = DATA_HEADER;
+	if(rf95.available()){
+		if(rf95.recv(RecvBuf, &RecvLen)){
+			//TODO
+			//if(RecvBuf[0] == DATA_HEADER){
+				Serial.write(RecvBuf, RecvLen);
+			//}
+		} else {
+			fail_loop();
+		}
+	}
 
-// void loop(){
-// 	SendBuf[0] = DATA_HEADER;
-// 	if(rf95.available()){
-// 		if(rf95.recv(RecvBuf, &RecvLen)){
-// 			//TODO
-// 			//if(RecvBuf[0] == DATA_HEADER){
-// 				Serial.write(RecvBuf, RecvLen);
-// 			//}
-// 		} else {
-// 			fail_loop();
-// 		}
-// 	}
-// 
-// 	uint16_t avail_count, read_count;
-// 	if((avail_count = Serial.available())){
-// 		//TODO: reset time counter
-// 		uint8_t count;
-// 		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
-// 		if(read_count > 0){
-// 			SendLen += read_count;
-// 		}
-// 	}
-// 	if(/* TODO: Also if time expired */1 || SendLen >= MAX_LEN){
-// 		wait_and_transmit(SendLen, SendBuf);
-// 		SendLen = 1;
-// 	}
-// }
+	uint16_t avail_count, read_count;
+	if((avail_count = Serial.available())){
+		//TODO: reset time counter
+		uint8_t count;
+		read_count = Serial.readBytes(SendBuf + SendLen, min(MAX_LEN - SendLen, avail_count));
+		if(read_count > 0){
+			SendLen += read_count;
+		}
+	}
+	if(/* TODO: Also if time expired */ SendLen > 1 || SendLen >= MAX_LEN){
+		wait_and_transmit(SendLen, SendBuf);
+		SendLen = 1;
+	}
+}

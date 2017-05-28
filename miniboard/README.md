@@ -4,8 +4,8 @@ This folder contains the code for the Rover onboard controller, the Miniboard.
 # On-Chip Resource Allocations
 ## UARTS
 - UART0: Data radio - comm.h (and USB serial port)
-- UART1: Saberteeth/AX12 - sabertooth.h/ax12.h (switch between using analog switch)
-- UART2: GPS (9600 baud) - gps.h
+- UART1: Tetrad/AX12 + Soil Sensor - tetrad.h/ax12.h (switch between using analog switch) and soil_sensor.h
+- UART2: GPS (9600 baud) + Soil Sensor - gps.h and soil_sensor.h 
 - UART3: Camera Control/S-BUS - -/sbus.h (Camera control is TX, S-BUS is  RX.)
 
 ## Communication Timeout
@@ -79,6 +79,10 @@ Several GPIO pins are included for future expansion.
 | GPIO3     | PK6 |
 | GPIO4     | PF6 |
 | GPIO5     | PK3 |
+
+## Soil Sensor
+As we're out of UARTs, the miniboard communicates with the soil sensor using the TX channel
+of the GPS UART (2) and the RX channel of the AX12/tetrad UART (1)
 
 # Notes on Microcontroller Programming
 Programming microcontrollers in C is very similar to regular C programming,

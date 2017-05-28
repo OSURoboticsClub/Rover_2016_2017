@@ -31,7 +31,7 @@ class MiniboardIO():
 	                               parity=serial.PARITY_NONE,
 	                               stopbits=serial.STOPBITS_ONE,
 	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.04)
+	                               timeout=0.5)
 	def calc_crc(self, body):
 		body = [ord(b) for b in body]
 		remainder = 0xFFFF

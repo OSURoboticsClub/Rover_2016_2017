@@ -118,6 +118,7 @@ class FreeSkyController(QtCore.QThread):
         self.logger.info("FrySky Failed to Connect")
         self.controller_connection_aquired.emit(False)
         return False
+
     def __get_controller_data(self):
         if self.controller_aquired:
             events = self.gamepad.read()

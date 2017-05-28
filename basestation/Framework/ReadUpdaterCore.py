@@ -9,6 +9,8 @@
 from PyQt5 import QtCore, QtWidgets
 import logging
 from Framework.MiniBoardIOCore import read_drive_motor_power, read_battery_voltage, read_arm_motors
+import time
+
 
 class ReadUpdater(QtCore.QThread):
     send_miniboard_control_packet = QtCore.pyqtSignal(list)
@@ -27,6 +29,9 @@ class ReadUpdater(QtCore.QThread):
 
         # ########## Some Flags ##########
         self.run_thread_flag = True
+
+        # ########## Class variables ##########
+        self.data_last_seen = time.time()
 
     def run(self):
         self.logger.debug("Read Updater Thread Starting...")

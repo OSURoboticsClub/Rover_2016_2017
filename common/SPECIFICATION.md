@@ -77,5 +77,5 @@ don't change the name of existing command arguments.
 | Container Sealer       | RW | 0x2F | u16 cflex1_angle, u16 cflex2_angle, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |
 | GPIO Read State        | R  | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | Sample Camera Action   | RW | 0x35 | u8 cam_action | 0 | Sample cam actions. 0 = none, 4 = shutter, 3 = focus, 1 = zoom in, 2 = zoom out |
-| Debugging Info         | R  | 0x70 | u8 debug_str_length, * debug_str_data  | - | Read out the latest debug message. |
-| Build Info             | R  | 0x71 | u8 build_info_data_length, * build_info_data | - | Read out string describing when/how the firmware was built. |
+| Soil Sensor Send       |  W | 0x40 | u8 soil_send_data_length, * soil_send_data| - | Data string to send to the soil sensor. |
+| Soil Sensor Recv       | RW | 0x41 | u8 soil_recv_data_length, * soil_recv_data| - | Reply string received from the soil sensor. |

@@ -21,6 +21,7 @@
 #include "videoswitch.h"
 #include "imu.h"
 #include "gpio.h"
+#include "soil_sensor.h"
 #include "uart.h"
 #include <stdio.h>
 #include <string.h>
@@ -48,16 +49,16 @@ void camera_command_trigger(void){
 	
 }
 
-void debugging_info_trigger(void){
-	
-}
-
 void callsign_trigger(void){
 	
 }
 
-void build_info_trigger(void){
+void soil_sensor_send_trigger(void){
+	
+}
 
+void soil_sensor_recv_trigger(void){
+	
 }
 
 
@@ -107,6 +108,7 @@ void init(void){
 	comp_init();
 	imu_init();
 	sbus_init();
+	soil_init();
 	sei();
 	reset_timeout_timer();
 	ax12_init(AX12_BAUD);

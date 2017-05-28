@@ -21,6 +21,7 @@ import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtWebEngine, QtQuick, QtQml
 import signal
 import logging
+import time
 
 # Custom Imports
 from Framework.SettingsCore import Settings
@@ -30,7 +31,7 @@ from Framework.XBOXControllerCore import XBOXController
 from Framework.FreeSkyControllerCore import FreeSkyController
 from Framework.MiniBoardIOCore import MiniboardIO
 from Framework.MotionProcessorCore import MotionProcessor
-from Framework.ReadUpdater import ReadUpdater
+from Framework.ReadUpdaterCore import ReadUpdater
 
 #####################################
 # Global Variables
@@ -97,9 +98,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.start_all_threads.emit()
 
+        time.sleep(1)
+
         # ########## Ensure all threads started properly ##########
         for thread in self.threads:
             if not thread.isRunning():
+                self.logger.error("Thread" + thread.__class__.__name__ + " failed to start! Exiting...")
+                for thread in self.threads:
+                    thread.terminate()
                 self.close()
 
         self.logger.info("All threads started successfully!")

@@ -102,7 +102,7 @@ signal_eval_str = make_signals()
 class MiniboardIO(QtCore.QThread):
     """Handles reading and writing from the miniboard."""
     path = "/dev/ttyUSB0"
-    baud = 9600
+    baud = 2400
     on_kill_threads__slot = QtCore.pyqtSignal()
     exec(signal_eval_str)
 
@@ -244,7 +244,8 @@ class DemoThread(QtCore.QThread):
         self.main_window.m.data_swerve_drive_state.connect(self.handle_swerve_data)
 
     def handle_swerve_data(self, sdict):
-        self.logger.debug(sdict)
+        pass
+        #self.logger.debug(sdict)
 
 
 class DemoWindow(QtWidgets.QMainWindow):

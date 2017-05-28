@@ -34,7 +34,7 @@ class MiniboardIO():
 	                               parity=serial.PARITY_NONE,
 	                               stopbits=serial.STOPBITS_ONE,
 	                               bytesize=serial.EIGHTBITS,
-	                               timeout=0.5)
+	                               timeout=1)
 	def calc_crc(self, body):
 		body = [ord(b) for b in body]
 		remainder = 0xFFFF
@@ -367,7 +367,7 @@ def setup(window, spec_table, io):
 	
 	timer = QTimer(ar_lbl)
 	timer.timeout.connect(autoread)
-	timer.start(200);
+	timer.start(400);
 	
 	gh.addWidget(ar_lbl)
 	gh.addWidget(rbtn)

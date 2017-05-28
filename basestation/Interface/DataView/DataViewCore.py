@@ -9,8 +9,7 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
 from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt_primary, read_pan_tilt_secondary, write_pan_tilt_primary, write_pan_tilt_secondary, \
-    write_arm_motors
+    read_pan_tilt, write_pan_tilt, write_arm_motors
 
 #####################################
 # Global Variables
@@ -57,7 +56,6 @@ class DataView(QtCore.QObject):
         # self.voltage_label = self.main_window.battery_voltage_label
 
         # ########## Class Variables ##########
-        self.mutex = QtCore.QMutex()
         self.controller_states = None
 
         # ########## Make signal/slot connections ##########
@@ -68,9 +66,10 @@ class DataView(QtCore.QObject):
         self.frysky_connected = False
 
     def __connect_signals_to_slots(self):
-        self.main_window.frsky_controller_class.controller_update_ready_signal.connect(self.on_controller_update_ready__slot)
-        self.main_window.frsky_controller_class.controller_connection_aquired.connect(self.frysky_connected__slot)
-        self.main_window.xbox_controller_class.controller_connection_aquired.connect(self.xbox_connected__slot)
+        # These are incorrect as they don't show the scaled versions
+        # self.main_window.frsky_controller_class.controller_update_ready_signal.connect(self.on_controller_update_ready__slot)
+        # self.main_window.frsky_controller_class.controller_connection_aquired.connect(self.frysky_connected__slot)
+        # self.main_window.xbox_controller_class.controller_connection_aquired.connect(self.xbox_connected__slot)
 
         # the data signals pass dictionaries to our slots after read requested
         self.main_window.miniboard_class.data_drive_motor_power.connect(self.__update_drive_power)
@@ -93,26 +92,27 @@ class DataView(QtCore.QObject):
         self.drive_mode.setText(str(drive_mode))
 
     def __update_drive_power(self, power_dict):
-        self.left_motor_power.setText("F:%3d M:%3d B:%3d"%(
+        self.left_motor_power.setText("F:%3d M:%3d B:%3d" % (
             power_dict["l_f_drive"],
             power_dict["l_m_drive"],
             power_dict["l_b_drive"],
         ))
-        self.right_motor_power.setText("F:%3d M:%3d B:%3d"%(
+        self.right_motor_power.setText("F:%3d M:%3d B:%3d" % (
             power_dict["r_f_drive"],
             power_dict["r_m_drive"],
             power_dict["r_b_drive"],
         ))
 
     def __update_battery_voltage(self, battery_dict):
-        self.battery_voltage.setText("%d V"%battery_dict["battery_voltage"])
+        battery_visually_accurate = int(battery_dict["battery_voltage"]) / 1000
+        self.battery_voltage.setText("%0.2f V" % battery_visually_accurate)
 
     def __update_arm_power(self, power_dict):
-        self.base_power.setText("%d"%power_dict["arm_motor_1"])
-        self.bicep_power.setText("%d"%power_dict["arm_motor_2"])
-        self.forearm_power.setText("%d"%power_dict["arm_motor_3"])
-        self.pitch_power.setText("%d"%power_dict["arm_motor_4"])
-        self.wrist_power.setText("%d"%power_dict["arm_motor_5"])
+        self.base_power.setText("%d" % power_dict["arm_motor_1"])
+        self.bicep_power.setText("%d" % power_dict["arm_motor_2"])
+        self.forearm_power.setText("%d" % power_dict["arm_motor_3"])
+        self.pitch_power.setText("%d" % power_dict["arm_motor_4"])
+        self.wrist_power.setText("%d" % power_dict["arm_motor_5"])
 
     def on_update_other_gui_elements__slot(self, voltage, time):
         # self.time_label.setText(time)

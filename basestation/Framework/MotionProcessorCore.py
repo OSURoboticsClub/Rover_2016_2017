@@ -9,8 +9,7 @@
 from PyQt5 import QtCore, QtWidgets
 import logging
 from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt_primary, read_pan_tilt_secondary, write_pan_tilt_primary, write_pan_tilt_secondary, \
-    write_arm_motors
+    read_pan_tilt, write_pan_tilt, write_arm_motors
 
 #####################################
 # Global Variables
@@ -104,6 +103,9 @@ class MotionProcessor(QtCore.QThread):
         self.last_pause_state = 0
         self.last_drive_state = 0
 
+        self.last_left_drive_value = 0
+        self.last_right_drive_value = 0
+
         self.pan_position = -1
         self.tilt_position = -1
 
@@ -111,10 +113,10 @@ class MotionProcessor(QtCore.QThread):
         self.logger.debug("Motion Processor Thread Starting...")
 
         # TODO: Switching out of drive state stops motion
-        read_pan_tilt_primary(self.send_miniboard_control_packet)
+        read_pan_tilt(self.send_miniboard_control_packet)
 
-        while self.pan_position == -1 or self.tilt_position == -1 or self.run_thread_flag:
-            self.msleep(1)
+        # while self.pan_position == -1 or self.tilt_position == -1 or self.run_thread_flag:
+        #     self.msleep(1)
 
         while self.run_thread_flag:
             if self.xbox_states and self.frsky_states:
@@ -124,7 +126,8 @@ class MotionProcessor(QtCore.QThread):
                 if not self.frsky_states["sa_state"]:  # 0 is drive mode
                     if not self.frsky_states["se_state"]:  # 0 is drive mode
                         self.__drive_manual()
-                        self.__pan_tilt_manual()
+                        # self.__pan_tilt_manual()
+
                     else:  # 1 is arm mode
                         # self.__arm_control_manual()
                         pass
@@ -145,11 +148,11 @@ class MotionProcessor(QtCore.QThread):
             self.on_drive_motor_power_response_received__slot)
         self.main_window.miniboard_class.ack_drive_motor_power.connect(self.on_drive_response_received__slot)
 
-        self.main_window.miniboard_class.data_pan_tilt_primary.connect(self.on_pan_tilt_primary_position_response__slot)
-        self.main_window.miniboard_class.data_pan_tilt_secondary.connect(
-            self.on_pan_tilt_secondary_position_response__slot)
+        self.main_window.miniboard_class.data_pan_tilt.connect(self.on_pan_tilt_primary_position_response__slot)
+        # self.main_window.miniboard_class.data_pan_tilt_secondary.connect(
+        #     self.on_pan_tilt_secondary_position_response__slot)
 
-        self.main_window.miniboard_class.ack_pan_tilt_primary.connect(self.on_primary_pan_tilt_write_acknowledged__slot)
+        self.main_window.miniboard_class.ack_pan_tilt.connect(self.on_primary_pan_tilt_write_acknowledged__slot)
 
         self.main_window.miniboard_class.ack_arm_motors.connect(self.on_arm_motors_write_acknowledged__slot)
 
@@ -222,7 +225,6 @@ class MotionProcessor(QtCore.QThread):
         while self.wait_for_arm_response:
             self.msleep(1)
 
-
         # write_arm_motors(self.send_miniboard_control_packet, )
 
     def __drive_manual(self):
@@ -240,16 +242,19 @@ class MotionProcessor(QtCore.QThread):
         left_scaled = int(self.clamp(left_scaled, DRIVE_MIN, DRIVE_MAX))
         right_scaled = int(self.clamp(right_scaled, DRIVE_MIN, DRIVE_MAX))
 
-        self.wait_for_drive_response = True
-        write_drive_motor_power(self.send_miniboard_control_packet, left_scaled, left_scaled, left_scaled, right_scaled,
-                                right_scaled, right_scaled)
+        if left_scaled != self.last_left_drive_value or right_scaled != self.last_right_drive_value:
+            self.wait_for_drive_response = True
+            write_drive_motor_power(self.send_miniboard_control_packet, left_scaled, left_scaled, left_scaled, right_scaled,
+                                    right_scaled, right_scaled)
 
-        while self.wait_for_drive_response:
-            self.msleep(1)
+            while self.wait_for_drive_response:
+                self.logger.debug("Waitng for response...")
+                self.msleep(1)
 
-
-            # self.logger.debug(left_scaled)
-            # self.logger.debug(right_scaled)
+            self.last_left_drive_value = left_scaled
+            self.last_right_drive_value = right_scaled
+            self.logger.debug(left_scaled)
+            self.logger.debug(right_scaled)
 
             # read_drive_motor_power(self.send_miniboard_control_packet)
 
@@ -280,7 +285,7 @@ class MotionProcessor(QtCore.QThread):
         new_tilt = self.clamp(int(self.tilt_position+controller_tilt), 0, 65535)
 
         self.wait_for_primary_pan_tilt_response = True
-        write_pan_tilt_primary(self.send_miniboard_control_packet, new_pan, new_tilt)
+        write_pan_tilt(self.send_miniboard_control_packet, new_pan, new_tilt)
 
         while self.wait_for_primary_pan_tilt_response:
             self.msleep(1)
@@ -301,14 +306,19 @@ class MotionProcessor(QtCore.QThread):
         self.wait_for_primary_pan_tilt_response  = False #TODO: make secondary
 
     def on_pan_tilt_primary_position_response__slot(self, sdict):
-        self.pan_position = sdict["pan"]
-        self.tilt_position = sdict["tilt"]
+        try:
+            self.pan_position = sdict["pan"]
+            self.tilt_position = sdict["tilt"]
+        except:
+            pass
 
     def on_pan_tilt_secondary_position_response__slot(self, sdict):
-        self.logger.debug(sdict)
+        pass
+        #self.logger.debug(sdict)
 
     def on_drive_motor_power_response_received__slot(self, sdict):
-        self.logger.debug(sdict)
+        pass
+        #self.logger.debug(sdict)
 
     def on_drive_response_received__slot(self):
         self.wait_for_drive_response = False
@@ -318,6 +328,9 @@ class MotionProcessor(QtCore.QThread):
 
     def on_kill_threads__slot(self):
         self.run_thread_flag = False
+
+    @staticmethod
+
 
     @staticmethod
     def clamp(n, minn, maxn):

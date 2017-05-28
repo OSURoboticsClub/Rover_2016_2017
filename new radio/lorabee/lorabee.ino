@@ -28,7 +28,7 @@ uint8_t RecvLen;
 uint32_t LastByteMilis;
 
 #define INTERFACE_BAUD 2400
-#define SERIAL_TIMEOUT 8 /* Number of milliseconds to wait for a new character before sending a packet. */
+#define SERIAL_TIMEOUT 10 /* Number of milliseconds to wait for a new character before sending a packet. */
 
 #define LED 13
 #define RFM95_CS 10

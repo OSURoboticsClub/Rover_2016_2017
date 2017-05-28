@@ -171,12 +171,17 @@ def main():
 	j = joysticks[0]
 	print j.get_name()
 	j.init()
+	oldl = 0
+	oldr = 0
 	while(True):
 		pygame.init()
 		pygame.event.get()
 		l,r = get_joystick(j)
 		#print "Motor power L=", l, "R=", r
-		set_drive_power(io, l, r)
+		if(oldl != l or oldr != r):
+			set_drive_power(io, l, r)
+		oldl = l
+		oldr = r
 		if int(j.get_button(6)) == 1:
 			set_swerve_mode(io, 2)
 		elif int(j.get_button(7)) == 1: 

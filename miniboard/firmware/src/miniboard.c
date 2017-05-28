@@ -25,6 +25,7 @@
 #include "uart.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 /* AX12 limits */
 #define PAN_MIN 50
@@ -43,8 +44,9 @@
 #define CFLEX2_AX12 8
 #define CSEAL_AX12 9
 
+bool SoilTalk;
 
-/* Triggers for data read commands. */
+/* Triggers for variable length data read/write commands. */
 void camera_command_trigger(void){
 	
 }
@@ -54,7 +56,7 @@ void callsign_trigger(void){
 }
 
 void soil_sensor_send_trigger(void){
-	
+	SoilTalk = true;
 }
 
 void soil_sensor_recv_trigger(void){
@@ -234,6 +236,12 @@ void miniboard_main(void){
 
 		/* S-Bus */
 		/* Handled in module. */
+		
+		/* Soil Sensor */
+		if(SoilTalk){
+			SoilTalk = false;
+			soil_talk();
+		}
 		
 		/* Compass */
 		compass_retrieve();

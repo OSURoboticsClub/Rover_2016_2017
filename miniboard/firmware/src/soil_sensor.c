@@ -3,7 +3,8 @@
  *
  * soil_sensor.h - Soil sensor control module.
  */
-#include <soil_sensor.h>
+#include "soil_sensor.h"
+#include <avr/interrupt.h>
 #include "uart.h"
 #include "commgen.h"
 #include "tetrad.h"
@@ -56,17 +57,18 @@ void soil_init(void){
  * This function blocks until data transfer is complete. */
 void soil_talk(void){
 	/* Put the motor uart in tetrad mode, then reconfigure its baud rate. */
+	uart_wait(SOIL_RX_UART);
 	tetrad_init();
 	uart_enable(SOIL_RX_UART, 9600, 1, 0);
 	/* The GPS TX UART is already set for 9600 baud. */
-	rs_485_send();
-	uart_tx(SOIL_TX_UART, Data->soil_send_data, Data->soil_send_data_length);
+	rs485_send();
+	uart_tx(SOIL_TX_UART, (uint8_t *) Data->soil_send_data, Data->soil_send_data_length);
 	uart_wait(SOIL_TX_UART);
-	rs_485_recv();
+	rs485_recv();
 	uint8_t count = 0;
 	uint32_t iterations = 0;
 	while(count < 200 && iterations < TIMEOUT_ITERATION){
-		count += uart_rx(SOIL_RX_UART, Data->soil_recv_data + count, 200-count);
+		count += uart_rx(SOIL_RX_UART, (uint8_t *) Data->soil_recv_data + count, 200-count);
 		if(count > 0 && Data->soil_recv_data[count-1] == '\n'){
 			break;
 		}

@@ -37,10 +37,11 @@ class ReadUpdater(QtCore.QThread):
         self.logger.debug("Read Updater Thread Starting...")
 
         while self.run_thread_flag:
+            self.msleep(1000)
             #needs signal to communincate effectively with the rover
-            read_drive_motor_power(self.send_miniboard_control_packet)
-            read_battery_voltage(self.send_miniboard_control_packet)
-            read_arm_motors(self.send_miniboard_control_packet)
+            # read_drive_motor_power(self.send_miniboard_control_packet)
+            # read_battery_voltage(self.send_miniboard_control_packet)
+            # read_arm_motors(self.send_miniboard_control_packet)
             self.msleep(1000)
 
         self.logger.debug("Read Updater Thread Stopping...")

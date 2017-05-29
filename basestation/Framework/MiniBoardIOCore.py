@@ -102,7 +102,7 @@ signal_eval_str = make_signals()
 class MiniboardIO(QtCore.QThread):
     """Handles reading and writing from the miniboard."""
     path = "/dev/ttyUSB0"
-    baud = 2400
+    baud = 115200
     on_kill_threads__slot = QtCore.pyqtSignal()
     exec(signal_eval_str)
 
@@ -115,8 +115,7 @@ class MiniboardIO(QtCore.QThread):
                                  baudrate=self.baud,
                                  parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,
-                                 bytesize=serial.EIGHTBITS,
-                                 timeout=1)
+                                 bytesize=serial.EIGHTBITS)
         self.reply = ""
         self.run_thread_flag = True
         self.queue = []
@@ -172,7 +171,7 @@ class MiniboardIO(QtCore.QThread):
                 reply = list(self.tty.read(size=expected_size))
                 n = 2
                 while n > 0 and len(reply) < expected_size:
-                    reply += list(self.tty.read(size=1000000))
+                    reply += list(self.tty.read(size=1))
                     n -= 1
 
                 while len(reply) > 0:

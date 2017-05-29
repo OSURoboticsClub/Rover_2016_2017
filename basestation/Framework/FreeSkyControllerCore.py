@@ -15,7 +15,7 @@ import time
 # Global Variables
 #####################################
 GAME_CONTROLLER_NAME = "FrSky FrSky Taranis Joystick"
-CONTROLLER_DATA_UPDATE_FREQUENCY = 50  # Times per second
+CONTROLLER_DATA_UPDATE_FREQUENCY = 200  # Times per second
 
 
 #####################################
@@ -115,6 +115,7 @@ class FreeSkyController(QtCore.QThread):
                 self.gamepad = device
                 self.controller_connection_aquired.emit(True)
                 return True
+
         self.logger.info("FrySky Failed to Connect")
         self.controller_connection_aquired.emit(False)
         return False
@@ -122,11 +123,11 @@ class FreeSkyController(QtCore.QThread):
     def __get_controller_data(self):
         if self.controller_aquired:
             events = self.gamepad.read()
-
+            # self.logger.debug(events[0].manager)
             for event in events:
                 if event.code in self.raw_mapping_to_class_mapping:
                     self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
-
+                    # self.logger.debug(event.state)
                 # if event.code not in self.raw_mapping_to_class_mapping and event.code != "SYN_REPORT":
                 #     self.logger.debug(str(event.code) + " : " + str(event.state))
                 #
@@ -139,7 +140,7 @@ class FreeSkyController(QtCore.QThread):
         if (current_time - self.last_time) > (1/CONTROLLER_DATA_UPDATE_FREQUENCY):
             self.controller_update_ready_signal.emit(self.controller_states)
             self.last_time = current_time
-            # self.logger.debug(self.controller_states)
+        # self.logger.debug(self.controller_states)
 
     def on_kill_threads__slot(self):
         self.terminate()  # DON'T normally do this, but fine in this instance

@@ -111,6 +111,7 @@ void init(void){
 	imu_init();
 	sbus_init();
 	soil_init();
+	autonomous_init();
 	sei();
 	reset_timeout_timer();
 	ax12_init(AX12_BAUD);

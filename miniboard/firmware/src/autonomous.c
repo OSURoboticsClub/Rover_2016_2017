@@ -25,11 +25,11 @@ static uint32_t get_ms(void){
 	
 /* Start the timer used for autonomous driving. */
 void autonomous_init(void){
-	TCCR3B = 0;
+	TCCR3B = _BV(WGM32);
 	TCNT3 = 0;
 	OCR3A = (uint16_t) 249;
 	TIMSK3 = _BV(OCIE3A);
-	TCCR3B = _BV(CS31) | _BV(CS30); /* Set 64 prescaler. */
+	TCCR3B |= _BV(CS31) | _BV(CS30); /* Set 64 prescaler. */
 }
 
 typedef struct {

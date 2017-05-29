@@ -27,7 +27,7 @@ uint8_t RecvBuf[MAX_LEN];
 uint8_t RecvLen;
 uint32_t LastByteMilis;
 
-#define INTERFACE_BAUD 2400
+#define INTERFACE_BAUD 115200
 #define SERIAL_TIMEOUT 10 /* Number of milliseconds to wait for a new character before sending a packet. */
 
 #define LED 13
@@ -35,6 +35,9 @@ uint32_t LastByteMilis;
 #define RFM95_RST 9
 #define RFM95_INT 3
 #define RF95_FREQ 434.0
+#define RF95_MODE rf95.Bw500Cr45Sf128
+#define RF95_PREAMBLE 2
+
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 void fail_loop(){
@@ -65,14 +68,18 @@ void setup(){
 		fail_loop();
 	}
 
-	// Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
 	if (!rf95.setFrequency(RF95_FREQ)) {
 		fail_loop();
 	}
-	// Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
-	// The default transmitter power is 13dBm, using PA_BOOST.
-	// If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then 
-	// you can set transmitter powers from 5 to 23 dBm:
+	
+	RH_RF95::ModemConfig config;
+	config.reg_1d = 0x92;
+	config.reg_1e = 
+	
+	if(!rf95.setModemConfigLength(RF95_MODE)){ /* fast + short range */
+		fail_loop();
+	}
+	rf95.setPreamble(RF95_PREABLE);
 	rf95.setTxPower(23, false);
 	
 	LastByteMilis = millis();

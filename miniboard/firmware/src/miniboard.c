@@ -188,7 +188,6 @@ void miniboard_main(void){
 		atomic_set(Data->pot_5, pot_channel(5));
 		
 		/* Video Switch */
-		//TODO: add callsign restriction
 		videoswitch_select(Data->selected_camera);
 		
 		/* AX12 */

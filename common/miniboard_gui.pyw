@@ -184,7 +184,7 @@ def argtype_minval(argtype):
 		return 0
 	
 def argtype_maxval(argtype):
-	"""Return the minimum value for a numerical argument type."""
+	"""Return the maximum value for a numerical argument type."""
 	if argtype[0] == "u":
 		return 2**(int(argtype[1:])) - 1
 	elif argtype[0] == "i":
@@ -285,7 +285,7 @@ def setup(window, spec_table, io):
 			vl = QVBoxLayout()
 			if a[0] == "*":
 				widget = QLineEdit()
-			elif a[0] == "u64" or a[0] == "i64":
+			elif a[0] == "u64" or a[0] == "i64" or a[0] == "u32":
 				widget = BigIntSpinBox()
 				widget.setMinimum(argtype_minval(a[0]))
 				widget.setMaximum(argtype_maxval(a[0]))

@@ -56,7 +56,6 @@ don't change the name of existing command arguments.
 | Drive Motor Power      | RW | 0x10 | i8 l_f_drive, i8 l_m_drive, i8 l_b_drive, i8 r_f_drive, i8 r_m_drive, i8 r_b_drive | 0,0,0,0,0,0 | -127 = full reverse 128 = full forward, r = right, l = left, f = front, m = middle, b = back | 
 | Swerve Drive State     | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
 | Arm Motors             | RW | 0x12 | i8 arm_motor_1, i8 arm_motor_2, i8 arm_motor_3, i8 arm_motor_4, i8 arm_motor_5 | 0,0,0,0,0 | -127 = full reverse 128 = full forward TODO: Define motor->joint mapping
-| Potentiometers         | R  | 0x13 | u8 pot_1, u8 pot_2, u8 pot_3, u8 pot_4, u8 pot_5 | 0,0,0,0,0 | Potentiometer readings, each 0-255. |
 | Servo                  |  W | 0x14 | u8 ax12_addr, u16 ax12_angle | 0,512 | Set the target angle of an AX12 servo. |
 | S Bus Values 1         | R  | 0x15 | u16 sbus_1, u16 sbus_2, u16 sbus_3, u16 sbus_4, u16 sbus_5, u16 sbus_6, u16 sbus_7, u16 sbus_8 | - | S-Bus channel values. |
 | S Bus Values 2         | R  | 0x16 | u16 sbus_9, u16 sbus_10, u16 sbus_11, u16 sbus_12, u16 sbus_13, u16 sbus_14, u16 sbus_15, u16 sbus_16, u8 sbus_active | - | S-Bus channel values plus a status bit indicating if the failsafe has been set. |

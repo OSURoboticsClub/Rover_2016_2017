@@ -179,14 +179,6 @@ void miniboard_main(void){
 			tetrad_set_speed(5, Data->arm_motor_4, Data->arm_motor_5);
 		}
 		
-		/* ADC (Pot channels and battery.) */
-		atomic_set(Data->battery_voltage, battery_mV());
-		atomic_set(Data->pot_1, pot_channel(1));
-		atomic_set(Data->pot_2, pot_channel(2));
-		atomic_set(Data->pot_3, pot_channel(3));
-		atomic_set(Data->pot_4, pot_channel(4));
-		atomic_set(Data->pot_5, pot_channel(5));
-		
 		/* Video Switch */
 		videoswitch_select(Data->selected_camera);
 		

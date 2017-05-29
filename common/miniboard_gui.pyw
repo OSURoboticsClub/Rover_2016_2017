@@ -21,12 +21,13 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Add big pause/unpause buttons
 #TODO: Fix issue with spinbox that prevents typing 0 or -
 
-SerialPortPath = "/dev/ttyUSB0"
+#SerialPortPath = "/dev/ttyUSB0"
+SerialPortPath = "/dev/ttyACM0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
 	path = SerialPortPath
-	baud = 2400
+	baud = 115200
 	def __init__(self):
 		os.system("stty -F %s -hupcl"%self.path)
 		self.__tty = serial.Serial(port=self.path,

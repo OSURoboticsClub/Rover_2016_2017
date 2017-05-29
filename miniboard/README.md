@@ -84,6 +84,9 @@ Several GPIO pins are included for future expansion.
 As we're out of UARTs, the miniboard communicates with the soil sensor using the TX channel
 of the GPS UART (2) and the RX channel of the AX12/tetrad UART (1)
 
+## Autonomous
+The autonomous module uses timer 3.
+
 # Notes on Microcontroller Programming
 Programming microcontrollers in C is very similar to regular C programming,
 with several important differences:

@@ -23,7 +23,7 @@ SerialPortPath = "/dev/ttyUSB0"
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
 	path = SerialPortPath
-	baud = 2400
+	baud = 115200
 	def __init__(self):
 		os.system("stty -F %s -hupcl"%self.path)
 		self.__tty = serial.Serial(port=self.path,
@@ -188,6 +188,6 @@ def main():
 			set_swerve_mode(io, 1)
 		else:
 			set_swerve_mode(io, 0)
-		time.sleep(.02)
+		time.sleep(30)
 	
 main()

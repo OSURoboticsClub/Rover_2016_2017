@@ -2,7 +2,7 @@
  * Miniboard Firmware
  *
  * tetrad.h - Tetrad motor driver control module.
- * Author(s): Nick Ames
+ * Author(s): Nick Ames, Aaron Cohen
  */
 #include <stdint.h>
 #include "uart.h"

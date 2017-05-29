@@ -86,7 +86,7 @@ void sbus_release(void) {
 
 /* Convert a switch channel value to a position. */
 typedef enum {SW_FORWARD = 1, SW_MIDDLE = 0, SW_BACK = 2} switch_t;
-switch_t switch_ch(uint8_t ch){
+static switch_t switch_ch(uint8_t ch){
 	uint16_t servo_value = sbus_channels[ch-1];
 	if(servo_value < 300){
 		return SW_FORWARD;
@@ -99,7 +99,7 @@ switch_t switch_ch(uint8_t ch){
 
 /* Convert a joystick/analog channel value to a motor
  * power value from -127 to 127. */
-int8_t joy_ch(uint8_t ch){
+static int8_t joy_ch(uint8_t ch){
 	int32_t servo_value = sbus_channels[ch-1];
 	const int16_t center = 1030;
 	const int16_t deadband = 40;

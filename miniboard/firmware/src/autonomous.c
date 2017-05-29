@@ -8,18 +8,17 @@
 #include <math.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
-
-static uint32_t Time_ms;
+#include "commgen.h"
 
 ISR(TIMER3_COMPA_vect){
-	Time_ms++;
+	Data->time_ms++;
 }
 
 /* Return the current time value. */
 static uint32_t get_ms(void){
 	uint32_t temp;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		temp = Time_ms;
+		temp = Data->time_ms;
 	}
 	return temp;
 }
@@ -93,10 +92,10 @@ typedef struct {
 } coord_t;
 
 /* Convert a latlong to meters (coord_t), based on the starting point. */
-coord_t to_meters(const latlon_t *point, const latlon_t *start){
+coord_t to_meters(latlon_t point, latlon_t start){
 	coord_t result;
-	result.y = ((float) point->lat - start->lat) * ((2*M_PI*EARTH_R*10e-6)/(60.0 * 360));
-	result.x = ((float) point->lon - start->lon) * ((2*M_PI*EARTH_R*10e-6*cos(start->lat*(M_PI/(180*60.0*10e-6))))/(60.0 * 360));
+	result.y = ((float) point.lat - start.lat) * ((2*M_PI*EARTH_R*10e-6)/(60.0 * 360));
+	result.x = ((float) point.lon - start.lon) * ((2*M_PI*EARTH_R*10e-6*cos(start.lat*(M_PI/(180*60.0*10e-6))))/(60.0 * 360));
 	return result;
 }
 
@@ -127,7 +126,7 @@ float vec2_dot(coord_t a, coord_t b){
 }
 
 /* Return a vector multiplied by a scalar. */
-float vec2_mul(float s, coord_t v){
+coord_t vec2_mul(float s, coord_t v){
 	coord_t result;
 	result.x = v.x * s;
 	result.y = v.y * s;
@@ -135,20 +134,35 @@ float vec2_mul(float s, coord_t v){
 }
 
 /* Return the vector rejection of v onto basis. */
-float vec2_rejection(coord_t v, coord_t basis);
-	
+coord_t vec2_rejection(coord_t v, coord_t basis){
+	return vec2_sub(v, vec2_mul(vec2_dot(v, basis)/vec2_dot(basis, basis), basis));
+}
+
+/* Return the "handedness of a vector". */
+float vec2_handedness(coord_t a, coord_t b){
+	float f = a.x*-b.y + a.y*b.x;
+	if(f > 0){
+		return 1.0;
+	} else {
+		return -1.0;
+	}
+}
 
 /* Process autonomy. */
 void autonomous(void){
 	static uint32_t last_time;
 	static pid_t turn_pid;
 	static pid_t speed_pid;
+	static pid_t cross_pid;
 	static latlon_t starting_point;
 	static coord_t waypoint;
-	static float integral_turn_rate;
+	static float target_speed;
+	static float integral_turn_rate; /* Actual turn rate. */
+	static float integral_speed; /* Actual speed. */
 	static enum {
 		IDLE = 0,
 		STOP,
+		CAL_START,
 		CALIBRATE,
 		TURN,
 		DRIVE,
@@ -161,35 +175,57 @@ void autonomous(void){
 	speed_pid.p = SPEED_P;
 	speed_pid.i = SPEED_I;
 	speed_pid.d = SPEED_D;
+	cross_pid.p = CROSS_P;
+	cross_pid.i = CROSS_I;
+	cross_pid.d = CROSS_D;
 	
 	uint32_t time_elapsed = get_ms() - last_time;
 	last_time = get_ms();
 	
 	latlon_t current_latlon;
+	//TODO: check for GPS valid 
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		current_latlon.lat = Data->lattidude;
+		current_latlon.lat = Data->latitude;
 		current_latlon.lon = Data->longitude;
 	}
 	coord_t current_pos = to_meters(current_latlon, starting_point);
 	
-	float gyro; /* Rotation rate in degrees/sec. */
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		gyro = Data->gyro_z * .061;
+	float desired_turn; /* Desired turn rate, in deg/s. */
+	float desired_speed; /* Desired speed, in m/s. */
+	
+	if(!Data->auton_en && state != IDLE){
+		state = STOP;
 	}
-	float desired_turn; /* Desired turn rate. */
 	
 	if(state == IDLE){
-		
+		reset_pid(&turn_pid);
+		reset_pid(&speed_pid);
+		reset_pid(&cross_pid);
+		desired_turn = 0;
+		desired_speed = 0;
+		if(Data->auton_en){
+			state = CAL_START;
+		}
 	} else if (state == STOP){
-		
+		Data->l_f_drive = 0;
+		Data->l_m_drive = 0;
+		Data->l_b_drive = 0;
+		Data->r_f_drive = 0;
+		Data->r_m_drive = 0;
+		Data->r_b_drive = 0;
+		Data->swerve_state = 0;
+	} else if(state == CAL_START){
+		//TODO: set waypoint, target speed & start point
+		state = CALIBRATE;
 	} else if(state == CALIBRATE){
-		
-		
+		//TODO
+		desired_turn = COMPASS_CAL_SPIN_SPEED;
 	} else if(state == TURN){
 		
 	} else if(state == DRIVE){
-		
-		
+		desired_turn = compute_pid(&cross_pid, vec2_handedness(current_pos, waypoint)*vec2_mag(vec2_rejection(current_pos, waypoint)));
+		desired_speed = target_speed;
+		//TODO: final approach/mid-course turn logic
 	} else if(state == APPROACH){
 		
 		
@@ -198,8 +234,30 @@ void autonomous(void){
 	}
 	
 	if(state != IDLE && state != STOP){
-		
-		
+		float gyro; /* Measured turn rate in degrees/sec. */
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+			gyro = Data->gyro_z * .061;
+		}
+		integral_turn_rate += compute_pid(&turn_pid, desired_turn - gyro);
+		float actual_speed;
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+			if(Data->gps_track_valid){
+				actual_speed = Data->gps_speed / 3600.0;
+			} else {
+				actual_speed = fabs(integral_speed) * MAX_SPEED;
+			}
+		}
+		integral_speed += compute_pid(&speed_pid, desired_speed - actual_speed);
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+			int8_t left = motorf(integral_speed - integral_turn_rate);
+			int8_t right = motorf(integral_speed + integral_turn_rate);
+			Data->l_f_drive = left;
+			Data->l_m_drive = left;
+			Data->l_b_drive = left;
+			Data->r_f_drive = right;
+			Data->r_m_drive = right;
+			Data->r_b_drive = right;
+		}
 	}
 }
  

@@ -153,6 +153,7 @@ uint8_t clamp127(int8_t value){
 #define PAUSE_SWITCH SF
 #define DRIVE_LEFT Data->fr_joylv 
 #define DRIVE_RIGHT Data->fr_joyrv
+#define DRIVE_SPEED Data->fr_sidel
 #define ARM_BASE Data->fr_joylh
 #define ARM_BICEP Data->fr_joylv
 #define ARM_FOREARM Data->fr_joyrv
@@ -209,12 +210,15 @@ void direct_control(void){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		Data->l_f_drive = left;
-		Data->l_m_drive = left;
-		Data->l_b_drive = left;
-		Data->r_f_drive = right;
-		Data->r_m_drive = right;
-		Data->r_b_drive = right;
+		uint16_t speed_factor = joy_ch(DRIVE_SPEED);
+		speed_factor = 256 - speed_factor;
+		speed_factor = 1 + (speed_factor/64);
+		Data->l_f_drive = left/speed_factor;
+		Data->l_m_drive = left/speed_factor;
+		Data->l_b_drive = left/speed_factor;
+		Data->r_f_drive = right/speed_factor;
+		Data->r_m_drive = right/speed_factor;
+		Data->r_b_drive = right/speed_factor;
 		Data->swerve_state = switch_ch(TURN_SWITCH);
 		Data->arm_mode = 0;
 	} else {

@@ -80,3 +80,7 @@ don't change the name of existing command arguments.
 | Soil Sensor Send         |  W | 0x40 | u8 soil_send_data_length, * soil_send_data| - | Data string to send to the soil sensor. |
 | Soil Sensor Recv         | RW | 0x41 | u8 soil_recv_data_length, * soil_recv_data| - | Reply string received from the soil sensor. |
 | Joystick                 | RW | 0x50 | i8 fr_joylh, i8 fr_joylv, i8 fr_joyrh, i8 fr_joyrv, i8 fr_potl, i8 fr_potr, i8 fr_sidel, i8 fr_sider, u8 fr_buttons, i8 xbox_joylh, i8 xbox_joylv, i8 xbox_joyrh, i8 xbox_joyrv, i8 xbox_triggerl, i8 xbox_triggerr, u8 xbox_buttons_high, u8 xbox_buttons_low | 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 | Frsky buttons are packed (MSB) H ..A (LSB). MSB of xbox_buttons_high is enable; must be 1 |
+| Autonomous Enable        | RW | 0x60 | u8 auton_en | 0 | If 1, do autonomous traversal. |
+| Autonomous Waypoint 1    | RW | 0x61 | i64 auton_way1_lat, i64 auton_way1_lon, u16 auton_way1_speed | 0, 0 | Autonomous target waypoint. Speed in mm/s. |
+| Autonomous Waypoint 2    | RW | 0x63 | i64 auton_way2_lat, i64 auton_way2_lon, u16 auton_way2_speed | 0, 0 | Autonomous next waypoint. Speed in mm/s. |
+| Time ms                  | R  | 0x64 | u32 time_ms | 0 | Time since rover was turned on, in ms. | 

@@ -136,6 +136,99 @@ uint8_t clamp127(int8_t value){
 		return value;
 	}
 }
+
+/* Direct Control channel functions */
+#define SA 0
+#define SB 1
+#define SC 2
+#define SD 3
+#define SWE 4
+#define SF 5
+#define SG 6
+#define SH 7
+
+
+#define MODE_SWITCH SWE
+#define TURN_SWITCH SG
+#define PAUSE_SWITCH SF
+#define DRIVE_LEFT JOY_LV
+#define DRIVE_RIGHT JOY_RV
+#define ARM_BASE JOY_LH
+#define ARM_BICEP JOY_LV
+#define ARM_FOREARM JOY_RV
+#define ARM_PITCH JOY_RH
+#define ARM_GRABBER SIDE_L
+#define ARM_EE SIDE_R
+#define CAMERA_SELECT SH
+#define PAN POT_R
+#define TILT POT_L
+#define ARM_DRILL SIDE_L
+	
+/* Return a joystick input switch value. */
+bool switch_ch(uint8_t index){
+	if(index < 8){
+		return !!(Data->fr_buttons & _BV(index));
+	} else {
+		return 0;
+	}
+}
+	
+/* Set motor speeds based on joystick inputs, if
+ * enable bit is set. */
+void direct_control(void){
+	bool quit;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+		quit = !(Data->xbox_buttons_high & _BV(7));
+		Data->buttons_high &= ~_BV(7);
+	}
+	if(quit)return;
+	
+	if(switch_ch(PAUSE_SWITCH) == SW_FORWARD){
+		Data->pause_state = 1;
+	} else {
+		Data->pause_state = 0;
+	}
+	Data->pan_speed = -joy_ch(PAN);
+	Data->tilt_speed = joy_ch(TILT);
+	cam_select = switch_ch(CAMERA_SELECT) == SW_BACK;
+	if(cam_select && !prev_cam_select){
+		Data->selected_camera++;
+		if(Data->selected_camera > 6){
+			Data->selected_camera = 1;
+		}
+	}
+	prev_cam_select = cam_select;
+	if(switch_ch(MODE_SWITCH) == SW_FORWARD){
+		/* Mode 1 - Drive */
+		int8_t left = joy_ch(JOY_LV);
+		int8_t right = joy_ch(JOY_RV);
+		Data->l_f_drive = left;
+		Data->l_m_drive = left;
+		Data->l_b_drive = left;
+		Data->r_f_drive = right;
+		Data->r_m_drive = right;
+		Data->r_b_drive = right;
+		Data->swerve_state = switch_ch(TURN_SWITCH);
+		Data->arm_mode = 0;
+	} else {
+		/* Mode 2 - Arm */
+		Data->arm_motor_1 = joy_ch(ARM_BASE);
+		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
+		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
+		Data->arm_motor_5 = 0;
+		Data->ee_speed = -8*joy_ch(ARM_EE);
+		if(switch_ch(MODE_SWITCH) == SW_MIDDLE){
+			/* Arm mode 1 - Grabber */
+			Data->arm_mode = 1;
+			Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+			Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
+		} else {
+			/* Arm mode 2 - Container Sealer */
+			Data->arm_mode = 2;
+			Data->arm_motor_4 = joy_ch(ARM_DRILL);
+		}
+	}
+}
 	
 void miniboard_main(void){
 	init();
@@ -146,6 +239,9 @@ void miniboard_main(void){
 		super_pause = !Data->pause_state || (CommTimedOut && !Data->sbus_active);
 		/* GPS */
 		/* (handled in-module) */
+		
+		/* Direct Control */
+		direct_control();
 		
 		/* Saberteeth */
 		uart_wait(AX12_UART);

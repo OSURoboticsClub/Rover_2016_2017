@@ -181,7 +181,6 @@ bool switch_ch(uint8_t index){
 /* Set motor speeds based on joystick inputs, if
  * enable bit is set. */
 void direct_control(void){
-	static uint8_t prev_pause;
 	static uint8_t prev_cam_select;
 	uint8_t cam_select;
 	bool quit;
@@ -345,6 +344,9 @@ void miniboard_main(void){
 		
 		/* Sample Camera Actions */
 		sample_cam_button(Data->cam_action);
+		
+		/* Navigation camera actions */
+		nav_cam_button(Data->nav_action);
 		
 		/* Blink LED. */
 		DDRB |= _BV(PB7);

@@ -219,14 +219,14 @@ void direct_control(void){
 		Data->arm_mode = 0;
 	} else {
 		/* Mode 2 - Arm */
-		Data->arm_motor_1 = joy_ch(ARM_BASE);
-		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
-		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
-		Data->arm_motor_5 = 0;
-		Data->ee_speed = -8*joy_ch(ARM_EE);
-		Data->arm_mode = 1;
-		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
-		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
+// 		Data->arm_motor_1 = joy_ch(ARM_BASE);
+// 		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
+// 		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
+// 		Data->arm_motor_5 = 0;
+// 		Data->ee_speed = -8*joy_ch(ARM_EE);
+// 		Data->arm_mode = 1;
+// 		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+// 		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 // 		Data->arm_mode = 2;
 // 		Data->arm_motor_4 = joy_ch(ARM_DRILL);
 	}

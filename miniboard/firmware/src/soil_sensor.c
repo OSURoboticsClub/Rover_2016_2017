@@ -13,13 +13,13 @@
 #define SOIL_RX_UART 1
 #define TIMEOUT_ITERATION 250000UL
 
-/* Drive enable = pin 23 = PA1 */
-#define DEN_PIN 1
+/* Drive enable = pin 25 = PA3 */
+#define DEN_PIN 3
 #define DEN_PORT PORTA
 #define DEN_DDR DDRA
 
-/* Receive enable = pin 25 = PA3 */
-#define REN_PIN 3
+/* Receive enable = pin 23 = PA1 */
+#define REN_PIN 1
 #define REN_PORT PORTA
 #define REN_DDR DDRA
 

@@ -9,11 +9,14 @@
 from PyQt5 import QtCore, QtWidgets
 import logging
 from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt, write_pan_tilt, write_arm_motors, write_swerve_drive_state
+    read_pan_tilt, write_pan_tilt, write_arm_motors, write_swerve_drive_state, write_joystick
 import time
 #####################################
 # Global Variables
 #####################################
+JOY_MIN = -127
+JOY_MAX = 127
+
 DRIVE_MIN = -127
 DRIVE_MAX = 127
 
@@ -23,7 +26,7 @@ ARMS_MAX = 127
 DEAD_BAND_FRSKY = 20
 DEAD_BAND_XBOX = 1500
 
-DRIVE_TIMEOUT = 0.25  # Seconds
+DRIVE_TIMEOUT = 2  # Seconds
 ARM_TIMEOUT = 0.25  # Seconds
 PAN_TILT_TIMEOUT = 0.25  # Seconds
 DRIVE_SWERVE_TIMEOUT = 5  # Seconds
@@ -101,10 +104,11 @@ class MotionProcessor(QtCore.QThread):
         self.wait_for_pan_tilt_response = False
         self.wait_for_arm_response = False
         self.wait_for_swerve_state_response = False
+        self.wait_for_passthrough_response = False
 
         # ########## Class Variables ##########
-        self.xbox_states = {}
-        self.frsky_states = {}
+        self.xbox_states = self.main_window.xbox_controller_class.controller_states
+        self.frsky_states = self.main_window.frsky_controller_class.controller_states
 
         self.last_pause_state = 0
         self.last_swerve_state = 0
@@ -116,26 +120,27 @@ class MotionProcessor(QtCore.QThread):
         self.pan_position = -1
         self.tilt_position = -1
 
+        self.frsky_locked = False
+        self.xbox_locked = False
+
     def run(self):
         self.logger.debug("Motion Processor Thread Starting...")
 
         while self.run_thread_flag:
             if self.xbox_states and self.frsky_states:
-                # start_time = time.time()
-                self.__set_pause_on_state_change()
-                self.__all_stop_on_arm_control()
-                # self.__set_swerve_state_on_state_change()
-                # self.__pan_tilt_manual()
+
+                start_time = time.time()
+                self.__send_controller_passthrough()
                 if not self.frsky_states["sa_state"]:  # 0 is drive mode
                     if not self.frsky_states["se_state"]:  # 0 is drive mode
-                        self.__drive_manual()
-                    else:  # 1 is arm mode
-                        self.__arm_control_manual()
+                        # TODO: Change to send faster
+                        pass
                 else:  # 1 is auto mode
-                    self.__drive_auto()
-                # self.logger.debug("Control time: " + str(time.time() - start_time))
+                    # TODO: Change to send slower
+                    pass
+                self.logger.debug("Control time: " + str(time.time() - start_time))
+            self.msleep(5)
 
-        self.msleep(20)
         self.logger.debug("Motion Processor Thread Stopping...")
 
     # noinspection PyUnresolvedReferences
@@ -160,7 +165,121 @@ class MotionProcessor(QtCore.QThread):
 
         self.main_window.miniboard_class.ack_swerve_drive_state.connect(self.on_swerve_state_response_received__slot)
 
+        self.main_window.miniboard_class.ack_joystick.connect(self.on_passthrough_response_received__slot)
+
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
+
+    def __send_controller_passthrough(self):
+        # ##### Frsky #####
+        fr_left_horiz = int(self.clamp(self.frsky_states["left_stick_x_axis"], JOY_MIN, JOY_MAX))
+        fr_left_vert = int(self.clamp(self.frsky_states["left_stick_y_axis"], JOY_MIN, JOY_MAX))
+        fr_right_horiz = int(self.clamp(self.frsky_states["right_stick_x_axis"], JOY_MIN, JOY_MAX))
+        fr_right_vert = int(self.clamp(self.frsky_states["right_stick_y_axis"], JOY_MIN, JOY_MAX))
+        fr_left_pot = int(self.clamp(self.frsky_states["s1_axis"], JOY_MIN, JOY_MAX))
+        fr_right_pot = int(self.clamp(self.frsky_states["s2_axis"], JOY_MIN, JOY_MAX))
+        fr_left_side_pot = int(self.clamp(self.frsky_states["ls_axis"], JOY_MIN, JOY_MAX))
+        fr_right_side_pot = int(self.clamp(self.frsky_states["rs_axis"], JOY_MIN, JOY_MAX))
+
+        fr_button_a = self.frsky_states["sa_state"]
+        fr_button_b = self.frsky_states["sb_state"]
+        fr_button_c = self.frsky_states["sc_state"]
+        fr_button_d = self.frsky_states["sd_state"]
+        fr_button_e = self.frsky_states["se_state"]
+        fr_button_f = self.frsky_states["sf_state"]
+        fr_button_g = self.frsky_states["sg_state"]
+        fr_button_h = self.frsky_states["sh_state"]
+
+        frsky_buttons_byte = 0
+
+        frsky_buttons_byte |= (fr_button_a << 0)
+        frsky_buttons_byte |= (fr_button_b << 1)
+        frsky_buttons_byte |= (fr_button_c << 2)
+        frsky_buttons_byte |= (fr_button_d << 3)
+        frsky_buttons_byte |= (fr_button_e << 4)
+        frsky_buttons_byte |= (fr_button_f << 5)
+        frsky_buttons_byte |= (fr_button_g << 6)
+        frsky_buttons_byte |= (fr_button_h << 7)
+
+        # ##### XBOX #####
+        xb_left_horiz = int(self.clamp(self.xbox_states["left_stick_x_axis"] // 256, JOY_MIN, JOY_MAX))
+        xb_left_vert = int(self.clamp(self.xbox_states["left_stick_y_axis"] // 256, JOY_MIN, JOY_MAX))
+        xb_right_horiz = int(self.clamp(self.xbox_states["right_stick_x_axis"] // 256, JOY_MIN, JOY_MAX))
+        xb_right_vert = int(self.clamp(self.xbox_states["right_stick_y_axis"] // 256, JOY_MIN, JOY_MAX))
+        xb_left_trig = int(self.clamp(self.xbox_states["left_trigger_z_axis"] - 127, JOY_MIN, JOY_MAX))
+        xb_right_trig = int(self.clamp(self.xbox_states["right_trigger_z_axis"] - 127, JOY_MIN, JOY_MAX))
+
+        xb_button_a = self.xbox_states["a_pressed"]
+        xb_button_b = self.xbox_states["b_pressed"]
+        xb_button_x = self.xbox_states["x_pressed"]
+        xb_button_y = self.xbox_states["y_pressed"]
+        xb_button_lb = self.xbox_states["left_bumper_pressed"]
+        xb_button_rb = self.xbox_states["right_bumper_pressed"]
+        xb_button_lsc = self.xbox_states["left_stick_center_pressed"]
+        xb_button_rsc = self.xbox_states["right_stick_center_pressed"]
+        xb_button_sel = self.xbox_states["select_pressed"]
+        xb_button_strt = self.xbox_states["start_pressed"]
+        xb_button_home = self.xbox_states["home_pressed"]
+        xb_button_dph = self.xbox_states["dpad_x"]
+        xb_button_dpv = self.xbox_states["dpad_y"]
+
+        xbox_buttons_low_byte = 0
+        xbox_buttons_high_byte = 0
+
+        xbox_buttons_low_byte |= (xb_button_a << 0)
+        xbox_buttons_low_byte |= (xb_button_b << 1)
+        xbox_buttons_low_byte |= (xb_button_x << 2)
+        xbox_buttons_low_byte |= (xb_button_y << 3)
+        xbox_buttons_low_byte |= (xb_button_lb << 4)
+        xbox_buttons_low_byte |= (xb_button_rb << 5)
+        xbox_buttons_low_byte |= (xb_button_lsc << 6)
+        xbox_buttons_low_byte |= (xb_button_rsc << 7)
+
+        xbox_buttons_high_byte |= (xb_button_sel << 0)
+        xbox_buttons_high_byte |= (xb_button_strt << 1)
+        xbox_buttons_high_byte |= (xb_button_home << 2)
+
+        dpad_l_state = 0
+        dpad_r_state = 0
+        dpad_u_state = 0
+        dpad_d_state = 0
+
+        if xb_button_dph == -1:
+            dpad_l_state = 1
+        elif xb_button_dph == 1:
+            dpad_r_state = 1
+
+        if xb_button_dpv == -1:
+            dpad_u_state = 1
+        elif xb_button_dpv == 1:
+            dpad_d_state = 1
+
+        xbox_buttons_high_byte |= (dpad_l_state << 3)
+        xbox_buttons_high_byte |= (dpad_r_state << 4)
+        xbox_buttons_high_byte |= (dpad_u_state << 5)
+        xbox_buttons_high_byte |= (dpad_d_state << 6)
+        xbox_buttons_high_byte |= (1 << 7)
+
+        # self.logger.debug('{0:08b}'.format(xbox_buttons_high_byte) + " : " + '{0:08b}'.format(xbox_buttons_low_byte))
+
+
+
+        # current_array = [fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte]
+        # desired_array = [str(number) for number in current_array]
+        # joined = " : ".join(desired_array)
+        # self.logger.debug(joined)
+
+        self.wait_for_passthrough_response = True
+        write_joystick(self.send_miniboard_control_packet, fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte)
+
+        # ##### Standard timeout block #####
+        start_time = time.time()
+        time_elapsed = 0
+
+        while self.wait_for_passthrough_response and time_elapsed < DRIVE_TIMEOUT:  # I'm being explicit here
+            time_elapsed = time.time() - start_time
+            self.msleep(1)
+
+        # ##### End standard timeout block #####
 
     def __set_pause_on_state_change(self):
         current_state = self.frsky_states['sf_state']
@@ -338,11 +457,15 @@ class MotionProcessor(QtCore.QThread):
         self.pan_position = new_pan
         self.tilt_position = new_tilt
 
-    def on_xbox_states_updated__slot(self, states):
-        self.xbox_states = states
+    def on_xbox_states_updated__slot(self):
+        return
+        if not self.xbox_locked:
+            self.xbox_locked = True
 
-    def on_frsky_states_updated__slot(self, states):
-        self.frsky_states = states
+    def on_frsky_states_updated__slot(self):
+        return
+        if not self.frsky_locked:
+            self.frsky_locked = True
 
     def on_primary_pan_tilt_write_acknowledged__slot(self):
         self.wait_for_pan_tilt_response = False
@@ -364,6 +487,10 @@ class MotionProcessor(QtCore.QThread):
     def on_drive_motor_power_response_received__slot(self, sdict):
         pass
         #self.logger.debug(sdict)
+
+    def on_passthrough_response_received__slot(self):
+        self.logger.debug("passthrough")
+        self.wait_for_passthrough_response = False
 
     def on_drive_response_received__slot(self):
         self.wait_for_drive_response = False

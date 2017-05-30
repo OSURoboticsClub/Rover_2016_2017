@@ -78,7 +78,7 @@ void compass_retrieve(){
 
 void config_rega()
 {
-	uint8_t confa = 0x78;
+	uint8_t confa = 0x70;
 	twi_writeto(CONF_A, confa);
 }
 

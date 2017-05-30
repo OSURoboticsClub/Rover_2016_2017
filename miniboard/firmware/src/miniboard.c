@@ -293,8 +293,8 @@ void miniboard_main(void){
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
-			ax12_continuous_speed(PAN_AX12, Data->pan_speed*2);
-			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*2);
+			ax12_continuous_speed(PAN_AX12, Data->pan_speed*3);
+			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*3);
 			if(Data->arm_mode != 0){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
 				if(Data->arm_mode == 1){

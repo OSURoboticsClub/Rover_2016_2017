@@ -15,7 +15,7 @@ import time
 # Global Variables
 #####################################
 GAME_CONTROLLER_NAME = "Afterglow Gamepad for Xbox 360"
-CONTROLLER_DATA_UPDATE_FREQUENCY = 20  # Times per second
+CONTROLLER_DATA_UPDATE_FREQUENCY = 50  # Times per second
 
 
 #####################################
@@ -25,7 +25,7 @@ class XBOXController(QtCore.QThread):
 
     # ########## Signals ##########
     controller_connection_aquired = QtCore.pyqtSignal(bool)
-    controller_update_ready_signal = QtCore.pyqtSignal([dict])
+    controller_update_ready_signal = QtCore.pyqtSignal()
 
     def __init__(self, main_window):
         super(XBOXController, self).__init__()
@@ -141,15 +141,14 @@ class XBOXController(QtCore.QThread):
             for event in events:
                 if event.code in self.raw_mapping_to_class_mapping:
                     self.controller_states[self.raw_mapping_to_class_mapping[event.code]] = event.state
-                    self.controller_update_ready_signal.emit(self.controller_states)
-
+            # self.logger.debug("XBOX: " + str(self.controller_states))
 
     def __broadcast_if_ready(self):
 
         current_time = time.time()
 
         if (current_time - self.last_time) > (1/CONTROLLER_DATA_UPDATE_FREQUENCY):
-            self.controller_update_ready_signal.emit(self.controller_states)
+            self.controller_update_ready_signal.emit()
             self.last_time = current_time
 
     def on_kill_threads__slot(self):

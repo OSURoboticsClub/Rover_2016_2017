@@ -51,10 +51,10 @@ don't change the name of existing command arguments.
 | Name | RW | Command Code | Arguments | Default values | Notes | 
 | ---- | --- | ------------ | --------- | -------------- | ----- | 
 | Command not Recognized   | -  | 0x00 | u8 wrong_command | - | Sent as a reply to unknown commands. |
-| Pause                    | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause | 
-| Battery Voltage          | R  | 0x06 | u16 battery_voltage | - | Battery voltage in mV | 
-| Drive Motor Power        | RW | 0x10 | i8 l_f_drive, i8 l_m_drive, i8 l_b_drive, i8 r_f_drive, i8 r_m_drive, i8 r_b_drive | 0,0,0,0,0,0 | -127 = full reverse 128 = full forward, r = right, l = left, f = front, m = middle, b = back | 
-| Swerve Drive State       | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn | 
+| Pause                    | RW | 0x05 | u8 pause_state | 1 | 0 = pause (no rover motion) 1 = unpause |
+| Battery Voltage          | R  | 0x06 | u16 battery_voltage | - | Battery voltage in mV |
+| Drive Motor Power        | RW | 0x10 | i8 l_f_drive, i8 l_m_drive, i8 l_b_drive, i8 r_f_drive, i8 r_m_drive, i8 r_b_drive | 0,0,0,0,0,0 | -127 = full reverse 128 = full forward, r = right, l = left, f = front, m = middle, b = back |
+| Swerve Drive State       | RW | 0x11 | u8 swerve_state | 0 | 0x00 = Off (no motion), 0x01 = Straight, 0x02 = Turn |
 | Arm Motors               | RW | 0x12 | i8 arm_motor_1, i8 arm_motor_2, i8 arm_motor_3, i8 arm_motor_4, i8 arm_motor_5 | 0,0,0,0,0 | -127 = full reverse 128 = full forward TODO: Define motor->joint mapping
 | Servo                    |  W | 0x14 | u8 ax12_addr, u16 ax12_angle | 0,512 | Set the target angle of an AX12 servo. |
 | S Bus Values 1           | R  | 0x15 | u16 sbus_1, u16 sbus_2, u16 sbus_3, u16 sbus_4, u16 sbus_5, u16 sbus_6, u16 sbus_7, u16 sbus_8 | - | S-Bus channel values. |
@@ -78,8 +78,8 @@ don't change the name of existing command arguments.
 | Navigation Camera Action | RW | 0x36 | u8 nav_action | 0 | Naviagation cam actions. 0 = none, 1 = zoom in, 2 = zoom out |
 | Soil Sensor Send         |  W | 0x40 | u8 soil_send_data_length, * soil_send_data| - | Data string to send to the soil sensor. |
 | Soil Sensor Recv         | RW | 0x41 | u8 soil_recv_data_length, * soil_recv_data| - | Reply string received from the soil sensor. |
-| Joystick                 | RW | 0x50 | i8 fr_joylh, i8 fr_joylv, i8 fr_joyrh, i8 fr_joyrv, i8 fr_potl, i8 fr_potr, i8 fr_sidel, i8 fr_sider, u8 fr_buttons, i8 xbox_joylh, i8 xbox_joylv, i8 xbox_joyrh, i8 xbox_joyrv, i8 xbox_triggerl, i8 xbox_triggerr, u8 xbox_buttons_high, u8 xbox_buttons_low | 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 | Frsky buttons are packed (MSB) H ..A (LSB). MSB of xbox_buttons_high is enable; must be 1 |
+| Joystick                 | RW | 0x50 | i8 fr_joylh, i8 fr_joylv, i8 fr_joyrh, i8 fr_joyrv, i8 fr_potl, i8 fr_potr, i8 fr_sidel, i8 fr_sider, u8 fr_buttons, i8 xbox_joylh, i8 xbox_joylv, i8 xbox_joyrh, i8 xbox_joyrv, i8 xbox_triggerl, i8 xbox_triggerr, u8 xbox_buttons_high, u8 xbox_buttons_low | 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 | Frsky buttons are packed (MSB) H ..A (LSB). MSB of xbox_buttons_high is enable; must be 1! XBOX low byte -> (MSB)(RSC)(LSC)(RB)(LB)(Y)(X)(B)(A)(LSB) XBOX high byte (MSB)(1)(DPD)(DPU)(DPR)(DPL)(HOME)(STRT)(SEL)(LSB)|
 | Autonomous Enable        | RW | 0x60 | u8 auton_en | 0 | If 1, do autonomous traversal. |
 | Autonomous Waypoint 1    | RW | 0x61 | i64 auton_way1_lat, i64 auton_way1_lon, u16 auton_way1_speed | 0,0,0 | Autonomous target waypoint. Speed in mm/s. |
 | Autonomous Waypoint 2    | RW | 0x63 | i64 auton_way2_lat, i64 auton_way2_lon, u16 auton_way2_speed | 0,0,0 | Autonomous next waypoint. Speed in mm/s. |
-| Time ms                  | R  | 0x64 | u32 time_ms | 0 | Time since rover was turned on, in ms. | 
+| Time ms                  | R  | 0x64 | u32 time_ms | 0 | Time since rover was turned on, in ms. |

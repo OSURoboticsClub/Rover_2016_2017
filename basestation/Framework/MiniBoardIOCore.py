@@ -147,6 +147,63 @@ class MiniboardIO(QtCore.QThread):
         self.tty.write(packet_contents)
         self.msleep((4 + len(body_list)) * .001)
 
+	def __process_buffer(self, buf):
+		"""Process all packets present in the given buffer (a list of characters).
+		   When valid packets are found, signals are emitted as necessary.
+		   After processing, a tuple is returned containing a list of packet
+		   command bytes encountered, and a list of the remaining characters in the
+		   buffer (empty if everything was processed)."""
+		cmd_bytes = []
+		while len(buf) >= 5:
+			#Fast-forward to the first start byte
+			try:
+				i = buf.index(0x01)
+			except ValueError:
+				break
+			buf = buf[i:]
+			if len(buf) < 5:
+				self.logger.debug("Too small overall size reply packet: " + buf.__str__())
+				break
+			if len(buf) < (buf[1] + 2):
+				self.logger.debug("Too small for length byte reply packet: " + buf.__str__())
+				buf = buf[1:] #Delete current start byte
+				continue
+			crc = self.calc_crc(buf4:]) 
+			if crc == struct.unpack("<H", bytes(buf[2:4]))[0]:  # CRC OK
+				#Valid packet
+				cmd_bytes.append(buf[4])
+				if buf[4] & 0x80:
+					# self.logger.debug("read")
+					code = buf[4] & 0x7F
+					cmd = RoverCmdDict[code]
+					adict = {}
+					b = 5
+					vs = []
+					for a, i in zip(cmd["argument"], range(0, len(cmd["argument"]))):
+						if a[0] != "*":
+							s = struct.calcsize(fmtcodes[a[0]])
+							value = struct.unpack(fmtcodes[a[0]], bytes(buf[b:b + s]))[0]
+							adict[a[1]] = value
+							vs.append(value)
+							b += s
+						else:
+							s = vs[i - 1]
+							value = buf[b:b + s]
+							adict[a[1]] = value
+							b += s
+					getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
+					# self.logger.debug(adict)
+				else:
+					code = buf[4] & 0x7F
+					cmd = RoverCmdDict[code]
+					getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
+			buf = buf[(buf[1] + 2):]
+			else:
+				self.logger.debug("Invalid CRC in reply packet (expected 0x%04X): "%crc + buf.__str__())
+				buf = buf[1:] #Delete current start byte
+				continue
+		return (cmd_byes, buf)
+
     def run(self):
         """Read from the serial port, recognize the command, and emit a signal."""
 
@@ -155,6 +212,19 @@ class MiniboardIO(QtCore.QThread):
         reply = []
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
                     "i64": "<q"}
+
+		#repeat:
+			#send
+			#receive expected amount in expected time
+			#got enough
+			  #yes: process
+			  #no: 
+				#get a bit more, longer delay
+			    #got enough now?
+			      #yes: process everthing in buffer
+			      #no: get a lot more
+			        #process everything in buffer
+			        #throw away the rest
 
         while self.run_thread_flag:
             if len(self.queue) > 0:

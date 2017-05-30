@@ -9,7 +9,7 @@
 from PyQt5 import QtCore, QtWidgets
 import logging
 from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt, write_pan_tilt, write_arm_motors, write_swerve_drive_state, write_joystick
+    write_arm_motors, write_swerve_drive_state, write_joystick
 import time
 #####################################
 # Global Variables
@@ -138,8 +138,8 @@ class MotionProcessor(QtCore.QThread):
                 else:  # 1 is auto mode
                     # TODO: Change to send slower
                     pass
-                self.logger.debug("Control time: " + str(time.time() - start_time))
-            self.msleep(5)
+                # self.logger.debug("Control time: " + str(time.time() - start_time))
+            self.msleep(100)
 
         self.logger.debug("Motion Processor Thread Stopping...")
 
@@ -155,11 +155,11 @@ class MotionProcessor(QtCore.QThread):
             self.on_drive_motor_power_response_received__slot)
         self.main_window.miniboard_class.ack_drive_motor_power.connect(self.on_drive_response_received__slot)
 
-        self.main_window.miniboard_class.data_pan_tilt.connect(self.on_pan_tilt_primary_position_response__slot)
+        # self.main_window.miniboard_class.data_pan_tilt.connect(self.on_pan_tilt_primary_position_response__slot)
         # self.main_window.miniboard_class.data_pan_tilt_secondary.connect(
         #     self.on_pan_tilt_secondary_position_response__slot)
 
-        self.main_window.miniboard_class.ack_pan_tilt.connect(self.on_primary_pan_tilt_write_acknowledged__slot)
+        # self.main_window.miniboard_class.ack_pan_tilt.connect(self.on_primary_pan_tilt_write_acknowledged__slot)
 
         self.main_window.miniboard_class.ack_arm_motors.connect(self.on_arm_motors_write_acknowledged__slot)
 
@@ -263,10 +263,10 @@ class MotionProcessor(QtCore.QThread):
 
 
 
-        # current_array = [fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte]
-        # desired_array = [str(number) for number in current_array]
-        # joined = " : ".join(desired_array)
-        # self.logger.debug(joined)
+        current_array = [fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte]
+        desired_array = [str(number) for number in current_array]
+        joined = " : ".join(desired_array)
+        self.logger.debug(joined)
 
         self.wait_for_passthrough_response = True
         write_joystick(self.send_miniboard_control_packet, fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte)
@@ -278,6 +278,8 @@ class MotionProcessor(QtCore.QThread):
         while self.wait_for_passthrough_response and time_elapsed < DRIVE_TIMEOUT:  # I'm being explicit here
             time_elapsed = time.time() - start_time
             self.msleep(1)
+
+        self.logger.debug("Elapsed: " + str(time_elapsed))
 
         # ##### End standard timeout block #####
 
@@ -489,7 +491,7 @@ class MotionProcessor(QtCore.QThread):
         #self.logger.debug(sdict)
 
     def on_passthrough_response_received__slot(self):
-        self.logger.debug("passthrough")
+        self.logger.debug("Received passthrough response")
         self.wait_for_passthrough_response = False
 
     def on_drive_response_received__slot(self):

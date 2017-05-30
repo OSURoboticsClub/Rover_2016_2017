@@ -8,8 +8,7 @@
 # Python native imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
-from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, \
-    read_pan_tilt, write_pan_tilt, write_arm_motors
+from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, write_arm_motors
 
 #####################################
 # Global Variables

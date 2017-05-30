@@ -111,11 +111,12 @@ void init(void){
 	imu_init();
 	sbus_init();
 	soil_init();
+	autonomous_init();
 	sei();
 	reset_timeout_timer();
 	ax12_init(AX12_BAUD);
-	ax12_set_angle_mode(PAN_AX12);
-	ax12_set_angle_mode(TILT_AX12);
+	ax12_set_continuous_mode(PAN_AX12);
+	ax12_set_continuous_mode(TILT_AX12);
 	ax12_set_continuous_mode(PITCH_AX12);
 	ax12_set_continuous_mode(WRIST_AX12);
 	ax12_set_continuous_mode(SQUEEZE_AX12);
@@ -153,6 +154,7 @@ uint8_t clamp127(int8_t value){
 #define PAUSE_SWITCH SF
 #define DRIVE_LEFT Data->fr_joylv 
 #define DRIVE_RIGHT Data->fr_joyrv
+#define DRIVE_SPEED Data->fr_sidel
 #define ARM_BASE Data->fr_joylh
 #define ARM_BICEP Data->fr_joylv
 #define ARM_FOREARM Data->fr_joyrv
@@ -181,7 +183,6 @@ bool switch_ch(uint8_t index){
 /* Set motor speeds based on joystick inputs, if
  * enable bit is set. */
 void direct_control(void){
-	static uint8_t prev_pause;
 	static uint8_t prev_cam_select;
 	uint8_t cam_select;
 	bool quit;
@@ -210,24 +211,27 @@ void direct_control(void){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		Data->l_f_drive = left;
-		Data->l_m_drive = left;
-		Data->l_b_drive = left;
-		Data->r_f_drive = right;
-		Data->r_m_drive = right;
-		Data->r_b_drive = right;
+		uint16_t speed_factor = joy_ch(DRIVE_SPEED);
+		speed_factor = 256 - speed_factor;
+		speed_factor = 1 + (speed_factor/64);
+		Data->l_f_drive = left/speed_factor;
+		Data->l_m_drive = left/speed_factor;
+		Data->l_b_drive = left/speed_factor;
+		Data->r_f_drive = right/speed_factor;
+		Data->r_m_drive = right/speed_factor;
+		Data->r_b_drive = right/speed_factor;
 		Data->swerve_state = switch_ch(TURN_SWITCH);
 		Data->arm_mode = 0;
 	} else {
 		/* Mode 2 - Arm */
-		Data->arm_motor_1 = joy_ch(ARM_BASE);
-		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
-		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
-		Data->arm_motor_5 = 0;
-		Data->ee_speed = -8*joy_ch(ARM_EE);
-		Data->arm_mode = 1;
-		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
-		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
+// 		Data->arm_motor_1 = joy_ch(ARM_BASE);
+// 		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
+// 		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
+// 		Data->arm_motor_5 = 0;
+// 		Data->ee_speed = -8*joy_ch(ARM_EE);
+// 		Data->arm_mode = 1;
+// 		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+// 		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 // 		Data->arm_mode = 2;
 // 		Data->arm_motor_4 = joy_ch(ARM_DRILL);
 	}
@@ -288,26 +292,9 @@ void miniboard_main(void){
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
-			int16_t new_pan, new_tilt;
-			new_pan = Data->pan_angle + Data->pan_speed/PANTILT_DIV;
-			new_tilt = Data->tilt_angle + Data->tilt_speed/PANTILT_DIV;
-			if(new_pan < PAN_MIN){
-				new_pan = PAN_MIN;
-			}
-			if(new_pan > PAN_MAX){
-				new_pan = PAN_MAX;
-			}
-			if(new_tilt < TILT_MIN){
-				new_tilt = TILT_MIN;
-			}
-			if(new_tilt > TILT_MAX){
-				new_tilt = TILT_MAX;
-			}
-			Data->pan_angle = new_pan;
-			Data->tilt_angle = new_tilt;
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
-			ax12_set_goal_position(PAN_AX12, Data->pan_angle);
-			ax12_set_goal_position(TILT_AX12, Data->tilt_angle);
+			ax12_continuous_speed(PAN_AX12, Data->pan_speed*2);
+			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*2);
 			if(Data->arm_mode != 0){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
 				if(Data->arm_mode == 1){
@@ -345,6 +332,9 @@ void miniboard_main(void){
 		
 		/* Sample Camera Actions */
 		sample_cam_button(Data->cam_action);
+		
+		/* Navigation camera actions */
+		nav_cam_button(Data->nav_action);
 		
 		/* Blink LED. */
 		DDRB |= _BV(PB7);
@@ -419,7 +409,7 @@ void ax12_test(void){
 }
 
 void ax12_reset_addr(void){
-	uint8_t target_addr = 4;
+	uint8_t target_addr = 1;
 	init();
 	while(1){
 		for(uint16_t i=0;i<255;i++){

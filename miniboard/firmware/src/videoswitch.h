@@ -25,3 +25,10 @@ void videoswitch_select(uint8_t input);
  *   3 - Zoom in
  *   4 - Zoom out */
 void sample_cam_button(uint8_t action);
+
+/* Press a button on the navigation camera to zoom in/out.
+ * Actions values:
+ *   0 - no button pressed
+ *   1 - zoom in
+ *   2 - zoom out */
+void nav_cam_button(uint8_t action);

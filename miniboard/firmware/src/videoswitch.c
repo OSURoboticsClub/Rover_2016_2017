@@ -82,25 +82,25 @@ void sample_cam_button(uint8_t action){
 	DDRK |= _BV(PK5) | _BV(PK6) | _BV(PK7);
 	switch(action){
 		case 1:
-			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK6);
 			PORTK &= ~_BV(PK5);
 			PORTK &= ~_BV(PK7);
 			PORTK &= ~_BV(PK6);
 			break;
 		case 2:
-			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK6);
 			PORTK &= ~_BV(PK5);
 			PORTK |= _BV(PK7);
 			PORTK &= ~_BV(PK6);
 			break;
 		case 3:
-			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK6);
 			PORTK |= _BV(PK5);
 			PORTK &= ~_BV(PK7);
 			PORTK &= ~_BV(PK6);
 			break;
 		case 4:
-			PORTK|= _BV(PK6);
+			PORTK |= _BV(PK6);
 			PORTK |= _BV(PK5);
 			PORTK |= _BV(PK7);
 			PORTK &= ~_BV(PK6);
@@ -108,6 +108,32 @@ void sample_cam_button(uint8_t action){
 			
 		default:
 			PORTK |= _BV(PK6);
+			break;
+	}
+}
+
+/* Press a button on the navigation camera to zoom in/out.
+ * Actions values:
+ *   0 - no button pressed
+ *   1 - zoom in
+ *   2 - zoom out */
+void nav_cam_button(uint8_t action){
+	/* PK3 & PF6 */
+	PORTK &= ~_BV(PK3);
+	PORTF &= ~_BV(PF6);
+	
+	switch(action){
+		case 1:
+			DDRK |= _BV(PK3);
+			DDRF &= ~_BV(PF6);
+			break;
+		case 2:
+			DDRK &= ~_BV(PK3);
+			DDRF |= _BV(PF6);
+			break;
+		default:
+			DDRK &= ~_BV(PK3);
+			DDRF &= ~_BV(PF6);
 			break;
 	}
 }

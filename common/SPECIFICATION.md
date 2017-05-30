@@ -69,7 +69,7 @@ don't change the name of existing command arguments.
 | Gyroscope                | R  | 0x28 | i16 gyro_x, i16 gyro_y, i16 gyro_z | 0,0,0 | IMU gyroscope reading. TODO: define units and axis directions. |
 | Compass Heading          | R  | 0x29 | u8 compass_heading_valid, i16 compass_heading | 0,0 | Magnetic compass heading. TODO: define units and axis directions. |
 | Pan Tilt Speed           | RW | 0x2B | i8 pan_speed, i8 tilt_speed | 0,0 | Pan/tilt speeds. Both range from -128 to 127. The total angle will be limited to safe values.|
-| AX12 Arm Mode            | RW | 0x2C | u8 arm_mode | 0 | 0 = arm AX12s not in use, 1 = arm grabber, 2 = arm science |
+| AX12 Arm Mode            | RW | 0x2C | u8 arm_mode | 0 | 0 = arm AX12s not in use, 1 = arm ax12s in use |
 | End Effector Speed       | RW | 0x2D | i16 ee_speed | 0 | Speed of end effector pitch control. Range -1023 to 1023. |
 | Grabber                  | RW | 0x2E | i16 grabber_speed, i16 grabber_rotation_speed | 0,0 | Speed of grabber motors. Range -1023 to 1023. |
 | Container Sealer         | RW | 0x2F | u16 cflex1_angle, u16 cflex2_angle, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |

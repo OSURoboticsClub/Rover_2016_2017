@@ -40,7 +40,6 @@
 #define PI 3.14159
 
 void comp_init(void) {
-	uart_enable(COMP_UART, 1000000, 1, 0);
 	twi_init();
 	config_rega();
 	config_regb();
@@ -182,7 +181,7 @@ uint8_t twi_writeto(uint16_t u16addr, uint8_t u8data)
     if (twi_getStatus() != 0x08){
         return 1;
     }
-    //select devise and send A2 A1 A0 address bits
+    //select device and send A2 A1 A0 address bits
     twi_write(0x3C);
     if (twi_getStatus() != 0x18){  
         return 1;

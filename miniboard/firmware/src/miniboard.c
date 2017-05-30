@@ -26,13 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
-/* AX12 limits */
-#define PAN_MIN 50
-#define PAN_MAX 1000
-#define TILT_MIN 100
-#define TILT_MAX 450
-#define PANTILT_DIV 16
+#include "time.h"
 
 /* AX12 addresses */
 #define PAN_AX12 1
@@ -40,9 +34,9 @@
 #define PITCH_AX12 4
 #define WRIST_AX12 5
 #define SQUEEZE_AX12 6
-#define CFLEX1_AX12 7
+#define CFLEX1_AX12 9
 #define CFLEX2_AX12 8
-#define CSEAL_AX12 9
+#define CSEAL_AX12 7
 
 bool SoilTalk;
 
@@ -111,7 +105,7 @@ void init(void){
 	imu_init();
 	sbus_init();
 	soil_init();
-	autonomous_init();
+	time_init();
 	sei();
 	reset_timeout_timer();
 	ax12_init(AX12_BAUD);
@@ -211,9 +205,10 @@ void direct_control(void){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		uint16_t speed_factor = joy_ch(DRIVE_SPEED);
+		uint16_t speed_factor = joy_ch(DRIVE_SPEED) + 127;
 		speed_factor = 256 - speed_factor;
 		speed_factor = 1 + (speed_factor/64);
+		speed_factor = 1;
 		Data->l_f_drive = left/speed_factor;
 		Data->l_m_drive = left/speed_factor;
 		Data->l_b_drive = left/speed_factor;
@@ -285,6 +280,12 @@ void miniboard_main(void){
 		/* Video Switch */
 		videoswitch_select(Data->selected_camera);
 		
+		/* Battery voltage */
+		atomic_set(Data->battery_voltage, battery_mV());
+		
+		/* Compass */
+		compass_retrieve();
+		
 		/* AX12 */
 		uart_wait(AX12_UART);
 		ax12_init(AX12_BAUD);
@@ -297,18 +298,12 @@ void miniboard_main(void){
 			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*3);
 			if(Data->arm_mode != 0){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
-				if(Data->arm_mode == 1){
-					/* Grabber */
-					ax12_continuous_speed(WRIST_AX12, Data->grabber_rotation_speed);
-					ax12_continuous_speed(SQUEEZE_AX12, Data->grabber_speed);
-				} else if(Data->arm_mode == 2){
-					/* Science */
-					ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_angle);
-					ax12_set_goal_position(CFLEX2_AX12, Data->cflex1_angle);
-					ax12_continuous_speed(CSEAL_AX12, Data->clid_speed);
-				}
+				ax12_continuous_speed(WRIST_AX12, Data->grabber_rotation_speed);
+				ax12_continuous_speed(SQUEEZE_AX12, Data->grabber_speed);
+				ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_angle);
+				ax12_set_goal_position(CFLEX2_AX12, Data->cflex1_angle);
+				ax12_continuous_speed(CSEAL_AX12, Data->clid_speed);
 			}
-
 		}
 
 		/* S-Bus */
@@ -319,9 +314,6 @@ void miniboard_main(void){
 			SoilTalk = false;
 			soil_talk();
 		}
-		
-		/* Compass */
-		compass_retrieve();
 		
 		/* IMU */
  		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);
@@ -409,7 +401,7 @@ void ax12_test(void){
 }
 
 void ax12_reset_addr(void){
-	uint8_t target_addr = 1;
+	uint8_t target_addr = 7;
 	init();
 	while(1){
 		for(uint16_t i=0;i<255;i++){

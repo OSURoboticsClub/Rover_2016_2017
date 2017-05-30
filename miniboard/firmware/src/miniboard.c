@@ -115,8 +115,8 @@ void init(void){
 	sei();
 	reset_timeout_timer();
 	ax12_init(AX12_BAUD);
-	ax12_set_angle_mode(PAN_AX12);
-	ax12_set_angle_mode(TILT_AX12);
+	ax12_set_continuous_mode(PAN_AX12);
+	ax12_set_continuous_mode(TILT_AX12);
 	ax12_set_continuous_mode(PITCH_AX12);
 	ax12_set_continuous_mode(WRIST_AX12);
 	ax12_set_continuous_mode(SQUEEZE_AX12);
@@ -292,26 +292,9 @@ void miniboard_main(void){
 			ax12_disable(AX12_ALL_BROADCAST_ID);
 		} else {
 			ax12_enable(AX12_ALL_BROADCAST_ID);
-			int16_t new_pan, new_tilt;
-			new_pan = Data->pan_angle + Data->pan_speed/PANTILT_DIV;
-			new_tilt = Data->tilt_angle + Data->tilt_speed/PANTILT_DIV;
-			if(new_pan < PAN_MIN){
-				new_pan = PAN_MIN;
-			}
-			if(new_pan > PAN_MAX){
-				new_pan = PAN_MAX;
-			}
-			if(new_tilt < TILT_MIN){
-				new_tilt = TILT_MIN;
-			}
-			if(new_tilt > TILT_MAX){
-				new_tilt = TILT_MAX;
-			}
-			Data->pan_angle = new_pan;
-			Data->tilt_angle = new_tilt;
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
-			ax12_set_goal_position(PAN_AX12, Data->pan_angle);
-			ax12_set_goal_position(TILT_AX12, Data->tilt_angle);
+			ax12_continuous_speed(PAN_AX12, Data->pan_speed*2);
+			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*2);
 			if(Data->arm_mode != 0){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
 				if(Data->arm_mode == 1){
@@ -426,7 +409,7 @@ void ax12_test(void){
 }
 
 void ax12_reset_addr(void){
-	uint8_t target_addr = 4;
+	uint8_t target_addr = 1;
 	init();
 	while(1){
 		for(uint16_t i=0;i<255;i++){

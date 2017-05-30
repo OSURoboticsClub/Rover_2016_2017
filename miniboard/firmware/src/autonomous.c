@@ -159,6 +159,7 @@ void autonomous(void){
 	static float target_speed;
 	static float integral_turn_rate; /* Actual turn rate. */
 	static float integral_speed; /* Actual speed. */
+	static coord_t compass_offset;
 	static enum {
 		CAL_1TURN,
 		CAL_2WAIT,
@@ -172,19 +173,6 @@ void autonomous(void){
 		CAL_10STRAIGHT,
 		CAL_11WAIT
 	} calstep;
-	/* Steps
-	* Turn Mode
-	* Wait turn
-	* sample gyro (& GPS?)
-	* Spin
-	* Sample compass
-	* Stop when elapsed
-	* Wait stop (short)
-	* Get heading
-	* Turn to heading
-	* Straight mode
-	* Wait turn 
-	* Go to drive */
 	static enum {
 		IDLE = 0,
 		STOP,
@@ -244,8 +232,19 @@ void autonomous(void){
 		//TODO: set waypoint, target speed & start point
 		state = CALIBRATE;
 	} else if(state == CALIBRATE){
-		
-		
+		/* Steps
+		* Turn Mode
+		* Wait turn
+		* sample gyro (& GPS?)
+		* Spin
+		* Sample compass
+		* Stop when elapsed
+		* Wait stop (short)
+		* Get heading
+		* Turn to heading
+		* Straight mode
+		* Wait turn 
+		* Go to drive */
 		
 		//TODO
 		desired_turn = COMPASS_CAL_SPIN_SPEED;

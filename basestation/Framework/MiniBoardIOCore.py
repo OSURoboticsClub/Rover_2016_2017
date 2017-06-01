@@ -9,6 +9,7 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
 import struct
 import signal
+import time
 from io import StringIO, BytesIO
 import enum
 
@@ -33,17 +34,17 @@ for k in RoverCmdDict:
 # Create read/write functions
 def create_funcs(module_vars, cmd_table):
     """Create functions of the form
-         read_<command_name>(signal)
-         write_<command_name>(signal, *args)
-       such as
-         read_pause(signal)
-         write_pause(signal, pause_state)
-       in the current module."""
+	     read_<command_name>(signal)
+	     write_<command_name>(signal, *args)
+	   such as
+	     read_pause(signal)
+	     write_pause(signal, pause_state)
+	   in the current module."""
     log = logging.getLogger("Miniboard Command Functions")
 
     def build_read_func(cmd):
         """Return a function that takes a signal (connected to MiniboardIO's send())
-           and emits a string of packet data."""
+		   and emits a string of packet data."""
 
         def f(signal):
             packet_data = [cmd["code"] | 0x80]
@@ -53,7 +54,7 @@ def create_funcs(module_vars, cmd_table):
 
     def build_write_func(cmd):
         """Return a function that takes a signal (connected to MiniboardIO's __send())
-           and emits a string of packet data."""
+		   and emits a string of packet data."""
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
                     "i64": "<q"}
 
@@ -82,11 +83,11 @@ create_funcs(vars(), RoverCmdTable)
 
 def make_signals():
     """Return a string that when eval'd in MiniboardIO
-           creates signals for received data from the rover.
-           Each signal has the name data_<canonical command name>,
-           such as data_battery_voltage.
-           Each signal emits a dictionary containing string keys of the
-           command's argument names."""
+		   creates signals for received data from the rover.
+		   Each signal has the name data_<canonical command name>,
+		   such as data_battery_voltage.
+		   Each signal emits a dictionary containing string keys of the
+		   command's argument names."""
     s = ""
     for c in RoverCmdTable:
         signame = "data_" + docparse.cannon_name(c["name"])
@@ -147,87 +148,20 @@ class MiniboardIO(QtCore.QThread):
         self.tty.write(packet_contents)
         self.msleep((4 + len(body_list)) * .001)
 
-    def __process_buffer(self, buf):
-        """Process all packets present in the given buffer (a list of characters).
-           When valid packets are found, signals are emitted as necessary.
-           After processing, a tuple is returned containing a list of packet
-           command bytes encountered, and a list of the remaining characters in the
-           buffer (empty if everything was processed)."""
-        cmd_bytes = []
-        while len(buf) >= 5:
-            #Fast-forward to the first start byte
-            try:
-                i = buf.index(0x01)
-            except ValueError:
-                break
-            buf = buf[i:]
-            if len(buf) < 5:
-                self.logger.debug("Too small overall size reply packet: " + buf.__str__())
-                break
-            if len(buf) < (buf[1] + 2):
-                self.logger.debug("Too small for length byte reply packet: " + buf.__str__())
-                buf = buf[1:] #Delete current start byte
-                continue
-            crc = self.calc_crc(buf4:]) 
-            if crc == struct.unpack("<H", bytes(buf[2:4]))[0]:  # CRC OK
-                #Valid packet
-                cmd_bytes.append(buf[4])
-                if buf[4] & 0x80:
-                    # self.logger.debug("read")
-                    code = buf[4] & 0x7F
-                    cmd = RoverCmdDict[code]
-                    adict = {}
-                    b = 5
-                    vs = []
-                    for a, i in zip(cmd["argument"], range(0, len(cmd["argument"]))):
-                        if a[0] != "*":
-                            s = struct.calcsize(fmtcodes[a[0]])
-                            value = struct.unpack(fmtcodes[a[0]], bytes(buf[b:b + s]))[0]
-                            adict[a[1]] = value
-                            vs.append(value)
-                            b += s
-                        else:
-                            s = vs[i - 1]
-                            value = buf[b:b + s]
-                            adict[a[1]] = value
-                            b += s
-                    getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
-                    # self.logger.debug(adict)
-                else:
-                    code = buf[4] & 0x7F
-                    cmd = RoverCmdDict[code]
-                    getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
-            buf = buf[(buf[1] + 2):]
-            else:
-                self.logger.debug("Invalid CRC in reply packet (expected 0x%04X): "%crc + buf.__str__())
-                buf = buf[1:] #Delete current start byte
-                continue
-        return (cmd_byes, buf)
-
     def run(self):
         """Read from the serial port, recognize the command, and emit a signal."""
 
         self.logger.debug("MiniboardIO Thread Starting...")
 
-        reply = []
+        self.reply = []
         fmtcodes = {"u8": "<B", "i8": "<b", "u16": "<H", "i16": "<h", "u32": "<I", "i32": "<i", "i64": "<Q",
                     "i64": "<q"}
 
-        #repeat:
-            #send
-            #receive expected amount in expected time
-            #got enough
-              #yes: process
-              #no: 
-                #get a bit more, longer delay
-                #got enough now?
-                  #yes: process everthing in buffer
-                  #no: get a lot more
-                    #process everything in buffer
-                    #throw away the rest
+        waiting_for_command_reply = False
+        start_time = time.time()
 
         while self.run_thread_flag:
-            if len(self.queue) > 0:
+            if len(self.queue) > 0 and not waiting_for_command_reply:
                 body = self.queue[0]
                 self.__send(body)
                 self.queue = self.queue[1:]
@@ -238,51 +172,70 @@ class MiniboardIO(QtCore.QThread):
                         expected_size = RoverCmdDict[body[0] & 0x7F]["expected_size"]
                     else:
                         expected_size = 5
-                reply = list(self.tty.read(size=expected_size))
-                n = 2
-                while n > 0 and len(reply) < expected_size:
-                    reply += list(self.tty.read(size=1))
-                    n -= 1
 
-                while len(reply) > 0:
-                    while len(reply) > 0:
-                        if reply[0] != 0x01:
-                            reply = reply[1:]
-                        else:
-                            break
-                    if len(reply) > 0:  # Got start byte
-                        if len(reply) >= 5:  # Got minimum complete packet
-                            if len(reply) >= (reply[1] + 2):  # Got enough bytes for this packet
-                                if self.calc_crc(reply[4:]) == struct.unpack("<H", bytes(reply[2:4]))[0]:  # CRC OK
-                                    if reply[4] & 0x80:
-                                        # self.logger.debug("read")
-                                        code = reply[4] & 0x7F
-                                        cmd = RoverCmdDict[code]
-                                        adict = {}
-                                        b = 5
-                                        vs = []
-                                        for a, i in zip(cmd["argument"], range(0, len(cmd["argument"]))):
-                                            if a[0] != "*":
-                                                s = struct.calcsize(fmtcodes[a[0]])
-                                                value = struct.unpack(fmtcodes[a[0]], bytes(reply[b:b + s]))[0]
-                                                adict[a[1]] = value
-                                                vs.append(value)
-                                                b += s
-                                            else:
-                                                s = vs[i - 1]
-                                                value = reply[b:b + s]
-                                                adict[a[1]] = value
-                                                b += s
-                                        getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
-                                        # self.logger.debug(adict)
-                                    else:
-                                        code = reply[4] & 0x7F
-                                        cmd = RoverCmdDict[code]
-                                        getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
-                                reply = reply[(reply[1] + 2):]
+                start_time = time.time()
+                waiting_for_command_reply = True
+
+            if waiting_for_command_reply:
+                if self.tty.inWaiting() >= expected_size:
+                    waiting_for_command_reply = False
+                    self.reply = list(self.tty.read(size=expected_size))
+                # n = 2
+                # while n > 0 and len(self.reply) < expected_size:
+                #     self.reply += list(self.tty.read(size=1))
+                #     n -= 1
+
+                    while len(self.reply) > 0:
+                        while len(self.reply) > 0:
+                            if self.reply[0] != 0x01:
+                                self.reply = self.reply[1:]
+                            else:
+                                break
+                        if len(self.reply) > 0:  # Got start byte
+                            if len(self.reply) >= 5:  # Got minimum complete packet
+                                if len(self.reply) >= (self.reply[1] + 2):  # Got enough bytes for this packet
+                                    if self.calc_crc(self.reply[4:]) == struct.unpack("<H", bytes(self.reply[2:4]))[0]:  # CRC OK
+                                        if self.reply[4] & 0x80:
+                                            # self.logger.debug("read")
+                                            code = self.reply[4] & 0x7F
+                                            cmd = RoverCmdDict[code]
+                                            adict = {}
+                                            b = 5
+                                            vs = []
+                                            for a, i in zip(cmd["argument"], range(0, len(cmd["argument"]))):
+                                                if a[0] != "*":
+                                                    s = struct.calcsize(fmtcodes[a[0]])
+                                                    value = struct.unpack(fmtcodes[a[0]], bytes(self.reply[b:b + s]))[0]
+                                                    adict[a[1]] = value
+                                                    vs.append(value)
+                                                    b += s
+                                                else:
+                                                    s = vs[i - 1]
+                                                    value = self.reply[b:b + s]
+                                                    adict[a[1]] = value
+                                                    b += s
+                                            getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
+                                            # self.logger.debug(adict)
+                                        else:
+                                            code = self.reply[4] & 0x7F
+                                            cmd = RoverCmdDict[code]
+                                            getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
+                                    self.reply = self.reply[(self.reply[1] + 2):]
+                if time.time() - start_time > 0.1:
+                    waiting_for_command_reply = False
+                    self.queue = []
+                    self.reply = []
+                    self.tty.flushOutput()
+                    self.tty.flushInput()
             self.msleep(1)
 
         self.logger.debug("MiniboardIO Thread Stopping...")
+
+    def clear_buffers_and_queues(self):
+        self.reply = ""
+        self.queue = []
+        self.tty.flushInput()
+        self.tty.flushOutput()
 
     def connect_signals_to_slots__slot(self):
         self.main_window.kill_threads_signal.connect(self.on_kill_threads__slot)
@@ -314,7 +267,7 @@ class DemoThread(QtCore.QThread):
 
     def handle_swerve_data(self, sdict):
         pass
-        #self.logger.debug(sdict)
+        # self.logger.debug(sdict)
 
 
 class DemoWindow(QtWidgets.QMainWindow):

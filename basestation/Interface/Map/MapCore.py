@@ -31,7 +31,7 @@ class Map(QtCore.QObject):
         self.maps_view = self.main_window.map_label  # type: QtWidgets.QLabel
 
         # ########## Class Variables ##########
-        # self.map_view_pixmap = QtGui.QPixmap("Resources/CachedMaps/mars_testing_site.png")
+        # self.map_view_pixmap = QtGui.QPixmap("Resources/Maps/mars_testing_site.png")
         #
         # self.maps_view.setPixmap(self.map_view_pixmap)
         QtWebEngine.QtWebEngine.initialize()

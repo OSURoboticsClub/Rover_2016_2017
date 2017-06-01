@@ -102,7 +102,7 @@ signal_eval_str = make_signals()
 
 class MiniboardIO(QtCore.QThread):
     """Handles reading and writing from the miniboard."""
-    path = "/dev/ttyUSB0"
+    path = "/dev/ttyACM0"
     baud = 115200
     on_kill_threads__slot = QtCore.pyqtSignal()
     exec(signal_eval_str)
@@ -112,11 +112,20 @@ class MiniboardIO(QtCore.QThread):
         self.main_window = main_window
         self.logger = logging.getLogger("RoverBaseStation")
         os.system("stty -F %s -hupcl" % self.path)
-        self.tty = serial.Serial(port=self.path,
-                                 baudrate=self.baud,
-                                 parity=serial.PARITY_NONE,
-                                 stopbits=serial.STOPBITS_ONE,
-                                 bytesize=serial.EIGHTBITS)
+        try:
+            self.tty = serial.Serial(port="/dev/ttyUSB0",
+                                     baudrate=self.baud,
+                                     parity=serial.PARITY_NONE,
+                                     stopbits=serial.STOPBITS_ONE,
+                                     bytesize=serial.EIGHTBITS)
+        except:
+            self.tty = serial.Serial(port="/dev/ttyACM0",
+                                     baudrate=self.baud,
+                                     parity=serial.PARITY_NONE,
+                                     stopbits=serial.STOPBITS_ONE,
+                                     bytesize=serial.EIGHTBITS)
+        self.tty.flushInput()
+        self.tty.flushOutput()
         self.reply = ""
         self.run_thread_flag = True
         self.queue = []
@@ -180,10 +189,10 @@ class MiniboardIO(QtCore.QThread):
                 if self.tty.inWaiting() >= expected_size:
                     waiting_for_command_reply = False
                     self.reply = list(self.tty.read(size=expected_size))
-                # n = 2
-                # while n > 0 and len(self.reply) < expected_size:
-                #     self.reply += list(self.tty.read(size=1))
-                #     n -= 1
+                    # n = 2
+                    # while n > 0 and len(self.reply) < expected_size:
+                    #     self.reply += list(self.tty.read(size=1))
+                    #     n -= 1
 
                     while len(self.reply) > 0:
                         while len(self.reply) > 0:
@@ -221,7 +230,7 @@ class MiniboardIO(QtCore.QThread):
                                             cmd = RoverCmdDict[code]
                                             getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
                                     self.reply = self.reply[(self.reply[1] + 2):]
-                if time.time() - start_time > 0.1:
+                if time.time() - start_time > 0.35:
                     waiting_for_command_reply = False
                     self.queue = []
                     self.reply = []

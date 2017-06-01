@@ -139,7 +139,7 @@ class MotionProcessor(QtCore.QThread):
                     # TODO: Change to send slower
                     pass
                 # self.logger.debug("Control time: " + str(time.time() - start_time))
-            self.msleep(100)
+            self.msleep(1)
 
         self.logger.debug("Motion Processor Thread Stopping...")
 
@@ -280,6 +280,10 @@ class MotionProcessor(QtCore.QThread):
             self.msleep(1)
 
         self.logger.debug("Elapsed: " + str(time_elapsed))
+
+        # if time_elapsed > DRIVE_TIMEOUT:
+        #     self.logger.debug("Cleared")
+            # self.main_window.miniboard_class.clear_buffers_and_queues()
 
         # ##### End standard timeout block #####
 
@@ -461,13 +465,9 @@ class MotionProcessor(QtCore.QThread):
 
     def on_xbox_states_updated__slot(self):
         return
-        if not self.xbox_locked:
-            self.xbox_locked = True
 
     def on_frsky_states_updated__slot(self):
         return
-        if not self.frsky_locked:
-            self.frsky_locked = True
 
     def on_primary_pan_tilt_write_acknowledged__slot(self):
         self.wait_for_pan_tilt_response = False

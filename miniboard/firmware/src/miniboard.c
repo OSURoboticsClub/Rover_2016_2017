@@ -164,8 +164,8 @@ uint8_t clamp127(int8_t value){
 #define ARM_GRABBER Data->fr_sidel
 #define ARM_EE Data->fr_sider
 #define CAMERA_SELECT SH
-#define PAN Data->xbox_joyrv
-#define TILT Data->xbox_joyrh
+#define PAN Data->xbox_joyrh
+#define TILT Data->xbox_joyrv
 #define ZOOM_IN Data->xbox_triggerr
 #define ZOOM_OUT Data->xbox_triggerl
 #define ARM_DRILL Data->fr_sidel
@@ -221,9 +221,9 @@ void direct_control(void){
 	Data->tilt_speed = joy_ch(TILT);
 	if(Data->selected_camera == CAM_NAV){
 		if(joy_ch(ZOOM_IN) > 0){
-			Data->nav_action = 1;
-		} else if(joy_ch(ZOOM_OUT) > 0){
 			Data->nav_action = 2;
+		} else if(joy_ch(ZOOM_OUT) > 0){
+			Data->nav_action = 1;
 		} else {
 			Data->nav_action = 0;
 		}
@@ -237,9 +237,9 @@ void direct_control(void){
 		} else if(joy_ch(ZOOM_OUT) > 0){
 			Data->cam_action = 2;
 		} else if(switch_ch(SAMPLE_CAM_FOCUS)){
-			Data->cam_action = 3;
-		} else if(switch_ch(SAMPLE_CAM_SHUTTER)){
 			Data->cam_action = 4;
+		} else if(switch_ch(SAMPLE_CAM_SHUTTER)){
+			Data->cam_action = 3;
 		} else {
 			Data->cam_action = 0;
 		}

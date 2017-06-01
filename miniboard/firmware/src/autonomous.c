@@ -132,7 +132,6 @@ void autonomous(void){
 	static uint32_t last_time;
 	static pid_t turn_pid;
 	static pid_t speed_pid;
-	static pid_t cross_pid;
 	static latlon_t starting_point;
 	static coord_t waypoint;
 	static float target_speed;
@@ -168,9 +167,6 @@ void autonomous(void){
 	speed_pid.p = SPEED_P;
 	speed_pid.i = SPEED_I;
 	speed_pid.d = SPEED_D;
-	cross_pid.p = CROSS_P;
-	cross_pid.i = CROSS_I;
-	cross_pid.d = CROSS_D;
 	
 	uint32_t time_elapsed = get_ms() - last_time;
 	last_time = get_ms();
@@ -230,9 +226,8 @@ void autonomous(void){
 	} else if(state == TURN){
 		
 	} else if(state == DRIVE){
-		desired_turn = compute_pid(&cross_pid, vec2_handedness(current_pos, waypoint)*vec2_mag(vec2_rejection(current_pos, waypoint)));
-		desired_speed = target_speed;
-		//TODO: final approach/mid-course turn logic
+		/* Using the instantaneous turn rate, control compass heading to
+		 * always keep the rover pointed at the waypoint. */
 	} else if(state == APPROACH){
 		
 		
@@ -241,30 +236,7 @@ void autonomous(void){
 	}
 	
 	if(state != IDLE && state != STOP){
-		float gyro; /* Measured turn rate in degrees/sec. */
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-			gyro = Data->gyro_z * .061;
-		}
-		integral_turn_rate += compute_pid(&turn_pid, desired_turn - gyro);
-		float actual_speed;
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-			if(Data->gps_track_valid){
-				actual_speed = Data->gps_speed / 3600.0;
-			} else {
-				actual_speed = fabs(integral_speed) * MAX_SPEED;
-			}
-		}
-		integral_speed += compute_pid(&speed_pid, desired_speed - actual_speed);
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-			int8_t left = motorf(integral_speed - integral_turn_rate);
-			int8_t right = motorf(integral_speed + integral_turn_rate);
-			Data->l_f_drive = left;
-			Data->l_m_drive = left;
-			Data->l_b_drive = left;
-			Data->r_f_drive = right;
-			Data->r_m_drive = right;
-			Data->r_b_drive = right;
-		}
+		
 	}
 }
  

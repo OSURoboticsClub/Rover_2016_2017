@@ -80,7 +80,7 @@ void setup(){
 	if(!rf95.setModemConfig(RF95_MODE)){
 		fail_loop();
 	}
-	rf95.setPreambleLength(RF95_PREAMBLE);
+// 	rf95.setPreambleLength(RF95_PREAMBLE);
 	rf95.setTxPower(23, false);
 	
 	LastByteMilis = millis();

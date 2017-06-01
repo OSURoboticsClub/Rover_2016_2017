@@ -180,6 +180,7 @@ uint8_t clamp127(int8_t value){
 #define CAM_BACK 6
 #define CAM_JOINT 2
 #define CAM_EFECTOR 3
+#define CAM_UNUSED 4
 
 /* Wrapper for code reuse */
 int8_t joy_ch(int8_t val){
@@ -203,6 +204,7 @@ void direct_control(void){
 	static uint8_t prev_cam_inc;
 	static uint8_t prev_cam_dec;
 	static uint8_t prev_cam_select;
+	static uint8_t prev_cam;
 	uint8_t cam_inc, cam_dec, cam_select;
 	bool quit;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
@@ -249,24 +251,36 @@ void direct_control(void){
 	
 	cam_select = switch_ch(CAMERA_SELECT);
 	if(cam_select && !prev_cam_select){
+		prev_cam = Data->selected_camera;
 		Data->selected_camera++;
 	}
 	prev_cam_select = cam_select;
 	cam_inc = switch_ch(CAMERA_INC);
 	if(cam_inc && !prev_cam_inc){
+		prev_cam = Data->selected_camera;
 		Data->selected_camera++;
 	}
 	prev_cam_inc = cam_inc;
 	cam_dec = switch_ch(CAMERA_DEC);
 	if(cam_dec && !prev_cam_dec){
+		prev_cam = Data->selected_camera;
 		Data->selected_camera--;
 	}
 	prev_cam_dec = cam_dec;
 	if(Data->selected_camera > 6){
+		prev_cam = 6;
 		Data->selected_camera = 1;
 	}
 	if(Data->selected_camera == 0){
+		prev_cam = 1;
 		Data->selected_camera = 6;
+	}
+	if(Data->selected_camera == CAM_UNUSED){
+		if(prev_camera == (CAM_UNUSED - 1)){
+			Data->selected_camera = CAM_UNUSED + 1;
+		} else {
+			Data->selected_camera = CAM_UNUSED - 1;
+		}
 	}
 	
 	
@@ -274,10 +288,9 @@ void direct_control(void){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		uint16_t speed_factor = joy_ch(DRIVE_SPEED) + 127;
+		int16_t speed_factor = joy_ch(DRIVE_SPEED) + 127;
 		speed_factor = 256 - speed_factor;
 		speed_factor = 1 + (speed_factor/64);
-		speed_factor = 1;
 		Data->l_f_drive = left/speed_factor;
 		Data->l_m_drive = left/speed_factor;
 		Data->l_b_drive = left/speed_factor;

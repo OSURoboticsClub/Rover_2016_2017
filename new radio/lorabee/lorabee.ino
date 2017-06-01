@@ -28,14 +28,15 @@ uint8_t RecvLen;
 uint32_t LastByteMilis;
 
 #define INTERFACE_BAUD 115200
-#define SERIAL_TIMEOUT 10 /* Number of milliseconds to wait for a new character before sending a packet. */
+#define SERIAL_TIMEOUT 4 /* Number of milliseconds to wait for a new character before sending a packet. */
 
 #define LED 13
 #define RFM95_CS 10
 #define RFM95_RST 9
 #define RFM95_INT 3
 #define RF95_FREQ 434.0
-#define RF95_MODE rf95.Bw500Cr45Sf128
+//#define RF95_MODE rf95.Bw500Cr45Sf128 /* Fast + short range */
+#define RF95_MODE rf95.Bw125Cr45Sf128 /* Medium range */
 #define RF95_PREAMBLE 2
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
@@ -72,14 +73,14 @@ void setup(){
 		fail_loop();
 	}
 	
-	RH_RF95::ModemConfig config;
-	config.reg_1d = 0x92;
-	config.reg_1e = 
+// 	RH_RF95::ModemConfig config;
+// 	config.reg_1d = 0x92;
+// 	config.reg_1e = 
 	
-	if(!rf95.setModemConfigLength(RF95_MODE)){ /* fast + short range */
+	if(!rf95.setModemConfig(RF95_MODE)){
 		fail_loop();
 	}
-	rf95.setPreamble(RF95_PREABLE);
+	rf95.setPreambleLength(RF95_PREAMBLE);
 	rf95.setTxPower(23, false);
 	
 	LastByteMilis = millis();

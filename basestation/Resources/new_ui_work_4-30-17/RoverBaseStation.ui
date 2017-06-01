@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1508</width>
-    <height>1005</height>
+    <height>772</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QGridLayout" name="gridLayout_3">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
@@ -614,7 +614,7 @@
              <x>0</x>
              <y>0</y>
              <width>178</width>
-             <height>785</height>
+             <height>552</height>
             </rect>
            </property>
            <attribute name="label">
@@ -711,7 +711,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -719,7 +719,7 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="map_label">
             <property name="minimumSize">
              <size>
               <width>1280</width>

@@ -149,6 +149,13 @@ uint8_t clamp127(int8_t value){
 #define XBOX_RB 13
 #define XBOX_LSC 14
 #define XBOX_RSC 15
+#define XBOX_SEL 16
+#define XBOX_START 17
+#define XBOX_HOME 18
+#define XBOX_DPL 19
+#define XBOX_DPR 20
+#define XBOX_DPU 21
+#define XBOX_DPD 22
 
 /* Direct control channel data functions */
 #define MODE_SWITCH SWE
@@ -173,6 +180,8 @@ uint8_t clamp127(int8_t value){
 #define SAMPLE_CAM_SHUTTER XBOX_B
 #define CAMERA_INC XBOX_RB
 #define CAMERA_DEC XBOX_LB
+#define DRILL_FWD XBOX_DPU
+#define DRILL_REV XBOX_DPD
 
 /* Camera indices */
 #define CAM_FRONT 1
@@ -193,6 +202,8 @@ bool switch_ch(uint8_t index){
 		return !!(Data->fr_buttons & _BV(index));
 	} else if(index >=8 && index < 16){
 		return !!(Data->xbox_buttons_low & _BV(index-8));
+	} else if(index >=16 && index < 23){
+		return !!(Data->xbox_buttons_high & _BV(index-16));
 	} else {
 		return 0;
 	}
@@ -276,11 +287,19 @@ void direct_control(void){
 		Data->selected_camera = 6;
 	}
 	if(Data->selected_camera == CAM_UNUSED){
-		if(prev_camera == (CAM_UNUSED - 1)){
+		if(prev_cam == (CAM_UNUSED - 1)){
 			Data->selected_camera = CAM_UNUSED + 1;
 		} else {
 			Data->selected_camera = CAM_UNUSED - 1;
 		}
+	}
+	
+	if(switch_ch(DRILL_FWD)){
+		Data->arm_motor_4 = 127;
+	} else if(switch_ch(DRILL_REV)){
+		Data->arm_motor_4 = -127;
+	} else {
+		Data->arm_motor_4 = 0;
 	}
 	
 	
@@ -288,7 +307,7 @@ void direct_control(void){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		int16_t speed_factor = joy_ch(DRIVE_SPEED) + 127;
+		int16_t speed_factor = joy_ch(DRIVE_SPEED) + 128;
 		speed_factor = 256 - speed_factor;
 		speed_factor = 1 + (speed_factor/64);
 		Data->l_f_drive = left/speed_factor;
@@ -299,6 +318,11 @@ void direct_control(void){
 		Data->r_b_drive = right/speed_factor;
 		Data->swerve_state = switch_ch(TURN_SWITCH);
 		Data->arm_mode = 0;
+		if(switch_ch(TURN_SWITCH)){
+			Data->swerve_state = 2;
+		} else {
+			Data->swerve_state = 1;
+		}
 	} else {
 		/* Mode 2 - Arm */
 // 		Data->arm_motor_1 = joy_ch(ARM_BASE);

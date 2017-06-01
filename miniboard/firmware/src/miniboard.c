@@ -104,7 +104,7 @@ void init(void){
 	comp_init();
 	imu_init();
 	sbus_init();
-	soil_init();
+	//soil_init();
 	time_init();
 	sei();
 	reset_timeout_timer();
@@ -414,10 +414,10 @@ void miniboard_main(void){
 		/* Handled in module. */
 		
 		/* Soil Sensor */
-		if(SoilTalk){
-			SoilTalk = false;
-			soil_talk();
-		}
+// 		if(SoilTalk){
+// 			SoilTalk = false;
+// 			soil_talk();
+// 		}
 		
 		/* IMU */
  		imu_accel(&Data->accel_x, &Data->accel_y, &Data->accel_z);

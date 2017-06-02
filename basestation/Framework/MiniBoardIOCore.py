@@ -102,7 +102,8 @@ signal_eval_str = make_signals()
 
 class MiniboardIO(QtCore.QThread):
     """Handles reading and writing from the miniboard."""
-    path = "/dev/ttyUSB0"
+    # path = "/dev/ttyUSB0"
+    path = "COM8"
     baud = 115200
     on_kill_threads__slot = QtCore.pyqtSignal()
     exec(signal_eval_str)
@@ -112,12 +113,12 @@ class MiniboardIO(QtCore.QThread):
         self.main_window = main_window
         self.logger = logging.getLogger("RoverBaseStation")
         os.system("stty -F %s -hupcl" % self.path)
+
         self.tty = serial.Serial(port=self.path,
                                  baudrate=self.baud,
                                  parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,
                                  bytesize=serial.EIGHTBITS)
-        self.reply = ""
         self.run_thread_flag = True
         self.queue = []
 
@@ -221,7 +222,7 @@ class MiniboardIO(QtCore.QThread):
                                             cmd = RoverCmdDict[code]
                                             getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
                                     self.reply = self.reply[(self.reply[1] + 2):]
-                if time.time() - start_time > 0.1:
+                if time.time() - start_time > 0.075:
                     waiting_for_command_reply = False
                     self.queue = []
                     self.reply = []

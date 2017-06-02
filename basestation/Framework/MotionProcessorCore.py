@@ -26,7 +26,7 @@ ARMS_MAX = 127
 DEAD_BAND_FRSKY = 20
 DEAD_BAND_XBOX = 1500
 
-DRIVE_TIMEOUT = 2  # Seconds
+DRIVE_TIMEOUT = 0.35  # Seconds
 ARM_TIMEOUT = 0.25  # Seconds
 PAN_TILT_TIMEOUT = 0.25  # Seconds
 DRIVE_SWERVE_TIMEOUT = 5  # Seconds
@@ -263,10 +263,10 @@ class MotionProcessor(QtCore.QThread):
 
 
 
-        current_array = [fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte]
-        desired_array = [str(number) for number in current_array]
-        joined = " : ".join(desired_array)
-        self.logger.debug(joined)
+        # current_array = [fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte]
+        # desired_array = [str(number) for number in current_array]
+        # joined = " : ".join(desired_array)
+        # self.logger.debug(joined)
 
         self.wait_for_passthrough_response = True
         write_joystick(self.send_miniboard_control_packet, fr_left_horiz, fr_left_vert, fr_right_horiz, fr_right_vert, fr_left_pot, fr_right_pot, fr_left_side_pot, fr_right_side_pot, frsky_buttons_byte, xb_left_horiz, xb_left_vert, xb_right_horiz, xb_right_vert, xb_left_trig, xb_right_trig, xbox_buttons_high_byte, xbox_buttons_low_byte)
@@ -279,7 +279,7 @@ class MotionProcessor(QtCore.QThread):
             time_elapsed = time.time() - start_time
             self.msleep(1)
 
-        self.logger.debug("Elapsed: " + str(time_elapsed))
+        #self.logger.debug("Elapsed: " + str(time_elapsed))
 
         # if time_elapsed > DRIVE_TIMEOUT:
         #     self.logger.debug("Cleared")
@@ -491,7 +491,6 @@ class MotionProcessor(QtCore.QThread):
         #self.logger.debug(sdict)
 
     def on_passthrough_response_received__slot(self):
-        self.logger.debug("Received passthrough response")
         self.wait_for_passthrough_response = False
 
     def on_drive_response_received__slot(self):

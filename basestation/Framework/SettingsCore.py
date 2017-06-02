@@ -47,7 +47,10 @@ class Settings(QtCore.QObject):
 
     def __set_hardcoded_settings(self):
         # Set the temporary directory used to store files while processing them
-        app_data_dir = os.environ["HOME"]
+        try:
+            app_data_dir = os.environ["HOME"]
+        except:
+            app_data_dir = os.environ["APPDATA"]
         folder_name = "basestation"
         full_path = app_data_dir + "/" + folder_name + "/settings"
         self.settings.setValue("appdata_directory", full_path)

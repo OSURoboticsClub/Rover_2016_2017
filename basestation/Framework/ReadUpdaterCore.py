@@ -8,7 +8,7 @@
 # Python native imports
 from PyQt5 import QtCore, QtWidgets
 import logging
-from Framework.MiniBoardIOCore import read_drive_motor_power, read_battery_voltage, read_arm_motors
+from Framework.MiniBoardIOCore import read_drive_motor_power, read_battery_voltage, read_arm_motors, read_gps_position, read_gps_track
 import time
 
 
@@ -37,12 +37,12 @@ class ReadUpdater(QtCore.QThread):
         self.logger.debug("Read Updater Thread Starting...")
 
         while self.run_thread_flag:
-            self.msleep(1000)
-            #needs signal to communincate effectively with the rover
-            read_drive_motor_power(self.send_miniboard_control_packet)
-            read_battery_voltage(self.send_miniboard_control_packet)
-            read_arm_motors(self.send_miniboard_control_packet)
-            self.msleep(1000)
+            # read_drive_motor_power(self.send_miniboard_control_packet)
+            # read_battery_voltage(self.send_miniboard_control_packet)
+            # read_arm_motors(self.send_miniboard_control_packet)
+            read_gps_position(self.send_miniboard_control_packet)
+            read_gps_track(self.send_miniboard_control_packet)
+            self.msleep(2000)
 
         self.logger.debug("Read Updater Thread Stopping...")
 

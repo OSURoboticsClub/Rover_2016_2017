@@ -129,114 +129,114 @@ float vec2_handedness(coord_t a, coord_t b){
 
 /* Process autonomy. */
 void autonomous(void){
-	static uint32_t last_time;
-	static pid_t turn_pid;
-	static pid_t speed_pid;
-	static latlon_t starting_point;
-	static coord_t waypoint;
-	static float target_speed;
-	static float integral_turn_rate; /* Actual turn rate. */
-	static float integral_speed; /* Actual speed. */
-	static coord_t compass_offset;
-	static enum {
-		CAL_1TURN,
-		CAL_2WAIT,
-		CAL_3SAMPLE,
-		CAL_4SPIN,
-		CAL_5SAMPLE,
-		CAL_6WAIT,
-		CAL_7TURN,
-		CAL_8WAIT,
-		CAL_9WAIT, /* Stop and wait for settle */
-		CAL_10STRAIGHT,
-		CAL_11WAIT
-	} calstep;
-	static enum {
-		IDLE = 0,
-		STOP,
-		CAL_START,
-		CALIBRATE,
-		TURN,
-		DRIVE,
-		APPROACH
-	} state;
-	
-	turn_pid.p = TURN_P;
-	turn_pid.i = TURN_I;
-	turn_pid.d = TURN_D;
-	speed_pid.p = SPEED_P;
-	speed_pid.i = SPEED_I;
-	speed_pid.d = SPEED_D;
-	
-	uint32_t time_elapsed = get_ms() - last_time;
-	last_time = get_ms();
-	
-	latlon_t current_latlon;
-	//TODO: check for GPS valid 
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-		current_latlon.lat = Data->latitude;
-		current_latlon.lon = Data->longitude;
-	}
-	coord_t current_pos = to_meters(current_latlon, starting_point);
-	
-	float desired_turn; /* Desired turn rate, in deg/s. */
-	float desired_speed; /* Desired speed, in m/s. */
-	
-	if(!Data->auton_en && state != IDLE){
-		state = STOP;
-	}
-	
-	if(state == IDLE){
-		reset_pid(&turn_pid);
-		reset_pid(&speed_pid);
-		reset_pid(&cross_pid);
-		desired_turn = 0;
-		desired_speed = 0;
-		if(Data->auton_en){
-			state = CAL_START;
-		}
-	} else if (state == STOP){
-		Data->l_f_drive = 0;
-		Data->l_m_drive = 0;
-		Data->l_b_drive = 0;
-		Data->r_f_drive = 0;
-		Data->r_m_drive = 0;
-		Data->r_b_drive = 0;
-		Data->swerve_state = 0;
-	} else if(state == CAL_START){
-		//TODO: set waypoint, target speed & start point
-		state = CALIBRATE;
-	} else if(state == CALIBRATE){
-		/* Steps
-		* Turn Mode
-		* Wait turn
-		* sample gyro (& GPS?)
-		* Spin
-		* Sample compass
-		* Stop when elapsed
-		* Wait stop (short)
-		* Get heading
-		* Turn to heading
-		* Straight mode
-		* Wait turn 
-		* Go to drive */
-		
-		//TODO
-		desired_turn = COMPASS_CAL_SPIN_SPEED;
-	} else if(state == TURN){
-		
-	} else if(state == DRIVE){
-		/* Using the instantaneous turn rate, control compass heading to
-		 * always keep the rover pointed at the waypoint. */
-	} else if(state == APPROACH){
-		
-		
-	} else {
-		state = STOP;
-	}
-	
-	if(state != IDLE && state != STOP){
-		
-	}
+// 	static uint32_t last_time;
+// 	static pid_t turn_pid;
+// 	static pid_t speed_pid;
+// 	static latlon_t starting_point;
+// 	static coord_t waypoint;
+// 	static float target_speed;
+// 	static float integral_turn_rate; /* Actual turn rate. */
+// 	static float integral_speed; /* Actual speed. */
+// 	static coord_t compass_offset;
+// 	static enum {
+// 		CAL_1TURN,
+// 		CAL_2WAIT,
+// 		CAL_3SAMPLE,
+// 		CAL_4SPIN,
+// 		CAL_5SAMPLE,
+// 		CAL_6WAIT,
+// 		CAL_7TURN,
+// 		CAL_8WAIT,
+// 		CAL_9WAIT, /* Stop and wait for settle */
+// 		CAL_10STRAIGHT,
+// 		CAL_11WAIT
+// 	} calstep;
+// 	static enum {
+// 		IDLE = 0,
+// 		STOP,
+// 		CAL_START,
+// 		CALIBRATE,
+// 		TURN,
+// 		DRIVE,
+// 		APPROACH
+// 	} state;
+// 	
+// 	turn_pid.p = TURN_P;
+// 	turn_pid.i = TURN_I;
+// 	turn_pid.d = TURN_D;
+// 	speed_pid.p = SPEED_P;
+// 	speed_pid.i = SPEED_I;
+// 	speed_pid.d = SPEED_D;
+// 	
+// 	uint32_t time_elapsed = get_ms() - last_time;
+// 	last_time = get_ms();
+// 	
+// 	latlon_t current_latlon;
+// 	//TODO: check for GPS valid 
+// 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
+// 		current_latlon.lat = Data->latitude;
+// 		current_latlon.lon = Data->longitude;
+// 	}
+// 	coord_t current_pos = to_meters(current_latlon, starting_point);
+// 	
+// 	float desired_turn; /* Desired turn rate, in deg/s. */
+// 	float desired_speed; /* Desired speed, in m/s. */
+// 	
+// 	if(!Data->auton_en && state != IDLE){
+// 		state = STOP;
+// 	}
+// 	
+// 	if(state == IDLE){
+// 		reset_pid(&turn_pid);
+// 		reset_pid(&speed_pid);
+// 		reset_pid(&cross_pid);
+// 		desired_turn = 0;
+// 		desired_speed = 0;
+// 		if(Data->auton_en){
+// 			state = CAL_START;
+// 		}
+// 	} else if (state == STOP){
+// 		Data->l_f_drive = 0;
+// 		Data->l_m_drive = 0;
+// 		Data->l_b_drive = 0;
+// 		Data->r_f_drive = 0;
+// 		Data->r_m_drive = 0;
+// 		Data->r_b_drive = 0;
+// 		Data->swerve_state = 0;
+// 	} else if(state == CAL_START){
+// 		//TODO: set waypoint, target speed & start point
+// 		state = CALIBRATE;
+// 	} else if(state == CALIBRATE){
+// 		/* Steps
+// 		* Turn Mode
+// 		* Wait turn
+// 		* sample gyro (& GPS?)
+// 		* Spin
+// 		* Sample compass
+// 		* Stop when elapsed
+// 		* Wait stop (short)
+// 		* Get heading
+// 		* Turn to heading
+// 		* Straight mode
+// 		* Wait turn 
+// 		* Go to drive */
+// 		
+// 		//TODO
+// 		desired_turn = COMPASS_CAL_SPIN_SPEED;
+// 	} else if(state == TURN){
+// 		
+// 	} else if(state == DRIVE){
+// 		/* Using the instantaneous turn rate, control compass heading to
+// 		 * always keep the rover pointed at the waypoint. */
+// 	} else if(state == APPROACH){
+// 		
+// 		
+// 	} else {
+// 		state = STOP;
+// 	}
+// 	
+// 	if(state != IDLE && state != STOP){
+// 		
+// 	}
 }
  

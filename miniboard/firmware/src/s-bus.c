@@ -2,7 +2,7 @@
  * Miniboard Firmware
  *
  * sbus.c - Futaba S-BUS receiver module.
- * Author(s) Aaron Cohen
+ * Author(s): Nick Ames
  */
 
 #include <stdint.h>
@@ -123,6 +123,8 @@ static int8_t joy_ch(uint8_t ch){
 	} 
 	return servo_value;
 }
+
+void reset_timeout_timer(void);
 
 /* Set values in the Data structure according to s-bus channels, allowing the
  * frsky controller to operate the rover. */
@@ -270,6 +272,7 @@ void sbus_handle_packet(void) {
 	}
 	
 	sbus_control();
+	reset_timeout_timer();
 }
 
 /* Recieve S-BUS protocol bytes as they come in over the UART. When a full

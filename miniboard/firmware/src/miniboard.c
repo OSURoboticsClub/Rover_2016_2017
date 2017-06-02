@@ -73,7 +73,7 @@ ISR(BADISR_vect){
 	}
 }
 
-#define COMM_TIMEOUT 2 /* If this time (in seconds) elapses without a
+#define COMM_TIMEOUT 1 /* If this time (in seconds) elapses without a
                         * message from the computer, the connection is
                         * considered to be lost. In that case, S-BUS control
                         * may be enabled, or the rover may be paused.
@@ -182,6 +182,10 @@ uint8_t clamp127(int8_t value){
 #define CAMERA_DEC XBOX_LB
 #define DRILL_FWD XBOX_DPU
 #define DRILL_REV XBOX_DPD
+#define SAMPLE_JOINT1 Data->xbox_joylv 
+#define SAMPLE_JOINT2 Data->xbox_joylv
+#define SAMPLE_JOINT2_SW XBOX_X
+#define SAMPLE_SEAL Data->xbox_joylh
 
 /* Camera indices */
 #define CAM_FRONT 1
@@ -342,7 +346,7 @@ void miniboard_main(void){
 	bool super_pause;
 	/* Miniboard main loop. */
 	while(1){
-		super_pause = !Data->pause_state || (CommTimedOut && !Data->sbus_active);
+		super_pause = !Data->pause_state || CommTimedOut;
 		/* GPS */
 		/* (handled in-module) */
 		
@@ -404,8 +408,8 @@ void miniboard_main(void){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
 				ax12_continuous_speed(WRIST_AX12, Data->grabber_rotation_speed);
 				ax12_continuous_speed(SQUEEZE_AX12, Data->grabber_speed);
-				ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_angle);
-				ax12_set_goal_position(CFLEX2_AX12, Data->cflex1_angle);
+				ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_speed);
+				ax12_set_goal_position(CFLEX2_AX12, Data->cflex2_speed);
 				ax12_continuous_speed(CSEAL_AX12, Data->clid_speed);
 			}
 		}

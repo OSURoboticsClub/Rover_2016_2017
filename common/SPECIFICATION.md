@@ -72,7 +72,7 @@ don't change the name of existing command arguments.
 | AX12 Arm Mode            | RW | 0x2C | u8 arm_mode | 0 | 0 = arm AX12s not in use, 1 = arm ax12s in use |
 | End Effector Speed       | RW | 0x2D | i16 ee_speed | 0 | Speed of end effector pitch control. Range -1023 to 1023. |
 | Grabber                  | RW | 0x2E | i16 grabber_speed, i16 grabber_rotation_speed | 0,0 | Speed of grabber motors. Range -1023 to 1023. |
-| Container Sealer         | RW | 0x2F | u16 cflex1_angle, u16 cflex2_angle, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |
+| Container Sealer         | RW | 0x2F | u16 cflex1_speed, u16 cflex2_speed, i16 clid_speed | 500,500,0 | Angles and speed of container motors. |
 | GPIO Read State          | R  | 0x32 | u8 gpio_state | 0 | GPIO pin directions. 1 = high, 0 = low. Mapping: MSB X X 5 4 3 2 1 X LSB. |
 | Sample Camera Action     | RW | 0x35 | u8 cam_action | 0 | Sample cam actions. 0 = none, 4 = shutter, 3 = focus, 1 = zoom in, 2 = zoom out |
 | Navigation Camera Action | RW | 0x36 | u8 nav_action | 0 | Naviagation cam actions. 0 = none, 1 = zoom in, 2 = zoom out |

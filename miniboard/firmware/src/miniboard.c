@@ -132,7 +132,7 @@ uint8_t clamp127(int8_t value){
 	}
 }
 
-/* Direct Control channel functions */
+/* Direct control channel data mappings */
 #define SA 0
 #define SB 1
 #define SC 2
@@ -141,8 +141,23 @@ uint8_t clamp127(int8_t value){
 #define SF 5
 #define SG 6
 #define SH 7
+#define XBOX_A 8
+#define XBOX_B 9
+#define XBOX_X 10
+#define XBOX_Y 11
+#define XBOX_LB 12
+#define XBOX_RB 13
+#define XBOX_LSC 14
+#define XBOX_RSC 15
+#define XBOX_SEL 16
+#define XBOX_START 17
+#define XBOX_HOME 18
+#define XBOX_DPL 19
+#define XBOX_DPR 20
+#define XBOX_DPU 21
+#define XBOX_DPD 22
 
-
+/* Direct control channel data functions */
 #define MODE_SWITCH SWE
 #define TURN_SWITCH SG
 #define PAUSE_SWITCH SF
@@ -156,9 +171,25 @@ uint8_t clamp127(int8_t value){
 #define ARM_GRABBER Data->fr_sidel
 #define ARM_EE Data->fr_sider
 #define CAMERA_SELECT SH
-#define PAN Data->fr_potr
-#define TILT Data->fr_potl
+#define PAN Data->xbox_joyrh
+#define TILT Data->xbox_joyrv
+#define ZOOM_IN Data->xbox_triggerr
+#define ZOOM_OUT Data->xbox_triggerl
 #define ARM_DRILL Data->fr_sidel
+#define SAMPLE_CAM_FOCUS XBOX_A
+#define SAMPLE_CAM_SHUTTER XBOX_B
+#define CAMERA_INC XBOX_RB
+#define CAMERA_DEC XBOX_LB
+#define DRILL_FWD XBOX_DPU
+#define DRILL_REV XBOX_DPD
+
+/* Camera indices */
+#define CAM_FRONT 1
+#define CAM_NAV 5
+#define CAM_BACK 6
+#define CAM_JOINT 2
+#define CAM_EFECTOR 3
+#define CAM_UNUSED 4
 
 /* Wrapper for code reuse */
 int8_t joy_ch(int8_t val){
@@ -169,6 +200,10 @@ int8_t joy_ch(int8_t val){
 bool switch_ch(uint8_t index){
 	if(index < 8){
 		return !!(Data->fr_buttons & _BV(index));
+	} else if(index >=8 && index < 16){
+		return !!(Data->xbox_buttons_low & _BV(index-8));
+	} else if(index >=16 && index < 23){
+		return !!(Data->xbox_buttons_high & _BV(index-16));
 	} else {
 		return 0;
 	}
@@ -177,8 +212,11 @@ bool switch_ch(uint8_t index){
 /* Set motor speeds based on joystick inputs, if
  * enable bit is set. */
 void direct_control(void){
+	static uint8_t prev_cam_inc;
+	static uint8_t prev_cam_dec;
 	static uint8_t prev_cam_select;
-	uint8_t cam_select;
+	static uint8_t prev_cam;
+	uint8_t cam_inc, cam_dec, cam_select;
 	bool quit;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 		quit = !(Data->xbox_buttons_high & _BV(7));
@@ -191,24 +229,87 @@ void direct_control(void){
 	} else {
 		Data->pause_state = 0;
 	}
-	//Data->pan_speed = -joy_ch(PAN);
-	//Data->tilt_speed = joy_ch(TILT);
+	
+	Data->pan_speed = -joy_ch(PAN);
+	Data->tilt_speed = joy_ch(TILT);
+	if(Data->selected_camera == CAM_NAV){
+		if(joy_ch(ZOOM_IN) > 0){
+			Data->nav_action = 2;
+		} else if(joy_ch(ZOOM_OUT) > 0){
+			Data->nav_action = 1;
+		} else {
+			Data->nav_action = 0;
+		}
+	} else {
+		Data->nav_action = 0;
+	}
+	
+	if(Data->selected_camera == CAM_EFECTOR){
+		if(joy_ch(ZOOM_IN) > 0){
+			Data->cam_action = 1;
+		} else if(joy_ch(ZOOM_OUT) > 0){
+			Data->cam_action = 2;
+		} else if(switch_ch(SAMPLE_CAM_FOCUS)){
+			Data->cam_action = 4;
+		} else if(switch_ch(SAMPLE_CAM_SHUTTER)){
+			Data->cam_action = 3;
+		} else {
+			Data->cam_action = 0;
+		}
+	} else {
+		Data->cam_action = 0;
+	}
+	
 	cam_select = switch_ch(CAMERA_SELECT);
 	if(cam_select && !prev_cam_select){
+		prev_cam = Data->selected_camera;
 		Data->selected_camera++;
-		if(Data->selected_camera > 6){
-			Data->selected_camera = 1;
-		}
 	}
 	prev_cam_select = cam_select;
+	cam_inc = switch_ch(CAMERA_INC);
+	if(cam_inc && !prev_cam_inc){
+		prev_cam = Data->selected_camera;
+		Data->selected_camera++;
+	}
+	prev_cam_inc = cam_inc;
+	cam_dec = switch_ch(CAMERA_DEC);
+	if(cam_dec && !prev_cam_dec){
+		prev_cam = Data->selected_camera;
+		Data->selected_camera--;
+	}
+	prev_cam_dec = cam_dec;
+	if(Data->selected_camera > 6){
+		prev_cam = 6;
+		Data->selected_camera = 1;
+	}
+	if(Data->selected_camera == 0){
+		prev_cam = 1;
+		Data->selected_camera = 6;
+	}
+	if(Data->selected_camera == CAM_UNUSED){
+		if(prev_cam == (CAM_UNUSED - 1)){
+			Data->selected_camera = CAM_UNUSED + 1;
+		} else {
+			Data->selected_camera = CAM_UNUSED - 1;
+		}
+	}
+	
+	if(switch_ch(DRILL_FWD)){
+		Data->arm_motor_4 = 127;
+	} else if(switch_ch(DRILL_REV)){
+		Data->arm_motor_4 = -127;
+	} else {
+		Data->arm_motor_4 = 0;
+	}
+	
+	
 	if(!switch_ch(MODE_SWITCH)){
 		/* Mode 1 - Drive */
 		int8_t left = joy_ch(DRIVE_LEFT);
 		int8_t right = joy_ch(DRIVE_RIGHT);
-		uint16_t speed_factor = joy_ch(DRIVE_SPEED) + 127;
+		int16_t speed_factor = joy_ch(DRIVE_SPEED) + 128;
 		speed_factor = 256 - speed_factor;
 		speed_factor = 1 + (speed_factor/64);
-		speed_factor = 1;
 		Data->l_f_drive = left/speed_factor;
 		Data->l_m_drive = left/speed_factor;
 		Data->l_b_drive = left/speed_factor;
@@ -217,18 +318,21 @@ void direct_control(void){
 		Data->r_b_drive = right/speed_factor;
 		Data->swerve_state = switch_ch(TURN_SWITCH);
 		Data->arm_mode = 0;
+		if(switch_ch(TURN_SWITCH)){
+			Data->swerve_state = 2;
+		} else {
+			Data->swerve_state = 1;
+		}
 	} else {
 		/* Mode 2 - Arm */
-// 		Data->arm_motor_1 = joy_ch(ARM_BASE);
-// 		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
-// 		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
-// 		Data->arm_motor_5 = 0;
-// 		Data->ee_speed = -8*joy_ch(ARM_EE);
-// 		Data->arm_mode = 1;
-// 		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
-// 		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
-// 		Data->arm_mode = 2;
-// 		Data->arm_motor_4 = joy_ch(ARM_DRILL);
+		Data->arm_motor_1 = joy_ch(ARM_BASE);
+		Data->arm_motor_2 = -joy_ch(ARM_BICEP);
+		Data->arm_motor_3 = joy_ch(ARM_FOREARM);
+		Data->arm_motor_5 = 0;
+		Data->ee_speed = -8*joy_ch(ARM_EE);
+		Data->arm_mode = 1;
+		Data->grabber_rotation_speed = 8*joy_ch(ARM_PITCH);
+		Data->grabber_speed = 8*joy_ch(ARM_GRABBER);
 	}
 }
 	
@@ -245,7 +349,7 @@ void miniboard_main(void){
 		/* Direct Control */
 		direct_control();
 		
-		/* Saberteeth */
+		/* Tetrad */
 		uart_wait(AX12_UART);
 		tetrad_init();
 		if(super_pause){

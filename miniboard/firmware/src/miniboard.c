@@ -57,6 +57,10 @@ void soil_sensor_recv_trigger(void){
 	
 }
 
+void soil_result_trigger(void){
+	
+}
+
 
 /* ISR that fires if an interrupt is enabled without a corresponding handler. */
 ISR(BADISR_vect){

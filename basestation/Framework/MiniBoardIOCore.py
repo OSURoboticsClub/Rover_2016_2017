@@ -10,6 +10,7 @@ import logging
 import struct
 import signal
 import time
+from serial.tools.list_ports import comports
 from io import StringIO, BytesIO
 import enum
 
@@ -106,6 +107,8 @@ class MiniboardIO(QtCore.QThread):
     # path = "COM8"
     baud = 115200
     on_kill_threads__slot = QtCore.pyqtSignal()
+    message_received_signal = QtCore.pyqtSignal()
+
     exec(signal_eval_str)
 
     def __init__(self, main_window):
@@ -114,7 +117,14 @@ class MiniboardIO(QtCore.QThread):
         self.logger = logging.getLogger("RoverBaseStation")
         os.system("stty -F %s -hupcl" % self.path)
 
-        self.tty = serial.Serial(port=self.path,
+        com_name = comports()[0].device
+
+        if "COM" in com_name:
+            com_name = "COM8"
+
+        self.logger.debug("Connecting to " + com_name)
+
+        self.tty = serial.Serial(port=com_name,
                                  baudrate=self.baud,
                                  parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,
@@ -222,6 +232,8 @@ class MiniboardIO(QtCore.QThread):
                                             cmd = RoverCmdDict[code]
                                             getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
                                     self.reply = self.reply[(self.reply[1] + 2):]
+                    self.message_received_signal.emit()
+
                 if time.time() - start_time > 0.5:
                     waiting_for_command_reply = False
                     self.queue = []

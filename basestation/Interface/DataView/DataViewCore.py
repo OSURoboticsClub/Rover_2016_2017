@@ -8,7 +8,9 @@
 # Python native imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
-from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, write_arm_motors, write_soil_sensor_measure
+from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, write_arm_motors, write_soil_measure, write_soil_sensor_recv, read_soil_sensor_recv
+from datetime import datetime
+from time import sleep
 
 #####################################
 # Global Variables
@@ -22,6 +24,7 @@ JOYSTICK_AXIS_MAX = 144
 #####################################
 class DataView(QtCore.QObject):
     send_miniboard_control_packet = QtCore.pyqtSignal(list)
+    get_data_from_probe_signal = QtCore.pyqtSignal(int)
 
     def __init__(self, main_window):
         super(DataView, self).__init__()
@@ -53,13 +56,21 @@ class DataView(QtCore.QObject):
         self.pitch_power = self.main_window.pitch
         self.wrist_power = self.main_window.wrist
 
+        self.temp_label = self.main_window.temp_label
+        self.moisture_label = self.main_window.moisture_label
+        self.salinity_label = self.main_window.salinity_label
+
         self.get_data_button = self.main_window.science_data_button
+
+        self.last_contact_label = self.main_window.last_contact_label
 
         # self.time_label = self.main_window.time_label
         # self.voltage_label = self.main_window.battery_voltage_label
 
         # ########## Class Variables ##########
         self.controller_states = None
+        self.sensor_read_timer = QtCore.QTimer()
+        self.sensor_read_timer.setSingleShot(True)
 
         # ########## Make signal/slot connections ##########
         self.__connect_signals_to_slots()
@@ -80,9 +91,12 @@ class DataView(QtCore.QObject):
         self.main_window.miniboard_class.data_arm_motors.connect(self.__update_arm_power)
 
         self.get_data_button.clicked.connect(self.on_get_science_data_button_pressed__slot)
-        self.main_window.miniboard_class.data_soil_sensor_measure.connect()
+        self.get_data_from_probe_signal.connect(self.sensor_read_timer.start)
+        self.sensor_read_timer.timeout.connect(self.on_science_measure_response_received__slot)
+        self.main_window.miniboard_class.data_soil_sensor_recv.connect(self.on_science_data_received__slot)
 
         self.send_miniboard_control_packet.connect(self.main_window.miniboard_class.append)
+        self.main_window.miniboard_class.message_received_signal.connect(self.on_message_received__slot)
 
     def __update_drive_percentages(self):
         if self.frysky_connected:
@@ -139,8 +153,32 @@ class DataView(QtCore.QObject):
         self.frysky_connected = connected
 
     def on_get_science_data_button_pressed__slot(self):
-        write_soil_sensor_measure(self.send_miniboard_control_packet, 1)
+        self.logger.debug("Button pressed")
+        write_soil_measure(self.send_miniboard_control_packet, 1)  # Request data
+        self.get_data_from_probe_signal.emit(5000)
+
+    def on_science_measure_response_received__slot(self):
+        self.logger.debug("Measure response received: ")
+        read_soil_sensor_recv(self.send_miniboard_control_packet)
 
     def on_science_data_received__slot(self, sdict):
         self.logger.debug(sdict)
 
+    def __parse_and_show_science_data(self, string):
+        split_data = string[3:].split(",")
+
+        TempC = float(split_data[0])
+        Moisture = float(split_data[2])
+        Cond = float(split_data[4])
+        PermR = float(split_data[6])
+        PermI = float(split_data[8])
+        Salinity = Cond * 6.4
+
+        self.temp_label.setText(str(TempC))
+        self.moisture_label.setText(str(Moisture))
+        self.salinity_label.setText(str(Salinity))
+
+    def on_message_received__slot(self):
+
+        self.last_contact_label.setText(datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+)

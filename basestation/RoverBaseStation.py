@@ -113,8 +113,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.logger.info("All threads started successfully!")
 
-
-
     def closeEvent(self, event):
         # Tell all threads to die
         self.kill_threads_signal.emit()
@@ -139,5 +137,13 @@ if __name__ == "__main__":
     application = QtWidgets.QApplication(sys.argv)  # Create the base qt gui application
     app_window = ApplicationWindow()  # Make a window in this application
     app_window.setWindowTitle("Rover Base Station")  # Sets the window title
+
+    # ##### Center the window on the screen #####
+    geometry = app_window.frameGeometry()
+    screen = QtWidgets.QApplication.desktop().screenNumber(QtWidgets.QApplication.desktop().cursor().pos())
+    centerPoint = QtWidgets.QApplication.desktop().screenGeometry(screen).center()
+    geometry.moveCenter(centerPoint)
+    app_window.move(geometry.topLeft())
+
     app_window.show()  # Show the window in the application
     application.exec_()  # Execute launching of the application

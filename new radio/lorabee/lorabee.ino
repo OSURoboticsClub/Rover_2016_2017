@@ -34,9 +34,10 @@ uint32_t LastByteMilis;
 #define RFM95_CS 10
 #define RFM95_RST 9
 #define RFM95_INT 3
-#define RF95_FREQ 434.0
+#define RF95_FREQ 433.0
 //#define RF95_MODE rf95.Bw500Cr45Sf128 /* Fast + short range */
 #define RF95_MODE rf95.Bw125Cr45Sf128 /* Medium range */
+//#define RF95_MODE rf95.Bw125Cr45Sf128 /* Slow */
 #define RF95_PREAMBLE 2
 
 RH_RF95 rf95(RFM95_CS, RFM95_INT);

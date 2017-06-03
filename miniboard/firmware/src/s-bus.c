@@ -275,7 +275,7 @@ void sbus_handle_packet(void) {
 	reset_timeout_timer();
 }
 
-/* Recieve S-BUS protocol bytes as they come in over the UART. When a full
+/* Receive S-BUS protocol bytes as they come in over the UART. When a full
  * packet has been recieved, validate it and handle it. */
 void sbus_byte_handler(uint8_t b){
 	/* If the expected start and end bytes haven't been recieved, discard the

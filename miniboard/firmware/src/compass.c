@@ -9,7 +9,7 @@
 #include "compass.h"
 #include "uart.h"
 #include "commgen.h"
-#include "math.h"
+#include <math.h>
 #include <util/atomic.h>
 
 //start condition transmitted
@@ -37,7 +37,6 @@
 #define	Z_LSB 0x06
 #define	Y_MSB 0x07
 #define Y_LSB 0x08
-#define PI 3.14159
 
 void comp_init(void) {
 	twi_init();
@@ -64,10 +63,10 @@ void compass_retrieve(){
 	int16_t y = read_y();
 	int16_t heading, val, y1, x1;
 
-	heading = atan2(-y,-x)*(180/PI);
-	if(heading < 0){
-		heading = heading + 360;
-	}
+	heading = atan2(-y,-x)*(180.0/M_PI);
+// 	if(heading < 0){
+// 		heading = heading + 360;
+// 	}
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
 		Data->compass_heading = heading;
 		Data->compass_heading_valid = 1;

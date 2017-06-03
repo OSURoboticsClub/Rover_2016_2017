@@ -104,7 +104,7 @@ void init(void){
 	comp_init();
 	imu_init();
 	sbus_init();
-	//soil_init();
+	soil_init();
 	time_init();
 	sei();
 	reset_timeout_timer();

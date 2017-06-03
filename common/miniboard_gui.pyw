@@ -21,8 +21,8 @@ signal.signal(signal.SIGINT, signal.SIG_DFL) #Make Ctrl-C quit the program
 #TODO: Add big pause/unpause buttons
 #TODO: Fix issue with spinbox that prevents typing 0 or -
 
-SerialPortPath = "/dev/ttyUSB0"
-#SerialPortPath = "/dev/ttyACM0"
+#SerialPortPath = "/dev/ttyUSB0"
+SerialPortPath = "/dev/ttyACM0"
 
 class MiniboardIO():
 	"""Handles reading and writing from the miniboard."""
@@ -108,7 +108,7 @@ class MiniboardIO():
 	def port_info(self):
 		"""Return a tuple (serial_port_path, baud_rate)."""
 		return (self.path, self.baud)
-
+	
 class RegisterController():
 	"""Handles reading/writing a single register and controlling that
 	   register's UI widgets."""
@@ -128,13 +128,13 @@ class RegisterController():
 			p = [chr(self.reg["code"] | 0x00)]
 			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
 				if a[0] == "*":
-					self.widgets[i-1].setValue(len(str(w.text())))
+					self.widgets[i-1].setValue(len(str(w.text()).decode('string_escape')))
 			for a,w,i in zip(self.reg["argument"], self.widgets, range(0, len(self.widgets))):
 				if a[0] != "*":
 					value = w.value()
 					p += list(struct.pack(self.fmtcodes[a[0]], value))
 				else:
-					p += str(w.text())
+					p += str(w.text()).decode('string_escape')
 			reply = self.io.writeread(p)
 		return func
 		

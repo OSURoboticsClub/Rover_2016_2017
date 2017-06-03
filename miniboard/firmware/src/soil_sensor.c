@@ -11,7 +11,7 @@
 #include "commgen.h"
 #include "tetrad.h"
 #include <string.h>
-
+#include <stdlib.h>
 #define SOIL_TX_UART 2
 #define SOIL_RX_UART 1
 #define TIMEOUT_ITERATION 250000UL
@@ -90,6 +90,27 @@ static void soil_send(const char *cmd){
 	soil_talk();
 }
 
+/* Parse the soil measurement. */
+void soil_parse(void){
+	//Data->soil_recv_data[Data->soil_recv_data_length] = 0;
+	uint16_t i = 0;
+	char buf[300];
+	strncpy(buf, Data->soil_recv_data, Data->soil_recv_data_length);
+	char *token;
+	for (token = strtok(buf + 3, ","); token; token = strtok(NULL, ",")){
+		if(i == 0){
+			Data->temperature = atof(token) * 1000.0;
+		}
+		if(i == 2){
+			Data->moisture = atof(token) * 1000.0;
+		}
+		if(i == 4){
+			Data->salinity = atof(token) * 6.4 * 1000.0;
+			break;
+		}
+		i++;
+	}
+}
 
 /* Get soil data string, to be parsed by the base station.
  * After being called, this function will leave its result
@@ -100,5 +121,6 @@ void soil_measure(void){
 	soil_send("marTR\r\n");
 	_delay_ms(1000);
 	soil_send("marT3\r\n");
+	soil_parse();
 	Data->soil_measure = 2;
 }

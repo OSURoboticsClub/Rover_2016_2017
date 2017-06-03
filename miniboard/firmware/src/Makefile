@@ -9,7 +9,7 @@ SIMAVR:=simavr
 CC:=avr-gcc
 OBJCOPY:=avr-objcopy
 AVRDUDE:=avrdude
-CFLAGS:= -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wextra -Wall -Wstrict-prototypes -std=gnu99
+CFLAGS:= -Os -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wextra -Wall -Wstrict-prototypes -std=gnu99 -Wl,-u,vfprintf -lprintf_flt -lm
 LIBS:=
 
 

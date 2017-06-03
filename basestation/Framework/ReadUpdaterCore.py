@@ -38,11 +38,11 @@ class ReadUpdater(QtCore.QThread):
 
         while self.run_thread_flag:
             # read_drive_motor_power(self.send_miniboard_control_packet)
-            # read_battery_voltage(self.send_miniboard_control_packet)
+            read_battery_voltage(self.send_miniboard_control_packet)
             # read_arm_motors(self.send_miniboard_control_packet)
-            read_gps_position(self.send_miniboard_control_packet)
-            read_gps_track(self.send_miniboard_control_packet)
-            self.msleep(2000)
+            # read_gps_position(self.send_miniboard_control_packet)
+            # read_gps_track(self.send_miniboard_control_packet)
+            self.msleep(30000)
 
         self.logger.debug("Read Updater Thread Stopping...")
 

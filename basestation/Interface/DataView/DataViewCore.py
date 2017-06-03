@@ -8,7 +8,7 @@
 # Python native imports
 from PyQt5 import QtCore, QtWidgets, QtGui
 import logging
-from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, write_arm_motors
+from Framework.MiniBoardIOCore import write_drive_motor_power, read_drive_motor_power, write_pause, write_arm_motors, write_soil_sensor_measure
 
 #####################################
 # Global Variables
@@ -21,6 +21,8 @@ JOYSTICK_AXIS_MAX = 144
 # About Class Definition
 #####################################
 class DataView(QtCore.QObject):
+    send_miniboard_control_packet = QtCore.pyqtSignal(list)
+
     def __init__(self, main_window):
         super(DataView, self).__init__()
 
@@ -51,6 +53,8 @@ class DataView(QtCore.QObject):
         self.pitch_power = self.main_window.pitch
         self.wrist_power = self.main_window.wrist
 
+        self.get_data_button = self.main_window.science_data_button
+
         # self.time_label = self.main_window.time_label
         # self.voltage_label = self.main_window.battery_voltage_label
 
@@ -74,6 +78,11 @@ class DataView(QtCore.QObject):
         self.main_window.miniboard_class.data_drive_motor_power.connect(self.__update_drive_power)
         self.main_window.miniboard_class.data_battery_voltage.connect(self.__update_battery_voltage)
         self.main_window.miniboard_class.data_arm_motors.connect(self.__update_arm_power)
+
+        self.get_data_button.clicked.connect(self.on_get_science_data_button_pressed__slot)
+        self.main_window.miniboard_class.data_soil_sensor_measure.connect()
+
+        self.send_miniboard_control_packet.connect(self.main_window.miniboard_class.append)
 
     def __update_drive_percentages(self):
         if self.frysky_connected:
@@ -128,3 +137,10 @@ class DataView(QtCore.QObject):
 
     def frysky_connected__slot(self, connected):
         self.frysky_connected = connected
+
+    def on_get_science_data_button_pressed__slot(self):
+        write_soil_sensor_measure(self.send_miniboard_control_packet, 1)
+
+    def on_science_data_received__slot(self, sdict):
+        self.logger.debug(sdict)
+

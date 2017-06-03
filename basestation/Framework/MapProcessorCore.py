@@ -56,6 +56,8 @@ class MapProcessor(QtCore.QThread):
 
         # ########## Class Variables ##########
         self.goompy = None
+
+        self.pillow = None
         self.pixmap = QtGui.QPixmap("Resources/Images/waiting.png")
 
         self.gps_valid = None
@@ -84,7 +86,8 @@ class MapProcessor(QtCore.QThread):
                 self.__setup_goompy()
                 self.setup_goompy_flag = False
             else:
-                self.__add_map_point_from_gps()
+                self.__get_goompy_pillow_image()
+                #self.__add_map_point_from_gps(38.406404, -110.783481)
                 self.__show_map_plus_overlays()
             self.msleep(1)
 
@@ -94,24 +97,72 @@ class MapProcessor(QtCore.QThread):
         self.goompy = GooMPy(WIDTH, HEIGHT, INITIAL_LATITUDE, INITIAL_LONGITUDE, INITIAL_ZOOM, MAPTYPE, 1500)
         self.goompy.move(HAB_X_OFFSET, HAB_Y_OFFSET)
 
-    def __show_map_plus_overlays(self):
-
+    def __get_goompy_pillow_image(self):
         if self.last_zoom_level_index != self.current_zoom_index:
             self.logger.debug("Changed to zoom level: " + str(POSSIBLE_ZOOM_LEVELS[self.current_zoom_index]))
             self.goompy.useZoom(POSSIBLE_ZOOM_LEVELS[self.current_zoom_index])
             self.last_zoom_level_index = self.current_zoom_index
 
-        pil_image = self.goompy.getImage().convert("RGBA")
+        self.pillow = self.goompy.getImage().convert("RGBA")
 
-        self.__draw_circle_at_point(pil_image, self.goompy.width // 2, self.goompy.height // 2, 3)
+    def __show_map_plus_overlays(self):
 
-        qim = ImageQt(pil_image)
+        self.__draw_circle_at_point(self.pillow, self.goompy.width // 2, self.goompy.height // 2, 3)
+
+        qim = ImageQt(self.pillow)
         self.pixmap = QtGui.QPixmap.fromImage(qim)
 
         self.update_map_label_signal.emit()
 
-    def __add_map_point_from_gps(self):
-        self.logger.debug("Test")
+    def __add_map_point_from_gps(self, lat, lon):
+        self.logger.debug("Beginning")
+
+        if self.goompy:
+            viewport_lat_nw, viewport_lon_nw = self.goompy.northwest
+            viewport_lat_se, viewport_lon_se = self.goompy.southeast
+
+            viewport_lat_diff = viewport_lat_nw - viewport_lat_se
+            viewport_lon_diff = viewport_lon_se - viewport_lon_nw
+
+            viewport_upper_y = self.goompy.uppery
+            viewport_left_x = self.goompy.leftx
+            viewport_width = self.goompy.width
+            viewport_height = self.goompy.height
+
+            bigimage_width = self.goompy.bigimage.size[0]
+            bigimage_height = self.goompy.bigimage.size[1]
+
+            pixel_per_lat = bigimage_height / viewport_lat_diff
+            pixel_per_lon = bigimage_width / viewport_lon_diff
+
+            #
+            # viewport_left_percentage = viewport_left_x / bigimage_width
+            # viewport_right_percentage = (viewport_left_x + viewport_width) / bigimage_width
+            # viewport_top_percentage = viewport_upper_y / bigimage_height
+            # viewport_bottom_percentage = (viewport_upper_y + viewport_height) / bigimage_height
+            #
+            new_lat_gps_range_percentage = (viewport_lat_nw - lat)
+            new_lon_gps_range_percentage = (lon - viewport_lon_nw)
+
+            point_x = new_lon_gps_range_percentage * pixel_per_lon
+            point_y = new_lat_gps_range_percentage * pixel_per_lat
+            self.__draw_circle_at_point(self.goompy.bigimage, int(point_x), int(point_y), 3)
+            #
+            # self.logger.debug("vlp: " + str(viewport_left_percentage) + " nlatp: " + str(new_lon_gps_range_percentage) + " vrp: " + str(viewport_right_percentage))
+            # self.logger.debug("vtp: " + str(viewport_top_percentage) + " nlonp: " + str(new_lat_gps_range_percentage) + " vbp: " + str(viewport_bottom_percentage))
+            #
+            # x = new_lon_gps_range_percentage * bigimage_width
+            # y = new_lat_gps_range_percentage * bigimage_height
+            #
+            # self.__draw_circle_at_point(self.goompy.bigimage, x, y, 3)
+            #
+            # if viewport_left_percentage < new_lon_gps_range_percentage < viewport_right_percentage and \
+            #         viewport_top_percentage < new_lat_gps_range_percentage < viewport_bottom_percentage:
+            #     self.logger.debug("valid point")
+            # else:
+            #     self.logger.debug("invalid point")
+
+            self.logger.debug("Made it here")
 
     def __draw_circle_at_point(self, image, x, y, r):
         draw = ImageDraw.Draw(image)

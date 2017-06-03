@@ -26,7 +26,7 @@ ARMS_MAX = 127
 DEAD_BAND_FRSKY = 20
 DEAD_BAND_XBOX = 1500
 
-DRIVE_TIMEOUT = 2  # Seconds
+DRIVE_TIMEOUT = 0.35  # Seconds
 ARM_TIMEOUT = 0.25  # Seconds
 PAN_TILT_TIMEOUT = 0.25  # Seconds
 DRIVE_SWERVE_TIMEOUT = 5  # Seconds
@@ -279,7 +279,7 @@ class MotionProcessor(QtCore.QThread):
             time_elapsed = time.time() - start_time
             self.msleep(1)
 
-        self.logger.debug("Elapsed: " + str(time_elapsed))
+        #self.logger.debug("Elapsed: " + str(time_elapsed))
 
         # if time_elapsed > DRIVE_TIMEOUT:
         #     self.logger.debug("Cleared")

@@ -78,7 +78,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.interface_class = Interface(self)
         self.motion_processor_class = MotionProcessor(self)
         self.read_updater = ReadUpdater(self)
-        # self.map_processor = MapProcessor(self)
+        self.map_processor = MapProcessor(self)
 
         # ########## Add threads to list for easy access on program close ##########
         self.threads.append(self.interface_class.live_logs_class)
@@ -87,7 +87,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.threads.append(self.miniboard_class)
         self.threads.append(self.motion_processor_class)
         self.threads.append(self.read_updater)
-        # self.threads.append(self.map_processor)
+        self.threads.append(self.map_processor)
 
         # ########## Setup signal/slot connections ##########
         for thread in self.threads:

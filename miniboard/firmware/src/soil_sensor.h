@@ -13,3 +13,8 @@ void soil_init(void);
  * This function blocks until data transfer is complete. */
 void soil_talk(void);
 
+/* Get soil data string, to be parsed by the base station.
+ * After being called, this function will leave its result
+ * in Data->soil_result* and set Data->soil_measure to 2. */
+void soil_measure(void);
+

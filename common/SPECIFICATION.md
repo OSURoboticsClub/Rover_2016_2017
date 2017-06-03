@@ -79,7 +79,6 @@ don't change the name of existing command arguments.
 | Soil Sensor Send         |  W | 0x40 | u8 soil_send_data_length, * soil_send_data| - | Data string to send to the soil sensor. |
 | Soil Sensor Recv         | RW | 0x41 | u8 soil_recv_data_length, * soil_recv_data| - | Reply string received from the soil sensor. |
 | Soil Measure             | RW | 0x42 | u8 soil_measure | 0 | 0 = do nothing, 1 = take measurement, 2 = measurement complete |
-| Soil Result              |  W | 0x43 | u8 soil_send_result_length, * soil_result_data| - | Result string from soil sensor. |
 | Joystick                 | RW | 0x50 | i8 fr_joylh, i8 fr_joylv, i8 fr_joyrh, i8 fr_joyrv, i8 fr_potl, i8 fr_potr, i8 fr_sidel, i8 fr_sider, u8 fr_buttons, i8 xbox_joylh, i8 xbox_joylv, i8 xbox_joyrh, i8 xbox_joyrv, i8 xbox_triggerl, i8 xbox_triggerr, u8 xbox_buttons_high, u8 xbox_buttons_low | 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 | Frsky buttons are packed (MSB) H ..A (LSB). MSB of xbox_buttons_high is enable; must be 1! XBOX low byte -> (MSB)(RSC)(LSC)(RB)(LB)(Y)(X)(B)(A)(LSB) XBOX high byte (MSB)(1)(DPD)(DPU)(DPR)(DPL)(HOME)(STRT)(SEL)(LSB)|
 | Autonomous Enable        | RW | 0x60 | u8 auton_en | 0 | If 1, do autonomous traversal. |
 | Autonomous Waypoint 1    | RW | 0x61 | i64 auton_way1_lat, i64 auton_way1_lon, u16 auton_way1_speed | 0,0,0 | Autonomous target waypoint. Speed in mm/s. |

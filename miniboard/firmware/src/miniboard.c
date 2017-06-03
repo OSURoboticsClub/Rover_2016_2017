@@ -38,8 +38,6 @@
 #define CFLEX2_AX12 8
 #define CSEAL_AX12 7
 
-bool SoilTalk;
-
 /* Triggers for variable length data read/write commands. */
 void camera_command_trigger(void){
 	
@@ -50,7 +48,6 @@ void callsign_trigger(void){
 }
 
 void soil_sensor_send_trigger(void){
-	SoilTalk = true;
 }
 
 void soil_sensor_recv_trigger(void){
@@ -422,9 +419,8 @@ void miniboard_main(void){
 		/* Handled in module. */
 		
 		/* Soil Sensor */
-		if(SoilTalk){
-			SoilTalk = false;
-			soil_talk();
+		if(Data->soil_measure == 1){
+			soil_measure();
 		}
 		
 		/* IMU */

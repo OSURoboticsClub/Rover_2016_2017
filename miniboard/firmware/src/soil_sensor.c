@@ -10,10 +10,12 @@
 #include "uart.h"
 #include "commgen.h"
 #include "tetrad.h"
+#include <string.h>
 
 #define SOIL_TX_UART 2
 #define SOIL_RX_UART 1
 #define TIMEOUT_ITERATION 250000UL
+
 
 /* Drive enable = pin 25 = PA3 */
 #define DEN_PIN 3
@@ -79,4 +81,24 @@ void soil_talk(void){
 	}
 	Data->soil_recv_data_length = count;
 	rs485_idle();
+}
+
+/* Get send a command to the soil sensor. The reply will be stored in Data->soil_recv_data*. */
+static void soil_send(const char *cmd){
+	strncpy(Data->soil_send_data, cmd, 197);
+	Data->soil_send_data_length = strnlen(cmd, 197);
+	soil_talk();
+}
+
+
+/* Get soil data string, to be parsed by the base station.
+ * After being called, this function will leave its result
+ * in Data->soil_result* and set Data->soil_measure to 2. */
+void soil_measure(void){
+	soil_send("marPE=1\r\n");
+	_delay_ms(1000);
+	soil_send("marTR\r\n");
+	_delay_ms(1000);
+	soil_send("marT3\r\n");
+	Data->soil_measure = 2;
 }

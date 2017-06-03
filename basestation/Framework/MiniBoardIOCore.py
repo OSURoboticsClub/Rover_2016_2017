@@ -226,7 +226,7 @@ class MiniboardIO(QtCore.QThread):
                                                     adict[a[1]] = value
                                                     b += s
                                             getattr(self, "data_" + docparse.cannon_name(cmd["name"])).emit(adict)
-                                            # self.logger.debug(adict)
+                                            self.logger.debug(docparse.cannon_name + ": " + adict.__str__())
                                         else:
                                             code = self.reply[4] & 0x7F
                                             cmd = RoverCmdDict[code]

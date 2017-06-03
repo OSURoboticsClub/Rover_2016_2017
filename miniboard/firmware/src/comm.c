@@ -14,7 +14,7 @@
 #include "commgen.h"
 #include "comm.h"
 
-#define PACKET_BUF_SIZE 150
+#define PACKET_BUF_SIZE 250
 #define START_BYTE 0x01
 
 /* Configure the computer communications uart. */

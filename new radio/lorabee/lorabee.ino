@@ -20,7 +20,7 @@
 #define CALLSIGN_HEADER 1
 #define CALLSIGN_PER 400
 #define DATA_HEADER 2
-#define MAX_LEN 80
+#define MAX_LEN 250
 uint8_t SendBuf[MAX_LEN];
 uint8_t SendLen=1;
 uint8_t RecvBuf[MAX_LEN];

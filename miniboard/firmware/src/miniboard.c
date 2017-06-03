@@ -115,8 +115,8 @@ void init(void){
 	ax12_set_continuous_mode(PITCH_AX12);
 	ax12_set_continuous_mode(WRIST_AX12);
 	ax12_set_continuous_mode(SQUEEZE_AX12);
-	ax12_set_angle_mode(CFLEX1_AX12);
-	ax12_set_angle_mode(CFLEX2_AX12);
+	ax12_set_continuous_mode(CFLEX1_AX12);
+	ax12_set_continuous_mode(CFLEX2_AX12);
 	ax12_set_continuous_mode(CSEAL_AX12);
 }
 
@@ -184,9 +184,10 @@ uint8_t clamp127(int8_t value){
 #define DRILL_FWD XBOX_DPU
 #define DRILL_REV XBOX_DPD
 #define SAMPLE_JOINT1 Data->xbox_joylv 
-#define SAMPLE_JOINT2 Data->xbox_joylv
-#define SAMPLE_JOINT2_SW XBOX_X
-#define SAMPLE_SEAL Data->xbox_joylh
+#define SAMPLE_JOINT2 Data->xbox_joylh
+#define SAMPLE_SEAL_SWL XBOX_DPL
+#define SAMPLE_SEAL_SWR XBOX_DPR
+
 
 /* Camera indices */
 #define CAM_FRONT 1
@@ -307,6 +308,17 @@ void direct_control(void){
 		Data->arm_motor_4 = 0;
 	}
 	
+	Data->cflex1_speed = 4*joy_ch(SAMPLE_JOINT1);
+	Data->cflex2_speed = 4*joy_ch(SAMPLE_JOINT2);
+	
+	if(switch_ch(SAMPLE_SEAL_SWR)){
+		Data->cseal_speed = -400;
+	} else if(switch_ch(SAMPLE_SEAL_SWL)){
+		Data->cseal_speed = 400;
+	} else {
+		Data->cseal_speed = 0;
+	}
+	
 	
 	if(!switch_ch(MODE_SWITCH)){
 		/* Mode 1 - Drive */
@@ -405,13 +417,14 @@ void miniboard_main(void){
 			ax12_set_goal_position(Data->ax12_addr, Data->ax12_angle);
 			ax12_continuous_speed(PAN_AX12, Data->pan_speed*3);
 			ax12_continuous_speed(TILT_AX12, Data->tilt_speed*3);
+			ax12_continuous_speed(CFLEX1_AX12, Data->cflex1_speed);
+			ax12_continuous_speed(CFLEX2_AX12, Data->cflex2_speed);
+			ax12_continuous_speed(CSEAL_AX12, Data->cseal_speed);
 			if(Data->arm_mode != 0){
 				ax12_continuous_speed(PITCH_AX12, Data->ee_speed);
 				ax12_continuous_speed(WRIST_AX12, Data->grabber_rotation_speed);
 				ax12_continuous_speed(SQUEEZE_AX12, Data->grabber_speed);
-				ax12_set_goal_position(CFLEX1_AX12, Data->cflex1_speed);
-				ax12_set_goal_position(CFLEX2_AX12, Data->cflex2_speed);
-				ax12_continuous_speed(CSEAL_AX12, Data->clid_speed);
+				
 			}
 		}
 
@@ -509,7 +522,7 @@ void ax12_test(void){
 }
 
 void ax12_reset_addr(void){
-	uint8_t target_addr = 7;
+	uint8_t target_addr = 9;
 	init();
 	while(1){
 		for(uint16_t i=0;i<255;i++){

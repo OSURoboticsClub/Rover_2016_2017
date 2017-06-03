@@ -102,8 +102,8 @@ signal_eval_str = make_signals()
 
 class MiniboardIO(QtCore.QThread):
     """Handles reading and writing from the miniboard."""
-    # path = "/dev/ttyUSB0"
-    path = "COM8"
+    path = "/dev/ttyUSB0"
+    # path = "COM8"
     baud = 115200
     on_kill_threads__slot = QtCore.pyqtSignal()
     exec(signal_eval_str)
@@ -222,7 +222,7 @@ class MiniboardIO(QtCore.QThread):
                                             cmd = RoverCmdDict[code]
                                             getattr(self, "ack_" + docparse.cannon_name(cmd["name"])).emit()
                                     self.reply = self.reply[(self.reply[1] + 2):]
-                if time.time() - start_time > 0.075:
+                if time.time() - start_time > 0.5:
                     waiting_for_command_reply = False
                     self.queue = []
                     self.reply = []

@@ -10,7 +10,6 @@
 #include <avr/io.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
-#include "sabertooth.h"
 #include "uart.h"
 #include "commgen.h"
 #include "s-bus.h"

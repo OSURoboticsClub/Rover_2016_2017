@@ -5,6 +5,8 @@
  */
 #include "soil_sensor.h"
 #include <avr/interrupt.h>
+#define F_CPU 16000000
+#include <util/delay.h>
 #include "uart.h"
 #include "commgen.h"
 #include "tetrad.h"
@@ -62,8 +64,9 @@ void soil_talk(void){
 	uart_enable(SOIL_RX_UART, 9600, 1, 0);
 	/* The GPS TX UART is already set for 9600 baud. */
 	rs485_send();
-	uart_tx(SOIL_TX_UART, (uint8_t *) Data->soil_send_data, Data->soil_send_data_length);
-	uart_wait(SOIL_TX_UART);
+	_delay_ms(3);
+ 	uart_tx(SOIL_TX_UART, (uint8_t *) Data->soil_send_data, Data->soil_send_data_length);
+ 	uart_wait(SOIL_TX_UART);
 	rs485_recv();
 	uint8_t count = 0;
 	uint32_t iterations = 0;
@@ -74,5 +77,6 @@ void soil_talk(void){
 		}
 		iterations++;
 	}
+	Data->soil_recv_data_length = count;
 	rs485_idle();
 }
